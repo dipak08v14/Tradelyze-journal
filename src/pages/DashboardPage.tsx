@@ -461,8 +461,8 @@ export const DashboardPage: React.FC = () => {
                   <select
                     value={selectedMonth}
                     onChange={(e) => setSelectedMonth(e.target.value)}
-                    style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
-                    className="rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer transition-all font-medium"
+                    style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '8px', color: 'var(--text)', padding: '6px 12px' }}
+                    className="text-sm focus:outline-none cursor-pointer transition-all font-medium"
                   >
                     {MONTH_NAMES.map((name) => (
                       <option key={name} value={name}>
@@ -475,8 +475,8 @@ export const DashboardPage: React.FC = () => {
                   <select
                     value={selectedYear}
                     onChange={(e) => setSelectedYear(parseInt(e.target.value, 10))}
-                    style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
-                    className="rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer transition-all font-medium font-mono"
+                    style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '8px', color: 'var(--text)', padding: '6px 12px' }}
+                    className="text-sm focus:outline-none cursor-pointer transition-all font-medium font-mono"
                   >
                     {availableYears.map((y) => (
                       <option key={y} value={y}>
@@ -489,11 +489,19 @@ export const DashboardPage: React.FC = () => {
                 {/* OVERALL SCORE PILL */}
                 {!loading && trades.length > 0 && (
                   <div
-                    className={`bg-indigo-900 border border-indigo-700/60 font-extrabold text-xs uppercase tracking-wider font-mono px-4 py-2.5 rounded-xl shrink-0 flex items-center gap-1.5 shadow-md ${getScoreColorClass(
-                      stats.avgOverallScore
-                    )}`}
+                    style={{
+                      backgroundColor: 'var(--accent-muted)',
+                      color: 'var(--accent)',
+                      border: '1px solid var(--accent)',
+                      borderRadius: '999px',
+                      fontSize: '12px',
+                      fontWeight: 700,
+                      padding: '6px 16px',
+                      letterSpacing: '0.3px'
+                    }}
+                    className="shrink-0 flex items-center gap-1.5 font-mono uppercase tracking-wider shadow-md"
                   >
-                    <Activity className="w-3.5 h-3.5" />
+                    <Activity className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
                     <span>YOUR SCORE: {stats.avgOverallScore.toFixed(0)}%</span>
                   </div>
                 )}

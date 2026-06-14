@@ -15,7 +15,6 @@ import { AnnualReportsPage } from './pages/AnnualReportsPage';
 import { AiTeacherPage } from './pages/AiTeacherPage';
 import { useTheme } from './hooks/useTheme';
 import { useAuth } from './hooks/useAuth';
-import { TopNav } from './components/TopNav';
 
 function AuthenticatedLayout() {
   const { user, loading } = useAuth();
@@ -34,7 +33,6 @@ function AuthenticatedLayout() {
 
   return (
     <div className="flex flex-col min-h-screen w-full">
-      <TopNav />
       <div className="flex-1 flex flex-col w-full">
         <Outlet />
       </div>

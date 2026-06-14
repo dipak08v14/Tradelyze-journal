@@ -50,21 +50,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
       style={{ backgroundColor: 'var(--card)', borderRight: '1px solid var(--border)', color: 'var(--text)' }}
     >
       {/* Top logo section */}
-      <div 
-        className="px-6 py-6 flex items-center justify-between"
-        style={{ borderBottom: '1px solid var(--border)' }}
-      >
-        <div className="flex items-center gap-2.5">
-          <div 
-            className="w-9 h-9 rounded-lg flex items-center justify-center font-extrabold text-lg tracking-tight shrink-0 shadow-lg"
-            style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
-          >
-            T
-          </div>
-          <div>
-            <div className="text-lg font-bold tracking-wider font-display" style={{ color: 'var(--text)' }}>TRADELYZE</div>
-            <div className="text-[10px] italic font-mono uppercase tracking-tight" style={{ color: 'var(--text-muted)' }}>System Active</div>
-          </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '20px 20px 16px 20px', borderBottom: '0.5px solid var(--border)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1 }}>
+          <svg width="36" height="34" viewBox="0 0 108 102" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="tGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#00c6ff"/>
+                <stop offset="100%" stopColor="#0072ff"/>
+              </linearGradient>
+            </defs>
+            <path d="M16 21h45.5l-3.5 11.5H41v40H26.5v-40H16Z" fill="url(#tGrad)"/>
+            <path d="M65.5 21H96L61 61h35v11.5H57.5L92.5 32.5H62L65.5 21" fill="#0f172a"/>
+          </svg>
+          <span style={{ fontSize: '17px', fontWeight: '800', letterSpacing: '0.8px', color: 'var(--accent)', lineHeight: '1' }}>TRADELYZE</span>
         </div>
         {mobileOpen && (
           <button
@@ -79,7 +77,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
       </div>
 
       {/* Navigation items section */}
-      <nav className="px-3 mt-6 flex-1 space-y-1.5 overflow-y-auto">
+      <nav className="px-3 flex-1 space-y-1.5 overflow-y-auto">
         {menuItems.map((item) => {
           const isActive = location.pathname === item.route || 
             (item.route === '/strategies' && location.pathname.startsWith('/strategies')) ||
