@@ -163,37 +163,16 @@ async function searchSimilarTrades(embedding, userId, setupName) {
   }).sort((a, b) => b.similarity - a.similarity)
 }
 
-// ── OFFSCREEN DOCUMENT FOR CLIP ──
-async function ensureOffscreen() {
-  const existing = await chrome.offscreen.hasDocument?.() ?? false
-  if (!existing) {
-    try {
-      await chrome.offscreen.createDocument({
-        url: chrome.runtime.getURL('offscreen.html'),
-        reasons: ['WORKERS'],
-        justification: 'Run CLIP model for visual chart analysis on user device'
-      })
-    } catch (e) {
-      // May already exist
-    }
-  }
-}
-
+// ── WEB APP SCAN DELEGATOR ──
 async function generateEmbeddingViaOffscreen(imageDataUrl) {
-  await ensureOffscreen()
-  return new Promise((resolve, reject) => {
-    const timeout = setTimeout(() => reject(new Error('CLIP timeout')), 120000)
-    const listener = (message) => {
-      if (message.type === 'CLIP_RESULT') {
-        clearTimeout(timeout)
-        chrome.runtime.onMessage.removeListener(listener)
-        if (message.error) reject(new Error(message.error))
-        else resolve(message.embedding)
-      }
-    }
-    chrome.runtime.onMessage.addListener(listener)
-    chrome.runtime.sendMessage({ type: 'GENERATE_EMBEDDING', imageDataUrl })
+  const response = await fetch('https://tradelyze.vercel.app/api/scan-chart', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ imageDataUrl })
   })
+  const data = await response.json()
+  if (data.error) throw new Error(data.error)
+  return data.embedding
 }
 
 // ── MESSAGE HANDLER ──
