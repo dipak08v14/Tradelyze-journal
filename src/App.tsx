@@ -8,6 +8,7 @@ import { StrategyBuilderPage } from './pages/StrategyBuilderPage';
 import { PlaceholderPage } from './pages/PlaceholderPage';
 import { TradeEntryPage } from './pages/TradeEntryPage';
 import { TradingLogsPage } from './pages/TradingLogsPage';
+import { TradeTrackingPage } from './pages/TradeTrackingPage';
 
 export default function App() {
   return (
@@ -37,6 +38,7 @@ export default function App() {
           />
           <Route path="/trade-entry" element={<TradeEntryPage />} />
           <Route path="/trading-logs" element={<TradingLogsPage />} />
+          <Route path="/trading-logs/:id" element={<TradeTrackingPage />} />
           <Route
             path="/reports"
             element={

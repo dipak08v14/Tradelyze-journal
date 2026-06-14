@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Component } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
@@ -24,7 +24,72 @@ import {
 } from 'lucide-react';
 import { Trade } from '../types';
 
-export const TradeTrackingPage: React.FC = () => {
+interface ErrorBoundaryProps {
+  children: React.ReactNode;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+}
+
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
+    console.error("TradeTrackingPage crash captured by ErrorBoundary:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center p-6 text-zinc-100">
+          <div className="bg-red-950/40 border border-red-900/60 p-6 rounded-2xl max-w-md w-full text-center shadow-2xl">
+            <div className="w-12 h-12 bg-red-900/20 border border-red-800/40 rounded-full flex items-center justify-center mx-auto mb-4 text-red-400">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-bold font-display text-zinc-100">Something went wrong</h2>
+            <p className="text-zinc-400 text-xs mt-2 mb-6 leading-relaxed">
+              An unexpected error occurred while rendering the trade analytics view. Let's try again or return to your dashboard.
+            </p>
+            {this.state.error?.message && (
+              <div className="bg-zinc-950/60 rounded-xl p-3 border border-zinc-850 text-left font-mono text-[10px] text-red-400 overflow-x-auto mb-6">
+                <strong>Error:</strong> {this.state.error.message}
+              </div>
+            )}
+            <div className="flex gap-3 justify-center">
+              <button
+                onClick={() => window.location.reload()}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl px-4 py-2.5 text-xs transition-all cursor-pointer"
+              >
+                Reload Page
+              </button>
+              <a
+                href="/trading-logs"
+                className="bg-zinc-900 border border-zinc-800 hover:bg-zinc-850 text-zinc-300 font-semibold rounded-xl px-4 py-2.5 text-xs transition-all"
+              >
+                Back to Logs
+              </a>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
+const TradeTrackingPageContent: React.FC = () => {
   const { id: tradeId } = useParams<{ id: string }>();
   const { user, userId, loading: authLoading } = useAuth();
   const { showSuccess, showError } = useToast();
@@ -36,6 +101,7 @@ export const TradeTrackingPage: React.FC = () => {
   const [exitRules, setExitRules] = useState<any[]>([]);
   const [psychology, setPsychology] = useState<any>(null);
   const [riskMgmt, setRiskMgmt] = useState<any>(null);
+  const [fetchError, setFetchError] = useState<Error | null>(null);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
@@ -99,7 +165,7 @@ export const TradeTrackingPage: React.FC = () => {
     } catch (err: any) {
       console.error('Error fetching trade tracking details:', err);
       showError(err.message || 'Failed to sync entire trade analytics context.');
-      navigate('/trading-logs');
+      setFetchError(err);
     } finally {
       setLoading(false);
     }
@@ -227,6 +293,42 @@ export const TradeTrackingPage: React.FC = () => {
       </div>
     );
   };
+
+  if (fetchError) {
+    return (
+      <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center p-6 text-zinc-100">
+        <div className="bg-red-950/40 border border-red-900/60 p-6 rounded-2xl max-w-md w-full text-center shadow-2xl">
+          <div className="w-12 h-12 bg-red-900/20 border border-red-800/40 rounded-full flex items-center justify-center mx-auto mb-4 text-red-400">
+            <AlertTriangle className="w-6 h-6" />
+          </div>
+          <h2 className="text-xl font-bold font-display text-zinc-100">Sync Failure</h2>
+          <p className="text-zinc-400 text-xs mt-2 mb-6 leading-relaxed">
+            Could not fetch trade analytics context from the server.
+          </p>
+          <div className="bg-zinc-950/60 rounded-xl p-3 border border-zinc-850 text-left font-mono text-[10px] text-red-400 overflow-x-auto mb-6">
+            <strong>Error:</strong> {fetchError.message || 'Unknown network or database issue.'}
+          </div>
+          <div className="flex gap-3 justify-center">
+            <button
+              onClick={() => {
+                setFetchError(null);
+                fetchCompleteTradeContextData();
+              }}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl px-4 py-2.5 text-xs transition-all cursor-pointer"
+            >
+              Retry Sync
+            </button>
+            <Link
+              to="/trading-logs"
+              className="bg-zinc-950 border border-zinc-800 hover:bg-zinc-850 text-zinc-300 font-semibold rounded-xl px-4 py-2.5 text-xs transition-all"
+            >
+              Back to Logs
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (authLoading || loading) {
     return (
@@ -1004,5 +1106,13 @@ export const TradeTrackingPage: React.FC = () => {
         </div>
       </Modal>
     </div>
+  );
+};
+
+export const TradeTrackingPage: React.FC = () => {
+  return (
+    <ErrorBoundary>
+      <TradeTrackingPageContent />
+    </ErrorBoundary>
   );
 };
