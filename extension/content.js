@@ -121,7 +121,9 @@ function renderOverlay() {
   const session = getSessionInfo()
   const ictScore = calcICTScore()
   const visualScore = scanResults?.visualScore || 0
-  const combined = calcCombinedScore(ictScore, visualScore)
+  const combined = scanResults?.clipUnavailable 
+    ? ictScore 
+    : calcCombinedScore(ictScore, visualScore)
   const symbol = getTradingViewSymbol()
   const selectedStrategy = strategies.find(s => s.id === selectedStrategyId)
 
@@ -219,11 +221,16 @@ function renderOverlay() {
         </div>
         <div class="tl-score-row" style="margin-top:6px">
           <span class="tl-score-label">Visual Pattern Match</span>
-          <span class="tl-score-val ${getScoreColor(visualScore)}">${scanResults ? visualScore + '%' : '—'}</span>
+          <span class="tl-score-val ${getScoreColor(visualScore)}">${scanResults && !scanResults.clipUnavailable ? visualScore + '%' : '—'}</span>
         </div>
         <div class="tl-progress-bar">
-          <div class="tl-progress-fill" style="width:${visualScore}%;background:${getProgressColor(visualScore)}"></div>
+          <div class="tl-progress-fill" style="width:${scanResults && !scanResults.clipUnavailable ? visualScore : 0}%;background:${getProgressColor(scanResults && !scanResults.clipUnavailable ? visualScore : 0)}"></div>
         </div>
+        ${scanResults?.clipUnavailable ? `
+          <div style="font-size: 11px; color: #6B7280; font-style: italic; margin-top: 6px; text-align: center;">
+            Visual analysis temporarily unavailable. Showing ICT score only.
+          </div>
+        ` : ''}
       </div>
     `
 
@@ -373,8 +380,12 @@ function attachOverlayEvents() {
       }
 
     } catch (err) {
-      scanResults = { error: err.message, matches: [], visualScore: 0 }
-      alert('Scan error: ' + err.message)
+      scanResults = { 
+        matches: [], 
+        visualScore: 0, 
+        error: err.message,
+        clipUnavailable: true 
+      }
     }
 
     isScanning = false
