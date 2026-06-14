@@ -20,8 +20,8 @@ export const RuleChecklist: React.FC<RuleChecklistProps> = ({
   if (!strategySelected) {
     return (
       <div className="py-8 text-center flex flex-col items-center">
-        <Target className="text-zinc-650 w-8 h-8 mx-auto" />
-        <p className="text-zinc-500 text-sm mt-2 font-medium">
+        <Target className="text-zinc-450 w-8 h-8 mx-auto" />
+        <p style={{ color: 'var(--text-muted)' }} className="text-sm mt-2 font-medium">
           Select a strategy above to load {ruleType} rules
         </p>
       </div>
@@ -30,7 +30,7 @@ export const RuleChecklist: React.FC<RuleChecklistProps> = ({
 
   if (rules.length === 0) {
     return (
-      <div className="text-center text-zinc-500 text-sm italic py-6">
+      <div style={{ color: 'var(--text-muted)' }} className="text-center text-sm italic py-6">
         No {ruleType} rules defined for this strategy. Edit the strategy to add them.
       </div>
     );
@@ -51,15 +51,16 @@ export const RuleChecklist: React.FC<RuleChecklistProps> = ({
       {rules.map((rule, idx) => (
         <div
           key={rule.id}
-          className="flex items-center gap-3 py-2.5 border-b border-zinc-800/60 last:border-0"
+          style={{ borderColor: 'var(--border)' }}
+          className="flex items-center gap-3 py-2.5 border-b last:border-0"
         >
           {/* Order Badge */}
-          <span className="text-xs font-mono font-bold bg-zinc-950 border border-zinc-800 text-zinc-500 rounded px-2 py-0.5 w-9 text-center shrink-0">
+          <span style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)', color: 'var(--text-muted)' }} className="text-xs font-mono font-bold border rounded px-2 py-0.5 w-9 text-center shrink-0">
             #{rule.rule_order}
           </span>
 
           {/* Rule Text */}
-          <span className="text-sm text-zinc-200 flex-1 leading-snug">
+          <span style={{ color: 'var(--text-sub)' }} className="text-sm flex-1 leading-snug">
             {rule.rule_text}
           </span>
 
@@ -71,8 +72,8 @@ export const RuleChecklist: React.FC<RuleChecklistProps> = ({
               onClick={() => handleToggle(rule.id, 'Y', rule.followed)}
               className={`px-3 py-1 text-sm rounded-md transition-all cursor-pointer ${
                 rule.followed === true
-                  ? 'bg-green-900 border border-green-600 text-green-300 font-bold'
-                  : 'bg-transparent border border-zinc-800 text-zinc-500 hover:border-green-600 hover:text-green-400'
+                  ? 'bg-green-500/10 border border-green-500 text-green-600 font-bold'
+                  : 'bg-transparent border border-[var(--border)] text-zinc-400 hover:border-green-600 hover:text-green-600'
               }`}
             >
               Y
@@ -84,8 +85,8 @@ export const RuleChecklist: React.FC<RuleChecklistProps> = ({
               onClick={() => handleToggle(rule.id, 'N', rule.followed)}
               className={`px-3 py-1 text-sm rounded-md transition-all cursor-pointer ${
                 rule.followed === false
-                  ? 'bg-red-900 border border-red-600 text-red-300 font-bold'
-                  : 'bg-transparent border border-zinc-800 text-zinc-500 hover:border-red-600 hover:text-red-400'
+                  ? 'bg-red-500/10 border border-red-500 text-red-600 font-bold'
+                  : 'bg-transparent border border-[var(--border)] text-zinc-400 hover:border-red-600 hover:text-red-400'
               }`}
             >
               N

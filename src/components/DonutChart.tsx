@@ -25,8 +25,8 @@ export const DonutChart: React.FC<DonutChartProps> = ({
   const displaySecondary = isAllZero ? '—' : centerSecondary;
 
   return (
-    <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-4 flex flex-col justify-between h-[280px]">
-      <div className="text-sm font-semibold text-zinc-100 tracking-tight">{title}</div>
+    <div className="rounded-xl p-4 flex flex-col justify-between h-[280px]" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+      <div className="text-sm font-semibold tracking-tight" style={{ color: 'var(--text)' }}>{title}</div>
       
       <div className="relative flex-1 flex items-center justify-center my-1">
         <div className="w-full h-[180px]">
@@ -49,10 +49,10 @@ export const DonutChart: React.FC<DonutChartProps> = ({
               {!isAllZero && (
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#1A1D27',
-                    border: '1px solid #2A2D3A',
+                    backgroundColor: 'var(--card)',
+                    border: '0.5px solid var(--border)',
                     borderRadius: '8px',
-                    color: '#F9FAFB',
+                    color: 'var(--text)',
                     fontSize: '12px',
                   }}
                   formatter={(value, name) => [value, name]}
@@ -64,11 +64,11 @@ export const DonutChart: React.FC<DonutChartProps> = ({
         
         {/* Absolutely Centered Overlay */}
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
-          <span className="text-xl font-extrabold text-zinc-100 leading-tight">
+          <span className="text-xl font-extrabold leading-tight" style={{ color: 'var(--text)' }}>
             {displayPrimary}
           </span>
           {displaySecondary && (
-            <span className="text-[10px] text-zinc-500 font-mono tracking-wider uppercase mt-0.5">
+            <span className="text-[10px] font-mono tracking-wider uppercase mt-0.5" style={{ color: 'var(--text-muted)' }}>
               {displaySecondary}
             </span>
           )}
@@ -76,7 +76,7 @@ export const DonutChart: React.FC<DonutChartProps> = ({
       </div>
 
       {/* Legend below chart: small colored dots + labels with counts */}
-      <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] text-zinc-400 border-t border-zinc-800/40 pt-2 shrink-0">
+      <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] border-t pt-2 shrink-0" style={{ borderColor: 'var(--border)', color: 'var(--text-sub)' }}>
         {data.map((item, idx) => (
           <div key={idx} className="flex items-center gap-1.5">
             <span
@@ -86,7 +86,7 @@ export const DonutChart: React.FC<DonutChartProps> = ({
             <span className="truncate max-w-[80px]" title={item.name}>
               {item.name}
             </span>
-            <span className="text-zinc-500 font-mono">({item.value})</span>
+            <span className="font-mono text-zinc-550" style={{ color: 'var(--text-muted)' }}>({item.value})</span>
           </div>
         ))}
       </div>

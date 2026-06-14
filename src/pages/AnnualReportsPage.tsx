@@ -271,18 +271,22 @@ export const AnnualReportsPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col md:flex-row font-sans selection:bg-indigo-500/30">
+    <div className="min-h-screen flex flex-col md:flex-row font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
       <Sidebar userEmail={user?.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* RIGHT SIDE CONTENT CONTAINER */}
       <div className="flex-1 md:pl-[250px] flex flex-col min-h-screen">
         {/* MOBILE HEADER */}
-        <header className="flex items-center justify-between px-6 py-4 border-b border-zinc-800 md:hidden bg-zinc-900 sticky top-0 z-20">
-          <div className="text-xl font-bold text-indigo-400 tracking-wider font-display">TRADELYZE</div>
+        <header 
+          className="flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20"
+          style={{ backgroundColor: 'var(--topbar)', borderBottom: '1px solid var(--border)' }}
+        >
+          <div className="text-xl font-bold tracking-wider font-display" style={{ color: 'var(--accent)' }}>TRADELYZE</div>
           <button
             onClick={() => setMobileOpen(true)}
-            className="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 cursor-pointer"
+            className="p-1.5 rounded-lg cursor-pointer"
+            style={{ color: 'var(--text-sub)' }}
             aria-label="Open sidebar menu"
           >
             <Menu className="w-6 h-6" />
@@ -295,21 +299,22 @@ export const AnnualReportsPage: React.FC = () => {
             {/* HEADER AREA */}
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div>
-                <h1 className="text-3xl font-extrabold tracking-tight text-zinc-100 font-display">
+                <h1 style={{ color: 'var(--text)' }} className="text-3xl font-extrabold tracking-tight font-display">
                   Annual Reports
                 </h1>
-                <p className="text-sm text-zinc-400 mt-1">
+                <p style={{ color: 'var(--text-muted)' }} className="text-sm mt-1">
                   Full year analysis — all calculations from your trade data.
                 </p>
               </div>
 
               {/* YEAR SELECTOR */}
               <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-zinc-500" />
+                <Calendar style={{ color: 'var(--text-muted)' }} className="w-4 h-4" />
                 <select
                   value={selectedYear}
                   onChange={(e) => setSelectedYear(parseInt(e.target.value, 10))}
-                  className="bg-[#1A1D27] border border-[#2A2D3A] text-zinc-100 rounded-xl px-4 py-2 text-sm font-medium font-mono focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer transition-all"
+                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
+                  className="rounded-xl px-4 py-2 text-sm font-medium font-mono focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer transition-all"
                 >
                   {availableYears.map((yr) => (
                     <option key={yr} value={yr}>
@@ -320,32 +325,42 @@ export const AnnualReportsPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="border-b border-[#2A2D3A] mt-5 mb-6" />
+            <div style={{ borderColor: 'var(--border)' }} className="border-b mt-5 mb-6" />
 
             {/* SKELETON DISPLAY STATE */}
             {loading ? (
               <div className="space-y-6">
-                <div className="h-16 bg-[#1A1D27] border border-[#2A2D3A] rounded-xl animate-pulse" />
-                <div className="h-72 bg-[#1A1D27] border border-[#2A2D3A] rounded-xl animate-pulse" />
-                <div className="h-[400px] bg-[#1A1D27] border border-[#2A2D3A] rounded-xl animate-pulse" />
+                <div className="h-16 rounded-xl skeleton" />
+                <div className="h-72 rounded-xl skeleton" />
+                <div className="h-[400px] rounded-xl skeleton" />
               </div>
             ) : trades.length === 0 ? (
               /* EMPTY YEAR STATE */
-              <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20 shadow-xl">
-                <div className="w-16 h-16 bg-zinc-950/60 rounded-full flex items-center justify-center border border-zinc-800 mb-4">
-                  <BarChart2 className="w-8 h-8 text-zinc-500" />
+              <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '16px' }} className="p-12 text-center flex flex-col items-center justify-center py-20 shadow-sm">
+                <div style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)' }} className="w-16 h-16 rounded-full flex items-center justify-center border mb-4">
+                  <BarChart2 style={{ color: 'var(--text-muted)' }} className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl font-bold tracking-tight text-zinc-300 font-display">
+                <h3 style={{ color: 'var(--text)' }} className="text-xl font-bold tracking-tight font-display">
                   No trades in {selectedYear}
                 </h3>
-                <p className="text-zinc-500 text-xs mt-1.5 max-w-sm font-sans">
+                <p style={{ color: 'var(--text-muted)' }} className="text-xs mt-1.5 max-w-sm font-sans">
                   To view interactive charts, month-over-month summaries, and automated compliance reports, log trades for this year.
                 </p>
                 <button
                   onClick={() => navigate('/trade-entry')}
-                  className="mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-xl px-5 py-3 text-xs uppercase tracking-wider font-mono transition-all shadow-lg shadow-indigo-600/15 cursor-pointer inline-flex items-center gap-1.5"
+                  style={{
+                    backgroundColor: 'var(--accent)',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: '10px 20px',
+                    borderRadius: '8px',
+                    fontSize: '13px',
+                    fontWeight: '600',
+                    cursor: 'pointer'
+                  }}
+                  className="mt-6 hover:opacity-90 font-sans transition-all inline-flex items-center gap-1.5"
                 >
-                  Log a Trade <ArrowRight className="w-3.5 h-3.5" />
+                  Log a Trade <ArrowRight className="w-3.5 h-3.5 text-white" />
                 </button>
               </div>
             ) : (
@@ -354,67 +369,67 @@ export const AnnualReportsPage: React.FC = () => {
                 
                 {/* SECTION 1: ANNUAL STATS STRIP CARD */}
                 {annualStats && (
-                  <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-5 shadow-lg">
-                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 text-center">
+                  <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="p-5 shadow-sm">
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-y-4 md:gap-y-0 text-center">
                       
                       {/* STAT Card: NET P&L */}
-                      <div className="bg-zinc-950/40 p-3 rounded-lg border border-zinc-900/60 flex flex-col justify-center">
-                        <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-widest font-sans">Net P&L</span>
-                        <span className={`text-[15px] font-black font-mono mt-1 ${pnlColor(annualStats.totalPnl)}`}>
+                      <div className="p-3 flex flex-col justify-center" style={{ borderRight: '0.5px solid var(--border)' }}>
+                        <span style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase tracking-widest font-sans">Net P&L</span>
+                        <span style={{ fontWeight: 700 }} className={`text-[15px] font-mono mt-1 ${pnlColor(annualStats.totalPnl)}`}>
                           {formatINR(annualStats.totalPnl)}
                         </span>
                       </div>
 
                       {/* STAT Card: TOTAL TRADES */}
-                      <div className="bg-zinc-950/40 p-3 rounded-lg border border-zinc-900/60 flex flex-col justify-center">
-                        <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-widest">Total Trades</span>
-                        <span className="text-[15px] font-bold text-zinc-200 font-mono mt-1">
+                      <div className="p-3 flex flex-col justify-center" style={{ borderRight: '0.5px solid var(--border)' }}>
+                        <span style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase tracking-widest font-sans">Total Trades</span>
+                        <span style={{ color: 'var(--text)', fontWeight: 700 }} className="text-[15px] font-mono mt-1">
                           {annualStats.totalTrades}
                         </span>
                       </div>
 
                       {/* STAT Card: WIN RATE */}
-                      <div className="bg-zinc-950/40 p-3 rounded-lg border border-zinc-900/60 flex flex-col justify-center">
-                        <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-widest">Win Rate</span>
-                        <span className={`text-[15px] font-black font-mono mt-1 ${getScoreColor(annualStats.winRate)}`}>
+                      <div className="p-3 flex flex-col justify-center" style={{ borderRight: '0.5px solid var(--border)' }}>
+                        <span style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase tracking-widest font-sans">Win Rate</span>
+                        <span style={{ fontWeight: 700 }} className={`text-[15px] font-mono mt-1 ${getScoreColor(annualStats.winRate)}`}>
                           {annualStats.winRate.toFixed(1)}%
                         </span>
                       </div>
 
                       {/* STAT Card: PROFIT FACTOR */}
-                      <div className="bg-zinc-950/40 p-3 rounded-lg border border-zinc-900/60 flex flex-col justify-center">
-                        <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-widest">Profit Factor</span>
-                        <span className={`text-[15px] font-black font-mono mt-1 ${
+                      <div className="p-3 flex flex-col justify-center" style={{ borderRight: '0.5px solid var(--border)' }}>
+                        <span style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase tracking-widest font-sans">Profit Factor</span>
+                        <span style={{ fontWeight: 700 }} className={`text-[15px] font-mono mt-1 ${
                           annualStats.profitFactor > 1.5
-                            ? 'text-green-400'
+                            ? 'text-green-500'
                             : annualStats.profitFactor >= 1.0
-                            ? 'text-amber-400'
-                            : 'text-red-400'
+                            ? 'text-amber-500'
+                            : 'text-red-500'
                         }`}>
                           {annualStats.profitFactor === 999 ? '∞' : annualStats.profitFactor.toFixed(2)}
                         </span>
                       </div>
 
                       {/* STAT Card: AVG R */}
-                      <div className="bg-zinc-950/40 p-3 rounded-lg border border-zinc-900/60 flex flex-col justify-center">
-                        <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-widest">Avg R</span>
-                        <span className={`text-[15px] font-black font-mono mt-1 ${pnlColor(annualStats.avgR)}`}>
+                      <div className="p-3 flex flex-col justify-center" style={{ borderRight: '0.5px solid var(--border)' }}>
+                        <span style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase tracking-widest font-sans">Avg R</span>
+                        <span style={{ fontWeight: 700 }} className={`text-[15px] font-mono mt-1 ${pnlColor(annualStats.avgR)}`}>
                           {annualStats.avgR >= 0 ? '+' : ''}{annualStats.avgR.toFixed(2)}R
                         </span>
                       </div>
 
                       {/* STAT Card: ACTIVE MONTHS */}
-                      <div className="bg-zinc-950/40 p-3 rounded-lg border border-zinc-900/60 flex flex-col justify-center">
-                        <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-widest">Active Months</span>
-                        <span className="text-[15px] font-bold text-zinc-200 font-mono mt-1">
+                      <div className="p-3 flex flex-col justify-center" style={{ borderRight: '0.5px solid var(--border)' }}>
+                        <span style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase tracking-widest font-sans">Active Months</span>
+                        <span style={{ color: 'var(--text)', fontWeight: 700 }} className="text-[15px] font-mono mt-1">
                           {monthsWithData.length} / 12
                         </span>
                       </div>
 
                       {/* STAT Card: OVERALL SCORE */}
-                      <div className="bg-zinc-950/40 p-3 rounded-lg border border-zinc-900/60 flex flex-col justify-center">
-                        <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-widest">Compliance</span>
-                        <span className={`text-[15px] font-black font-mono mt-1 ${getScoreColor(annualScores.avgOverall)}`}>
+                      <div className="p-3 flex flex-col justify-center">
+                        <span style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase tracking-widest font-sans">Compliance</span>
+                        <span style={{ fontWeight: 700 }} className={`text-[15px] font-mono mt-1 ${getScoreColor(annualScores.avgOverall)}`}>
                           {annualScores.avgOverall.toFixed(0)}%
                         </span>
                       </div>
@@ -425,12 +440,12 @@ export const AnnualReportsPage: React.FC = () => {
 
                 {/* SECTION 2: ANNUAL EQUITY CURVE + MONTHLY P&L COMBO CHART */}
                 {annualStats && (
-                  <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-5 shadow-lg">
-                    <div className="flex items-center justify-between border-b border-zinc-800 pb-3 mb-4">
-                      <h2 className="text-md font-bold text-zinc-100 tracking-tight">
+                  <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="p-5 shadow-sm">
+                    <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between border-b pb-3 mb-4">
+                      <h2 style={{ color: 'var(--text)', fontSize: '14px', fontWeight: 600 }} className="text-md font-bold tracking-tight">
                         Annual P&L Performance
                       </h2>
-                      <span className={`font-black font-mono text-sm ${pnlColor(annualStats.totalPnl)}`}>
+                      <span style={{ color: '#22c55e', fontWeight: 600 }} className="font-mono text-sm">
                         Cumulative Year P&L: {formatINR(annualStats.totalPnl)}
                       </span>
                     </div>
@@ -438,18 +453,18 @@ export const AnnualReportsPage: React.FC = () => {
                     <div className="w-full">
                       <ResponsiveContainer width="100%" height={280}>
                         <ComposedChart data={annualEquityData} margin={{ top: 10, right: 20, left: 10, bottom: 0 }}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="#1F2937" vertical={false} />
-                          <XAxis dataKey="month" tick={{ fill: '#6B7280', fontSize: 11 }} axisLine={false} tickLine={false} />
-                          <YAxis yAxisId="left" tick={{ fill: '#6B7280', fontSize: 11 }} axisLine={false} tickLine={false}
+                          <CartesianGrid strokeDasharray="3 3" stroke="var(--bar)" vertical={false} />
+                          <XAxis dataKey="month" tick={{ fill: 'var(--text-muted)', fontSize: 11 }} axisLine={false} tickLine={false} />
+                          <YAxis yAxisId="left" tick={{ fill: 'var(--text-muted)', fontSize: 11 }} axisLine={false} tickLine={false}
                                  tickFormatter={v => '₹' + (v/1000).toFixed(0) + 'k'} width={55} />
-                          <YAxis yAxisId="right" orientation="right" tick={{ fill: '#6B7280', fontSize: 11 }}
+                          <YAxis yAxisId="right" orientation="right" tick={{ fill: 'var(--text-muted)', fontSize: 11 }}
                                  axisLine={false} tickLine={false} tickFormatter={v => '₹' + (v/1000).toFixed(0) + 'k'} width={55} />
-                          <ReferenceLine yAxisId="left" y={0} stroke="#374151" strokeDasharray="4 4" />
+                          <ReferenceLine yAxisId="left" y={0} stroke="var(--border)" strokeDasharray="4 4" />
                           <Tooltip
-                            contentStyle={{ backgroundColor: '#1A1D27', border: '1px solid #2A2D3A', borderRadius: '8px', color: '#F9FAFB', fontSize: '12px' }}
+                            contentStyle={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text)', fontSize: '12px' }}
                             formatter={(value: any, name: any) => [formatINR(value), name === 'monthPnl' ? 'Monthly P&L' : 'Cumulative P&L']}
                           />
-                          <Legend wrapperStyle={{ color: '#9CA3AF', fontSize: '12px' }} />
+                          <Legend wrapperStyle={{ color: 'var(--text-sub)', fontSize: '12px' }} />
                           <Bar yAxisId="left" dataKey="monthPnl" name="Monthly P&L" radius={[4, 4, 0, 0]}
                                fill="#6366F1" fillOpacity={0.7}>
                             {annualEquityData.map((entry, i) => (
@@ -465,17 +480,17 @@ export const AnnualReportsPage: React.FC = () => {
                 )}
 
                 {/* SECTION 3: 12-MONTH PERFORMANCE TABLE */}
-                <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-5 shadow-lg">
-                  <div className="border-b border-zinc-850 pb-3 mb-4">
-                    <h2 className="text-md font-bold text-zinc-100 tracking-tight">
+                <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="p-5 shadow-sm">
+                  <div style={{ borderColor: 'var(--border)' }} className="border-b pb-3 mb-4">
+                    <h2 style={{ color: 'var(--text)' }} className="text-md font-bold tracking-tight">
                       Month-by-Month Performance
                     </h2>
                   </div>
 
-                  <div className="overflow-x-auto border border-zinc-800/60 rounded-xl">
+                  <div style={{ borderColor: 'var(--border)' }} className="overflow-x-auto border rounded-xl">
                     <table className="w-full text-left border-collapse text-sm">
                       <thead>
-                        <tr className="bg-[#0F1117] text-[11px] font-bold text-zinc-500 uppercase tracking-wider border-b border-zinc-800/60">
+                        <tr style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)', color: 'var(--text-muted)' }} className="text-[11px] font-bold uppercase tracking-wider border-b">
                           <th className="px-4 py-3">Month</th>
                           <th className="px-4 py-3 text-center">Trades</th>
                           <th className="px-4 py-3 text-center">Win</th>
@@ -492,19 +507,22 @@ export const AnnualReportsPage: React.FC = () => {
                           const isBest = bestMonth && bestMonth.month === month;
                           const isWorst = worstMonth && worstMonth.month === month;
 
-                          let customRowStyle = 'border-b border-zinc-800/40 hover:bg-zinc-900/40 transition-colors';
+                          let customRowStyle = 'border-b transition-colors hover:bg-[var(--row)]';
+                          let customStyle: React.CSSProperties = { borderColor: 'var(--border)' };
                           if (mStats && mStats.totalTrades > 0) {
                             if (isBest) {
-                              customRowStyle += ' border-l-2 border-green-600 bg-green-950/5';
+                              customStyle.borderLeft = '2px solid #22c55e';
+                              customStyle.backgroundColor = 'rgba(34, 197, 94, 0.05)';
                             } else if (isWorst) {
-                              customRowStyle += ' border-l-2 border-red-600 bg-red-950/5';
+                              customStyle.borderLeft = '2px solid #ef4444';
+                              customStyle.backgroundColor = 'rgba(239, 68, 68, 0.05)';
                             }
                           }
 
                           if (!mStats || monthTrades.length === 0) {
                             return (
-                              <tr key={month} className="border-b border-zinc-800/40 text-zinc-600">
-                                <td className="px-4 py-3 font-medium text-xs">{month}</td>
+                              <tr key={month} style={{ borderColor: 'var(--border)' }} className="border-b text-zinc-400">
+                                <td style={{ color: 'var(--text-muted)' }} className="px-4 py-3 font-medium text-xs">{month}</td>
                                 <td className="px-4 py-3 text-center font-mono">—</td>
                                 <td className="px-4 py-3 text-center font-mono">—</td>
                                 <td className="px-4 py-3 text-center font-mono">—</td>
@@ -518,34 +536,34 @@ export const AnnualReportsPage: React.FC = () => {
                           }
 
                           return (
-                            <tr key={month} className={customRowStyle}>
+                            <tr key={month} style={customStyle} className={customRowStyle}>
                               {/* Month Name */}
-                              <td className="px-4 py-3 font-bold text-zinc-200 text-xs flex items-center gap-1">
+                              <td style={{ color: 'var(--text)' }} className="px-4 py-3 font-bold text-xs flex items-center gap-1">
                                 <span>{month}</span>
                                 {isBest && (
-                                  <span className="bg-green-950/60 text-green-400 text-[9px] font-bold rounded-lg px-2 py-0.5 border border-green-900/30 whitespace-nowrap">
+                                  <span className="bg-green-500/10 text-green-600 text-[9px] font-bold rounded-lg px-2 py-0.5 border border-green-500/20 whitespace-nowrap">
                                     ★ Best
                                   </span>
                                 )}
                                 {isWorst && (
-                                  <span className="bg-red-950/60 text-red-400 text-[9px] font-bold rounded-lg px-2 py-0.5 border border-red-900/30 whitespace-nowrap">
+                                  <span className="bg-red-500/10 text-red-600 text-[9px] font-bold rounded-lg px-2 py-0.5 border border-red-500/20 whitespace-nowrap">
                                     ↓ Worst
                                   </span>
                                 )}
                               </td>
 
                               {/* Trades Count */}
-                              <td className="px-4 py-3 text-center font-mono text-zinc-100 text-xs">
+                              <td style={{ color: 'var(--text)' }} className="px-4 py-3 text-center font-mono text-xs">
                                 {mStats.totalTrades}
                               </td>
 
                               {/* Win count */}
-                              <td className="px-4 py-3 text-center font-mono text-green-400 font-medium text-xs">
+                              <td className="px-4 py-3 text-center font-mono font-semibold text-xs" style={{ color: '#22c55e' }}>
                                 {mStats.wins}
                               </td>
 
                               {/* Loss Count */}
-                              <td className="px-4 py-3 text-center font-mono text-red-400 font-medium text-xs">
+                              <td className="px-4 py-3 text-center font-mono font-semibold text-xs" style={{ color: '#ef4444' }}>
                                 {mStats.losses}
                               </td>
 
@@ -566,7 +584,7 @@ export const AnnualReportsPage: React.FC = () => {
 
                               {/* Profit Factor */}
                               <td className={`px-4 py-3 text-center font-mono text-xs font-semibold ${
-                                mStats.profitFactor >= 1.0 ? 'text-green-400' : 'text-red-400'
+                                mStats.profitFactor >= 1.0 ? 'text-green-500' : 'text-red-500'
                               }`}>
                                 {mStats.profitFactor === 999 ? '∞' : mStats.profitFactor.toFixed(1)}
                               </td>
@@ -578,7 +596,7 @@ export const AnnualReportsPage: React.FC = () => {
                                     {mScores.avgOverall.toFixed(0)}%
                                   </span>
                                 ) : (
-                                  <span className="text-zinc-500">—</span>
+                                  <span style={{ color: 'var(--text-muted)' }}>—</span>
                                 )}
                               </td>
                             </tr>
@@ -589,17 +607,17 @@ export const AnnualReportsPage: React.FC = () => {
                       {/* ANNUAL TOTAL FOOTER ROW */}
                       {annualStats && (
                         <tfoot>
-                          <tr className="bg-zinc-950 border-t-2 border-indigo-800 font-bold">
-                            <td className="px-4 py-3.5 text-zinc-200 text-xs uppercase tracking-wider font-extrabold">
+                          <tr style={{ backgroundColor: 'var(--bar)', borderTopWidth: '2px', borderColor: 'var(--border)' }} className="font-bold">
+                            <td style={{ color: 'var(--text)' }} className="px-4 py-3.5 text-xs uppercase tracking-wider font-extrabold">
                               YEAR {selectedYear}
                             </td>
-                            <td className="px-4 py-3.5 text-center font-mono text-zinc-100 text-xs">
+                            <td style={{ color: 'var(--text)' }} className="px-4 py-3.5 text-center font-mono text-xs">
                               {annualStats.totalTrades}
                             </td>
-                            <td className="px-4 py-3.5 text-center font-mono text-green-400 text-xs">
+                            <td className="px-4 py-3.5 text-center font-mono text-xs" style={{ color: '#22c55e' }}>
                               {annualStats.wins}
                             </td>
-                            <td className="px-4 py-3.5 text-center font-mono text-red-400 text-xs">
+                            <td className="px-4 py-3.5 text-center font-mono text-xs" style={{ color: '#ef4444' }}>
                               {annualStats.losses}
                             </td>
                             <td className={`px-4 py-3.5 text-center font-mono text-xs font-black ${getScoreColor(annualStats.winRate)}`}>
@@ -612,7 +630,7 @@ export const AnnualReportsPage: React.FC = () => {
                               {annualStats.avgR >= 0 ? '+' : ''}{annualStats.avgR.toFixed(2)}R
                             </td>
                             <td className={`px-4 py-3.5 text-center font-mono text-xs font-black ${
-                              annualStats.profitFactor >= 1.0 ? 'text-green-400' : 'text-red-400'
+                              annualStats.profitFactor >= 1.0 ? 'text-green-500' : 'text-red-500'
                             }`}>
                               {annualStats.profitFactor === 999 ? '∞' : annualStats.profitFactor.toFixed(2)}
                             </td>
@@ -629,101 +647,101 @@ export const AnnualReportsPage: React.FC = () => {
                 {/* SECTION 4: INSIGHTS GRID */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   {/* CARD A — BEST MONTH */}
-                  <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-4 shadow-lg flex flex-col justify-between min-h-[140px]">
+                  <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="p-4 shadow-sm flex flex-col justify-between min-h-[140px]">
                     <div className="flex items-start justify-between">
-                      <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-widest leading-none">
+                      <span style={{ color: 'var(--text-muted)' }} className="text-[10px] font-extrabold uppercase tracking-widest leading-none">
                         Best Month
                       </span>
-                      <TrendingUp className="w-5 h-5 text-green-400 shrink-0" />
+                      <TrendingUp className="w-5 h-5 text-green-500 shrink-0" />
                     </div>
                     <div className="mt-3">
-                      <div className="text-2xl font-black text-green-400 font-display">
+                      <div className="text-2xl font-black text-green-600 font-display">
                         {bestMonth?.month || '—'}
                       </div>
-                      <div className="text-[13px] text-green-300 font-mono font-bold mt-0.5">
+                      <div className="text-[13px] text-green-600 font-mono font-bold mt-0.5">
                         {bestMonth ? formatINR(bestMonth.stats?.totalPnl || 0) : ''}
                       </div>
                     </div>
-                    <div className="text-[10px] text-zinc-500 leading-none mt-2 font-mono">
+                    <div style={{ color: 'var(--text-muted)' }} className="text-[10px] leading-none mt-2 font-mono">
                       {bestMonth?.stats?.totalTrades || 0} trades | {bestMonth?.stats?.winRate.toFixed(0) || 0}% win rate
                     </div>
                   </div>
 
                   {/* CARD B — WORST MONTH */}
-                  <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-4 shadow-lg flex flex-col justify-between min-h-[140px]">
+                  <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="p-4 shadow-sm flex flex-col justify-between min-h-[140px]">
                     <div className="flex items-start justify-between">
-                      <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-widest leading-none">
+                      <span style={{ color: 'var(--text-muted)' }} className="text-[10px] font-extrabold uppercase tracking-widest leading-none">
                         Worst Month
                       </span>
-                      <TrendingDown className="w-5 h-5 text-red-400 shrink-0" />
+                      <TrendingDown className="w-5 h-5 text-red-500 shrink-0" />
                     </div>
                     <div className="mt-3">
-                      <div className="text-2xl font-black text-red-400 font-display">
+                      <div className="text-2xl font-black text-red-500 font-display">
                         {worstMonth?.month || '—'}
                       </div>
-                      <div className="text-[13px] text-red-300 font-mono font-bold mt-0.5">
+                      <div className="text-[13px] text-red-500 font-mono font-bold mt-0.5">
                         {worstMonth ? `(${formatINR(Math.abs(worstMonth.stats?.totalPnl || 0))})` : ''}
                       </div>
                     </div>
-                    <div className="text-[10px] text-zinc-500 leading-none mt-2 font-mono">
+                    <div style={{ color: 'var(--text-muted)' }} className="text-[10px] leading-none mt-2 font-mono">
                       {worstMonth?.stats?.totalTrades || 0} trades | {worstMonth?.stats?.winRate.toFixed(0) || 0}% win rate
                     </div>
                   </div>
 
                   {/* CARD C — BEST SETUP */}
-                  <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-4 shadow-lg flex flex-col justify-between min-h-[140px]">
+                  <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="p-4 shadow-sm flex flex-col justify-between min-h-[140px]">
                     <div className="flex items-start justify-between">
-                      <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-widest leading-none">
+                      <span style={{ color: 'var(--text-muted)' }} className="text-[10px] font-extrabold uppercase tracking-widest leading-none">
                         Best Setup of Year
                       </span>
-                      <Target className="w-5 h-5 text-indigo-400 shrink-0" />
+                      <Target className="w-5 h-5 text-indigo-500 shrink-0" />
                     </div>
                     <div className="mt-3 overflow-hidden">
-                      <div className="text-lg font-extrabold text-zinc-200 truncate pr-1" title={bestSetup?.name || '—'}>
+                      <div style={{ color: 'var(--text)' }} className="text-lg font-extrabold truncate pr-1" title={bestSetup?.name || '—'}>
                         {bestSetup?.name || '—'}
                       </div>
-                      <div className="text-[13px] text-green-400 font-semibold font-mono mt-0.5">
+                      <div className="text-[13px] text-green-600 font-semibold font-mono mt-0.5">
                         {bestSetup ? formatINR(bestSetup.pnl) : ''}
                       </div>
                     </div>
-                    <div className="text-[10px] text-zinc-500 leading-none mt-2 font-mono">
+                    <div style={{ color: 'var(--text-muted)' }} className="text-[10px] leading-none mt-2 font-mono">
                       {bestSetup?.tradeCount || 0} trades | {bestSetup?.winRate.toFixed(0) || 0}% win rate
                     </div>
                   </div>
 
                   {/* CARD D — MOST REPEATED MISTAKE */}
-                  <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-4 shadow-lg flex flex-col justify-between min-h-[140px]">
+                  <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="p-4 shadow-sm flex flex-col justify-between min-h-[140px]">
                     <div className="flex items-start justify-between">
-                      <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-widest leading-none">
+                      <span style={{ color: 'var(--text-muted)' }} className="text-[10px] font-extrabold uppercase tracking-widest leading-none">
                         Top Repeated Mistake
                       </span>
                       <AlertCircle className="w-5 h-5 text-amber-500 shrink-0" />
                     </div>
                     <div className="mt-3">
-                      <div className="text-xs font-bold text-zinc-200 leading-snug break-words line-clamp-2" title={topMistakeEntry ? topMistakeEntry[0] : 'None ✓'}>
+                      <div style={{ color: 'var(--text)' }} className="text-xs font-bold leading-snug break-words line-clamp-2" title={topMistakeEntry ? topMistakeEntry[0] : 'None ✓'}>
                         {topMistakeEntry ? topMistakeEntry[0] : 'None ✓'}
                       </div>
-                      <div className="text-[11px] text-zinc-500 mt-1 font-mono">
+                      <div className="text-[11px] mt-1 font-mono">
                         {topMistakeEntry ? (
                           <span className="text-amber-500 font-bold">{topMistakeEntry[1]} times this year</span>
                         ) : (
-                          <span className="text-green-400">Great discipline! No repeated mistakes!</span>
+                          <span style={{ color: '#22c55e' }} className="font-bold">Great discipline! No repeated mistakes!</span>
                         )}
                       </div>
                     </div>
-                    <div className="text-[10px] text-zinc-500 leading-none mt-2 font-mono">
+                    <div style={{ color: 'var(--text-muted)' }} className="text-[10px] leading-none mt-2 font-mono">
                       Audit checklist compliance
                     </div>
                   </div>
                 </div>
 
                 {/* SECTION 5: ANNUAL COMPLIANCE SCORES + SETUP PERFORMANCE DETAILS */}
-                <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-5 shadow-lg">
-                  <div className="border-b border-zinc-850 pb-3 mb-4">
-                    <h2 className="text-md font-bold text-zinc-100 tracking-tight">
+                <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="p-5 shadow-sm">
+                  <div style={{ borderColor: 'var(--border)' }} className="border-b pb-3 mb-4">
+                    <h2 style={{ color: 'var(--text)' }} className="text-md font-bold tracking-tight">
                       Annual Trading Scores & Setup Performance
                     </h2>
-                    <p className="text-xs text-zinc-400 mt-1">
+                    <p style={{ color: 'var(--text-muted)' }} className="text-xs mt-1">
                       avg across all {annualStats.totalTrades} trades this year
                     </p>
                   </div>
@@ -733,8 +751,8 @@ export const AnnualReportsPage: React.FC = () => {
                     {/* LEFT COMPONENT SCORE BARS */}
                     <div className="space-y-4">
                       {/* Overall Compliance */}
-                      <div className="flex justify-between items-end border-b border-[#2A2D3A] pb-2">
-                        <span className="text-sm font-semibold text-zinc-300">Yearly Average Score</span>
+                      <div style={{ borderColor: 'var(--border)' }} className="flex justify-between items-end border-b pb-2">
+                        <span style={{ color: 'var(--text)' }} className="text-sm font-semibold">Yearly Average Score</span>
                         <span className={`text-xl font-black font-mono ${getScoreColor(annualScores.avgOverall)}`}>
                           {annualScores.avgOverall.toFixed(0)}%
                         </span>
@@ -743,12 +761,12 @@ export const AnnualReportsPage: React.FC = () => {
                       {/* Technical adherence */}
                       <div className="space-y-1.5">
                         <div className="flex justify-between text-xs">
-                          <span className="text-zinc-500 font-medium">Technical Setup Score</span>
+                          <span style={{ color: 'var(--text-muted)' }} className="font-medium">Technical Setup Score</span>
                           <span className={`font-bold font-mono ${getScoreColor(annualScores.avgTech)}`}>
                             {annualScores.avgTech.toFixed(0)}%
                           </span>
                         </div>
-                        <div className="w-full bg-[#0F1117] h-2.5 rounded-full border border-[#2A2D3A] overflow-hidden">
+                        <div style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)' }} className="w-full h-2.5 rounded-full border overflow-hidden">
                           <div
                             className={`h-full transition-all duration-500 ${getScoreBg(annualScores.avgTech)}`}
                             style={{ width: `${annualScores.avgTech}%` }}
@@ -759,12 +777,12 @@ export const AnnualReportsPage: React.FC = () => {
                       {/* Psychology rating */}
                       <div className="space-y-1.5">
                         <div className="flex justify-between text-xs">
-                          <span className="text-zinc-500 font-medium">Psychological Control</span>
+                          <span style={{ color: 'var(--text-muted)' }} className="font-medium">Psychological Control</span>
                           <span className={`font-bold font-mono ${getScoreColor(annualScores.avgPsych)}`}>
                             {annualScores.avgPsych.toFixed(0)}%
                           </span>
                         </div>
-                        <div className="w-full bg-[#0F1117] h-2.5 rounded-full border border-[#2A2D3A] overflow-hidden">
+                        <div style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)' }} className="w-full h-2.5 rounded-full border overflow-hidden">
                           <div
                             className={`h-full transition-all duration-500 ${getScoreBg(annualScores.avgPsych)}`}
                             style={{ width: `${annualScores.avgPsych}%` }}
@@ -775,12 +793,12 @@ export const AnnualReportsPage: React.FC = () => {
                       {/* Risk Management rating */}
                       <div className="space-y-1.5">
                         <div className="flex justify-between text-xs">
-                          <span className="text-zinc-500 font-medium">Risk Mgmt Discipline</span>
+                          <span style={{ color: 'var(--text-muted)' }} className="font-medium">Risk Mgmt Discipline</span>
                           <span className={`font-bold font-mono ${getScoreColor(annualScores.avgRisk)}`}>
                             {annualScores.avgRisk.toFixed(0)}%
                           </span>
                         </div>
-                        <div className="w-full bg-[#0F1117] h-2.5 rounded-full border border-[#2A2D3A] overflow-hidden">
+                        <div style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)' }} className="w-full h-2.5 rounded-full border overflow-hidden">
                           <div
                             className={`h-full transition-all duration-500 ${getScoreBg(annualScores.avgRisk)}`}
                             style={{ width: `${annualScores.avgRisk}%` }}
@@ -791,14 +809,14 @@ export const AnnualReportsPage: React.FC = () => {
 
                     {/* RIGHT SETUP PERFORMANCE BREAKDOWN */}
                     <div className="space-y-3">
-                      <h3 className="text-sm font-semibold text-zinc-300">
+                      <h3 style={{ color: 'var(--text)' }} className="text-sm font-semibold">
                         Setup Performance Breakdown
                       </h3>
 
-                      <div className="overflow-x-auto border border-zinc-805 rounded-xl text-xs bg-zinc-950/20">
+                      <div style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)' }} className="overflow-x-auto border rounded-xl text-xs">
                         <table className="w-full text-left">
                           <thead>
-                            <tr className="bg-[#0F1117] text-[10px] font-bold text-zinc-500 uppercase tracking-wider border-b border-zinc-800">
+                            <tr style={{ backgroundColor: 'var(--bar)', color: 'var(--text-muted)', borderColor: 'var(--border)' }} className="text-[10px] font-bold uppercase tracking-wider border-b">
                               <th className="px-4 py-2.5">Setup Name</th>
                               <th className="px-3 py-2.5 text-center">Trades</th>
                               <th className="px-3 py-2.5 text-center">Win Rate</th>
@@ -807,11 +825,11 @@ export const AnnualReportsPage: React.FC = () => {
                           </thead>
                           <tbody>
                             {setupList.map((setupItem) => (
-                              <tr key={setupItem.name} className="border-b border-zinc-900 last:border-0">
-                                <td className="px-4 py-2.5 font-medium text-zinc-350">
+                              <tr key={setupItem.name} style={{ borderColor: 'var(--border)' }} className="border-b last:border-0">
+                                <td style={{ color: 'var(--text)' }} className="px-4 py-2.5 font-medium text-zinc-350">
                                   {setupItem.name}
                                 </td>
-                                <td className="px-3 py-2.5 text-center font-mono text-zinc-400">
+                                <td style={{ color: 'var(--text-muted)' }} className="px-3 py-2.5 text-center font-mono">
                                   {setupItem.tradeCount}
                                 </td>
                                 <td className={`px-3 py-2.5 text-center font-mono font-semibold ${getScoreColor(setupItem.winRate)}`}>

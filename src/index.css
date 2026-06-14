@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -7,25 +7,226 @@
   --font-mono: "JetBrains Mono", monospace;
 }
 
-body {
-  font-family: 'Inter', sans-serif;
-  background-color: #09090b; /* Zinc 950 page background */
-  color: #f4f4f5; /* Zinc 100 */
+* {
+  font-family: 'Inter', 'DM Sans', system-ui, -apple-system, sans-serif;
 }
 
-/* Custom scrollbar for premium dark-theme look */
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background-color 200ms ease, color 200ms ease;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #f7f5f0;
+  --card: #ffffff;
+  --card-hover: #fdfcfa;
+  --border: rgba(0,0,0,.07);
+  --border-md: rgba(0,0,0,.12);
+  --text: #1c1917;
+  --text-sub: #78716c;
+  --text-muted: #a8a29e;
+  --bar: rgba(0,0,0,.05);
+  --row: rgba(0,0,0,.02);
+  --topbar: #ffffff;
+  --accent: #06b6d4;
+  --accent-light: #67e8f9;
+  --accent-muted: rgba(6,182,212,.13);
+}
+
+/* Custom scrollbar for premium look */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #09090b;
+  background: var(--bg);
 }
 ::-webkit-scrollbar-thumb {
-  background: #27272a;
+  background: var(--border-md);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #6366f1;
+  background: var(--accent);
 }
+
+/* ==========================================================================
+   GLOBAL THEME & CARD OVERRIDES
+   Ensures beautiful consistent light and dark theme styling across all pages.
+   ========================================================================== */
+
+/* Overrides for main app view page elements, panels and cards */
+section.bg-zinc-900,
+div.bg-[#1A1D27],
+div.bg-zinc-900,
+div.bg-zinc-950,
+aside.bg-zinc-950,
+main.bg-zinc-950,
+.bg-zinc-90,
+.bg-zinc-900\/40 {
+  background-color: var(--card) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+}
+
+/* Border color overrides */
+.border-zinc-800,
+.border-zinc-900,
+.border-zinc-850,
+.border-zinc-700,
+.border-zinc-800\/80,
+.border-zinc-800\/60,
+.border-zinc-805,
+.border-\[\#2A2D3A\],
+.border-\[\#232535\]\/40 {
+  border-color: var(--border) !important;
+}
+
+/* Inputs, Select tags, Text areas global style bindings */
+input,
+select,
+textarea,
+input.bg-zinc-950,
+select.bg-zinc-950,
+textarea.bg-zinc-950,
+input.bg-\[\#1A1D27\],
+select.bg-\[\#1A1D27\],
+textarea.bg-\[\#1A1D27\],
+input.bg-\[\#12131A\],
+textarea.bg-\[\#12131A\],
+select.bg-\[\#161821\] {
+  background-color: var(--card) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+}
+
+/* Make placeholder text neat and readable */
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+
+/* Text elements */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text) !important;
+}
+
+p, label,
+.text-zinc-100,
+.text-zinc-200,
+.text-zinc-300,
+.text-zinc-400,
+.text-zinc-500,
+.text-gray-400 {
+  color: var(--text-sub) !important;
+}
+
+.text-zinc-650,
+.text-zinc-600 {
+  color: var(--text-muted) !important;
+}
+
+/* Darker row containers (used for visual patterns, checklists, metrics tables) */
+.bg-zinc-950,
+.bg-zinc-950\/40,
+.bg-[#0F1117],
+.bg-\[\#0F1117\],
+.bg-\[\#12131C\],
+.bg-\[\#12131A\],
+.bg-\[\#161821\],
+.bg-[#12131C],
+.bg-[#12131A],
+.bg-[#161821] {
+  background-color: var(--row) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+}
+
+/* Specific table headers and rows */
+thead tr.bg-[#0F1117],
+thead tr.bg-\[\#0F1117\] {
+  background-color: var(--bar) !important;
+  color: var(--text) !important;
+}
+
+tr.border-b {
+  border-color: var(--border) !important;
+}
+
+tr:hover {
+  background-color: var(--row) !important;
+}
+
+/* AI Teacher Page Overrides */
+header.border-b-zinc-900,
+header.border-b {
+  border-color: var(--border) !important;
+}
+
+/* User vs AI chat bubbles */
+div.bg-\[\#1D1E2C\],
+div.bg-[#1D1E2C] {
+  background-color: var(--row) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+}
+
+div.bg-zinc-900\/60,
+div.bg-zinc-900\/40 {
+  background-color: var(--bar) !important;
+  border-color: var(--border) !important;
+  color: var(--text-sub) !important;
+}
+
+/* Pulse skeleton loaders theme */
+.animate-pulse,
+.bg-\[\#1A1D27\].animate-pulse {
+  background-color: var(--row) !important;
+}
+
+/* Soft semantic theme backgrounds & text colors for light-theme compatibility */
+.bg-green-950,
+.bg-green-950\/60,
+.bg-green-950\/40,
+.bg-green-900\/40 {
+  background-color: #f0fdf4 !important;
+  border-color: #bbf7d0 !important;
+  color: #15803d !important;
+}
+
+.bg-red-950,
+.bg-red-950\/60,
+.bg-red-950\/40,
+.bg-red-900\/40 {
+  background-color: #fef2f2 !important;
+  border-color: #fecaca !important;
+  color: #b91c1c !important;
+}
+
+.text-green-300, 
+.text-green-400 {
+  color: #15803d !important;
+}
+
+.text-red-300, 
+.text-red-400 {
+  color: #b91c1c !important;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--bar) 25%, var(--border-md) 50%, var(--bar) 75%) !important;
+  background-size: 200% 100% !important;
+  animation: shimmer 1.5s infinite !important;
+}
+
+
+
+
 

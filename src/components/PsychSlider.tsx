@@ -15,14 +15,14 @@ export const PsychSlider: React.FC<PsychSliderProps> = ({
   value,
   onChange,
   hint,
-  valueColorClass = 'text-indigo-400',
+  valueColorClass = 'text-indigo-600',
   accentClass = 'accent-indigo-500',
   id
 }) => {
   return (
     <div id={id} className="space-y-1 font-sans">
       <div className="flex justify-between items-center text-sm">
-        <span className="text-zinc-300 font-medium">{label}</span>
+        <span style={{ color: 'var(--text-sub)' }} className="font-medium">{label}</span>
         <span className={`font-bold ${valueColorClass}`}>{value}%</span>
       </div>
       
@@ -33,10 +33,11 @@ export const PsychSlider: React.FC<PsychSliderProps> = ({
         step="5"
         value={value}
         onChange={(e) => onChange(parseInt(e.target.value, 10))}
-        className={`w-full h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer ${accentClass}`}
+        style={{ backgroundColor: 'var(--bar)' }}
+        className={`w-full h-2 rounded-lg appearance-none cursor-pointer ${accentClass}`}
       />
       
-      <div className="text-[11px] text-zinc-500 italic">
+      <div style={{ color: 'var(--text-muted)' }} className="text-[11px] italic">
         {hint}
       </div>
     </div>

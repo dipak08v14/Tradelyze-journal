@@ -2,29 +2,36 @@ import React from 'react';
 
 export const SkeletonCard: React.FC = () => {
   return (
-    <div className="bg-[#1A1D27] rounded-xl h-64 w-full animate-pulse border border-[#2A2D3A] p-5 flex flex-col justify-between">
+    <div 
+      style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', borderRadius: '12px' }} 
+      className="h-64 w-full p-5 flex flex-col justify-between relative overflow-hidden"
+    >
       <div>
         <div className="flex justify-between items-center mb-3">
           <div className="flex items-center gap-2">
-            <div className="bg-[#0F1117] h-6 w-12 rounded border border-[#2A2D3A]" />
-            <div className="bg-gray-700 h-6 w-32 rounded" />
+            <div className="skeleton h-6 w-12" style={{ borderRadius: '4px' }} />
+            <div className="skeleton h-6 w-32" style={{ borderRadius: '4px' }} />
           </div>
-          <div className="bg-gray-700 h-6 w-20 rounded-full" />
+          <div className="skeleton h-6 w-20" style={{ borderRadius: '12px' }} />
         </div>
-        <div className="bg-gray-700 h-4 w-24 rounded-full mt-2" />
+        <div className="skeleton h-4 w-24 mt-2" style={{ borderRadius: '4px' }} />
         
         <div className="grid grid-cols-4 gap-3 mt-6">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="bg-gray-800 h-12 rounded p-2 flex flex-col justify-between">
-              <div className="bg-gray-700 h-4 w-3/4 rounded" />
-              <div className="bg-gray-700 h-3 w-1/2 rounded" />
+            <div 
+              key={i} 
+              style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', borderRadius: '8px' }} 
+              className="h-12 p-2 flex flex-col justify-between"
+            >
+              <div className="skeleton h-4 w-3/4" style={{ borderRadius: '4px' }} />
+              <div className="skeleton h-3 w-1/2" style={{ borderRadius: '4px' }} />
             </div>
           ))}
         </div>
       </div>
-      <div className="border-t border-[#2A2D3A] pt-3 flex justify-between items-center mt-4">
-        <div className="bg-gray-700 h-4 w-28 rounded" />
-        <div className="bg-gray-700 h-4 w-20 rounded" />
+      <div style={{ borderColor: 'var(--border)' }} className="border-t pt-3 flex justify-between items-center mt-4">
+        <div className="skeleton h-4 w-28" style={{ borderRadius: '4px' }} />
+        <div className="skeleton h-4 w-20" style={{ borderRadius: '4px' }} />
       </div>
     </div>
   );

@@ -193,8 +193,8 @@ export const StrategyBuilderPage: React.FC = () => {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-[#0F1117] flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-indigo-600/30 border-t-indigo-600 rounded-full animate-spin"></div>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+        <div className="w-8 h-8 border-4 rounded-full animate-spin" style={{ borderColor: 'var(--border-md)', borderTopColor: 'var(--accent)' }}></div>
       </div>
     );
   }
@@ -664,18 +664,22 @@ export const StrategyBuilderPage: React.FC = () => {
   const visibleImages = existingImages.filter((url) => !markedForDeletion.includes(url));
 
   return (
-    <div className="min-h-screen bg-[#0F1117] text-[#F9FAFB] flex flex-col md:flex-row">
+    <div className="min-h-screen flex flex-col md:flex-row" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
       <Sidebar userEmail={user.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* RIGHT SIDE VIEW */}
       <div className="flex-1 md:pl-[250px] flex flex-col min-h-screen">
         {/* MOBILE TOPBAR header */}
-        <header className="flex items-center justify-between px-6 py-4 border-b border-zinc-800 md:hidden bg-zinc-900 sticky top-0 z-25">
-          <div className="text-xl font-bold text-indigo-400 tracking-wider font-display">TRADELYZE</div>
+        <header 
+          className="flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-25"
+          style={{ backgroundColor: 'var(--topbar)', borderBottom: '1px solid var(--border)' }}
+        >
+          <div className="text-xl font-bold tracking-wider font-display" style={{ color: 'var(--accent)' }}>TRADELYZE</div>
           <button
             onClick={() => setMobileOpen(true)}
-            className="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 cursor-pointer"
+            className="p-1.5 rounded-lg cursor-pointer"
+            style={{ color: 'var(--text-sub)' }}
             aria-label="Open navigation drawer"
           >
             <Menu className="w-6 h-6" />
@@ -684,8 +688,8 @@ export const StrategyBuilderPage: React.FC = () => {
 
         {/* LOADING SHIM */}
         {loading ? (
-          <div className="flex-1 flex flex-col items-center justify-center p-6 bg-zinc-950">
-            <Loader2 className="w-10 h-10 text-indigo-500 animate-spin" />
+          <div className="flex-1 flex flex-col items-center justify-center p-6" style={{ backgroundColor: 'var(--bg)' }}>
+            <Loader2 style={{ color: 'var(--accent)' }} className="w-10 h-10 animate-spin" />
             <span className="text-xs text-gray-500 font-medium tracking-wide mt-3 uppercase">
               Fetching strategy profile...
             </span>
@@ -697,15 +701,16 @@ export const StrategyBuilderPage: React.FC = () => {
               {/* BREADCRUMB HEADER */}
               <Link
                 to="/strategies"
-                className="inline-flex items-center gap-1.5 text-sm text-indigo-400 hover:text-indigo-300 font-bold transition-all group"
+                className="inline-flex items-center gap-1.5 text-sm hover:opacity-90 font-bold transition-all group"
+                style={{ color: 'var(--accent)' }}
               >
-                <ArrowLeft className="w-3.5 h-3.5 transform group-hover:-translate-x-1 transition-transform" />
+                <ArrowLeft className="w-3.5 h-3.5 transform group-hover:-translate-x-1 transition-transform animate-none" />
                 <span>Back to Strategies</span>
               </Link>
 
               {/* TITLE AND CONTROL BUTTONS ROW */}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-3 gap-4">
-                <h1 className="text-3xl font-bold text-white tracking-tight leading-none font-display">
+                <h1 className="text-3xl font-bold tracking-tight leading-none font-display" style={{ color: 'var(--text)' }}>
                   {isEditMode ? `Edit Strategy — ${name || 'Setup'}` : 'New Strategy'}
                 </h1>
                 
@@ -714,7 +719,8 @@ export const StrategyBuilderPage: React.FC = () => {
                     <button
                       onClick={() => setDeleteModalOpen(true)}
                       disabled={saving}
-                      className="bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white border border-red-500/20 max-sm:flex-1 rounded-xl px-4 py-2 text-sm font-bold cursor-pointer transition-all duration-150"
+                      style={{ backgroundColor: '#ef4444', color: '#ffffff', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', padding: '10px 20px' }}
+                      className="max-sm:flex-1 hover:opacity-90 transition-all"
                     >
                       Delete Strategy
                     </button>
@@ -722,11 +728,21 @@ export const StrategyBuilderPage: React.FC = () => {
                   <button
                     onClick={handleSave}
                     disabled={saving || !name.trim() || !typeOfStrategy}
-                    className="bg-white hover:bg-zinc-200 text-black max-sm:flex-1 font-extrabold rounded-xl px-5 py-2.5 text-sm transition-all duration-150 cursor-pointer disabled:bg-zinc-800 disabled:text-zinc-500 disabled:border-transparent disabled:cursor-not-allowed inline-flex items-center justify-center gap-2 font-display shadow-lg shadow-white/5"
+                    style={{
+                      background: saving || !name.trim() || !typeOfStrategy ? 'var(--border)' : 'var(--accent)',
+                      color: saving || !name.trim() || !typeOfStrategy ? 'var(--text-muted)' : '#ffffff',
+                      border: 'none',
+                      padding: '10px 20px',
+                      borderRadius: '8px',
+                      fontSize: '13px',
+                      fontWeight: '600',
+                      cursor: saving || !name.trim() || !typeOfStrategy ? 'not-allowed' : 'pointer'
+                    }}
+                    className="max-sm:flex-1 hover:opacity-90 transition-all inline-flex items-center justify-center gap-2 font-sans"
                   >
                     {saving ? (
                       <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <Loader2 className="w-4 h-4 animate-spin text-white" />
                         <span>Saving...</span>
                       </>
                     ) : (
@@ -736,7 +752,7 @@ export const StrategyBuilderPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="border-b border-zinc-800 mt-5 mb-6" />
+              <div className="border-b mt-5 mb-6" style={{ borderColor: 'var(--border)' }} />
 
               {/* TWO COLUMN FORM WORKSPACE */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -745,15 +761,15 @@ export const StrategyBuilderPage: React.FC = () => {
                 <div className="lg:col-span-2 space-y-6">
                   
                   {/* CARD 1: STRATEGY DETAILS */}
-                  <section className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
-                    <h2 className="text-lg font-bold text-zinc-100 border-b border-zinc-800/80 pb-3 font-display">
+                  <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }} className="rounded-2xl p-6 shadow-sm relative overflow-hidden">
+                    <h2 style={{ color: 'var(--text)', borderColor: 'var(--border)' }} className="text-lg font-bold border-b pb-3 font-display">
                       Strategy Details
                     </h2>
 
                     <div className="space-y-5 mt-5">
                       {/* Name Entry */}
                       <div>
-                        <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2 font-mono" htmlFor="strat_name">
+                        <label style={{ color: 'var(--text-muted)' }} className="block text-xs font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="strat_name">
                           Strategy Name *
                         </label>
                         <input
@@ -762,9 +778,8 @@ export const StrategyBuilderPage: React.FC = () => {
                           value={name}
                           onChange={(e) => setName(e.target.value)}
                           placeholder="e.g. Morning Top Reversal"
-                          className={`bg-zinc-950 border text-zinc-100 rounded-xl px-4 py-2.5 w-full focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 placeholder-zinc-700 transition-all duration-150 ${
-                            showErrors && !name.trim() ? 'border-red-500 ring-1 ring-red-500' : 'border-zinc-800'
-                          }`}
+                          style={{ backgroundColor: 'var(--bg)', border: showErrors && !name.trim() ? '1px solid #ef4444' : '0.5px solid var(--border)', color: 'var(--text)' }}
+                          className="rounded-xl px-4 py-2.5 w-full focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 placeholder-zinc-400 transition-all duration-150"
                         />
                         {showErrors && !name.trim() && (
                           <p className="mt-1.5 text-red-500 text-xs font-semibold">
@@ -776,7 +791,7 @@ export const StrategyBuilderPage: React.FC = () => {
                       {/* Row 1 Entry */}
                       <div className="grid grid-cols-2 gap-4 font-sans">
                         <div>
-                          <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2 font-mono" htmlFor="sr_no">
+                          <label style={{ color: 'var(--text-muted)' }} className="block text-xs font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="sr_no">
                             Sr. No.
                           </label>
                           <input
@@ -785,22 +800,22 @@ export const StrategyBuilderPage: React.FC = () => {
                             min="1"
                             value={isNaN(srNo) ? '' : srNo}
                             onChange={(e) => setSrNo(parseInt(e.target.value, 10))}
-                            className="bg-zinc-950 border border-zinc-800 text-zinc-100 rounded-xl px-4 py-2.5 w-full focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all text-sm font-mono"
+                            style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
+                            className="rounded-xl px-4 py-2.5 w-full focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all text-sm font-mono"
                             required
                           />
                         </div>
 
                         <div>
-                          <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2 font-mono" htmlFor="strat_type">
+                          <label style={{ color: 'var(--text-muted)' }} className="block text-xs font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="strat_type">
                             Type of Strategy *
                           </label>
                           <select
                             id="strat_type"
                             value={typeOfStrategy}
                             onChange={(e) => setTypeOfStrategy(e.target.value as any)}
-                            className={`bg-zinc-950 border text-zinc-100 rounded-xl px-4 py-2.5 w-full focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all text-sm ${
-                              showErrors && !typeOfStrategy ? 'border-red-500 ring-1 ring-red-500' : 'border-zinc-800'
-                            }`}
+                            style={{ backgroundColor: 'var(--bg)', border: showErrors && !typeOfStrategy ? '1px solid #ef4444' : '0.5px solid var(--border)', color: 'var(--text)' }}
+                            className="rounded-xl px-4 py-2.5 w-full focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all text-sm"
                           >
                             <option value="" disabled>— Select type —</option>
                             <option value="Breakout">Breakout</option>
@@ -818,7 +833,7 @@ export const StrategyBuilderPage: React.FC = () => {
                       {/* Row 2 Entry */}
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2 font-mono" htmlFor="sub_type">
+                          <label style={{ color: 'var(--text-muted)' }} className="block text-xs font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="sub_type">
                             Sub Type
                           </label>
                           <input
@@ -827,19 +842,21 @@ export const StrategyBuilderPage: React.FC = () => {
                             value={subType}
                             onChange={(e) => setSubType(e.target.value)}
                             placeholder="e.g. HTF OB Reversal, Scalp"
-                            className="bg-zinc-950 border border-zinc-800 text-zinc-100 rounded-xl px-4 py-2.5 w-full focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 placeholder-zinc-700 transition-all duration-150 text-sm"
+                            style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
+                            className="rounded-xl px-4 py-2.5 w-full focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 placeholder-zinc-450 transition-all duration-150 text-sm"
                           />
                         </div>
 
                         <div>
-                          <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2 font-mono" htmlFor="status">
+                          <label style={{ color: 'var(--text-muted)' }} className="block text-xs font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="status">
                             Status
                           </label>
                           <select
                             id="status"
                             value={status}
                             onChange={(e) => setStatus(e.target.value as any)}
-                            className="bg-zinc-950 border border-zinc-800 text-zinc-100 rounded-xl px-4 py-2.5 w-full focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all text-sm"
+                            style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
+                            className="rounded-xl px-4 py-2.5 w-full focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all text-sm"
                           >
                             <option value="active">Active</option>
                             <option value="not_working">Not Working Well</option>
@@ -850,7 +867,7 @@ export const StrategyBuilderPage: React.FC = () => {
 
                       {/* Notes Entries */}
                       <div>
-                        <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2 font-mono" htmlFor="notes">
+                        <label style={{ color: 'var(--text-muted)' }} className="block text-xs font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="notes">
                           Notes
                         </label>
                         <textarea
@@ -859,22 +876,23 @@ export const StrategyBuilderPage: React.FC = () => {
                           value={notes}
                           onChange={(e) => setNotes(e.target.value)}
                           placeholder="Describe when this setup forms, ideal market conditions, personal observations. This is your trading notes for this strategy..."
-                          className="bg-zinc-950 border border-zinc-800 text-zinc-100 rounded-xl px-4 py-3 w-full focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 placeholder-zinc-700 transition-all resize-y text-sm"
+                          style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
+                          className="rounded-xl px-4 py-3 w-full focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 placeholder-zinc-450 transition-all resize-y text-sm"
                         />
                       </div>
                     </div>
                   </section>
 
                   {/* CARD 2: ENTRY RULES */}
-                  <section className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-2xl relative overflow-hidden font-sans">
-                    <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+                  <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }} className="rounded-2xl p-6 shadow-sm relative overflow-hidden font-sans">
+                    <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between border-b pb-3">
                       <div>
-                        <h2 className="text-lg font-bold text-zinc-100 font-display">Entry Rules</h2>
+                        <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display">Entry Rules</h2>
                         <p className="text-xs text-zinc-500 mt-0.5">
                           Criteria required BEFORE entering trades. These auto-populate as checklist items.
                         </p>
                       </div>
-                      <span className="bg-zinc-950 border border-zinc-800 text-zinc-400 text-xs font-mono rounded-lg px-2.5 py-1">
+                      <span style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text-muted)' }} className="text-xs font-mono rounded-lg px-2.5 py-1">
                         {entryRules.length} / 10
                       </span>
                     </div>
@@ -883,7 +901,7 @@ export const StrategyBuilderPage: React.FC = () => {
                       {entryRules.map((rule, idx) => (
                         <div key={rule.id} className="flex items-center gap-2">
                           {/* Order Badge */}
-                          <span className="text-xs font-mono font-bold bg-zinc-950 text-zinc-400 border border-zinc-800 rounded-xl py-2.5 w-10 text-center shrink-0">
+                          <span style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text-muted)' }} className="text-xs font-mono font-bold rounded-xl py-2.5 w-10 text-center shrink-0">
                             #{rule.rule_order}
                           </span>
 
@@ -892,7 +910,8 @@ export const StrategyBuilderPage: React.FC = () => {
                             value={rule.rule_text}
                             onChange={(e) => handleRuleTextChange(idx, e.target.value, 'entry')}
                             placeholder={idx === 0 ? 'e.g. Liquidity sweep at HTF key level' : `Enter rule #${idx + 1}...`}
-                            className="bg-zinc-950 border border-zinc-800 text-zinc-100 text-sm rounded-xl px-4 py-2.5 flex-1 focus:border-indigo-500 focus:outline-none transition-all placeholder-zinc-700"
+                            style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
+                            className="text-sm rounded-xl px-4 py-2.5 flex-1 focus:border-indigo-500 focus:outline-none transition-all placeholder-zinc-400"
                           />
 
                           {/* Control Swappings */}
@@ -932,9 +951,10 @@ export const StrategyBuilderPage: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => handleAddRule('entry')}
-                          className="w-full py-3 border border-dashed border-zinc-800 rounded-xl text-xs font-bold text-indigo-400 hover:border-indigo-500 hover:bg-indigo-950/20 transition-all cursor-pointer text-center font-mono uppercase tracking-wider"
+                          style={{ color: 'var(--accent)', borderColor: 'var(--border)' }}
+                          className="w-full py-3 border border-dashed rounded-xl text-xs font-bold hover:opacity-90 transition-all cursor-pointer text-center font-sans uppercase tracking-wider bg-transparent"
                         >
-                          ＋ Add Entry Rule
+                          ＋ ADD ENTRY RULE
                         </button>
                       ) : (
                         <p className="text-center text-zinc-500 text-xs py-2.5 italic font-mono bg-zinc-950/30 border border-zinc-800/40 rounded-xl">
@@ -945,15 +965,15 @@ export const StrategyBuilderPage: React.FC = () => {
                   </section>
 
                   {/* CARD 3: EXIT RULES */}
-                  <section className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-2xl relative overflow-hidden font-sans">
-                    <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+                  <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '20px' }} className="relative overflow-hidden font-sans">
+                    <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between border-b pb-3">
                       <div>
-                        <h2 className="text-lg font-bold text-zinc-100 font-display">Exit Rules</h2>
-                        <p className="text-xs text-zinc-500 mt-0.5">
+                        <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">Exit Rules</h2>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '13px' }} className="mt-0.5">
                           Criteria suggesting when to secure the trade. These auto-populate in checklists.
                         </p>
                       </div>
-                      <span className="bg-zinc-950 border border-zinc-800 text-zinc-400 text-xs font-mono rounded-lg px-2.5 py-1">
+                      <span style={{ backgroundColor: 'var(--bar)', color: 'var(--text-muted)', borderRadius: '999px', padding: '2px 8px', fontSize: '11px' }} className="font-mono">
                         {exitRules.length} / 10
                       </span>
                     </div>
@@ -962,7 +982,7 @@ export const StrategyBuilderPage: React.FC = () => {
                       {exitRules.map((rule, idx) => (
                         <div key={rule.id} className="flex items-center gap-2">
                           {/* Order Badge */}
-                          <span className="text-xs font-mono font-bold bg-zinc-950 text-zinc-400 border border-zinc-800 rounded-xl py-2.5 w-10 text-center shrink-0">
+                          <span style={{ backgroundColor: 'var(--bar)', color: 'var(--text-sub)', border: '0.5px solid var(--border)', borderRadius: '50%', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="text-xs font-mono font-bold shrink-0">
                             #{rule.rule_order}
                           </span>
 
@@ -971,7 +991,8 @@ export const StrategyBuilderPage: React.FC = () => {
                             value={rule.rule_text}
                             onChange={(e) => handleRuleTextChange(idx, e.target.value, 'exit')}
                             placeholder={idx === 0 ? 'e.g. Primary structural resistance reached' : `Enter rule #${idx + 1}...`}
-                            className="bg-zinc-950 border border-zinc-800 text-zinc-100 text-sm rounded-xl px-4 py-2.5 flex-1 focus:border-indigo-500 focus:outline-none transition-all placeholder-zinc-700"
+                            style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px', color: 'var(--text)' }}
+                            className="text-sm px-4 py-2.5 flex-1 focus:outline-none transition-all placeholder-[var(--text-muted)] placeholder-zinc-500"
                           />
 
                           {/* Control Swappings */}
@@ -1011,9 +1032,10 @@ export const StrategyBuilderPage: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => handleAddRule('exit')}
-                          className="w-full py-3 border border-dashed border-zinc-800 rounded-xl text-xs font-bold text-indigo-400 hover:border-indigo-500 hover:bg-indigo-950/20 transition-all cursor-pointer text-center font-mono uppercase tracking-wider"
+                          style={{ color: 'var(--accent)', backgroundColor: 'transparent', border: 'none', fontSize: '13px', fontWeight: 500, cursor: 'pointer' }}
+                          className="w-full py-3 text-center uppercase tracking-wider font-sans hover:opacity-90 transition-all"
                         >
-                          ＋ Add Exit Rule
+                          ＋ ADD EXIT RULE
                         </button>
                       ) : (
                         <p className="text-center text-zinc-500 text-xs py-2.5 italic font-mono bg-zinc-950/30 border border-zinc-800/40 rounded-xl">
@@ -1029,15 +1051,15 @@ export const StrategyBuilderPage: React.FC = () => {
                 <div className="lg:col-span-1 space-y-6">
                   
                   {/* CARD 4: REFERENCE IMAGES */}
-                  <section className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-2xl relative overflow-hidden font-sans">
-                    <div className="flex justify-between items-center border-b border-zinc-800/80 pb-3">
+                  <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }} className="rounded-2xl p-6 shadow-sm relative overflow-hidden font-sans">
+                    <div style={{ borderColor: 'var(--border)' }} className="flex justify-between items-center border-b pb-3">
                       <div>
-                        <h2 className="text-lg font-bold text-zinc-100 font-display">Reference Images</h2>
-                        <p className="text-xs text-zinc-500 mt-0.5">
+                        <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display">Reference Images</h2>
+                        <p style={{ color: 'var(--text-sub)' }} className="text-xs mt-0.5">
                           Screenshots showing ideal examples.
                         </p>
                       </div>
-                      <span className="text-xs font-mono font-bold text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2.5 py-1 rounded-lg">
+                      <span style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', color: 'var(--text)' }} className="text-xs font-mono font-bold px-2.5 py-1 rounded-lg">
                         {currentCount} / 10
                       </span>
                     </div>
@@ -1050,11 +1072,13 @@ export const StrategyBuilderPage: React.FC = () => {
                         onDragLeave={handleDrag}
                         onDrop={handleDrop}
                         onClick={triggerFileBrowser}
-                        className={`mt-4 border-2 border-dashed rounded-2xl p-6 text-center transition-all cursor-pointer ${
-                          dragActive 
-                            ? 'border-indigo-500 bg-indigo-950/35' 
-                            : 'border-zinc-800 hover:border-indigo-500/50 hover:bg-zinc-950/40'
-                        }`}
+                        style={{
+                          backgroundColor: dragActive ? 'rgba(6, 182, 212, 0.05)' : 'var(--bar)',
+                          borderColor: dragActive ? 'var(--accent)' : 'var(--border)',
+                          borderWidth: '2px',
+                          borderStyle: 'dashed'
+                        }}
+                        className="mt-4 rounded-2xl p-6 text-center transition-all cursor-pointer"
                       >
                         <input
                           type="file"
@@ -1064,15 +1088,15 @@ export const StrategyBuilderPage: React.FC = () => {
                           multiple
                           className="hidden"
                         />
-                        <ImagePlus className="w-9 h-9 text-zinc-500 mx-auto mb-2 animate-pulse" />
-                        <p className="text-zinc-300 text-xs font-semibold">Drag & drop screenshots</p>
-                        <p className="text-indigo-400 text-xs font-semibold underline mt-1">or click to browse</p>
-                        <p className="text-[10px] text-zinc-650 mt-2 font-mono">
+                        <ImagePlus className="w-9 h-9 text-cyan-500 mx-auto mb-2" />
+                        <p style={{ color: 'var(--text)' }} className="text-xs font-semibold">Drag & drop screenshots</p>
+                        <p style={{ color: 'var(--accent)' }} className="text-xs font-semibold underline mt-1">or click to browse</p>
+                        <p style={{ color: 'var(--text-muted)' }} className="text-[10px] mt-2 font-mono">
                           JPG · PNG · WEBP · Max 5MB each
                         </p>
                       </div>
                     ) : (
-                      <div className="mt-4 bg-zinc-950/50 rounded-2xl p-4 border border-zinc-800 text-center text-zinc-500 text-xs">
+                      <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', color: 'var(--text-muted)' }} className="mt-4 rounded-2xl p-4 text-center text-xs">
                         10/10 images — maximum reached
                       </div>
                     )}
@@ -1084,7 +1108,7 @@ export const StrategyBuilderPage: React.FC = () => {
                         {existingImages
                           .filter((url) => !markedForDeletion.includes(url))
                           .map((url, index) => (
-                            <div key={`exist-${index}`} className="group relative aspect-square rounded-xl border border-zinc-800 overflow-hidden bg-zinc-950/55">
+                            <div key={`exist-${index}`} style={{ borderColor: 'var(--border)' }} className="group relative aspect-square rounded-xl border overflow-hidden bg-zinc-950/55">
                               <img
                                 src={url}
                                 alt={`Screenshot reference #${index + 1}`}
@@ -1094,7 +1118,7 @@ export const StrategyBuilderPage: React.FC = () => {
                                 <button
                                   type="button"
                                   onClick={() => removeExistingImage(url)}
-                                  className="bg-red-650 hover:bg-red-650 text-white rounded-xl p-2.5 transition-all shadow-md shadow-black/45 cursor-pointer"
+                                  className="bg-[#ef4444] text-white rounded-xl p-2.5 transition-all shadow-md cursor-pointer"
                                   title="Delete screenshot"
                                 >
                                   <Trash2 className="w-4 h-4" />
@@ -1105,21 +1129,21 @@ export const StrategyBuilderPage: React.FC = () => {
 
                         {/* STAGED PENDING UPLOADS */}
                         {pendingUploads.map((item) => (
-                          <div key={item.id} className="group relative aspect-square rounded-xl border border-zinc-800 overflow-hidden bg-zinc-950/55">
+                          <div key={item.id} style={{ borderColor: 'var(--border)' }} className="group relative aspect-square rounded-xl border overflow-hidden bg-zinc-950/55">
                             <img
                               src={item.preview}
                               alt="Screenshot upload stage preview"
                               className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-200"
                             />
                             {/* Badging for pending staged file */}
-                            <span className="absolute top-1 left-1 bg-indigo-600 text-[9px] font-mono font-medium rounded-md px-1.5 py-0.5 text-white tracking-wide border border-indigo-400">
+                            <span style={{ backgroundColor: 'var(--accent)' }} className="absolute top-1 left-1 text-[9px] font-mono font-medium rounded-md px-1.5 py-0.5 text-white tracking-wide border border-cyan-400">
                               Staged
                             </span>
                             <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                               <button
                                 type="button"
                                 onClick={() => removePendingImage(item.id)}
-                                className="bg-red-650 hover:bg-red-650 text-white rounded-xl p-2.5 transition-all shadow-md shadow-black/45 cursor-pointer"
+                                className="bg-[#ef4444] text-white rounded-xl p-2.5 transition-all shadow-md cursor-pointer"
                                 title="Remove upload item"
                               >
                                 <Trash2 className="w-4 h-4" />
@@ -1133,69 +1157,69 @@ export const StrategyBuilderPage: React.FC = () => {
 
                   {/* CARD 5: PERFORMANCE STATS */}
                   {isEditMode && (
-                    <section className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-2xl relative overflow-hidden font-sans text-zinc-100">
-                      <h2 className="text-lg font-bold text-zinc-100 border-b border-zinc-800/80 pb-3 font-display">
+                    <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }} className="rounded-2xl p-6 shadow-sm relative overflow-hidden font-sans">
+                      <h2 style={{ color: 'var(--text)', borderColor: 'var(--border)' }} className="text-lg font-bold border-b pb-3 font-display">
                         Performance Stats
                       </h2>
-                      <p className="text-xs text-zinc-500 mt-2 pb-1">
+                      <p style={{ color: 'var(--text-sub)' }} className="text-xs mt-2 pb-1">
                         Auto-calculated from your trade history logs.
                       </p>
 
                       {loadingStats ? (
                         <div className="space-y-3 mt-4">
                           {[1, 2, 3, 4].map((i) => (
-                            <div key={i} className="bg-zinc-950/40 h-10 border border-zinc-800/40 rounded-xl animate-pulse" />
+                            <div key={i} className="h-10 rounded-xl skeleton" />
                           ))}
                         </div>
                       ) : totalTradesCount === 0 ? (
-                        <div className="text-center py-6 mt-4 border border-zinc-800/50 bg-zinc-950/40 rounded-2xl">
-                          <p className="text-zinc-500 text-xs italic font-medium">
+                        <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="text-center py-6 mt-4 rounded-2xl">
+                          <p style={{ color: 'var(--text-sub)' }} className="text-xs italic font-medium">
                             No trades logged for this strategy yet.
                           </p>
-                          <p className="text-[10px] text-zinc-650 max-w-[180px] mx-auto mt-2">
+                          <p style={{ color: 'var(--text-muted)' }} className="text-[10px] max-w-[180px] mx-auto mt-2">
                             Stats will appear automatically after you log your first trade in Phase 3.
                           </p>
                         </div>
                       ) : (
                         <div className="mt-4 space-y-3">
                           {/* Row 1 details */}
-                          <div className="grid grid-cols-3 gap-2 py-1.5 border-b border-[#2A2D3A]/50">
-                            <div className="text-center bg-zinc-950/40 p-2.5 rounded-xl border border-zinc-800/50 flex flex-col justify-center font-sans">
-                              <span className="font-extrabold text-sm text-[#F9FAFB]">{totalTradesCount}</span>
-                              <span className="text-[9px] text-zinc-400 uppercase tracking-widest font-bold mt-0.5">Trades</span>
+                          <div style={{ borderColor: 'var(--border)' }} className="grid grid-cols-3 gap-2 py-1.5 border-b">
+                            <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="text-center p-2.5 rounded-xl flex flex-col justify-center font-sans">
+                              <span style={{ color: 'var(--text)' }} className="font-extrabold text-sm">{totalTradesCount}</span>
+                              <span style={{ color: 'var(--text-muted)' }} className="text-[9px] uppercase tracking-widest font-bold mt-0.5">Trades</span>
                             </div>
-                            <div className="text-center bg-zinc-950/40 p-2.5 rounded-xl border border-zinc-800/50 flex flex-col justify-center font-sans">
-                              <span className="font-extrabold text-sm text-green-400">+{winsCount}</span>
-                              <span className="text-[9px] text-zinc-400 uppercase tracking-widest font-bold mt-0.5">Wins</span>
+                            <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="text-center p-2.5 rounded-xl flex flex-col justify-center font-sans">
+                              <span className="font-extrabold text-sm text-[#22c55e]">+{winsCount}</span>
+                              <span style={{ color: 'var(--text-muted)' }} className="text-[9px] uppercase tracking-widest font-bold mt-0.5">Wins</span>
                             </div>
-                            <div className="text-center bg-zinc-950/40 p-2.5 rounded-xl border border-zinc-800/50 flex flex-col justify-center font-sans">
-                              <span className="font-extrabold text-sm text-red-500">-{lossesCount}</span>
-                              <span className="text-[9px] text-zinc-400 uppercase tracking-widest font-bold mt-0.5">Losses</span>
+                            <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="text-center p-2.5 rounded-xl flex flex-col justify-center font-sans">
+                              <span className="font-extrabold text-sm text-[#ef4444]">{lossesCount > 0 ? `-${lossesCount}` : '0'}</span>
+                              <span style={{ color: 'var(--text-muted)' }} className="text-[9px] uppercase tracking-widest font-bold mt-0.5">Losses</span>
                             </div>
                           </div>
 
                           {/* Stat items */}
-                          <div className="flex justify-between items-center py-2.5 border-b border-zinc-800/80">
-                            <span className="text-xs text-zinc-400 font-medium font-sans">Win Rate</span>
+                          <div style={{ borderColor: 'var(--border)' }} className="flex justify-between items-center py-2.5 border-b">
+                            <span style={{ color: 'var(--text-sub)' }} className="text-xs font-medium font-sans">Win Rate</span>
                             <span className={`text-sm font-bold ${getWinRateColor(calculatedWinRate)}`}>
                               {calculatedWinRate}%
                             </span>
                           </div>
 
-                          <div className="flex justify-between items-center py-2.5 border-b border-zinc-800/80">
-                            <span className="text-xs text-zinc-400 font-medium">Breakevens</span>
-                            <span className="text-sm font-bold text-zinc-300">{breakevenCount}</span>
+                          <div style={{ borderColor: 'var(--border)' }} className="flex justify-between items-center py-2.5 border-b">
+                            <span style={{ color: 'var(--text-sub)' }} className="text-xs font-medium">Breakevens</span>
+                            <span style={{ color: 'var(--text)' }} className="text-sm font-bold">{breakevenCount}</span>
                           </div>
 
-                          <div className="flex justify-between items-center py-2.5 border-b border-zinc-800/80">
-                            <span className="text-xs text-zinc-400 font-medium">Avg R-Multiple</span>
+                          <div style={{ borderColor: 'var(--border)' }} className="flex justify-between items-center py-2.5 border-b">
+                            <span style={{ color: 'var(--text-sub)' }} className="text-xs font-medium">Avg R-Multiple</span>
                             <span className={`text-sm font-bold ${getDeltaColor(calculatedAvgR)}`}>
                               {calculatedAvgR > 0 ? '+' : ''}{calculatedAvgR.toFixed(1)}R
                             </span>
                           </div>
 
-                          <div className="flex justify-between items-center py-2.5 border-b border-zinc-800/80">
-                            <span className="text-xs text-zinc-400 font-medium">Total P&L</span>
+                          <div style={{ borderColor: 'var(--border)' }} className="flex justify-between items-center py-2.5 border-b">
+                            <span style={{ color: 'var(--text-sub)' }} className="text-xs font-medium">Total P&L</span>
                             <span className={`text-sm font-bold ${getDeltaColor(calculatedPnL)}`}>
                               {formatCurrency(calculatedPnL)}
                             </span>
@@ -1203,30 +1227,30 @@ export const StrategyBuilderPage: React.FC = () => {
 
                           {/* Split/Monthly Split Pattern */}
                           <div>
-                            <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block mt-4 mb-2">
+                            <span style={{ color: 'var(--text-sub)' }} className="text-[10px] font-bold uppercase tracking-widest block mt-4 mb-2">
                               Monthly Pattern
                             </span>
                             {hasEnoughSplitData ? (
-                              <div className="flex select-none items-center justify-between text-xs font-mono font-medium bg-zinc-950 border border-zinc-800 rounded-xl p-3">
-                                <div className="text-center flex-1">
-                                  <div className="text-[10px] text-zinc-500 font-semibold mb-0.5">1st Half (≤15th)</div>
+                              <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="flex select-none items-center justify-between text-xs font-mono font-medium rounded-xl p-3">
+                                <div className="text-center flex-1 font-sans">
+                                  <div style={{ color: 'var(--text-sub)' }} className="text-[10px] font-semibold mb-0.5">1st Half (≤15th)</div>
                                   <div className={`font-bold ${getWinRateColor(firstHalfWinRate)}`}>
                                     {firstHalfWinRate}% Win Rate
                                   </div>
-                                  <div className="text-[9px] text-zinc-650 mt-0.5">{firstHalfTrades.length} Trades</div>
+                                  <div style={{ color: 'var(--text-muted)' }} className="text-[9px] mt-0.5">{firstHalfTrades.length} Trades</div>
                                 </div>
-                                <div className="w-px h-8 bg-zinc-800 shrink-0" />
-                                <div className="text-center flex-1">
-                                  <div className="text-[10px] text-zinc-500 font-semibold mb-0.5">2nd Half (&gt;15th)</div>
+                                <div style={{ backgroundColor: 'var(--border)' }} className="w-px h-8 shrink-0" />
+                                <div className="text-center flex-1 font-sans">
+                                  <div style={{ color: 'var(--text-sub)' }} className="text-[10px] font-semibold mb-0.5">2nd Half (&gt;15th)</div>
                                   <div className={`font-bold ${getWinRateColor(secondHalfWinRate)}`}>
                                     {secondHalfWinRate}% Win Rate
                                   </div>
-                                  <div className="text-[9px] text-zinc-650 mt-0.5">{secondHalfTrades.length} Trades</div>
+                                  <div style={{ color: 'var(--text-muted)' }} className="text-[9px] mt-0.5">{secondHalfTrades.length} Trades</div>
                                 </div>
                               </div>
                             ) : (
-                              <div className="bg-zinc-950/40 border border-zinc-850/80 p-3 rounded-xl text-center">
-                                <span className="text-[10px] text-zinc-500 font-light italic">
+                              <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3 rounded-xl text-center">
+                                <span style={{ color: 'var(--text-muted)' }} className="text-[10px] font-light italic">
                                   — Not enough data for bi-weekly split (needs 5+ per half)
                                 </span>
                               </div>

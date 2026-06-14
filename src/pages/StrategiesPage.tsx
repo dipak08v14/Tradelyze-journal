@@ -90,8 +90,8 @@ export const StrategiesPage: React.FC = () => {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-[#0F1117] flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-indigo-600/30 border-t-indigo-600 rounded-full animate-spin"></div>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+        <div className="w-8 h-8 border-4 rounded-full animate-spin" style={{ borderColor: 'var(--border-md)', borderTopColor: 'var(--accent)' }}></div>
       </div>
     );
   }
@@ -196,18 +196,22 @@ export const StrategiesPage: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col md:flex-row font-sans">
+    <div className="min-h-screen flex flex-col md:flex-row font-sans" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
       <Sidebar userEmail={user.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* RIGHT SIDE MAIN CONTAINER */}
       <div className="flex-1 md:pl-[250px] flex flex-col min-h-screen">
         {/* MOBILE HEADER BAR */}
-        <header className="flex items-center justify-between px-6 py-4 border-b border-zinc-800 md:hidden bg-zinc-900 sticky top-0 z-20">
-          <div className="text-xl font-bold text-indigo-400 tracking-wider font-display">TRADELYZE</div>
+        <header 
+          className="flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20"
+          style={{ backgroundColor: 'var(--topbar)', borderBottom: '1px solid var(--border)' }}
+        >
+          <div className="text-xl font-bold tracking-wider font-display" style={{ color: 'var(--accent)' }}>TRADELYZE</div>
           <button
             onClick={() => setMobileOpen(true)}
-            className="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 cursor-pointer"
+            className="p-1.5 rounded-lg cursor-pointer"
+            style={{ color: 'var(--text-sub)' }}
             aria-label="Open sidebar menu"
           >
             <Menu className="w-6 h-6" />
@@ -221,28 +225,41 @@ export const StrategiesPage: React.FC = () => {
             {/* PAGE HEADER ROW */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <h1 className="text-3xl font-bold tracking-tight text-zinc-100 font-display">My Strategies</h1>
-                <p className="text-sm text-zinc-400 mt-1">
+                <h1 className="text-3xl font-bold tracking-tight font-display" style={{ color: 'var(--text)' }}>My Strategies</h1>
+                <p className="text-sm mt-1" style={{ color: 'var(--text-sub)' }}>
                   Build your setup library — define your rules — track your edge.
                 </p>
               </div>
               <div>
                 <Link
                   to="/strategies/new"
-                  className="bg-white hover:bg-zinc-200 text-black font-semibold rounded-xl px-4 py-2.5 text-sm transition-all duration-150 cursor-pointer inline-flex items-center gap-1.5 shadow-lg shadow-white/5 font-display"
+                  style={{
+                    backgroundColor: 'var(--accent)',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: '10px 20px',
+                    borderRadius: '8px',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px'
+                  }}
+                  className="font-display shadow-lg shadow-cyan-500/10"
                 >
                   <span>+ Add New Strategy</span>
                 </Link>
               </div>
             </div>
 
-            <div className="border-b border-zinc-800 mt-5 mb-6" />
+            <div className="border-b mt-5 mb-6" style={{ borderColor: 'var(--border)' }} />
 
             {/* FILTER BAR SECTION */}
-            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 mb-6 space-y-4">
+            <div className="rounded-2xl p-5 mb-6 space-y-4" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }}>
               {/* STATUS FILTER */}
               <div className="flex items-center flex-wrap gap-2">
-                <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider w-16 font-mono">Status:</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider w-16 font-mono" style={{ color: 'var(--text-muted)' }}>Status:</span>
                 <div className="flex items-center flex-wrap gap-1.5">
                   {statusFilterOptions.map((opt) => {
                     const active = statusFilter === opt;
@@ -250,11 +267,17 @@ export const StrategiesPage: React.FC = () => {
                       <button
                         key={opt}
                         onClick={() => setStatusFilter(opt)}
-                        className={`text-xs rounded-xl px-4 py-2 font-medium transition-all duration-150 cursor-pointer ${
-                          active
-                            ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20'
-                            : 'bg-zinc-950 border border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200'
-                        }`}
+                        style={{
+                          backgroundColor: active ? 'var(--accent-muted)' : 'transparent',
+                          border: active ? '0.5px solid var(--accent)' : '0.5px solid var(--border)',
+                          color: active ? 'var(--accent)' : 'var(--text-sub)',
+                          padding: '5px 14px',
+                          borderRadius: '999px',
+                          fontSize: '12px',
+                          fontWeight: active ? 600 : 500,
+                          cursor: 'pointer',
+                        }}
+                        className={active ? 'transition-all' : 'hover:bg-[var(--bar)] transition-all'}
                       >
                         {opt}
                       </button>
@@ -265,7 +288,7 @@ export const StrategiesPage: React.FC = () => {
 
               {/* TYPE FILTER */}
               <div className="flex items-center flex-wrap gap-2">
-                <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider w-16 font-mono">Type:</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider w-16 font-mono" style={{ color: 'var(--text-muted)' }}>Type:</span>
                 <div className="flex items-center flex-wrap gap-1.5">
                   {typeFilterOptions.map((opt) => {
                     const active = typeFilter === opt;
@@ -273,11 +296,17 @@ export const StrategiesPage: React.FC = () => {
                       <button
                         key={opt}
                         onClick={() => setTypeFilter(opt)}
-                        className={`text-xs rounded-xl px-4 py-2 font-medium transition-all duration-150 cursor-pointer ${
-                          active
-                            ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20'
-                            : 'bg-zinc-950 border border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200'
-                        }`}
+                        style={{
+                          backgroundColor: active ? 'var(--accent-muted)' : 'transparent',
+                          border: active ? '0.5px solid var(--accent)' : '0.5px solid var(--border)',
+                          color: active ? 'var(--accent)' : 'var(--text-sub)',
+                          padding: '5px 14px',
+                          borderRadius: '999px',
+                          fontSize: '12px',
+                          fontWeight: active ? 600 : 500,
+                          cursor: 'pointer',
+                        }}
+                        className={active ? 'transition-all' : 'hover:bg-[var(--bar)] transition-all'}
                       >
                         {opt}
                       </button>
@@ -295,12 +324,18 @@ export const StrategiesPage: React.FC = () => {
                 ))}
               </div>
             ) : filteredStrategies.length === 0 ? (
-              <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-12 text-center max-w-xl mx-auto mt-8 flex flex-col items-center shadow-xl">
-                <div className="bg-indigo-500/10 border border-indigo-500/20 w-16 h-16 rounded-2xl flex items-center justify-center mb-5">
-                  <Target className="w-8 h-8 text-indigo-400" />
+              <div 
+                className="rounded-2xl p-12 text-center max-w-xl mx-auto mt-8 flex flex-col items-center shadow-xl"
+                style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }}
+              >
+                <div 
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5"
+                  style={{ backgroundColor: 'var(--accent-muted)', border: '1px solid var(--border)' }}
+                >
+                  <Target className="w-8 h-8" style={{ color: 'var(--accent)' }} />
                 </div>
-                <h3 className="text-xl font-bold text-zinc-200 font-display">No strategies yet</h3>
-                <p className="text-zinc-500 text-sm mt-2 max-w-sm">
+                <h3 className="text-xl font-bold font-display" style={{ color: 'var(--text)' }}>No strategies yet</h3>
+                <p className="text-sm mt-2 max-w-sm" style={{ color: 'var(--text-sub)' }}>
                   {strategies.length === 0
                     ? 'Add your first setup to start tracking your trading edge.'
                     : 'No setups match your selected status and type filters. Try adjusting them.'}
@@ -308,7 +343,21 @@ export const StrategiesPage: React.FC = () => {
                 {strategies.length === 0 && (
                   <Link
                     to="/strategies/new"
-                    className="mt-6 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl px-5 py-3 transition-all duration-150 shadow-lg shadow-indigo-600/20"
+                    style={{
+                      backgroundColor: 'var(--accent)',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '10px 20px',
+                      borderRadius: '8px',
+                      fontSize: '13px',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      marginTop: '24px'
+                    }}
+                    className="font-display shadow-lg shadow-cyan-500/10"
                   >
                     + Add New Strategy
                   </Link>

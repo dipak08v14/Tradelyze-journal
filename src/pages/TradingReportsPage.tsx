@@ -227,18 +227,22 @@ export const TradingReportsPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col md:flex-row font-sans selection:bg-indigo-500/30">
+    <div className="min-h-screen flex flex-col md:flex-row font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
       <Sidebar userEmail={user?.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* RIGHT SIDE MAIN CONTAINER */}
       <div className="flex-1 md:pl-[250px] flex flex-col min-h-screen">
         {/* MOBILE HEADER BAR */}
-        <header className="flex items-center justify-between px-6 py-4 border-b border-zinc-800 md:hidden bg-zinc-900 sticky top-0 z-20">
-          <div className="text-xl font-bold text-indigo-400 tracking-wider font-display">TRADELYZE</div>
+        <header 
+          className="flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20"
+          style={{ backgroundColor: 'var(--topbar)', borderBottom: '1px solid var(--border)' }}
+        >
+          <div className="text-xl font-bold tracking-wider font-display" style={{ color: 'var(--accent)' }}>TRADELYZE</div>
           <button
             onClick={() => setMobileOpen(true)}
-            className="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 cursor-pointer"
+            className="p-1.5 rounded-lg cursor-pointer"
+            style={{ color: 'var(--text-sub)' }}
             aria-label="Open sidebar menu"
           >
             <Menu className="w-6 h-6" />
@@ -267,7 +271,8 @@ export const TradingReportsPage: React.FC = () => {
                 <select
                   value={selectedMonth}
                   onChange={(e) => setSelectedMonth(e.target.value)}
-                  className="bg-[#1A1D27] border border-[#2A2D3A] text-zinc-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer transition-all font-medium"
+                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
+                  className="rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer transition-all font-medium"
                 >
                   {MONTH_NAMES.map((name) => (
                     <option key={name} value={name}>
@@ -280,7 +285,8 @@ export const TradingReportsPage: React.FC = () => {
                 <select
                   value={selectedYear}
                   onChange={(e) => setSelectedYear(parseInt(e.target.value, 10))}
-                  className="bg-[#1A1D27] border border-[#2A2D3A] text-[#f9fafb] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer transition-all font-medium font-mono"
+                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
+                  className="rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer transition-all font-medium font-mono"
                 >
                   {availableYears.map((y) => (
                     <option key={y} value={y}>
@@ -291,36 +297,46 @@ export const TradingReportsPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="border-b border-[#2A2D3A] mt-5 mb-6" />
+            <div className="border-b mt-5 mb-6" style={{ borderColor: 'var(--border)' }} />
 
             {/* SKELETON LOADER STATE */}
             {loading ? (
               <div className="space-y-6">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                  <div className="lg:col-span-2 bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-5 h-[380px] animate-pulse" />
+                  <div className="lg:col-span-2 rounded-xl h-[380px] skeleton" />
                   <div className="lg:col-span-1 space-y-4">
-                    <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-5 h-[230px] animate-pulse" />
-                    <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-5 h-[150px] animate-pulse" />
+                    <div className="rounded-xl h-[230px] skeleton" />
+                    <div className="rounded-xl h-[150px] skeleton" />
                   </div>
                 </div>
               </div>
             ) : trades.length === 0 ? (
               /* EMPTY REPORT STATE */
-              <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20 shadow-xl">
-                <div className="w-16 h-16 bg-zinc-950/60 rounded-full flex items-center justify-center border border-zinc-800 mb-4">
+              <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}>
                   <FileText className="w-8 h-8 text-zinc-500" />
                 </div>
-                <h3 className="text-xl font-bold tracking-tight text-zinc-300 font-display">
+                <h3 className="text-xl font-bold tracking-tight font-display" style={{ color: 'var(--text)' }}>
                   No trades in {selectedMonth} {selectedYear}
                 </h3>
-                <p className="text-zinc-500 text-xs mt-1.5 max-w-sm">
+                <p className="text-xs mt-1.5 max-w-sm" style={{ color: 'var(--text-sub)' }}>
                   Log trades to view daily breakdowns, compliance scores, streaks audit, and mistake indexes.
                 </p>
                 <button
                   onClick={() => navigate('/trade-entry')}
-                  className="mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-xl px-5 py-3 text-xs uppercase tracking-wider font-mono transition-all shadow-lg shadow-indigo-600/15 cursor-pointer inline-flex items-center gap-1.5"
+                  style={{
+                    backgroundColor: 'var(--accent)',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: '10px 20px',
+                    borderRadius: '8px',
+                    fontSize: '13px',
+                    fontWeight: '600',
+                    cursor: 'pointer'
+                  }}
+                  className="mt-6 hover:opacity-90 font-sans transition-all inline-flex items-center gap-1.5"
                 >
-                  Log a Trade <ArrowRight className="w-3.5 h-3.5" />
+                  Log a Trade <ArrowRight className="w-3.5 h-3.5 text-white" />
                 </button>
               </div>
             ) : (
@@ -328,29 +344,29 @@ export const TradingReportsPage: React.FC = () => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">
                 
                 {/* LEFT: DAY-BY-DAY TABLE COLUMN */}
-                <div className="lg:col-span-2 bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-5 overflow-hidden">
+                <div className="lg:col-span-2 p-5 overflow-hidden" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
                   <div>
-                    <h2 className="text-lg font-bold text-zinc-100 tracking-tight">
+                    <h2 className="text-lg font-bold tracking-tight" style={{ color: 'var(--text)' }}>
                       Daily Breakdown — {selectedMonth} {selectedYear}
                     </h2>
-                    <p className="text-xs text-zinc-400 mt-1">
+                    <p className="text-xs mt-1" style={{ color: 'var(--text-sub)' }}>
                       {dayGroups.length} trading days | {trades.length} total trades
                     </p>
                   </div>
 
                   {/* TABLE VIEW WRAPPER */}
-                  <div className="overflow-x-auto mt-5 border border-zinc-800/60 rounded-xl">
+                  <div className="overflow-x-auto mt-5 rounded-xl border" style={{ borderColor: 'var(--border)' }}>
                     <table className="w-full text-left border-collapse text-sm">
                       <thead>
-                        <tr className="bg-[#0F1117] text-[11px] font-bold text-zinc-500 uppercase tracking-wider border-b border-zinc-800/60">
-                          <th className="px-4 py-3">Date</th>
-                          <th className="px-3 py-3 text-center">Trades</th>
-                          <th className="px-3 py-3">Symbols</th>
-                          <th className="px-3 py-3">Setups</th>
-                          <th className="px-3 py-3 text-center">W/L/BE</th>
-                          <th className="px-4 py-3 text-right">P&L (Day)</th>
-                          <th className="px-4 py-3 text-right">Cumulative</th>
-                          <th className="px-4 py-3 text-center">Status</th>
+                        <tr style={{ backgroundColor: 'var(--bar)' }} className="text-[11.5px] font-bold text-zinc-500 uppercase tracking-wider border-b">
+                          <th className="px-4 py-3" style={{ color: 'var(--text-muted)' }}>Date</th>
+                          <th className="px-3 py-3 text-center" style={{ color: 'var(--text-muted)' }}>Trades</th>
+                          <th className="px-3 py-3" style={{ color: 'var(--text-muted)' }}>Symbols</th>
+                          <th className="px-3 py-3" style={{ color: 'var(--text-muted)' }}>Setups</th>
+                          <th className="px-3 py-3 text-center" style={{ color: 'var(--text-muted)' }}>W/L/BE</th>
+                          <th className="px-4 py-3 text-right" style={{ color: 'var(--text-muted)' }}>P&L (Day)</th>
+                          <th className="px-4 py-3 text-right" style={{ color: 'var(--text-muted)' }}>Cumulative</th>
+                          <th className="px-4 py-3 text-center" style={{ color: 'var(--text-muted)' }}>Status</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -364,25 +380,26 @@ export const TradingReportsPage: React.FC = () => {
                           return (
                             <tr
                               key={row.date}
-                              className="border-b border-zinc-800/40 hover:bg-zinc-900/40 transition-colors"
+                              style={{ color: 'var(--text)', borderColor: 'var(--border)' }}
+                              className="border-b transition-colors hover:bg-[var(--row)]"
                             >
                               {/* Date Column */}
-                              <td className="px-4 py-3 font-semibold text-zinc-100 text-xs whitespace-nowrap">
+                              <td className="px-4 py-3 font-semibold text-xs whitespace-nowrap" style={{ color: 'var(--text)' }}>
                                 {formattedDate}
                               </td>
 
                               {/* Trades Count */}
-                              <td className="px-3 py-3 text-center font-mono text-zinc-300">
+                              <td className="px-3 py-3 text-center font-mono" style={{ color: 'var(--text)' }}>
                                 {row.tradeCount}
                               </td>
 
                               {/* Symbols */}
-                              <td className="px-3 py-3 font-mono text-xs text-zinc-300 max-w-[100px] truncate" title={row.symbols}>
+                              <td className="px-3 py-3 font-mono text-xs max-w-[100px] truncate" style={{ color: 'var(--text)' }} title={row.symbols}>
                                 {row.symbols || '—'}
                               </td>
 
                               {/* Setups */}
-                              <td className="px-3 py-3 text-xs text-zinc-400 max-w-[120px] truncate" title={row.setups}>
+                              <td className="px-3 py-3 text-xs max-w-[120px] truncate" style={{ color: 'var(--text-sub)' }} title={row.setups}>
                                 {row.setups || '—'}
                               </td>
 
@@ -390,17 +407,17 @@ export const TradingReportsPage: React.FC = () => {
                               <td className="px-3 py-3">
                                 <div className="flex items-center justify-center gap-1.5 text-[10px] font-bold">
                                   {row.wins > 0 && (
-                                    <span className="text-green-400 bg-green-950/40 px-1.5 py-0.5 rounded border border-green-900/40 font-mono">
+                                    <span className="text-green-500 bg-green-500/10 px-1.5 py-0.5 rounded border border-green-500/20 font-mono">
                                       {row.wins}W
                                     </span>
                                   )}
                                   {row.losses > 0 && (
-                                    <span className="text-red-400 bg-red-950/40 px-1.5 py-0.5 rounded border border-red-900/40 font-mono">
+                                    <span className="text-red-500 bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20 font-mono">
                                       {row.losses}L
                                     </span>
                                   )}
                                   {row.breakevens > 0 && (
-                                    <span className="text-zinc-400 bg-zinc-800/50 px-1.5 py-0.5 rounded font-mono">
+                                    <span className="text-zinc-500 bg-zinc-500/10 px-1.5 py-0.5 rounded border border-zinc-500/20 font-mono">
                                       {row.breakevens}BE
                                     </span>
                                   )}
@@ -420,15 +437,15 @@ export const TradingReportsPage: React.FC = () => {
                               {/* Status Badge */}
                               <td className="px-4 py-3 text-center whitespace-nowrap">
                                 {row.dayStatus === 'Win' ? (
-                                  <span className="bg-green-950/60 text-green-400 border border-green-800/40 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                                  <span className="bg-green-500/10 text-green-500 border border-green-500/20 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">
                                     WIN
                                   </span>
                                 ) : row.dayStatus === 'Loss' ? (
-                                  <span className="bg-red-950/60 text-red-400 border border-red-800/40 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                                  <span className="bg-red-500/10 text-red-500 border border-red-500/20 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">
                                     LOSS
                                   </span>
                                 ) : (
-                                  <span className="bg-zinc-800/60 text-zinc-400 border border-zinc-700/40 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                                  <span className="bg-zinc-500/10 text-zinc-500 border border-zinc-500/20 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">
                                     BE
                                   </span>
                                 )}
@@ -440,17 +457,17 @@ export const TradingReportsPage: React.FC = () => {
                       {/* STATS TOTAL FOOTER */}
                       {stats && (
                         <tfoot>
-                          <tr className="bg-zinc-950 border-t-2 border-indigo-800 font-bold">
-                            <td className="px-4 py-3.5 text-zinc-200 font-bold uppercase tracking-wider text-xs">
+                          <tr className="font-bold border-t" style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)' }}>
+                            <td className="px-4 py-3.5 uppercase tracking-wider text-xs" style={{ color: 'var(--text)', fontWeight: 600 }}>
                               TOTAL ({selectedMonth})
                             </td>
-                            <td className="px-3 py-3.5 text-center font-mono text-zinc-100 text-xs">
+                            <td className="px-3 py-3.5 text-center font-mono text-xs" style={{ color: 'var(--text)' }}>
                               {stats.totalTrades}
                             </td>
                             <td className="px-3 py-3.5" />
                             <td className="px-3 py-3.5" />
                             <td className="px-3 py-3.5 text-center font-mono">
-                              <span className="text-zinc-300 font-semibold text-xs">
+                              <span className="font-semibold text-xs" style={{ color: 'var(--text-sub)' }}>
                                 {stats.wins}W / {stats.losses}L / {stats.breakevens}BE
                               </span>
                             </td>
@@ -473,161 +490,156 @@ export const TradingReportsPage: React.FC = () => {
                   
                   {/* CARD 1: MONTH SUMMARY PANEL */}
                   {stats && (
-                    <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-5 shadow-lg">
-                      <h3 className="text-sm font-extrabold text-zinc-100 uppercase tracking-widest border-b border-zinc-800 pb-3">
+                    <div className="shadow-sm p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
+                      <h3 className="text-xs font-bold uppercase tracking-widest pb-3 border-b" style={{ color: 'var(--text)', fontWeight: 600, letterSpacing: '0.5px', borderColor: 'var(--border)' }}>
                         {selectedMonth} {selectedYear} Summary
                       </h3>
                       
-                      <div className="divide-y divide-zinc-800/40 mt-3">
+                      <div className="mt-3 divide-y" style={{ borderColor: 'var(--border)' }}>
                         {/* Net P&L */}
-                        <div className="flex justify-between items-center py-2">
-                          <span className="text-xs text-zinc-500 font-medium">Net P&L</span>
-                          <span className={`text-[13px] font-black font-mono ${pnlColor(stats.totalPnl)}`}>
+                        <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
+                          <span className="font-medium" style={{ color: 'var(--text-sub)', fontSize: '13px' }}>Net P&L</span>
+                          <span className={`font-bold font-mono`} style={{ color: stats.totalPnl >= 0 ? '#22c55e' : '#ef4444', fontSize: '13px' }}>
                             {formatINR(stats.totalPnl)}
                           </span>
                         </div>
 
                         {/* Total Trades */}
-                        <div className="flex justify-between items-center py-2">
-                          <span className="text-xs text-zinc-500 font-medium">Total Trades</span>
-                          <span className="text-[13px] font-bold text-zinc-200 font-mono">
+                        <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
+                          <span className="font-medium" style={{ color: 'var(--text-sub)', fontSize: '13px' }}>Total Trades</span>
+                          <span className="font-mono" style={{ color: 'var(--text)', fontSize: '13px', fontWeight: 600 }}>
                             {stats.totalTrades}
                           </span>
                         </div>
 
                         {/* W / L / BE Counts */}
-                        <div className="flex justify-between items-center py-2">
-                          <span className="text-xs text-zinc-500 font-medium font-sans">Win / Loss / BE</span>
-                          <span className="text-[11px] font-semibold text-zinc-300 font-mono">
+                        <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
+                          <span className="font-medium font-sans" style={{ color: 'var(--text-sub)', fontSize: '13px' }}>Win / Loss / BE</span>
+                          <span className="font-mono text-xs" style={{ color: 'var(--text)', fontSize: '13px', fontWeight: 600 }}>
                             {stats.wins} W / {stats.losses} L / {stats.breakevens} BE
                           </span>
                         </div>
 
                         {/* Win Rate */}
-                        <div className="flex justify-between items-center py-2">
-                          <span className="text-xs text-zinc-500 font-medium">Win Rate</span>
-                          <span className={`text-[13px] font-black font-mono ${getScoreColor(stats.winRate)}`}>
+                        <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
+                          <span className="font-medium" style={{ color: 'var(--text-sub)', fontSize: '13px' }}>Win Rate</span>
+                          <span className="font-mono" style={{ color: stats.winRate >= 50 ? '#22c55e' : '#ef4444', fontSize: '13px', fontWeight: 600 }}>
                             {stats.winRate.toFixed(1)}%
                           </span>
                         </div>
 
                         {/* Trading Days */}
-                        <div className="flex justify-between items-center py-2">
-                          <span className="text-xs text-zinc-500 font-medium">Trading Days</span>
-                          <span className="text-[13px] font-bold text-zinc-200 font-mono">
+                        <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
+                          <span className="font-medium" style={{ color: 'var(--text-sub)', fontSize: '13px' }}>Trading Days</span>
+                          <span className="font-mono" style={{ color: 'var(--text)', fontSize: '13px', fontWeight: 600 }}>
                             {dayGroups.length} days
                           </span>
                         </div>
 
                         {/* Win Days */}
-                        <div className="flex justify-between items-center py-2">
-                          <span className="text-xs text-zinc-500 font-medium">Win Days</span>
-                          <span className="text-[12px] font-bold text-green-400 font-mono">
+                        <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
+                          <span className="font-medium" style={{ color: 'var(--text-sub)', fontSize: '13px' }}>Win Days</span>
+                          <span className="font-mono" style={{ color: '#22c55e', fontSize: '13px', fontWeight: 600 }}>
                             {winDays} ({dayGroups.length > 0 ? ((winDays / dayGroups.length) * 100).toFixed(0) : 0}%)
                           </span>
                         </div>
 
                         {/* Loss Days */}
-                        <div className="flex justify-between items-center py-2">
-                          <span className="text-xs text-zinc-500 font-medium">Loss Days</span>
-                          <span className="text-[12px] font-bold text-red-400 font-mono">
+                        <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
+                          <span className="font-medium" style={{ color: 'var(--text-sub)', fontSize: '13px' }}>Loss Days</span>
+                          <span className="font-mono" style={{ color: '#ef4444', fontSize: '13px', fontWeight: 600 }}>
                             {lossDays}
                           </span>
                         </div>
 
                         {/* Profit Factor */}
-                        <div className="flex justify-between items-center py-2">
-                          <span className="text-xs text-zinc-500 font-medium">Profit Factor</span>
+                        <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
+                          <span className="font-medium" style={{ color: 'var(--text-sub)', fontSize: '13px' }}>Profit Factor</span>
                           <span
-                            className={`text-[13px] font-black font-mono ${
-                              stats.profitFactor > 1.5
-                                ? 'text-green-400'
-                                : stats.profitFactor >= 1.0
-                                ? 'text-amber-400'
-                                : 'text-red-400'
-                            }`}
+                            className="font-mono"
+                            style={{ color: stats.profitFactor >= 1.0 ? '#22c55e' : '#ef4444', fontSize: '13px', fontWeight: 600 }}
                           >
                             {stats.profitFactor === 999 ? '∞' : stats.profitFactor.toFixed(2)}
                           </span>
                         </div>
 
                         {/* Avg R */}
-                        <div className="flex justify-between items-center py-2">
-                          <span className="text-xs text-zinc-500 font-medium font-sans">Avg R-Multiple</span>
-                          <span className={`text-[13px] font-bold font-mono ${pnlColor(stats.avgR)}`}>
+                        <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
+                          <span className="font-medium font-sans" style={{ color: 'var(--text-sub)', fontSize: '13px' }}>Avg R-Multiple</span>
+                          <span className="font-mono" style={{ color: stats.avgR >= 0 ? '#22c55e' : '#ef4444', fontSize: '13px', fontWeight: 600 }}>
                             {stats.avgR >= 0 ? '+' : ''}
                             {stats.avgR.toFixed(2)}R
                           </span>
                         </div>
 
                         {/* Avg Win */}
-                        <div className="flex justify-between items-center py-2">
-                          <span className="text-xs text-zinc-500 font-medium">Avg Win</span>
-                          <span className="text-[12px] font-bold text-green-400 font-mono">
+                        <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
+                          <span className="font-medium" style={{ color: 'var(--text-sub)', fontSize: '13px' }}>Avg Win</span>
+                          <span className="font-mono" style={{ color: '#22c55e', fontSize: '13px', fontWeight: 600 }}>
                             {formatPositiveINR(stats.avgWin)}
                           </span>
                         </div>
 
                         {/* Avg Loss */}
-                        <div className="flex justify-between items-center py-2">
-                          <span className="text-xs text-zinc-500 font-medium">Avg Loss</span>
-                          <span className="text-[12px] font-bold text-red-400 font-mono">
+                        <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
+                          <span className="font-medium" style={{ color: 'var(--text-sub)', fontSize: '13px' }}>Avg Loss</span>
+                          <span className="font-mono" style={{ color: '#ef4444', fontSize: '13px', fontWeight: 600 }}>
                             -{formatPositiveINR(stats.avgLoss)}
                           </span>
                         </div>
 
                         {/* Avg W/L Ratio */}
-                        <div className="flex justify-between items-center py-2">
-                          <span className="text-xs text-zinc-500 font-medium">Avg W:L Ratio</span>
-                          <span className="text-[13px] font-bold text-zinc-200 font-mono">
+                        <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
+                          <span className="font-medium" style={{ color: 'var(--text-sub)', fontSize: '13px' }}>Avg W:L Ratio</span>
+                          <span className="font-mono" style={{ color: 'var(--text)', fontSize: '13px', fontWeight: 600 }}>
                             {stats.avgLoss > 0 ? (stats.avgWin / stats.avgLoss).toFixed(2) : '∞'}:1
                           </span>
                         </div>
 
                         {/* Best Trade */}
-                        <div className="flex justify-between items-center py-2">
-                          <span className="text-xs text-zinc-500 font-medium">Best Trade</span>
-                          <span className="text-[12px] font-bold text-green-400 font-mono">
+                        <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
+                          <span className="font-medium" style={{ color: 'var(--text-sub)', fontSize: '13px' }}>Best Trade</span>
+                          <span className="font-mono" style={{ color: '#22c55e', fontSize: '13px', fontWeight: 600 }}>
                             {formatPositiveINR(stats.largestWin)}
                           </span>
                         </div>
 
                         {/* Worst Trade */}
-                        <div className="flex justify-between items-center py-2">
-                          <span className="text-xs text-zinc-500 font-medium">Worst Trade</span>
-                          <span className="text-[12px] font-bold text-red-400 font-mono">
+                        <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
+                          <span className="font-medium" style={{ color: 'var(--text-sub)', fontSize: '13px' }}>Worst Trade</span>
+                          <span className="font-mono" style={{ color: '#ef4444', fontSize: '13px', fontWeight: 600 }}>
                             -{formatPositiveINR(stats.largestLoss)}
                           </span>
                         </div>
 
                         {/* Best Day Pnl */}
-                        <div className="flex justify-between items-center py-2">
-                          <span className="text-xs text-zinc-500 font-medium">Best Day P&L</span>
-                          <span className="text-[12px] font-bold text-green-400 font-mono">
+                        <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
+                          <span className="font-medium" style={{ color: 'var(--text-sub)', fontSize: '13px' }}>Best Day P&L</span>
+                          <span className="font-mono" style={{ color: '#22c55e', fontSize: '13px', fontWeight: 600 }}>
                             {formatPositiveINR(largestProfitDay)}
                           </span>
                         </div>
 
                         {/* Worst Day Pnl */}
-                        <div className="flex justify-between items-center py-2">
-                          <span className="text-xs text-zinc-500 font-medium">Worst Day P&L</span>
-                          <span className="text-[12px] font-bold text-red-400 font-mono">
+                        <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
+                          <span className="font-medium" style={{ color: 'var(--text-sub)', fontSize: '13px' }}>Worst Day P&L</span>
+                          <span className="font-mono" style={{ color: '#ef4444', fontSize: '13px', fontWeight: 600 }}>
                             -{formatPositiveINR(largestLossDay)}
                           </span>
                         </div>
 
                         {/* Max Win Streak */}
-                        <div className="flex justify-between items-center py-2">
-                          <span className="text-xs text-zinc-500 font-medium">Max Win Streak</span>
-                          <span className="text-[12px] font-bold text-green-400 font-mono">
+                        <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
+                          <span className="font-medium" style={{ color: 'var(--text-sub)', fontSize: '13px' }}>Max Win Streak</span>
+                          <span className="font-mono" style={{ color: '#22c55e', fontSize: '13px', fontWeight: 600 }}>
                             {streaks.maxWinStreak} days
                           </span>
                         </div>
 
                         {/* Max Loss Streak */}
-                        <div className="flex justify-between items-center py-2">
-                          <span className="text-xs text-zinc-500 font-medium">Max Loss Streak</span>
-                          <span className="text-[12px] font-bold text-red-400 font-mono">
+                        <div className="flex justify-between items-center py-2" style={{ borderColor: 'var(--border)' }}>
+                          <span className="font-medium" style={{ color: 'var(--text-sub)', fontSize: '13px' }}>Max Loss Streak</span>
+                          <span className="font-mono" style={{ color: '#ef4444', fontSize: '13px', fontWeight: 600 }}>
                             {streaks.maxLossStreak} days
                           </span>
                         </div>
@@ -636,15 +648,15 @@ export const TradingReportsPage: React.FC = () => {
                   )}
 
                   {/* CARD 2: TRADING COMPLIANCE SCORES */}
-                  <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-5 shadow-lg">
-                    <h3 className="text-sm font-extrabold text-zinc-100 uppercase tracking-widest border-b border-zinc-800 pb-3">
+                  <div className="rounded-xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
+                    <h3 className="text-sm font-bold uppercase tracking-widest pb-3 border-b" style={{ color: 'var(--text)', borderColor: 'var(--border)' }}>
                       Avg Trade Scores
                     </h3>
 
                     <div className="space-y-4 mt-4">
                       {/* Overall Compliance */}
-                      <div className="flex justify-between items-end border-b border-zinc-800/40 pb-2">
-                        <span className="text-sm text-zinc-400 font-semibold">Overall Compliance</span>
+                      <div className="flex justify-between items-end border-b pb-2" style={{ borderColor: 'var(--border)' }}>
+                        <span className="text-sm font-semibold" style={{ color: 'var(--text-sub)' }}>Overall Compliance</span>
                         <span className={`text-xl font-extrabold font-mono ${getScoreColor(scores.avgOverall)}`}>
                           {scores.avgOverall.toFixed(0)}%
                         </span>
@@ -653,12 +665,12 @@ export const TradingReportsPage: React.FC = () => {
                       {/* Technical adherence */}
                       <div className="space-y-1.5">
                         <div className="flex justify-between text-xs">
-                          <span className="text-zinc-500 font-medium">Technical Setup Score</span>
+                          <span className="font-medium" style={{ color: 'var(--text-sub)' }}>Technical Setup Score</span>
                           <span className={`font-bold font-mono ${getScoreColor(scores.avgTech)}`}>
                             {scores.avgTech.toFixed(0)}%
                           </span>
                         </div>
-                        <div className="w-full bg-[#0F1117] h-2 rounded-full border border-[#2A2D3A] overflow-hidden">
+                        <div className="w-full h-2 rounded-full overflow-hidden border" style={{ backgroundColor: 'var(--row)', borderColor: 'var(--border)' }}>
                           <div
                             className={`h-full transition-all duration-500 ${getScoreBg(scores.avgTech)}`}
                             style={{ width: `${scores.avgTech}%` }}
@@ -669,12 +681,12 @@ export const TradingReportsPage: React.FC = () => {
                       {/* Psychology rating */}
                       <div className="space-y-1.5">
                         <div className="flex justify-between text-xs">
-                          <span className="text-zinc-500 font-medium">Psychological Control</span>
+                          <span className="font-medium" style={{ color: 'var(--text-sub)' }}>Psychological Control</span>
                           <span className={`font-bold font-mono ${getScoreColor(scores.avgPsych)}`}>
                             {scores.avgPsych.toFixed(0)}%
                           </span>
                         </div>
-                        <div className="w-full bg-[#0F1117] h-2 rounded-full border border-[#2A2D3A] overflow-hidden">
+                        <div className="w-full h-2 rounded-full overflow-hidden border" style={{ backgroundColor: 'var(--row)', borderColor: 'var(--border)' }}>
                           <div
                             className={`h-full transition-all duration-500 ${getScoreBg(scores.avgPsych)}`}
                             style={{ width: `${scores.avgPsych}%` }}
@@ -685,12 +697,12 @@ export const TradingReportsPage: React.FC = () => {
                       {/* Risk Management rating */}
                       <div className="space-y-1.5">
                         <div className="flex justify-between text-xs">
-                          <span className="text-zinc-500 font-medium">Risk Mgmt Discipline</span>
+                          <span className="font-medium" style={{ color: 'var(--text-sub)' }}>Risk Mgmt Discipline</span>
                           <span className={`font-bold font-mono ${getScoreColor(scores.avgRisk)}`}>
                             {scores.avgRisk.toFixed(0)}%
                           </span>
                         </div>
-                        <div className="w-full bg-[#0F1117] h-2 rounded-full border border-[#2A2D3A] overflow-hidden">
+                        <div className="w-full h-2 rounded-full overflow-hidden border" style={{ backgroundColor: 'var(--row)', borderColor: 'var(--border)' }}>
                           <div
                             className={`h-full transition-all duration-500 ${getScoreBg(scores.avgRisk)}`}
                             style={{ width: `${scores.avgRisk}%` }}
@@ -701,53 +713,54 @@ export const TradingReportsPage: React.FC = () => {
                   </div>
 
                   {/* CARD 3: PSYCHOLOGICAL & TECHNICAL MISTAKES */}
-                  <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-5 shadow-lg">
-                    <h3 className="text-sm font-extrabold text-zinc-100 uppercase tracking-widest border-b border-zinc-800 pb-3">
+                  <div className="rounded-xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
+                    <h3 className="text-sm font-bold uppercase tracking-widest pb-3 border-b" style={{ color: 'var(--text)', borderColor: 'var(--border)' }}>
                       Mistakes This Month
                     </h3>
 
                     <div className="mt-4 space-y-2.5 text-xs text-zinc-400">
-                      <div className="flex justify-between border-b border-zinc-850 pb-1.5 font-medium">
-                        <span>Technical Setup</span>
-                        <span className="font-mono text-indigo-400 font-bold">{mistakeMap.Technical}</span>
+                      <div className="flex justify-between border-b pb-1.5 font-medium" style={{ borderColor: 'var(--border)' }}>
+                        <span style={{ color: 'var(--text-sub)' }}>Technical Setup</span>
+                        <span className="font-mono text-indigo-500 font-bold">{mistakeMap.Technical}</span>
                       </div>
-                      <div className="flex justify-between border-b border-zinc-850 pb-1.5 font-medium">
-                        <span>Psychological Control</span>
-                        <span className="font-mono text-purple-400 font-bold">{mistakeMap.Psychological}</span>
+                      <div className="flex justify-between border-b pb-1.5 font-medium" style={{ borderColor: 'var(--border)' }}>
+                        <span style={{ color: 'var(--text-sub)' }}>Psychological Control</span>
+                        <span className="font-mono text-purple-500 font-bold">{mistakeMap.Psychological}</span>
                       </div>
-                      <div className="flex justify-between border-b border-zinc-850 pb-1.5 font-medium">
-                        <span>Risk Management Breach</span>
+                      <div className="flex justify-between border-b pb-1.5 font-medium" style={{ borderColor: 'var(--border)' }}>
+                        <span style={{ color: 'var(--text-sub)' }}>Risk Management Breach</span>
                         <span className="font-mono text-amber-500 font-bold">{mistakeMap['Risk Management']}</span>
                       </div>
                       <div className="flex justify-between font-medium">
-                        <span>Flawless Execution</span>
-                        <span className="font-mono text-green-400 font-bold">{mistakeMap['No Mistake']}</span>
+                        <span style={{ color: 'var(--text-sub)' }}>Flawless Execution</span>
+                        <span className="font-mono text-green-500 font-bold">{mistakeMap['No Mistake']}</span>
                       </div>
 
                       {/* Specific Textual Mistakes Insights */}
-                      <div className="border-t border-[#2A2D3A] pt-3.5 mt-3 space-y-2">
-                        <h4 className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">
+                      <div className="border-t pt-3.5 mt-3 space-y-2" style={{ borderColor: 'var(--border)' }}>
+                        <h4 className="text-[11px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
                           Most Repeated Mistakes
                         </h4>
                         
                         {topMistakesList.length > 0 ? (
-                          <div className="space-y-1.5">
+                           <div className="space-y-1.5">
                             {topMistakesList.map(([text, count], idx) => (
                               <div
                                 key={idx}
-                                className="flex justify-between items-start gap-1 bg-zinc-950/40 border border-zinc-800/40 p-2 rounded-lg font-mono text-[10px]"
+                                className="flex justify-between items-start gap-1 p-2 rounded-lg font-mono text-[10px] border"
+                                style={{ backgroundColor: 'var(--row)', borderColor: 'var(--border)' }}
                               >
-                                <span className="text-zinc-300 leading-tight block break-words max-w-[200px]">
+                                <span className="leading-tight block break-words max-w-[200px]" style={{ color: 'var(--text-sub)' }}>
                                   {text}
                                 </span>
-                                <span className="text-red-400 font-bold shrink-0 ml-1">
+                                <span className="text-red-500 font-bold shrink-0 ml-1">
                                   ×{count}
                                 </span>
                               </div>
                             ))}
                           </div>
                         ) : (
-                          <p className="text-[11px] text-green-400 italic">
+                          <p className="text-[11px] text-green-500 italic">
                             All trades have mistake data — keep logging!
                           </p>
                         )}

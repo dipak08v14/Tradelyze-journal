@@ -18,32 +18,32 @@ export const ExecutionPicker: React.FC<ExecutionPickerProps> = ({ value, onChang
     {
       status: 'BEST TRADE',
       label: 'BEST',
-      unselectedClasses: 'border border-green-900/60 text-green-500 hover:border-green-700 hover:text-green-400',
-      selectedClasses: 'bg-green-900/85 border border-green-500 text-green-300 shadow-lg shadow-green-950/40 font-bold',
+      unselectedClasses: 'border border-green-200 text-green-600 hover:border-green-400 hover:text-green-700',
+      selectedClasses: 'bg-green-500/10 border border-green-500 text-green-700 font-bold shadow-sm',
     },
     {
       status: 'GOOD TRADE',
       label: 'GOOD',
-      unselectedClasses: 'border border-teal-900/60 text-teal-500 hover:border-teal-700 hover:text-teal-400',
-      selectedClasses: 'bg-teal-900/85 border border-teal-500 text-teal-300 shadow-lg shadow-teal-950/40 font-bold',
+      unselectedClasses: 'border border-teal-200 text-teal-600 hover:border-teal-400 hover:text-teal-700',
+      selectedClasses: 'bg-teal-500/10 border border-teal-500 text-teal-700 font-bold shadow-sm',
     },
     {
       status: 'AVERAGE TRADE',
       label: 'AVG',
-      unselectedClasses: 'border border-amber-900/60 text-amber-500 hover:border-amber-700 hover:text-amber-400',
-      selectedClasses: 'bg-amber-900/85 border border-amber-500 text-amber-300 shadow-lg shadow-amber-950/40 font-bold',
+      unselectedClasses: 'border border-amber-200 text-amber-600 hover:border-amber-400 hover:text-amber-700',
+      selectedClasses: 'bg-amber-500/10 border border-amber-500 text-amber-700 font-bold shadow-sm',
     },
     {
       status: 'POOR TRADE',
       label: 'POOR',
-      unselectedClasses: 'border border-orange-900/60 text-orange-500 hover:border-orange-700 hover:text-orange-400',
-      selectedClasses: 'bg-orange-900/85 border border-orange-500 text-orange-300 shadow-lg shadow-orange-950/40 font-bold',
+      unselectedClasses: 'border border-orange-200 text-orange-600 hover:border-orange-400 hover:text-orange-700',
+      selectedClasses: 'bg-orange-500/10 border border-orange-500 text-orange-700 font-bold shadow-sm',
     },
     {
       status: 'BAD TRADE',
       label: 'BAD',
-      unselectedClasses: 'border border-red-900/60 text-red-500 hover:border-red-700 hover:text-red-400',
-      selectedClasses: 'bg-red-900/85 border border-red-500 text-red-300 shadow-lg shadow-red-950/40 font-bold',
+      unselectedClasses: 'border border-red-200 text-red-600 hover:border-red-400 hover:text-red-700',
+      selectedClasses: 'bg-red-500/10 border border-red-500 text-red-700 font-bold shadow-sm',
     },
   ];
 
@@ -57,7 +57,7 @@ export const ExecutionPicker: React.FC<ExecutionPickerProps> = ({ value, onChang
 
   return (
     <div id={id} className="space-y-2 font-sans">
-      <label className="block text-sm font-medium text-zinc-300">
+      <label style={{ color: 'var(--text-sub)' }} className="block text-sm font-medium">
         Execution Status
       </label>
       

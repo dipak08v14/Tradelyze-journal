@@ -57,31 +57,31 @@ export const LoginPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center font-sans">
+      <div className="min-h-screen flex items-center justify-center font-sans" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
         <div className="flex flex-col items-center">
-          <div className="w-10 h-10 border-4 border-indigo-600/30 border-t-indigo-600 rounded-full animate-spin"></div>
-          <span className="text-zinc-400 text-sm mt-4 font-medium font-mono uppercase tracking-wider">Validating secure session...</span>
+          <div className="w-10 h-10 border-4 rounded-full animate-spin" style={{ borderColor: 'var(--border-md)', borderTopColor: 'var(--accent)' }}></div>
+          <span style={{ color: 'var(--text-muted)' }} className="text-sm mt-4 font-medium font-mono uppercase tracking-wider">Validating secure session...</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4 font-sans">
-      <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-3xl shadow-2xl p-8 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center p-4 font-sans" style={{ backgroundColor: 'var(--bg)' }}>
+      <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }} className="w-full max-w-md rounded-3xl shadow-2xl p-8 relative overflow-hidden">
         {/* LOGO */}
         <div className="text-center mb-8 flex flex-col items-center">
           <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center font-extrabold text-2xl text-white font-display tracking-tight mb-4 shadow-lg shadow-indigo-600/20">
             T
           </div>
-          <h1 className="text-2xl font-bold text-zinc-100 tracking-wider font-display">TRADELYZE</h1>
+          <h1 style={{ color: 'var(--text)' }} className="text-2xl font-bold tracking-wider font-display">TRADELYZE</h1>
           <p className="text-xs text-zinc-500 mt-1.5 font-medium italic">Learns YOU. Not the market.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* EMAIL */}
           <div>
-            <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2 font-mono" htmlFor="email">
+            <label style={{ color: 'var(--text-muted)' }} className="block text-xs font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="email">
               Email Address
             </label>
             <input
@@ -90,7 +90,8 @@ export const LoginPage: React.FC = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="e.g. trader@tradelyze.in"
-              className="bg-zinc-950 border border-zinc-800 text-zinc-100 rounded-xl px-4 py-3 w-full focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 placeholder-zinc-700 transition-all duration-200 text-sm"
+              style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
+              className="rounded-xl px-4 py-3 w-full focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 placeholder-zinc-450 transition-all duration-200 text-sm"
               required
               disabled={submitting}
             />
@@ -98,7 +99,7 @@ export const LoginPage: React.FC = () => {
 
           {/* PASSWORD */}
           <div>
-            <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2 font-mono" htmlFor="password">
+            <label style={{ color: 'var(--text-muted)' }} className="block text-xs font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="password">
               Password
             </label>
             <input
@@ -107,7 +108,8 @@ export const LoginPage: React.FC = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="bg-zinc-950 border border-zinc-800 text-zinc-100 rounded-xl px-4 py-3 w-full focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 placeholder-zinc-700 transition-all duration-200 text-sm"
+              style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
+              className="rounded-xl px-4 py-3 w-full focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 placeholder-zinc-450 transition-all duration-200 text-sm"
               required
               disabled={submitting}
             />
@@ -115,7 +117,7 @@ export const LoginPage: React.FC = () => {
 
           {/* ERRORS */}
           {formError && (
-            <div className="bg-red-950/20 border border-red-900/60 text-red-400 rounded-xl p-3 text-xs leading-normal">
+            <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl p-3 text-xs leading-normal font-semibold">
               {formError}
             </div>
           )}
@@ -124,11 +126,11 @@ export const LoginPage: React.FC = () => {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full bg-white hover:bg-zinc-200 text-black rounded-xl px-4 py-3 font-semibold transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-white/5"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-4 py-3 font-semibold transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/10"
           >
             {submitting ? (
               <>
-                <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"></div>
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                 <span>Signing In...</span>
               </>
             ) : (
@@ -138,7 +140,7 @@ export const LoginPage: React.FC = () => {
         </form>
 
         {/* ADMIN DISCLAIMER */}
-        <div className="mt-8 border-t border-zinc-800 pt-5 text-center">
+        <div style={{ borderColor: 'var(--border)' }} className="mt-8 border-t pt-5 text-center">
           <p className="text-xs text-zinc-500 max-w-xs mx-auto">
             New accounts are created by admin. Contact support to get started.
           </p>

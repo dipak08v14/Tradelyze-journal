@@ -146,17 +146,29 @@ export const StrategyCard: React.FC<StrategyCardProps> = ({
 
   return (
     <div
-      className="rounded-2xl bg-zinc-900 border border-zinc-800 p-6 hover:border-indigo-500/50 hover:shadow-2xl hover:shadow-indigo-500/5 transition-all duration-200 flex flex-col justify-between cursor-pointer group"
+      className="rounded-2xl transition-all duration-200 flex flex-col justify-between cursor-pointer group shadow-sm hover:shadow-md"
+      style={{ 
+        backgroundColor: 'var(--card)', 
+        border: '0.5px solid var(--border)',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.02)'
+      }}
       onClick={() => navigate(`/strategies/${strategy.id}/edit`)}
     >
-      <div>
+      <div className="p-6">
         {/* TOP ROW */}
         <div className="flex items-center justify-between" onClick={(e) => e.stopPropagation()}>
           <div className="flex items-center flex-1 min-w-0 pr-2">
-            <span className="bg-zinc-950 text-zinc-500 text-xs font-mono rounded-lg px-2.5 py-1 border border-zinc-800 shrink-0">
+            <span 
+              className="text-xs font-mono rounded-lg px-2.5 py-1 shrink-0"
+              style={{ backgroundColor: 'var(--bar)', color: 'var(--text-muted)' }}
+            >
               #{strategy.sr_no}
             </span>
-            <h3 className="text-lg font-bold text-zinc-100 ml-2.5 truncate font-display group-hover:text-white transition-colors" title={strategy.name}>
+            <h3 
+              className="text-lg font-bold ml-2.5 truncate font-display transition-colors" 
+              style={{ color: 'var(--text)' }}
+              title={strategy.name}
+            >
               {strategy.name}
             </h3>
           </div>
@@ -165,22 +177,29 @@ export const StrategyCard: React.FC<StrategyCardProps> = ({
             <StatusBadge status={strategy.status} />
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="text-zinc-400 hover:text-white p-1.5 rounded-lg hover:bg-zinc-800 transition-all cursor-pointer"
+              className="p-1.5 rounded-lg transition-all cursor-pointer"
+              style={{ color: 'var(--text-sub)' }}
               aria-label="Strategy menu"
             >
               <MoreVertical className="w-4 h-4" />
             </button>
 
             {menuOpen && (
-              <div className="absolute right-0 top-full mt-1.5 bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl z-10 min-w-[160px] overflow-hidden">
+              <div 
+                className="absolute right-0 top-full mt-1.5 rounded-xl shadow-2xl z-10 min-w-[160px] overflow-hidden"
+                style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+              >
                 <button
                   onClick={() => {
                     setMenuOpen(false);
                     navigate(`/strategies/${strategy.id}/edit`);
                   }}
-                  className="w-full px-4 py-2.5 text-sm hover:bg-zinc-800 cursor-pointer flex items-center gap-2 text-zinc-300 hover:text-white text-left"
+                  className="w-full px-4 py-2.5 text-sm cursor-pointer flex items-center gap-2 text-left"
+                  style={{ color: 'var(--text)' }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bar)'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                 >
-                  <Pencil className="w-4 h-4 text-indigo-400" />
+                  <Pencil className="w-4 h-4" style={{ color: 'var(--accent)' }} />
                   <span>Edit Strategy</span>
                 </button>
                 <button
@@ -188,9 +207,12 @@ export const StrategyCard: React.FC<StrategyCardProps> = ({
                     setMenuOpen(false);
                     onChangeStatusClick(strategy);
                   }}
-                  className="w-full px-4 py-2.5 text-sm hover:bg-zinc-800 cursor-pointer flex items-center gap-2 text-zinc-300 hover:text-white text-left"
+                  className="w-full px-4 py-2.5 text-sm cursor-pointer flex items-center gap-2 text-left"
+                  style={{ color: 'var(--text)' }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bar)'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                 >
-                  <Zap className="w-4 h-4 text-amber-400" />
+                  <Zap className="w-4 h-4" style={{ color: 'var(--accent)' }} />
                   <span>Change Status</span>
                 </button>
                 <button
@@ -198,7 +220,10 @@ export const StrategyCard: React.FC<StrategyCardProps> = ({
                     setMenuOpen(false);
                     onDeleteClick(strategy);
                   }}
-                  className="w-full px-4 py-2.5 text-sm hover:bg-zinc-800 cursor-pointer flex items-center gap-2 text-red-400 hover:text-red-300 text-left border-t border-zinc-800"
+                  className="w-full px-4 py-2.5 text-sm cursor-pointer flex items-center gap-2 text-red-500 hover:text-red-600 text-left"
+                  style={{ borderTop: '0.5px solid var(--border)' }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bar)'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                 >
                   <Trash2 className="w-4 h-4" />
                   <span>Delete</span>
@@ -212,7 +237,7 @@ export const StrategyCard: React.FC<StrategyCardProps> = ({
         <div className="mt-2.5 flex items-center gap-2">
           <TypeBadge type={strategy.type_of_strategy} />
           {strategy.sub_type && strategy.sub_type.trim() && (
-            <span className="text-sm text-zinc-400 truncate font-medium" title={strategy.sub_type}>
+            <span className="text-sm truncate font-medium" style={{ color: 'var(--text-sub)' }} title={strategy.sub_type}>
               {strategy.sub_type}
             </span>
           )}
@@ -223,76 +248,104 @@ export const StrategyCard: React.FC<StrategyCardProps> = ({
           {loadingStats ? (
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="bg-zinc-950/40 rounded-xl p-2.5 h-12 border border-zinc-800/40 animate-pulse" />
+                <div 
+                  key={i} 
+                  className="rounded-xl p-2.5 h-12 animate-pulse" 
+                  style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}
+                />
               ))}
             </div>
           ) : totalTrades === 0 ? (
-            <div className="bg-zinc-950/40 rounded-xl p-3 border border-zinc-800/40 text-center">
-              <span className="text-zinc-500 text-xs italic font-medium">No trades logged yet</span>
+            <div 
+              className="rounded-xl p-3 text-center"
+              style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}
+            >
+              <span className="text-xs italic font-medium" style={{ color: 'var(--text-muted)' }}>No trades logged yet</span>
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
               {/* TRADES count */}
-              <div className="bg-zinc-950/40 rounded-xl p-3 border border-zinc-850 flex flex-col justify-center">
-                <span className="text-zinc-100 font-extrabold text-base tracking-tight font-display">{totalTrades}</span>
-                <span className="text-zinc-500 text-[9px] uppercase tracking-wider font-bold mt-0.5">Trades</span>
+              <div 
+                className="rounded-xl p-3 flex flex-col justify-center"
+                style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}
+              >
+                <span className="font-extrabold text-base tracking-tight font-display" style={{ color: 'var(--text)' }}>{totalTrades}</span>
+                <span className="text-[9px] uppercase tracking-wider font-bold mt-0.5" style={{ color: 'var(--text-muted)' }}>Trades</span>
               </div>
               
               {/* WIN RATE */}
-              <div className="bg-zinc-950/40 rounded-xl p-3 border border-zinc-850 flex flex-col justify-center">
-                <span className={`font-extrabold text-base tracking-tight font-display ${getWinRateColor(winRate)}`}>{winRate}%</span>
-                <span className="text-zinc-500 text-[9px] uppercase tracking-wider font-bold mt-0.5">Win Rate</span>
+              <div 
+                className="rounded-xl p-3 flex flex-col justify-center"
+                style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}
+              >
+                <span className="font-extrabold text-base tracking-tight font-display" style={{ color: winRate >= 60 ? '#22c55e' : winRate >= 40 ? '#f59e0b' : '#ef4444' }}>{winRate}%</span>
+                <span className="text-[9px] uppercase tracking-wider font-bold mt-0.5" style={{ color: 'var(--text-muted)' }}>Win Rate</span>
               </div>
 
               {/* AVG R */}
-              <div className="bg-zinc-950/40 rounded-xl p-3 border border-zinc-850 flex flex-col justify-center">
-                <span className={`font-extrabold text-base tracking-tight font-display ${getRColor(avgR)}`}>
+              <div 
+                className="rounded-xl p-3 flex flex-col justify-center"
+                style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}
+              >
+                <span className="font-extrabold text-base tracking-tight font-display" style={{ color: avgR > 0 ? '#22c55e' : avgR < 0 ? '#ef4444' : 'var(--text-sub)' }}>
                   {avgR > 0 ? '+' : ''}{avgR.toFixed(1)}R
                 </span>
-                <span className="text-zinc-500 text-[9px] uppercase tracking-wider font-bold mt-0.5">Avg R</span>
+                <span className="text-[9px] uppercase tracking-wider font-bold mt-0.5" style={{ color: 'var(--text-muted)' }}>Avg R</span>
               </div>
 
               {/* TOTAL P&L */}
-              <div className="bg-zinc-950/40 rounded-xl p-3 border border-zinc-850 flex flex-col justify-center">
-                <span className={`font-extrabold text-base tracking-tight font-display ${getPnLColor(totalPnL)}`}>
+              <div 
+                className="rounded-xl p-3 flex flex-col justify-center"
+                style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}
+              >
+                <span className="font-extrabold text-base tracking-tight font-display" style={{ color: totalPnL > 0 ? '#22c55e' : totalPnL < 0 ? '#ef4444' : 'var(--text-sub)' }}>
                   {formatCurrency(totalPnL)}
                 </span>
-                <span className="text-zinc-500 text-[9px] uppercase tracking-wider font-bold mt-0.5">Total P&L</span>
+                <span className="text-[9px] uppercase tracking-wider font-bold mt-0.5" style={{ color: 'var(--text-muted)' }}>Total P&L</span>
               </div>
             </div>
           )}
         </div>
 
         {/* RULES COUNTER */}
-        <div className="mt-4 text-xs text-zinc-400 flex items-center gap-1.5 font-medium bg-zinc-950/50 w-fit px-2.5 py-1 rounded-lg border border-zinc-800/40">
-          <span className="text-zinc-500 uppercase tracking-wider font-bold text-[9px]">Rules:</span>
-          <span className="text-indigo-400 font-semibold">{rulesCount.entry} Entry</span>
-          <span className="text-zinc-800">•</span>
-          <span className="text-indigo-400 font-semibold">{rulesCount.exit} Exit</span>
+        <div 
+          className="mt-4 text-xs flex items-center gap-1.5 font-medium w-fit px-2.5 py-1 rounded-lg"
+          style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}
+        >
+          <span className="uppercase tracking-wider font-bold text-[9px]" style={{ color: 'var(--text-muted)' }}>Rules:</span>
+          <span className="font-semibold" style={{ color: 'var(--accent)' }}>{rulesCount.entry} Entry</span>
+          <span style={{ color: 'var(--border-md)' }}>•</span>
+          <span className="font-semibold" style={{ color: 'var(--accent)' }}>{rulesCount.exit} Exit</span>
         </div>
 
         {/* NOTES PREVIEW */}
         {notePreview && (
-          <p className="mt-3 text-xs text-zinc-500 italic font-mono leading-relaxed bg-zinc-950/20 p-2.5 rounded-xl border border-zinc-800/40 break-words">
+          <p 
+            className="mt-3 text-xs italic font-mono leading-relaxed p-2.5 rounded-xl break-words"
+            style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)', color: 'var(--text-sub)' }}
+          >
             "{notePreview}"
           </p>
         )}
       </div>
 
       {/* FOOTER ROW */}
-      <div className="mt-5 pt-4 border-t border-zinc-800 flex items-center justify-between">
-        <div className="flex items-center gap-1.5 text-zinc-500">
+      <div 
+        className="px-6 py-4 flex items-center justify-between"
+        style={{ borderTop: '0.5px solid var(--border)' }}
+      >
+        <div className="flex items-center gap-1.5" style={{ color: 'var(--text-muted)' }}>
           {imageCount > 0 ? (
             <>
-              <ImageIcon className="w-3.5 h-3.5 text-indigo-400/70" />
+              <ImageIcon className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
               <span className="text-xs font-semibold">{imageCount} reference {imageCount === 1 ? 'image' : 'images'}</span>
             </>
           ) : (
-            <span className="text-xs font-normal text-zinc-600">No layout images</span>
+            <span className="text-xs font-normal" style={{ color: 'var(--text-muted)' }}>No layout images</span>
           )}
         </div>
         
-        <span className="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-0.5 cursor-pointer">
+        <span className="text-xs font-bold transition-colors flex items-center gap-0.5 cursor-pointer" style={{ color: 'var(--accent)' }}>
           Edit Strategy →
         </span>
       </div>
