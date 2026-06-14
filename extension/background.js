@@ -165,11 +165,14 @@ async function searchSimilarTrades(embedding, userId, setupName) {
 
 // ── WEB APP SCAN DELEGATOR ──
 async function generateEmbeddingViaOffscreen(imageDataUrl) {
-  const response = await fetch('https://tradelyze.vercel.app/api/scan-chart', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ imageDataUrl })
-  })
+  const response = await fetch(
+    'https://tradelyze.vercel.app/api/scan-chart',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imageDataUrl })
+    }
+  )
   const data = await response.json()
   if (data.error) throw new Error(data.error)
   return data.embedding
