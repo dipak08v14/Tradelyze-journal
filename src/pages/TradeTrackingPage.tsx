@@ -257,21 +257,21 @@ const TradeTrackingPageContent: React.FC = () => {
       setPsychology(psychResult.data || null);
       setRiskMgmt(riskResult.data || null);
 
-      // On page load, check if this trade has an embedding
-      const { data: embeddingDataResult, error: embedError } = await supabase
+      // On page load, query Supabase for existing embedding
+      const { data: embedData, error: embedError } = await supabase
         .from('trade_visual_embeddings')
-        .select('id, embedding, image_url')
+        .select('id, embedding')
         .eq('trade_id', tradeId)
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
-      const hasEmbed = !embedError && !!embeddingDataResult;
-      setHasEmbedding(hasEmbed);
-      setEmbeddingData(hasEmbed ? embeddingDataResult : null);
-
-      if (hasEmbed && embeddingDataResult) {
-        await loadVisualMatches(embeddingDataResult.embedding);
+      if (!embedError && embedData && embedData.embedding) {
+        setHasEmbedding(true);
+        setEmbeddingData(embedData);
+        await loadVisualMatches(embedData.embedding);
       } else {
+        setHasEmbedding(false);
+        setEmbeddingData(null);
         setVisualMatches([]);
       }
 
