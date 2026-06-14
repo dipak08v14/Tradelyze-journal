@@ -9,6 +9,7 @@ import { PlaceholderPage } from './pages/PlaceholderPage';
 import { TradeEntryPage } from './pages/TradeEntryPage';
 import { TradingLogsPage } from './pages/TradingLogsPage';
 import { TradeTrackingPage } from './pages/TradeTrackingPage';
+import { DashboardPage } from './pages/DashboardPage';
 
 export default function App() {
   return (
@@ -26,16 +27,8 @@ export default function App() {
           <Route path="/strategies/new" element={<StrategyBuilderPage />} />
           <Route path="/strategies/:id/edit" element={<StrategyBuilderPage />} />
 
-          {/* Placeholders for coming features */}
-          <Route
-            path="/dashboard"
-            element={
-              <PlaceholderPage
-                title="Dashboard"
-                message="Dashboard — Coming in Phase 5"
-              />
-            }
-          />
+          {/* Fully built performance metrics dashboard */}
+          <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/trade-entry" element={<TradeEntryPage />} />
           <Route path="/trading-logs" element={<TradingLogsPage />} />
           <Route path="/trading-logs/:id" element={<TradeTrackingPage />} />
