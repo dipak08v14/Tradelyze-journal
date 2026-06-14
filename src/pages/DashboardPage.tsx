@@ -15,8 +15,10 @@ import {
   Flame,
   HelpCircle,
   TrendingDown,
-  Calendar
+  Calendar,
+  Sparkles
 } from 'lucide-react';
+import { getLibraryConfidenceMessage } from '../lib/clipEmbedder';
 import {
   AreaChart,
   Area,
@@ -63,6 +65,30 @@ export const DashboardPage: React.FC = () => {
   const [riskData, setRiskData] = useState<any[]>([]);
   const [rulesData, setRulesData] = useState<any[]>([]);
   const [availableYears, setAvailableYears] = useState<number[]>([]);
+  const [visualLibraryCount, setVisualLibraryCount] = useState<number>(0);
+
+  // Fetch global visual library count
+  useEffect(() => {
+    if (!userId) return;
+    const fetchVisualLibraryCount = async () => {
+      try {
+        const { count, error } = await supabase
+          .from('trade_visual_embeddings')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', userId);
+
+        if (error) throw error;
+        setVisualLibraryCount(count || 0);
+      } catch (err) {
+        console.error('Error fetching visual library count:', err);
+      }
+    };
+    fetchVisualLibraryCount();
+  }, [userId]);
+
+  const confidence = useMemo(() => {
+    return getLibraryConfidenceMessage(visualLibraryCount);
+  }, [visualLibraryCount]);
 
   // Safety Redirection for Auth
   useEffect(() => {
@@ -1167,6 +1193,46 @@ export const DashboardPage: React.FC = () => {
                       </div>
                     </div>
                   )}
+                </div>
+
+                {/* SECTION 7: VISUAL PATTERN DATABASE / LIBRARY STATS CARD */}
+                <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-5 shadow-inner">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <h2 className="text-lg font-semibold text-zinc-100 tracking-tight flex items-center gap-1.5 font-display">
+                        <Sparkles className="w-5 h-5 text-indigo-400 animate-pulse" />
+                        Visual Pattern Database
+                      </h2>
+                      <p className="text-xs text-zinc-500 mt-1">
+                        CLIP Vision index of your chart screenshots for visual similarity search.
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-3 bg-[#0F1117] border border-[#2A2D3A] rounded-xl px-4 py-2.5">
+                      <div>
+                        <div className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono font-bold">
+                          Global Indexed Charts
+                        </div>
+                        <div className="text-xl font-black text-indigo-400 font-mono mt-0.5">
+                          {visualLibraryCount}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="border-t border-[#2A2D3A] mt-4 pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-2.5">
+                      <div className={`w-2.5 h-2.5 rounded-full ${confidence.level === 'empty' ? 'bg-zinc-600' : confidence.level === 'building' || confidence.level === 'growing' ? 'bg-amber-500' : 'bg-emerald-500'} animate-pulse`} />
+                      <span className="text-xs text-zinc-400">
+                        Library matching confidence: <strong className={confidence.color}>{confidence.message}</strong>
+                      </span>
+                    </div>
+
+                    <p className="text-[11px] text-zinc-500 font-mono leading-relaxed max-w-md sm:text-right">
+                      CLIP embeds 512-dimensional vector footprints locally in the browser. 
+                      Adding more trade screenshots dynamically strengthens matching accuracy for future visual queries.
+                    </p>
+                  </div>
                 </div>
               </div>
             )}

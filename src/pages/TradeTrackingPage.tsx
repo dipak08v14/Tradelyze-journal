@@ -20,9 +20,11 @@ import {
   DollarSign,
   Briefcase,
   Layers,
-  Sparkles
+  Sparkles,
+  CheckCircle2
 } from 'lucide-react';
 import { Trade } from '../types';
+import { generateEmbeddingFromUrl } from '../lib/clipEmbedder';
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
@@ -108,6 +110,99 @@ const TradeTrackingPageContent: React.FC = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
+  // Visual Embeddings States
+  const [hasEmbedding, setHasEmbedding] = useState<boolean>(false);
+  const [embeddingData, setEmbeddingData] = useState<any>(null);
+  const [visualMatches, setVisualMatches] = useState<any[]>([]);
+  const [matchesLoading, setMatchesLoading] = useState<boolean>(false);
+  const [generatingState, setGeneratingState] = useState<null | 'loading-model' | 'generating' | 'saving' | 'done' | 'error'>(null);
+  const [generationProgress, setGenerationProgress] = useState<number>(0);
+
+  const loadVisualMatches = async (embeddingVector: number[] | string) => {
+    if (!userId || !tradeId) return;
+    try {
+      setMatchesLoading(true);
+      let embeddingArray: number[];
+      if (typeof embeddingVector === 'string') {
+        const cleanStr = embeddingVector.replace(/[\[\]]/g, '');
+        embeddingArray = cleanStr.split(',').map(Number);
+      } else {
+        embeddingArray = embeddingVector;
+      }
+
+      const { data: matches, error } = await supabase.rpc('match_trades', {
+        query_embedding: embeddingArray,
+        match_user_id: userId,
+        match_strategy: null,
+        similarity_threshold: 0.45,
+        match_count: 5
+      });
+
+      if (error) throw error;
+
+      if (matches) {
+        const filteredMatches = matches.filter((m: any) => m.trade_id !== tradeId);
+        setVisualMatches(filteredMatches);
+      }
+    } catch (err) {
+      console.error('Error matching trades:', err);
+    } finally {
+      setMatchesLoading(false);
+    }
+  };
+
+  const handleGenerateEmbedding = async () => {
+    if (!trade?.chart_image_url || !userId || !tradeId) return;
+
+    try {
+      setGeneratingState('loading-model');
+      setGenerationProgress(0);
+
+      const embedding = await generateEmbeddingFromUrl(trade.chart_image_url, (pct) => {
+        setGenerationProgress(pct);
+      });
+
+      setGeneratingState('saving');
+
+      const selectedStrategyName = trade.strategies?.name || null;
+
+      const embeddingRecord = {
+        trade_id: tradeId,
+        user_id: userId,
+        strategy_id: trade.strategy_id || null,
+        image_url: trade.chart_image_url,
+        embedding: embedding, // 512 numbers
+        outcome: trade.status || null,
+        execution_status: trade.execution_status || null,
+        trade_rating: trade.trade_rating || null,
+        technical_score: null,
+        psychology_score: null,
+        risk_score: null,
+        setup_name: selectedStrategyName,
+        ict_tags: []
+      };
+
+      const { data: insertedData, error } = await supabase
+        .from('trade_visual_embeddings')
+        .insert(embeddingRecord)
+        .select('id, embedding, image_url')
+        .single();
+
+      if (error) throw error;
+
+      setGeneratingState('done');
+      setHasEmbedding(true);
+      setEmbeddingData(insertedData || { id: tradeId, embedding, image_url: trade.chart_image_url });
+      showSuccess('Chart patterns catalogued successfully!');
+
+      await loadVisualMatches(insertedData?.embedding || embedding);
+    } catch (err: any) {
+      console.error('Error generating embedding:', err);
+      showError(err.message || 'Failed to generate visual embedding.');
+      setGeneratingState('error');
+    }
+  };
+
   // Authenticated safety
   useEffect(() => {
     if (!authLoading && !userId) {
@@ -161,6 +256,24 @@ const TradeTrackingPageContent: React.FC = () => {
 
       setPsychology(psychResult.data || null);
       setRiskMgmt(riskResult.data || null);
+
+      // On page load, check if this trade has an embedding
+      const { data: embeddingDataResult, error: embedError } = await supabase
+        .from('trade_visual_embeddings')
+        .select('id, embedding, image_url')
+        .eq('trade_id', tradeId)
+        .eq('user_id', userId)
+        .single();
+
+      const hasEmbed = !embedError && !!embeddingDataResult;
+      setHasEmbedding(hasEmbed);
+      setEmbeddingData(hasEmbed ? embeddingDataResult : null);
+
+      if (hasEmbed && embeddingDataResult) {
+        await loadVisualMatches(embeddingDataResult.embedding);
+      } else {
+        setVisualMatches([]);
+      }
 
     } catch (err: any) {
       console.error('Error fetching trade tracking details:', err);
@@ -450,13 +563,14 @@ const TradeTrackingPageContent: React.FC = () => {
                 </div>
 
                 {/* Edit */}
-                <Link
-                  to={`/trade-entry/${trade.id}`}
+                <button
+                  type="button"
+                  onClick={() => navigate(`/trade-entry/${trade.id}`)}
                   className="bg-[#1A1D27] border border-[#2A2D3A] text-zinc-100 hover:bg-[#2A2D3A] font-semibold rounded-xl px-4 py-2.5 text-xs inline-flex items-center gap-1.5 transition-all cursor-pointer shadow-md"
                 >
                   <Pencil className="w-3.5 h-3.5" />
                   <span>Edit Trade</span>
-                </Link>
+                </button>
 
                 {/* Delete */}
                 <button
@@ -1053,6 +1167,128 @@ const TradeTrackingPageContent: React.FC = () => {
                       </div>
                     )}
                   </div>
+                </section>
+
+                {/* SPECIAL CARD: VISUAL PATTERN MATCH */}
+                <section className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-2xl">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Sparkles className="w-5 h-5 text-indigo-400" />
+                    <h2 className="text-lg font-bold text-zinc-100 font-display">
+                      Visual Pattern Match
+                    </h2>
+                  </div>
+
+                  {!trade.chart_image_url ? (
+                    <div className="text-zinc-500 text-xs italic py-4 text-center border border-dashed border-zinc-800 rounded-xl bg-zinc-950/20 px-4">
+                      No chart screenshot uploaded for this trade.
+                    </div>
+                  ) : !hasEmbedding ? (
+                    <div className="bg-zinc-950/45 border border-zinc-800/80 rounded-xl p-4 text-left">
+                      {generatingState ? (
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2">
+                            <div className="w-3.5 h-3.5 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
+                            <span className="text-xs font-medium text-zinc-300">
+                              {generatingState === 'loading-model' && `Loading Vision Model... ${generationProgress > 0 ? generationProgress + '%' : ''}`}
+                              {generatingState === 'generating' && 'Identifying edge structures...'}
+                              {generatingState === 'saving' && 'Cataloging chart vectors...'}
+                              {generatingState === 'error' && 'Failed to convert chart'}
+                            </span>
+                          </div>
+                          {generatingState === 'loading-model' && generationProgress > 0 && (
+                            <div className="bg-zinc-800 rounded-full h-1 w-full overflow-hidden">
+                              <div className="bg-indigo-500 h-1 transition-all" style={{ width: `${generationProgress}%` }} />
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={handleGenerateEmbedding}
+                          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl px-4 py-2.5 text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-indigo-600/10"
+                        >
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>Generate Embedding</span>
+                        </button>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {matchesLoading ? (
+                        <div className="flex flex-col items-center justify-center py-6 gap-3">
+                          <div className="w-6 h-6 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
+                          <span className="text-xs text-zinc-500 font-mono">Comparing visual parameters...</span>
+                        </div>
+                      ) : visualMatches.length === 0 ? (
+                        <div className="text-zinc-500 text-xs italic py-4 text-center border border-dashed border-zinc-800 rounded-xl bg-zinc-950/20 px-4">
+                          No visually similar patterns found in your library yet. Keep logging trades with chart screenshots!
+                        </div>
+                      ) : (
+                        <div className="space-y-3">
+                          <p className="text-[10px] text-zinc-500 font-mono uppercase tracking-wider">
+                            Matches (Threshold &gt; 45%)
+                          </p>
+                          <div className="divide-y divide-zinc-850">
+                            {visualMatches.map((match) => {
+                              const matchPercent = (match.similarity * 100).toFixed(1);
+                              
+                              let outcomeBadge = null;
+                              if (match.outcome === 'Win') {
+                                outcomeBadge = <span className="bg-green-950/85 border border-green-800 text-green-400 font-bold px-1.5 py-0.5 rounded text-[9px] uppercase">WIN</span>;
+                              } else if (match.outcome === 'Loss') {
+                                outcomeBadge = <span className="bg-red-950/85 border border-red-800 text-red-400 font-bold px-1.5 py-0.5 rounded text-[9px] uppercase">LOSS</span>;
+                              } else if (match.outcome === 'Breakeven') {
+                                outcomeBadge = <span className="bg-zinc-800 border border-zinc-700 text-zinc-400 font-bold px-1.5 py-0.5 rounded text-[9px] uppercase">BE</span>;
+                              }
+
+                              return (
+                                <div key={match.trade_id} className="py-3 first:pt-0 last:pb-0 flex gap-3 group">
+                                  {/* Thumbnail */}
+                                  <div className="w-16 h-12 rounded-lg overflow-hidden bg-zinc-950 border border-zinc-800 flex-shrink-0 relative">
+                                    <img
+                                      src={match.image_url}
+                                      alt="Matching pattern representation"
+                                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200"
+                                      referrerPolicy="no-referrer"
+                                    />
+                                  </div>
+                                  
+                                  {/* Info */}
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center justify-between gap-1.5">
+                                      <Link
+                                        to={`/trading-logs/${match.trade_id}`}
+                                        className="text-xs font-semibold text-zinc-200 hover:text-indigo-400 truncate tracking-wide"
+                                      >
+                                        Setup: {match.setup_name || 'Unnamed Setup'}
+                                      </Link>
+                                      <span className="text-[10px] font-bold text-zinc-500 font-mono shrink-0">
+                                        {matchPercent}%
+                                      </span>
+                                    </div>
+                                    
+                                    <div className="flex items-center gap-2 mt-1.5">
+                                      {outcomeBadge}
+                                      {match.trade_rating && (
+                                        <div className="flex items-center gap-0.5 text-amber-500">
+                                          {Array.from({ length: Math.min(5, match.trade_rating) }).map((_, i) => (
+                                            <Star key={i} className="w-2.5 h-2.5 fill-current" />
+                                          ))}
+                                        </div>
+                                      )}
+                                      <span className="text-[9px] text-zinc-500 font-mono">
+                                        Rating: {match.trade_rating || '—'}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </section>
               </div>
             </div>

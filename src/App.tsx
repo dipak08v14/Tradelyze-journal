@@ -33,6 +33,7 @@ export default function App() {
           {/* Fully built performance metrics dashboard */}
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/trade-entry" element={<TradeEntryPage />} />
+          <Route path="/trade-entry/:id" element={<TradeEntryPage />} />
           <Route path="/trading-logs" element={<TradingLogsPage />} />
           <Route path="/trading-logs/:id" element={<TradeTrackingPage />} />
           <Route path="/reports" element={<TradingReportsPage />} />

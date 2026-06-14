@@ -9,8 +9,9 @@ import { StarRating } from '../components/StarRating';
 import { RuleChecklist } from '../components/RuleChecklist';
 import { PsychSlider } from '../components/PsychSlider';
 import { ExecutionPicker, ExecutionStatus } from '../components/ExecutionPicker';
-import { Menu, Save, ImagePlus, Target, X, CheckSquare } from 'lucide-react';
+import { Menu, Save, ImagePlus, Target, X, CheckSquare, CheckCircle2 } from 'lucide-react';
 import { Strategy, StagedRuleState } from '../types';
+import { generateEmbeddingFromUrl } from '../lib/clipEmbedder';
 
 export const TradeEntryPage: React.FC = () => {
   const { user, userId, loading: authLoading } = useAuth();
@@ -82,6 +83,9 @@ export const TradeEntryPage: React.FC = () => {
   const [tradePlanFile, setTradePlanFile] = useState<File | null>(null);
   const [tradePlanPreview, setTradePlanPreview] = useState<string | null>(null);
 
+  const [embeddingStatus, setEmbeddingStatus] = useState<null | 'loading-model' | 'generating' | 'saving' | 'done' | 'error'>(null);
+  const [embeddingProgress, setEmbeddingProgress] = useState<number>(0);
+
   // Drag and Drop State
   const [dragActiveChart, setDragActiveChart] = useState(false);
   const [dragActivePlan, setDragActivePlan] = useState(false);
@@ -89,6 +93,14 @@ export const TradeEntryPage: React.FC = () => {
   // File Inputs references
   const chartInputRef = useRef<HTMLInputElement>(null);
   const planInputRef = useRef<HTMLInputElement>(null);
+
+  const isMounted = useRef(true);
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   // Handle Auth redirection
   useEffect(() => {
@@ -463,6 +475,60 @@ export const TradeEntryPage: React.FC = () => {
     }
   };
 
+  async function generateAndSaveEmbedding(tradeId: string, imageUrl: string, trade: {
+    strategy_id: string | null;
+    status: 'Win' | 'Loss' | 'Breakeven' | null;
+    execution_status: string | null;
+    trade_rating: number | null;
+    strategyName: string | null;
+  }) {
+    if (!imageUrl || !userId) return; // No image or no user, skip
+    
+    try {
+      setEmbeddingStatus('loading-model');
+      setEmbeddingProgress(0);
+      
+      // Generate embedding
+      setEmbeddingStatus('generating');
+      const embedding = await generateEmbeddingFromUrl(imageUrl, (pct) => {
+        setEmbeddingProgress(pct);
+      });
+      
+      setEmbeddingStatus('saving');
+      
+      // Build the visual embedding record
+      const embeddingRecord = {
+        trade_id: tradeId,
+        user_id: userId,
+        strategy_id: trade.strategy_id || null,
+        image_url: imageUrl,
+        embedding: embedding, // Array of 512 numbers
+        outcome: trade.status || null,
+        execution_status: trade.execution_status || null,
+        trade_rating: trade.trade_rating || null,
+        technical_score: null, 
+        psychology_score: null,
+        risk_score: null,
+        setup_name: trade.strategyName || null, 
+        ict_tags: []
+      };
+      
+      const { error } = await supabase
+        .from('trade_visual_embeddings')
+        .insert(embeddingRecord);
+      
+      if (error) throw error;
+      
+      setEmbeddingStatus('done');
+      setEmbeddingProgress(100);
+      
+    } catch (err) {
+      console.error('Embedding generation failed:', err);
+      setEmbeddingStatus('error');
+      // IMPORTANT: Do NOT throw — trade is already saved, embedding is optional
+    }
+  }
+
   // Save/Update Trade Submission
   const handleSaveTradeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -758,6 +824,26 @@ export const TradeEntryPage: React.FC = () => {
         .eq('id', targetTradeId)
         .eq('user_id', userId);
 
+      if (isEditMode && (chartRemoved || chartImageFile)) {
+        await supabase
+          .from('trade_visual_embeddings')
+          .delete()
+          .eq('trade_id', targetTradeId)
+          .eq('user_id', userId);
+      }
+
+      if (chartImageFile && updatedChartUrl) {
+        const selectedStrategyName = strategies.find((s) => s.id === strategyId)?.name || null;
+        // Don't await — run in background
+        generateAndSaveEmbedding(targetTradeId, updatedChartUrl, {
+          strategy_id: strategyId || null,
+          status: trade_status,
+          execution_status: executionStatus || null,
+          trade_rating: tradeRating > 0 ? tradeRating : null,
+          strategyName: selectedStrategyName
+        });
+      }
+
       showSuccess(isEditMode ? 'Trade updated successfully!' : 'Trade logged successfully!');
       
       if (isEditMode) {
@@ -875,32 +961,58 @@ export const TradeEntryPage: React.FC = () => {
                     : 'Record your complete trade — rules, psychology, execution, and media.'}
                 </p>
               </div>
-              <div className="flex items-center gap-3">
-                {isEditMode && (
-                  <Link 
-                    to={`/trading-logs/${id}`}
-                    className="w-full sm:w-auto border border-zinc-805 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 font-semibold rounded-xl px-5 py-3 text-sm transition-all cursor-pointer flex items-center justify-center"
-                  >
-                    Cancel
-                  </Link>
-                )}
-                <button
-                  type="submit"
-                  disabled={saving || !date.trim() || !symbol.trim()}
-                  className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-850 disabled:opacity-50 text-white font-semibold rounded-xl px-6 py-3 text-sm transition-all shadow-lg shadow-indigo-600/15 cursor-pointer flex items-center justify-center gap-2"
-                >
-                  {saving ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      <span>{isEditMode ? 'Updating...' : 'Saving...'}</span>
-                    </>
-                  ) : (
-                    <>
-                      <Save className="w-4 h-4" />
-                      <span>{isEditMode ? 'Update Trade' : 'Save Trade'}</span>
-                    </>
+              <div className="flex flex-col items-stretch sm:items-end gap-2 shrink-0">
+                <div className="flex items-center gap-3">
+                  {isEditMode && (
+                    <Link 
+                      to={`/trading-logs/${id}`}
+                      className="w-full sm:w-auto border border-zinc-805 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 font-semibold rounded-xl px-5 py-3 text-sm transition-all cursor-pointer flex items-center justify-center"
+                    >
+                      Cancel
+                    </Link>
                   )}
-                </button>
+                  <button
+                    type="submit"
+                    disabled={saving || !date.trim() || !symbol.trim()}
+                    className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-850 disabled:opacity-50 text-white font-semibold rounded-xl px-6 py-3 text-sm transition-all shadow-lg shadow-indigo-600/15 cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    {saving ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <span>{isEditMode ? 'Updating...' : 'Saving...'}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-4 h-4" />
+                        <span>{isEditMode ? 'Update Trade' : 'Save Trade'}</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+                {embeddingStatus && embeddingStatus !== 'done' && (
+                  <div className="mt-3 bg-[#0F1117] border border-[#2A2D3A] rounded-lg px-4 py-3 w-full sm:w-80 text-left">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse flex-shrink-0" />
+                      <span className="text-xs text-gray-400">
+                        {embeddingStatus === 'loading-model' && `Loading AI Vision model... ${embeddingProgress > 0 ? embeddingProgress + '%' : ''}`}
+                        {embeddingStatus === 'generating' && 'Analyzing chart pattern...'}
+                        {embeddingStatus === 'saving' && 'Saving to visual library...'}
+                        {embeddingStatus === 'error' && 'Visual embedding failed (trade saved successfully)'}
+                      </span>
+                    </div>
+                    {embeddingStatus === 'loading-model' && embeddingProgress > 0 && (
+                      <div className="mt-2 bg-[#2A2D3A] rounded-full h-1.5 w-full">
+                        <div className="bg-indigo-600 rounded-full h-1.5 transition-all" style={{width: embeddingProgress + '%'}} />
+                      </div>
+                    )}
+                  </div>
+                )}
+                {embeddingStatus === 'done' && (
+                  <div className="mt-3 flex items-center gap-2 text-xs text-green-400">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    Chart added to visual library ✓
+                  </div>
+                )}
               </div>
             </div>
 
