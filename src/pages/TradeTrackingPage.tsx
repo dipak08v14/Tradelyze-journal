@@ -111,8 +111,8 @@ const TradeTrackingPageContent: React.FC = () => {
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
   // Visual Embeddings States
-  const [hasEmbedding, setHasEmbedding] = useState<boolean>(false);
-  const [embeddingData, setEmbeddingData] = useState<any>(null);
+  const [hasEmbedding, setHasEmbedding] = useState<boolean | null>(null);
+  const [embedding, setEmbedding] = useState<any>(null);
   const [visualMatches, setVisualMatches] = useState<any[]>([]);
   const [matchesLoading, setMatchesLoading] = useState<boolean>(false);
   const [generatingState, setGeneratingState] = useState<null | 'loading-model' | 'generating' | 'saving' | 'done' | 'error'>(null);
@@ -185,14 +185,14 @@ const TradeTrackingPageContent: React.FC = () => {
       const { data: insertedData, error } = await supabase
         .from('trade_visual_embeddings')
         .insert(embeddingRecord)
-        .select('id, embedding, image_url')
+        .select()
         .single();
 
       if (error) throw error;
 
       setGeneratingState('done');
       setHasEmbedding(true);
-      setEmbeddingData(insertedData || { id: tradeId, embedding, image_url: trade.chart_image_url });
+      setEmbedding(insertedData);
       showSuccess('Chart patterns catalogued successfully!');
 
       await loadVisualMatches(insertedData?.embedding || embedding);
@@ -258,21 +258,19 @@ const TradeTrackingPageContent: React.FC = () => {
       setRiskMgmt(riskResult.data || null);
 
       // On page load, query Supabase for existing embedding
-      const { data: embedData, error: embedError } = await supabase
+      const { data: embedCheck } = await supabase
         .from('trade_visual_embeddings')
         .select('id, embedding')
         .eq('trade_id', tradeId)
         .eq('user_id', userId)
-        .maybeSingle();
+        .maybeSingle()
 
-      if (!embedError && embedData && embedData.embedding) {
-        setHasEmbedding(true);
-        setEmbeddingData(embedData);
-        await loadVisualMatches(embedData.embedding);
+      if (embedCheck && embedCheck.id) {
+        setHasEmbedding(true)
+        setEmbedding(embedCheck)
+        await loadVisualMatches(embedCheck.embedding);
       } else {
-        setHasEmbedding(false);
-        setEmbeddingData(null);
-        setVisualMatches([]);
+        setHasEmbedding(false)
       }
 
     } catch (err: any) {
@@ -1182,7 +1180,11 @@ const TradeTrackingPageContent: React.FC = () => {
                     <div className="text-zinc-500 text-xs italic py-4 text-center border border-dashed border-zinc-800 rounded-xl bg-zinc-950/20 px-4">
                       No chart screenshot uploaded for this trade.
                     </div>
-                  ) : !hasEmbedding ? (
+                  ) : hasEmbedding === null ? (
+                    <div className="flex flex-col items-center justify-center py-6 gap-3">
+                      <div className="w-5 h-5 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
+                    </div>
+                  ) : hasEmbedding === false ? (
                     <div className="bg-zinc-950/45 border border-zinc-800/80 rounded-xl p-4 text-left">
                       {generatingState ? (
                         <div className="space-y-3">
