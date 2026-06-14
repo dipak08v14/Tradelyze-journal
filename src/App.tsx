@@ -6,6 +6,8 @@ import { LoginPage } from './pages/LoginPage';
 import { StrategiesPage } from './pages/StrategiesPage';
 import { StrategyBuilderPage } from './pages/StrategyBuilderPage';
 import { PlaceholderPage } from './pages/PlaceholderPage';
+import { TradeEntryPage } from './pages/TradeEntryPage';
+import { TradingLogsPage } from './pages/TradingLogsPage';
 
 export default function App() {
   return (
@@ -29,28 +31,12 @@ export default function App() {
             element={
               <PlaceholderPage
                 title="Dashboard"
-                message="Monthly performance overview — Coming in Phase 3"
+                message="Dashboard — Coming in Phase 5"
               />
             }
           />
-          <Route
-            path="/trade-entry"
-            element={
-              <PlaceholderPage
-                title="Trade Entry"
-                message="Complete trade logging form — Coming in Phase 3"
-              />
-            }
-          />
-          <Route
-            path="/trading-logs"
-            element={
-              <PlaceholderPage
-                title="Trading Logs"
-                message="Full trade history and filters — Coming in Phase 4"
-              />
-            }
-          />
+          <Route path="/trade-entry" element={<TradeEntryPage />} />
+          <Route path="/trading-logs" element={<TradingLogsPage />} />
           <Route
             path="/reports"
             element={
