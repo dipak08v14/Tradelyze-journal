@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
@@ -18,9 +18,18 @@ export const TradeEntryPage: React.FC = () => {
   const navigate = useNavigate();
 
   // Navigation & Page State
+  const { id } = useParams<{ id: string }>();
+  const isEditMode = Boolean(id);
+  const [loading, setLoading] = useState<boolean>(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [strategies, setStrategies] = useState<Strategy[]>([]);
+
+  // Edit Mode Stored Assets
+  const [existingChartImageUrl, setExistingChartImageUrl] = useState<string | null>(null);
+  const [existingPlanUrl, setExistingPlanUrl] = useState<string | null>(null);
+  const [chartRemoved, setChartRemoved] = useState<boolean>(false);
+  const [planRemoved, setPlanRemoved] = useState<boolean>(false);
 
   // Card 1: Trade Details
   const [date, setDate] = useState<string>(() => new Date().toISOString().split('T')[0]);
@@ -111,6 +120,127 @@ export const TradeEntryPage: React.FC = () => {
     };
     fetchActiveStrategies();
   }, [userId]);
+
+  // Load existing trade configuration when in edit mode
+  useEffect(() => {
+    if (!userId || !id) return;
+
+    const fetchTradeForEdit = async () => {
+      try {
+        setLoading(true);
+        const [tradeRes, rulesRes, psychRes, riskRes] = await Promise.all([
+          supabase
+            .from('trades')
+            .select('*')
+            .eq('id', id)
+            .eq('user_id', userId)
+            .single(),
+          supabase
+            .from('trade_rule_adherence')
+            .select('*')
+            .eq('trade_id', id)
+            .eq('user_id', userId)
+            .order('rule_type')
+            .order('rule_order', { ascending: true }),
+          supabase
+            .from('trade_psychology')
+            .select('*')
+            .eq('trade_id', id)
+            .eq('user_id', userId)
+            .maybeSingle(),
+          supabase
+            .from('trade_risk_management')
+            .select('*')
+            .eq('trade_id', id)
+            .eq('user_id', userId)
+            .maybeSingle(),
+        ]);
+
+        if (tradeRes.error) {
+          throw new Error(tradeRes.error.message || 'Original trade details could not be found.');
+        }
+
+        const tradeData = tradeRes.data;
+        if (tradeData) {
+          setDate(tradeData.date || '');
+          setEntryTime(tradeData.entry_time || '');
+          setSymbol(tradeData.symbol || '');
+          setCallPut(tradeData.call_put || null);
+          setStrategyId(tradeData.strategy_id || '');
+          setOpeningCondition(tradeData.opening_condition || '');
+          setHourlyTrend(tradeData.hourly_trend || null);
+          setPhase(tradeData.phase || '');
+          setTrendPosition(tradeData.trend_position || '');
+          setHoldingTimeMins(tradeData.holding_time_mins !== null ? tradeData.holding_time_mins.toString() : '');
+          setInvestment(tradeData.investment !== null ? tradeData.investment.toString() : '');
+          setRisk(tradeData.risk !== null ? tradeData.risk.toString() : '');
+          setPnl(tradeData.pnl !== null ? tradeData.pnl.toString() : '');
+          setMaxDrawdown(tradeData.max_drawdown !== null ? tradeData.max_drawdown.toString() : '');
+          setQuantity(tradeData.quantity !== null ? tradeData.quantity.toString() : '');
+          setPoints(tradeData.points !== null ? tradeData.points.toString() : '');
+          setFees(tradeData.fees !== null ? tradeData.fees.toString() : '0');
+          setExecutionStatus(tradeData.execution_status || null);
+          setMistakeType(tradeData.mistake_type || '');
+          setMistakeText(tradeData.mistake_text || '');
+          setTradeRating(tradeData.trade_rating || 0);
+          setNotes(tradeData.notes || '');
+          setTradeVideoUrl(tradeData.trade_video_url || '');
+
+          setExistingChartImageUrl(tradeData.chart_image_url || null);
+          setExistingPlanUrl(tradeData.trade_plan_url || null);
+        }
+
+        const allRules = rulesRes.data || [];
+        const entryRulesFromDb = allRules
+          .filter((r) => r.rule_type === 'entry')
+          .map((r) => ({
+            id: r.rule_id, 
+            rule_id: r.rule_id,
+            rule_type: 'entry' as const,
+            rule_order: r.rule_order,
+            rule_text: r.rule_text,
+            followed: r.followed,
+          }));
+
+        const exitRulesFromDb = allRules
+          .filter((r) => r.rule_type === 'exit')
+          .map((r) => ({
+            id: r.rule_id,
+            rule_id: r.rule_id,
+            rule_type: 'exit' as const,
+            rule_order: r.rule_order,
+            rule_text: r.rule_text,
+            followed: r.followed,
+          }));
+
+        setEntryRules(entryRulesFromDb);
+        setExitRules(exitRulesFromDb);
+
+        if (psychRes.data) {
+          setExternalStress(psychRes.data.external_stress_pct ?? 70);
+          setPriceActionReading(psychRes.data.price_action_reading_pct ?? 70);
+          setConfidence(psychRes.data.confidence_pct ?? 70);
+          setEntryLevels(psychRes.data.entry_levels_pct ?? 70);
+          setAnxiety(psychRes.data.anxiety_pct ?? 10);
+          setFear(psychRes.data.fear_pct ?? 10);
+        }
+
+        if (riskRes.data) {
+          setDecidedRisk(riskRes.data.decided_risk !== null ? riskRes.data.decided_risk.toString() : '');
+          setFollowedRiskRulesPct(riskRes.data.followed_risk_rules_pct ?? 100);
+        }
+
+      } catch (err: any) {
+        console.error('Error fetching trade details for edit:', err);
+        showError('Could not load original trade configurations.');
+        navigate('/trading-logs');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTradeForEdit();
+  }, [userId, id]);
 
   // Load strategy entry/exit checklists on Strategy selection
   const handleStrategyChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -333,7 +463,7 @@ export const TradeEntryPage: React.FC = () => {
     }
   };
 
-  // Save Trade Submission
+  // Save/Update Trade Submission
   const handleSaveTradeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!date.trim() || !symbol.trim()) {
@@ -378,65 +508,118 @@ export const TradeEntryPage: React.FC = () => {
           ? (parseFloat(maxDrawdown) / parseFloat(investment)) * 100
           : null;
 
-      // 1. Insert Core Trade Row
-      const { data: newTrade, error: tradeError } = await supabase
-        .from('trades')
-        .insert({
-          user_id: userId,
-          strategy_id: strategyId || null,
-          date: date,
-          symbol: symbol.toUpperCase().trim(),
-          call_put: callPut || null,
-          risk: risk !== '' ? parseFloat(risk) : null,
-          investment: investment !== '' ? parseFloat(investment) : null,
-          pnl: pnl !== '' ? parseFloat(pnl) : null,
-          r_multiple: r_multiple,
-          status: trade_status,
-          max_drawdown: maxDrawdown !== '' ? parseFloat(maxDrawdown) : null,
-          mdd_pct: mdd_val,
-          ror: ror_val,
-          roi: roi_val,
-          quantity: quantity !== '' ? parseFloat(quantity) : null,
-          points: points !== '' ? parseFloat(points) : null,
-          holding_time_mins: holdingTimeMins !== '' ? parseInt(holdingTimeMins, 10) : null,
-          opening_condition: openingCondition || null,
-          trend_position: trendPosition || null,
-          entry_time: entryTime || null,
-          hourly_trend: hourlyTrend || null,
-          phase: phase || null,
-          execution_status: executionStatus || null,
-          mistake_type: mistakeType || null,
-          mistake_text: mistakeText || null,
-          trade_rating: tradeRating > 0 ? tradeRating : null,
-          notes: notes.trim() || null,
-          trade_video_url: tradeVideoUrl.trim() || null,
-          chart_image_url: null,
-          trade_plan_url: null,
-          fees: fees !== '' ? parseFloat(fees) : 0,
-          month: parsedMonth,
-          year: parsedYear,
-        })
-        .select()
-        .single();
+      let targetTradeId = id;
 
-      if (tradeError) throw tradeError;
-      const tradeId = newTrade.id;
+      if (isEditMode && id) {
+        // 1. UPDATE Core Trade Row
+        const { error: tradeError } = await supabase
+          .from('trades')
+          .update({
+            strategy_id: strategyId || null,
+            date: date,
+            symbol: symbol.toUpperCase().trim(),
+            call_put: callPut || null,
+            risk: risk !== '' ? parseFloat(risk) : null,
+            investment: investment !== '' ? parseFloat(investment) : null,
+            pnl: pnl !== '' ? parseFloat(pnl) : null,
+            r_multiple: r_multiple,
+            status: trade_status,
+            max_drawdown: maxDrawdown !== '' ? parseFloat(maxDrawdown) : null,
+            mdd_pct: mdd_val,
+            ror: ror_val,
+            roi: roi_val,
+            quantity: quantity !== '' ? parseFloat(quantity) : null,
+            points: points !== '' ? parseFloat(points) : null,
+            holding_time_mins: holdingTimeMins !== '' ? parseInt(holdingTimeMins, 10) : null,
+            opening_condition: openingCondition || null,
+            trend_position: trendPosition || null,
+            entry_time: entryTime || null,
+            hourly_trend: hourlyTrend || null,
+            phase: phase || null,
+            execution_status: executionStatus || null,
+            mistake_type: mistakeType || null,
+            mistake_text: mistakeText || null,
+            trade_rating: tradeRating > 0 ? tradeRating : null,
+            notes: notes.trim() || null,
+            trade_video_url: tradeVideoUrl.trim() || null,
+            fees: fees !== '' ? parseFloat(fees) : 0,
+            month: parsedMonth,
+            year: parsedYear,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', id)
+          .eq('user_id', userId);
 
-      // 2. Insert Rule Adherence table stats
+        if (tradeError) throw tradeError;
+
+        // 2. Clear & Reset Rules adherence
+        await supabase
+          .from('trade_rule_adherence')
+          .delete()
+          .eq('trade_id', id)
+          .eq('user_id', userId);
+
+      } else {
+        // Create Mode Core Trade Row Insertion
+        const { data: newTrade, error: tradeError } = await supabase
+          .from('trades')
+          .insert({
+            user_id: userId,
+            strategy_id: strategyId || null,
+            date: date,
+            symbol: symbol.toUpperCase().trim(),
+            call_put: callPut || null,
+            risk: risk !== '' ? parseFloat(risk) : null,
+            investment: investment !== '' ? parseFloat(investment) : null,
+            pnl: pnl !== '' ? parseFloat(pnl) : null,
+            r_multiple: r_multiple,
+            status: trade_status,
+            max_drawdown: maxDrawdown !== '' ? parseFloat(maxDrawdown) : null,
+            mdd_pct: mdd_val,
+            ror: ror_val,
+            roi: roi_val,
+            quantity: quantity !== '' ? parseFloat(quantity) : null,
+            points: points !== '' ? parseFloat(points) : null,
+            holding_time_mins: holdingTimeMins !== '' ? parseInt(holdingTimeMins, 10) : null,
+            opening_condition: openingCondition || null,
+            trend_position: trendPosition || null,
+            entry_time: entryTime || null,
+            hourly_trend: hourlyTrend || null,
+            phase: phase || null,
+            execution_status: executionStatus || null,
+            mistake_type: mistakeType || null,
+            mistake_text: mistakeText || null,
+            trade_rating: tradeRating > 0 ? tradeRating : null,
+            notes: notes.trim() || null,
+            trade_video_url: tradeVideoUrl.trim() || null,
+            chart_image_url: null,
+            trade_plan_url: null,
+            fees: fees !== '' ? parseFloat(fees) : 0,
+            month: parsedMonth,
+            year: parsedYear,
+          })
+          .select()
+          .single();
+
+        if (tradeError) throw tradeError;
+        targetTradeId = newTrade.id;
+      }
+
+      // 3. Re-Insert Rule Adherence table stats
       const allRulesToLog = [
         ...entryRules.map((r) => ({
-          trade_id: tradeId,
+          trade_id: targetTradeId,
           user_id: userId,
-          rule_id: r.id,
+          rule_id: r.rule_id || r.id,
           rule_type: 'entry',
           rule_order: r.rule_order,
           rule_text: r.rule_text,
           followed: r.followed === true,
         })),
         ...exitRules.map((r) => ({
-          trade_id: tradeId,
+          trade_id: targetTradeId,
           user_id: userId,
-          rule_id: r.id,
+          rule_id: r.rule_id || r.id,
           rule_type: 'exit',
           rule_order: r.rule_order,
           rule_text: r.rule_text,
@@ -451,11 +634,11 @@ export const TradeEntryPage: React.FC = () => {
         if (rulesError) console.error('Rules logging failed:', rulesError);
       }
 
-      // 3. Insert Psychology Row
+      // 4. Upsert Psychology Row
       const { error: psychError } = await supabase
         .from('trade_psychology')
-        .insert({
-          trade_id: tradeId,
+        .upsert({
+          trade_id: targetTradeId,
           user_id: userId,
           external_stress_pct: externalStress,
           price_action_reading_pct: priceActionReading,
@@ -464,10 +647,10 @@ export const TradeEntryPage: React.FC = () => {
           anxiety_pct: anxiety,
           fear_pct: fear,
           psychological_condition_pct: parseFloat(psychScore.toFixed(2)),
-        });
+        }, { onConflict: 'trade_id' });
       if (psychError) console.error('Psychology insertion failed:', psychError);
 
-      // 4. Insert Risk Management Row
+      // 5. Upsert Risk Management Row
       const finalPlannedRisk =
         decidedRisk !== ''
           ? parseFloat(decidedRisk)
@@ -477,23 +660,50 @@ export const TradeEntryPage: React.FC = () => {
 
       const { error: riskError } = await supabase
         .from('trade_risk_management')
-        .insert({
-          trade_id: tradeId,
+        .upsert({
+          trade_id: targetTradeId,
           user_id: userId,
           decided_risk: finalPlannedRisk,
           followed_risk_rules_pct: followedRiskRulesPct,
-        });
+        }, { onConflict: 'trade_id' });
       if (riskError) console.error('Risk management record failed:', riskError);
 
       // Storage assets staging paths configs
-      let finalChartUrl: string | null = null;
-      let finalPlanUrl: string | null = null;
+      let updatedChartUrl = existingChartImageUrl;
+      let updatedPlanUrl = existingPlanUrl;
 
-      // 5. Upload Chart Screenshot setup
+      // Handle removals first if requested in edit mode
+      if (isEditMode) {
+        if (chartRemoved && existingChartImageUrl) {
+          const parts = existingChartImageUrl.split('/trade-media/');
+          if (parts.length > 1) {
+            await supabase.storage.from('trade-media').remove([decodeURIComponent(parts[1])]);
+          }
+          updatedChartUrl = null;
+        }
+
+        if (planRemoved && existingPlanUrl) {
+          const parts = existingPlanUrl.split('/trade-media/');
+          if (parts.length > 1) {
+            await supabase.storage.from('trade-media').remove([decodeURIComponent(parts[1])]);
+          }
+          updatedPlanUrl = null;
+        }
+      }
+
+      // Handle new uploads
       if (chartImageFile) {
+        // Delete old file if present
+        if (existingChartImageUrl) {
+          const parts = existingChartImageUrl.split('/trade-media/');
+          if (parts.length > 1) {
+            await supabase.storage.from('trade-media').remove([decodeURIComponent(parts[1])]);
+          }
+        }
+
         const ext = chartImageFile.name.split('.').pop()?.toLowerCase() || 'jpg';
         const sanitizedExt = ['jpg', 'jpeg', 'png', 'webp'].includes(ext) ? ext : 'jpg';
-        const chartPath = `chart-screenshots/${userId}/${parsedYear}/${parsedMonth}/${tradeId}_${Date.now()}.${sanitizedExt}`;
+        const chartPath = `chart-screenshots/${userId}/${parsedYear}/${parsedMonth}/${targetTradeId}_${Date.now()}.${sanitizedExt}`;
         
         const { error: uploadChartError } = await supabase.storage
           .from('trade-media')
@@ -503,18 +713,25 @@ export const TradeEntryPage: React.FC = () => {
           const { data: { publicUrl } } = supabase.storage
             .from('trade-media')
             .getPublicUrl(chartPath);
-          finalChartUrl = publicUrl;
+          updatedChartUrl = publicUrl;
         } else {
           console.error('Chart upload error:', uploadChartError);
         }
       }
 
-      // 6. Upload Trade Plan setup
       if (tradePlanFile) {
+        // Delete old plan file if present
+        if (existingPlanUrl) {
+          const parts = existingPlanUrl.split('/trade-media/');
+          if (parts.length > 1) {
+            await supabase.storage.from('trade-media').remove([decodeURIComponent(parts[1])]);
+          }
+        }
+
         const sanitizedFileName = tradePlanFile.name
           .replace(/\s+/g, '_')
           .replace(/[^a-zA-Z0-9._-]/g, '');
-        const planPath = `trade-plans/${userId}/${parsedYear}/${parsedMonth}/${tradeId}_${Date.now()}_${sanitizedFileName}`;
+        const planPath = `trade-plans/${userId}/${parsedYear}/${parsedMonth}/${targetTradeId}_${Date.now()}_${sanitizedFileName}`;
 
         const { error: uploadPlanError } = await supabase.storage
           .from('trade-media')
@@ -524,27 +741,31 @@ export const TradeEntryPage: React.FC = () => {
           const { data: { publicUrl } } = supabase.storage
             .from('trade-media')
             .getPublicUrl(planPath);
-          finalPlanUrl = publicUrl;
+          updatedPlanUrl = publicUrl;
         } else {
           console.error('Plan upload error:', uploadPlanError);
         }
       }
 
-      // 7. Update URLs back into trade table
-      if (finalChartUrl || finalPlanUrl) {
-        const updates: Record<string, string | null> = {};
-        if (finalChartUrl) updates.chart_image_url = finalChartUrl;
-        if (finalPlanUrl) updates.trade_plan_url = finalPlanUrl;
+      // Update URLs back into trade table
+      const updates: Record<string, string | null> = {};
+      updates.chart_image_url = updatedChartUrl;
+      updates.trade_plan_url = updatedPlanUrl;
 
-        await supabase
-          .from('trades')
-          .update(updates)
-          .eq('id', tradeId)
-          .eq('user_id', userId);
+      await supabase
+        .from('trades')
+        .update(updates)
+        .eq('id', targetTradeId)
+        .eq('user_id', userId);
+
+      showSuccess(isEditMode ? 'Trade updated successfully!' : 'Trade logged successfully!');
+      
+      if (isEditMode) {
+        navigate(`/trading-logs/${targetTradeId}`);
+      } else {
+        handleResetForm();
+        navigate(`/trading-logs/${targetTradeId}`);
       }
-
-      showSuccess('Trade logged successfully!');
-      handleResetForm();
     } catch (err: any) {
       console.error('Error saving trade:', err);
       showError(err.message || 'Error occurred while saving transaction.');
@@ -601,9 +822,9 @@ export const TradeEntryPage: React.FC = () => {
   };
 
   // Render auth or fallback spinner
-  if (authLoading) {
+  if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-[#0F1117] flex items-center justify-center">
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-indigo-600/30 border-t-indigo-600 rounded-full animate-spin" />
       </div>
     );
@@ -636,14 +857,33 @@ export const TradeEntryPage: React.FC = () => {
             {/* PAGE HEADER */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
+                {isEditMode && (
+                  <div className="flex items-center gap-2 text-xs font-mono font-medium text-zinc-500 mb-2">
+                    <Link to="/trading-logs" className="hover:text-indigo-400 transition-colors">TRADING LOGS</Link>
+                    <span>/</span>
+                    <Link to={`/trading-logs/${id}`} className="hover:text-indigo-400 transition-colors">TRADE AUDIT</Link>
+                    <span>/</span>
+                    <span className="text-zinc-300">EDIT</span>
+                  </div>
+                )}
                 <h1 className="text-3xl font-extrabold tracking-tight text-zinc-100 font-display">
-                  Log Trade
+                  {isEditMode ? 'Edit Trade' : 'Log Trade'}
                 </h1>
                 <p className="text-sm text-zinc-400 mt-1.5">
-                  Record your complete trade — rules, psychology, execution, and media.
+                  {isEditMode 
+                    ? 'Modify transaction parameters, rules adherence, scores and media contents.' 
+                    : 'Record your complete trade — rules, psychology, execution, and media.'}
                 </p>
               </div>
-              <div>
+              <div className="flex items-center gap-3">
+                {isEditMode && (
+                  <Link 
+                    to={`/trading-logs/${id}`}
+                    className="w-full sm:w-auto border border-zinc-805 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 font-semibold rounded-xl px-5 py-3 text-sm transition-all cursor-pointer flex items-center justify-center"
+                  >
+                    Cancel
+                  </Link>
+                )}
                 <button
                   type="submit"
                   disabled={saving || !date.trim() || !symbol.trim()}
@@ -652,12 +892,12 @@ export const TradeEntryPage: React.FC = () => {
                   {saving ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      <span>Saving...</span>
+                      <span>{isEditMode ? 'Updating...' : 'Saving...'}</span>
                     </>
                   ) : (
                     <>
                       <Save className="w-4 h-4" />
-                      <span>Save Trade</span>
+                      <span>{isEditMode ? 'Update Trade' : 'Save Trade'}</span>
                     </>
                   )}
                 </button>
@@ -1160,6 +1400,15 @@ export const TradeEntryPage: React.FC = () => {
                     )}
                   </div>
 
+                  {isEditMode && (
+                    <div className="bg-indigo-950/50 border border-indigo-500/20 text-indigo-300 text-xs rounded-xl p-3 mt-4 mb-2 flex items-start gap-2.5">
+                      <span className="font-bold text-sm leading-none shrink-0">ℹ️</span>
+                      <p className="leading-normal">
+                        Showing rules from when this trade was originally logged. Changing the strategy will reload current rules.
+                      </p>
+                    </div>
+                  )}
+
                   <RuleChecklist
                     rules={entryRules}
                     onChange={handleRuleToggle}
@@ -1539,7 +1788,25 @@ export const TradeEntryPage: React.FC = () => {
                         className="hidden"
                       />
 
-                      {chartImagePreview ? (
+                      {existingChartImageUrl && !chartRemoved ? (
+                        <div className="relative aspect-video rounded-xl bg-zinc-950 border border-zinc-800 overflow-hidden group">
+                          <img
+                            src={existingChartImageUrl}
+                            alt="Original archived trade chart"
+                            className="w-full h-full object-contain"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setChartRemoved(true);
+                            }}
+                            className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full p-1.5 shadow-lg shadow-black/60 cursor-pointer transition-all"
+                            title="Remove archived screenshot"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ) : chartImagePreview ? (
                         <div className="relative aspect-video rounded-xl bg-zinc-950 border border-zinc-800 overflow-hidden group">
                           <img
                             src={chartImagePreview}
@@ -1552,7 +1819,7 @@ export const TradeEntryPage: React.FC = () => {
                               setChartImageFile(null);
                               setChartImagePreview(null);
                             }}
-                            className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full p-1.5 shadow-lg shadow-black/50 cursor-pointer"
+                            className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full p-1.5 shadow-lg shadow-black/55 cursor-pointer"
                           >
                             <X className="w-4 h-4" />
                           </button>
@@ -1617,7 +1884,26 @@ export const TradeEntryPage: React.FC = () => {
                         className="hidden"
                       />
 
-                      {tradePlanFile ? (
+                      {existingPlanUrl && !planRemoved ? (
+                        <div className="p-3 bg-zinc-950 border border-zinc-800 rounded-xl flex items-center justify-between text-xs gap-2">
+                          <div className="flex items-center gap-2 truncate">
+                            <CheckSquare className="w-4 h-4 text-indigo-400 flex-shrink-0" />
+                            <span className="text-zinc-300 truncate font-mono font-medium" title={existingPlanUrl.split('/').pop()}>
+                              {existingPlanUrl.split('/').pop() || 'Original Archived Plan'}
+                            </span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setPlanRemoved(true);
+                            }}
+                            className="text-zinc-550 hover:text-red-400 p-1 cursor-pointer"
+                            title="Remove archived plan"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ) : tradePlanFile ? (
                         <div className="p-3 bg-zinc-950 border border-zinc-800 rounded-xl flex items-center justify-between text-xs gap-2">
                           <div className="flex items-center gap-2 truncate">
                             <CheckSquare className="w-4 h-4 text-indigo-400 flex-shrink-0" />

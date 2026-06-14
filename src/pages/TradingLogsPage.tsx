@@ -1,10 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import { Sidebar } from '../components/Sidebar';
-import { Menu, Plus, Star, BarChart, AlertTriangle } from 'lucide-react';
+import {
+  Menu,
+  Plus,
+  Star,
+  BarChart,
+  ChevronUp,
+  ChevronDown,
+  RotateCcw,
+  X,
+  TrendingUp
+} from 'lucide-react';
 import { Trade } from '../types';
 
 export const TradingLogsPage: React.FC = () => {
@@ -12,69 +22,243 @@ export const TradingLogsPage: React.FC = () => {
   const { showError } = useToast();
   const navigate = useNavigate();
 
-  const [trades, setTrades] = useState<Trade[]>([]);
+  // General App & Navigation
+  const [allTrades, setAllTrades] = useState<Trade[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
 
-  // Authenticated route safety
+  // States for Filter Parameters
+  const [filterMonth, setFilterMonth] = useState<string>('All');
+  const [filterYear, setFilterYear] = useState<string>('All');
+  const [filterSymbol, setFilterSymbol] = useState<string>('');
+  const [filterSetup, setFilterSetup] = useState<string>('All');
+  const [filterStatus, setFilterStatus] = useState<string>('All'); // 'All' | 'Win' | 'Loss' | 'Breakeven'
+  const [filterExecution, setFilterExecution] = useState<string>('All');
+  const [filterMistakeType, setFilterMistakeType] = useState<string>('All');
+
+  // Sorting State
+  const [sortColumn, setSortColumn] = useState<string>('date');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+
+  // Load Session Safety
   useEffect(() => {
     if (!authLoading && !userId) {
       navigate('/login');
     }
   }, [userId, authLoading, navigate]);
 
-  // Read logs database fetch query on mount/userId binding
-  useEffect(() => {
+  // Fetch Trade Logs
+  const fetchAllTradesData = async () => {
     if (!userId) return;
-
-    let mounted = true;
-
-    const fetchTradeHistoryLogs = async () => {
-      try {
-        setLoading(true);
-        // GET all trades for trading logs
-        const { data, error } = await supabase
-          .from('trades')
-          .select('*, strategies(name, type_of_strategy)')
-          .eq('user_id', userId)
-          .order('date', { ascending: false })
-          .order('created_at', { ascending: false });
-
-        if (error) throw error;
-        if (mounted && data) {
-          setTrades(data as Trade[]);
-        }
-      } catch (err: any) {
-        console.error('Error fetching trade history logs:', err);
-        showError(err.message || 'Error occurred while loading transaction logs.');
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    };
-
-    fetchTradeHistoryLogs();
-
-    return () => {
-      mounted = false;
-    };
-  }, [userId]);
-
-  // Formatting date helper, e.g. "15 Jun" or "15 Jun 2026"
-  const formatDateLabel = (dateStr: string) => {
-    if (!dateStr) return '—';
     try {
-      const d = new Date(dateStr);
-      const day = d.getDate();
-      const month = d.toLocaleString('en-US', { month: 'short' });
-      return `${day} ${month}`;
-    } catch {
-      return dateStr;
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('trades')
+        .select('*, strategies(name, type_of_strategy)')
+        .eq('user_id', userId)
+        .order('date', { ascending: false })
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      if (data) {
+        setAllTrades(data as Trade[]);
+      }
+    } catch (err: any) {
+      console.error('Error fetching trade history:', err);
+      showError(err.message || 'Failed to sync your trades list.');
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Indian Rupees Local Currency Formatter (plain decimal in database to Indian Lakhs format)
-  const formatINR = (val: number | null | undefined) => {
-    if (val === null || val === undefined) return '—';
+  useEffect(() => {
+    fetchAllTradesData();
+  }, [userId]);
+
+  // Dynamic values helper list from DB data (Unique setup names, years)
+  const uniqueYears = useMemo(() => {
+    const years = allTrades
+      .map((t) => t.year)
+      .filter((y): y is number => typeof y === 'number');
+    const unique = Array.from(new Set(years)) as number[];
+    return unique.sort((a, b) => b - a); // descending order
+  }, [allTrades]);
+
+  const uniqueSetups = useMemo(() => {
+    const setups = allTrades
+      .map((t) => t.strategies?.name)
+      .filter((name): name is string => typeof name === 'string' && name !== '');
+    return Array.from(new Set(setups)).sort();
+  }, [allTrades]);
+
+  // Filter Active Check
+  const isFilterActive = useMemo(() => {
+    return (
+      filterMonth !== 'All' ||
+      filterYear !== 'All' ||
+      filterSymbol !== '' ||
+      filterSetup !== 'All' ||
+      filterStatus !== 'All' ||
+      filterExecution !== 'All' ||
+      filterMistakeType !== 'All'
+    );
+  }, [
+    filterMonth,
+    filterYear,
+    filterSymbol,
+    filterSetup,
+    filterStatus,
+    filterExecution,
+    filterMistakeType
+  ]);
+
+  // Reset Filters Function
+  const handleResetFilters = () => {
+    setFilterMonth('All');
+    setFilterYear('All');
+    setFilterSymbol('');
+    setFilterSetup('All');
+    setFilterStatus('All');
+    setFilterExecution('All');
+    setFilterMistakeType('All');
+  };
+
+  // Perform filtering client-side
+  const filteredTrades = useMemo(() => {
+    return allTrades.filter((trade) => {
+      // Month
+      if (filterMonth !== 'All' && trade.month !== filterMonth) return false;
+      // Year
+      if (filterYear !== 'All' && trade.year?.toString() !== filterYear) return false;
+      // Symbol
+      if (filterSymbol.trim() !== '' && !trade.symbol.toUpperCase().includes(filterSymbol.toUpperCase().trim())) return false;
+      // Setup / Strategy Name
+      if (filterSetup !== 'All' && trade.strategies?.name !== filterSetup) return false;
+      // Status
+      if (filterStatus !== 'All' && trade.status !== filterStatus) return false;
+      // Execution Status
+      if (filterExecution !== 'All' && trade.execution_status !== filterExecution) return false;
+      // Mistake Type
+      if (filterMistakeType !== 'All' && trade.mistake_type !== filterMistakeType) return false;
+
+      return true;
+    });
+  }, [
+    allTrades,
+    filterMonth,
+    filterYear,
+    filterSymbol,
+    filterSetup,
+    filterStatus,
+    filterExecution,
+    filterMistakeType
+  ]);
+
+  // Real-time Aggregated Stats based on FILTERED trades only
+  const stats = useMemo(() => {
+    const count = filteredTrades.length;
+    let totalPnl = 0;
+    let winCount = 0;
+    let rankableCount = 0;
+    let totalRisk = 0;
+    let totalWinPnl = 0;
+    let totalLossPnl = 0;
+
+    filteredTrades.forEach((t) => {
+      const p = t.pnl ? parseFloat(t.pnl as any) : 0;
+      totalPnl += p;
+
+      if (t.status === 'Win') {
+        winCount++;
+        totalWinPnl += p;
+      } else if (t.status === 'Loss') {
+        totalLossPnl += Math.abs(p);
+      }
+
+      if (t.status === 'Win' || t.status === 'Loss') {
+        rankableCount++;
+      }
+
+      const r = t.risk ? parseFloat(t.risk as any) : 0;
+      totalRisk += r;
+    });
+
+    const winRate = rankableCount > 0 ? (winCount / rankableCount) * 100 : 0;
+    const avgR = count > 0 && totalRisk > 0 ? totalPnl / (totalRisk / count) : 0; // Note: simplified average R value or sum of R multiples can be computed
+    
+    // Average R-Multiple straight from storage
+    let rSum = 0;
+    let rCount = 0;
+    filteredTrades.forEach((t) => {
+      if (t.r_multiple !== null && t.r_multiple !== undefined) {
+        rSum += parseFloat(t.r_multiple as any);
+        rCount++;
+      }
+    });
+    const calculatedAvgR = rCount > 0 ? rSum / rCount : 0;
+
+    const profitFactor = totalLossPnl > 0 ? totalWinPnl / totalLossPnl : totalWinPnl > 0 ? Infinity : 0;
+
+    return {
+      count,
+      totalPnl,
+      winRate,
+      avgR: calculatedAvgR,
+      profitFactor
+    };
+  }, [filteredTrades]);
+
+  // Sorting execution
+  const sortedTrades = useMemo(() => {
+    const data = [...filteredTrades];
+    data.sort((a, b) => {
+      let valA: any = a[sortColumn as keyof Trade];
+      let valB: any = b[sortColumn as keyof Trade];
+
+      // Handle null/undef
+      if (valA === null || valA === undefined) {
+        return sortDirection === 'asc' ? 1 : -1;
+      }
+      if (valB === null || valB === undefined) {
+        return sortDirection === 'asc' ? -1 : 1;
+      }
+
+      // Date sorting
+      if (sortColumn === 'date') {
+        const timeA = new Date(valA).getTime();
+        const timeB = new Date(valB).getTime();
+        return sortDirection === 'asc' ? timeA - timeB : timeB - timeA;
+      }
+
+      // Numerical values
+      if (['pnl', 'r_multiple', 'roi', 'ror', 'trade_rating'].includes(sortColumn)) {
+        const numA = parseFloat(valA);
+        const numB = parseFloat(valB);
+        return sortDirection === 'asc' ? numA - numB : numB - numA;
+      }
+
+      // String fallback
+      const strA = String(valA).toLowerCase();
+      const strB = String(valB).toLowerCase();
+      if (strA < strB) return sortDirection === 'asc' ? -1 : 1;
+      if (strA > strB) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+    return data;
+  }, [filteredTrades, sortColumn, sortDirection]);
+
+  // Handle Sort Toggle
+  const toggleSort = (colName: string) => {
+    if (sortColumn === colName) {
+      setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortColumn(colName);
+      setSortDirection('desc');
+    }
+  };
+
+  // Indian Rupees Currency Formatter style
+  const formatINR = (val: number) => {
     const prefix = val < 0 ? '-₹' : '₹';
     return `${prefix}${Math.abs(val).toLocaleString('en-IN', {
       minimumFractionDigits: 2,
@@ -82,93 +266,40 @@ export const TradingLogsPage: React.FC = () => {
     })}`;
   };
 
-  // Direction formatting elements
-  const renderDirectionBadge = (dir: string | null) => {
-    if (!dir) return <span className="text-zinc-600 italic">—</span>;
-    let style = '';
-    if (dir === 'CALL') style = 'text-green-400 bg-green-950/40 border border-green-800/50';
-    if (dir === 'PUT') style = 'text-red-400 bg-red-950/40 border border-red-800/50';
-    if (dir === 'LONG') style = 'text-blue-400 bg-blue-950/40 border border-blue-800/50';
-    if (dir === 'SHORT') style = 'text-purple-400 bg-purple-950/40 border border-purple-800/50';
+  // Date Tag Helper (Today, Yesterday)
+  const getDateDisplay = (dateStr: string) => {
+    if (!dateStr) return { label: '—', isHighlight: false };
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
 
-    return (
-      <span className={`px-2.5 py-1 text-[10px] font-bold rounded-lg ${style}`}>
-        {dir}
-      </span>
-    );
+      if (dateStr === today) {
+        return { label: 'Today', isHighlight: true };
+      }
+      if (dateStr === yesterday) {
+        return { label: 'Yesterday', isHighlight: false };
+      }
+
+      const d = new Date(dateStr);
+      const day = d.getDate();
+      const month = d.toLocaleString('en-US', { month: 'short' });
+      return { label: `${day} ${month}`, isHighlight: false };
+    } catch {
+      return { label: dateStr, isHighlight: false };
+    }
   };
 
-  // Status Badge mappings
-  const renderStatusBadge = (status: string | null) => {
-    if (!status) return <span className="text-zinc-600">—</span>;
-    if (status === 'Win') {
-      return (
-        <span className="px-2.5 py-1 text-xs font-extrabold bg-green-950/80 border border-green-700/80 text-green-300 rounded-lg">
-          WIN
-        </span>
-      );
-    }
-    if (status === 'Loss') {
-      return (
-        <span className="px-2.5 py-1 text-xs font-extrabold bg-red-950/80 border border-red-700/80 text-red-300 rounded-lg">
-          LOSS
-        </span>
-      );
-    }
-    return (
-      <span className="px-2.5 py-1 text-xs font-extrabold bg-zinc-800 border border-zinc-650 text-zinc-300 rounded-lg">
-        BE
-      </span>
-    );
+  // Render score helpers
+  const getWinRateColor = (wr: number) => {
+    if (wr >= 60) return 'text-green-400';
+    if (wr >= 45) return 'text-amber-400';
+    return 'text-red-400';
   };
 
-  // Execution Badge mapping
-  const renderExecutionBadge = (exec: string | null) => {
-    if (!exec) return <span className="text-zinc-600 italic">—</span>;
-    let style = '';
-    let label = 'AVG';
-    if (exec === 'BEST TRADE') {
-      style = 'bg-green-950/60 text-green-400 border border-green-800/80';
-      label = 'BEST';
-    } else if (exec === 'GOOD TRADE') {
-      style = 'bg-teal-950/60 text-teal-400 border border-teal-800/80';
-      label = 'GOOD';
-    } else if (exec === 'AVERAGE TRADE') {
-      style = 'bg-amber-950/60 text-amber-400 border border-amber-800/80';
-      label = 'AVG';
-    } else if (exec === 'POOR TRADE') {
-      style = 'bg-orange-950/60 text-orange-400 border border-orange-850';
-      label = 'POOR';
-    } else if (exec === 'BAD TRADE') {
-      style = 'bg-red-950/60 text-red-400 border border-red-850';
-      label = 'BAD';
-    }
-
-    return (
-      <span className={`px-2 py-0.5 text-[10px] uppercase font-mono tracking-wide font-extrabold rounded-md ${style}`}>
-        {label}
-      </span>
-    );
-  };
-
-  // Mistake rendering format
-  const renderMistakeCell = (type: string | null) => {
-    if (!type || type === 'No Mistake') {
-      return <span className="text-zinc-600 italic">None</span>;
-    }
-    return <span className="text-zinc-400 text-xs font-medium truncate max-w-[120px] block">{type}</span>;
-  };
-
-  // Stars rendering
-  const renderRatingStars = (rating: number | null) => {
-    if (!rating || rating <= 0) return <span className="text-zinc-600">—</span>;
-    return (
-      <span className="flex items-center gap-0.5 text-amber-400">
-        {Array.from({ length: rating }).map((_, i) => (
-          <Star key={i} className="w-3 h-3 fill-current" />
-        ))}
-      </span>
-    );
+  const getAvgRColor = (r: number) => {
+    if (r >= 1.5) return 'text-green-400';
+    if (r > 0) return 'text-amber-400';
+    return 'text-red-400';
   };
 
   if (authLoading) {
@@ -186,7 +317,7 @@ export const TradingLogsPage: React.FC = () => {
       {/* SIDEBAR NAVIGATION */}
       <Sidebar userEmail={user.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
-      {/* RIGHT MAIN CONTAINER */}
+      {/* RIGHT SIDE MAIN CONTAINER */}
       <div className="flex-1 md:pl-[250px] flex flex-col min-h-screen">
         {/* MOBILE HEADER BAR */}
         <header className="flex items-center justify-between px-6 py-4 border-b border-zinc-800 md:hidden bg-zinc-900 sticky top-0 z-20">
@@ -202,21 +333,21 @@ export const TradingLogsPage: React.FC = () => {
 
         {/* CONTAINER CONTENT */}
         <main className="flex-1 overflow-y-auto px-6 py-8">
-          <div className="max-w-6xl mx-auto">
-            {/* PAGE HEADER ROW */}
+          <div className="max-w-7xl mx-auto">
+            {/* PAGE HEADER */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
                 <h1 className="text-3xl font-extrabold tracking-tight text-zinc-100 font-display">
                   Trading Logs
                 </h1>
                 <p className="text-sm text-zinc-400 mt-1.5">
-                  View and audit your logged transactions history and setup matches.
+                  Your complete trade history.
                 </p>
               </div>
               <div>
                 <Link
                   to="/trade-entry"
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl px-4 py-2.5 text-sm transition-all shadow-lg shadow-indigo-600/10 cursor-pointer inline-flex items-center gap-1.5 font-display"
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl px-5 py-3 text-sm transition-all shadow-lg shadow-indigo-600/15 cursor-pointer inline-flex items-center gap-2"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Log New Trade</span>
@@ -224,95 +355,407 @@ export const TradingLogsPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="border-b border-zinc-800/80 mt-5 mb-8" />
+            <div className="border-b border-zinc-800/80 mt-4 mb-6" />
 
-            {/* ERROR SKELETON OR RESULTS TABLE */}
+            {/* FILTER BAR SECTION CARD */}
+            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 mb-5 shadow-2xl">
+              {/* Row 1 Filter Fields */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {/* Month Dropdown */}
+                <div>
+                  <label className="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-2 font-mono">
+                    Month
+                  </label>
+                  <select
+                    value={filterMonth}
+                    onChange={(e) => setFilterMonth(e.target.value)}
+                    className="bg-zinc-950 border border-zinc-800 text-zinc-100 rounded-xl px-3 py-2.5 w-full focus:border-indigo-500 focus:outline-none text-xs cursor-pointer"
+                  >
+                    <option value="All">All Months</option>
+                    {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((m) => (
+                      <option key={m} value={m}>
+                        {m}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Year Dropdown */}
+                <div>
+                  <label className="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-2 font-mono">
+                    Year
+                  </label>
+                  <select
+                    value={filterYear}
+                    onChange={(e) => setFilterYear(e.target.value)}
+                    className="bg-zinc-950 border border-zinc-800 text-zinc-100 rounded-xl px-3 py-2.5 w-full focus:border-indigo-500 focus:outline-none text-xs cursor-pointer"
+                  >
+                    <option value="All">All Years</option>
+                    {uniqueYears.map((y) => (
+                      <option key={y} value={y.toString()}>
+                        {y}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Symbol Filter Text Input with absolute clearing button X */}
+                <div>
+                  <label className="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-2 font-mono">
+                    Symbol
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={filterSymbol}
+                      onChange={(e) => setFilterSymbol(e.target.value.toUpperCase())}
+                      placeholder="e.g. BTCUSDT"
+                      className="bg-zinc-950 border border-zinc-800 text-zinc-100 placeholder-zinc-700 rounded-xl pl-3 pr-8 py-2.5 w-full focus:border-indigo-500 focus:outline-none text-xs font-mono"
+                    />
+                    {filterSymbol && (
+                      <button
+                        type="button"
+                        onClick={() => setFilterSymbol('')}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-550 hover:text-zinc-200 cursor-pointer"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Setup Dropdown */}
+                <div>
+                  <label className="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-2 font-mono">
+                    Setup
+                  </label>
+                  <select
+                    value={filterSetup}
+                    onChange={(e) => setFilterSetup(e.target.value)}
+                    className="bg-zinc-950 border border-zinc-800 text-zinc-100 rounded-xl px-3 py-2.5 w-full focus:border-indigo-500 focus:outline-none text-xs cursor-pointer"
+                  >
+                    <option value="All">All Setups</option>
+                    {uniqueSetups.map((setupName) => (
+                      <option key={setupName} value={setupName}>
+                        {setupName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Row 2 Filter Fields */}
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mt-5 pt-4 border-t border-zinc-850">
+                {/* Status Pills */}
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mr-1.5 font-mono">
+                    Status:
+                  </span>
+                  {['All', 'Win', 'Loss', 'Breakeven'].map((st) => {
+                    const isActive = filterStatus === st;
+                    return (
+                      <button
+                        key={st}
+                        type="button"
+                        onClick={() => setFilterStatus(st)}
+                        className={`px-3 py-1.5 text-xs rounded-xl font-bold cursor-pointer transition-all border ${
+                          isActive
+                            ? 'bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-600/10'
+                            : 'bg-transparent border-zinc-850 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'
+                        }`}
+                      >
+                        {st}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Executions & Mistakes selectors */}
+                <div className="flex flex-wrap items-center gap-3">
+                  {/* Executions */}
+                  <select
+                    value={filterExecution}
+                    onChange={(e) => setFilterExecution(e.target.value)}
+                    className="bg-zinc-950 border border-zinc-800 text-zinc-100 rounded-xl px-3 py-2 w-auto focus:border-indigo-500 focus:outline-none text-xs cursor-pointer"
+                  >
+                    <option value="All">All Executions</option>
+                    <option value="BEST TRADE">BEST TRADE</option>
+                    <option value="GOOD TRADE">GOOD TRADE</option>
+                    <option value="AVERAGE TRADE">AVERAGE TRADE</option>
+                    <option value="POOR TRADE">POOR TRADE</option>
+                    <option value="BAD TRADE">BAD TRADE</option>
+                  </select>
+
+                  {/* Mistakes dropdown */}
+                  <select
+                    value={filterMistakeType}
+                    onChange={(e) => setFilterMistakeType(e.target.value)}
+                    className="bg-zinc-950 border border-zinc-800 text-zinc-100 rounded-xl px-3 py-2 w-auto focus:border-indigo-500 focus:outline-none text-xs cursor-pointer"
+                  >
+                    <option value="All">All Mistakes</option>
+                    <option value="Technical">Technical</option>
+                    <option value="Psychological">Psychological</option>
+                    <option value="Risk Management">Risk Management</option>
+                    <option value="No Mistake">No Mistake</option>
+                  </select>
+
+                  {/* Reset Filters button */}
+                  {isFilterActive && (
+                    <button
+                      type="button"
+                      onClick={handleResetFilters}
+                      className="px-3.5 py-2 text-xs font-semibold text-zinc-400 border border-zinc-800 hover:text-white rounded-xl hover:bg-zinc-850 cursor-pointer transition-all flex items-center gap-1.5"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                      <span>Reset</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* DYNAMIC SUMMARY STATS BAR */}
+            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-5 shadow-xl">
+              <div className="flex flex-wrap items-center justify-between sm:justify-start gap-y-3 gap-x-6 text-sm text-zinc-400 md:divide-x md:divide-zinc-800/80">
+                <div className="font-medium pr-1">
+                  Showing <span className="font-extrabold text-indigo-400">{stats.count}</span> trades
+                </div>
+                
+                <div className="md:pl-6 flex items-center gap-1.5">
+                  <span>Total P&L:</span>
+                  <span
+                    className={`font-mono font-extrabold text-base ${
+                      stats.totalPnl > 0
+                        ? 'text-green-400'
+                        : stats.totalPnl < 0
+                        ? 'text-red-400'
+                        : 'text-zinc-400'
+                    }`}
+                  >
+                    {formatINR(stats.totalPnl)}
+                  </span>
+                </div>
+
+                <div className="md:pl-6 flex items-center gap-1.5">
+                  <span>Win Rate:</span>
+                  <span className={`font-extrabold ${getWinRateColor(stats.winRate)}`}>
+                    {stats.winRate.toFixed(0)}%
+                  </span>
+                </div>
+
+                <div className="md:pl-6 flex items-center gap-1.5">
+                  <span>Avg R:</span>
+                  <span className={`font-mono font-extrabold ${getAvgRColor(stats.avgR)}`}>
+                    {stats.avgR > 0 ? '+' : ''}
+                    {stats.avgR.toFixed(2)}R
+                  </span>
+                </div>
+
+                <div className="md:pl-6 flex items-center gap-1.5 pr-2">
+                  <span>Profit Factor:</span>
+                  <span
+                    className={`font-mono font-extrabold ${
+                      stats.profitFactor === Infinity
+                        ? 'text-green-400'
+                        : stats.profitFactor > 1.5
+                        ? 'text-green-400'
+                        : stats.profitFactor > 1.0
+                        ? 'text-amber-400'
+                        : 'text-red-400'
+                    }`}
+                  >
+                    {stats.profitFactor === Infinity ? 'MAX' : stats.profitFactor.toFixed(2)}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* ERROR SKELETON OR DYNAMIC TABLES LAYOUT */}
             {loading ? (
-              <div className="rounded-2xl overflow-hidden border border-zinc-850">
+              <div className="rounded-2xl overflow-hidden border border-zinc-850 bg-zinc-900 shadow-2xl">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-zinc-950 border-b border-zinc-800/80 text-xs font-mono font-extrabold text-zinc-500 uppercase tracking-widest">
-                      <th className="px-4 py-3.5">Date</th>
-                      <th className="px-4 py-3.5">Symbol</th>
-                      <th className="px-4 py-3.5">Dir</th>
-                      <th className="px-4 py-3.5">Setup</th>
-                      <th className="px-4 py-3.5">P&L</th>
-                      <th className="px-4 py-3.5 hidden md:table-cell">R</th>
-                      <th className="px-4 py-3.5 hidden md:table-cell">Status</th>
-                      <th className="px-4 py-3.5 hidden md:table-cell">Execution</th>
-                      <th className="px-4 py-3.5 hidden md:table-cell">Mistakes</th>
-                      <th className="px-4 py-3.5 hidden md:table-cell">Rating</th>
+                    <tr className="bg-zinc-950 border-b border-zinc-800/80 text-[10px] font-mono font-extrabold text-zinc-500 uppercase tracking-widest">
+                      <th className="px-4 py-4">#</th>
+                      <th className="px-4 py-4">Date</th>
+                      <th className="px-4 py-4">Symbol</th>
+                      <th className="px-4 py-4">Dir</th>
+                      <th className="px-4 py-4">Setup</th>
+                      <th className="px-4 py-4">P&L</th>
+                      <th className="px-4 py-4">R</th>
+                      <th className="px-4 py-4">Status</th>
+                      <th className="px-4 py-4">Execution</th>
+                      <th className="px-4 py-4 hidden sm:table-cell">Mistakes</th>
+                      <th className="px-4 py-4 hidden sm:table-cell">Rating</th>
+                      <th className="px-4 py-4 hidden sm:table-cell">ROI</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {[1, 2, 3, 4, 5].map((idx) => (
+                    {[1, 2, 3, 4, 5, 6].map((idx) => (
                       <tr key={idx} className="border-t border-zinc-800/60 bg-zinc-900/40 animate-pulse">
-                        <td className="px-4 py-4"><div className="h-4 bg-zinc-800 rounded-lg w-12" /></td>
-                        <td className="px-4 py-4"><div className="h-4 bg-zinc-800 rounded-lg w-16" /></td>
-                        <td className="px-4 py-4"><div className="h-4 bg-zinc-800 rounded-lg w-8" /></td>
-                        <td className="px-4 py-4"><div className="h-4 bg-zinc-800 rounded-lg w-24" /></td>
-                        <td className="px-4 py-4"><div className="h-4 bg-zinc-800 rounded-lg w-16" /></td>
-                        <td className="px-4 py-4 hidden md:table-cell"><div className="h-4 bg-zinc-800 rounded-lg w-8" /></td>
-                        <td className="px-4 py-4 hidden md:table-cell"><div className="h-4 bg-zinc-800 rounded-lg w-12" /></td>
-                        <td className="px-4 py-4 hidden md:table-cell"><div className="h-4 bg-zinc-800 rounded-lg w-12" /></td>
-                        <td className="px-4 py-4 hidden md:table-cell"><div className="h-4 bg-zinc-800 rounded-lg w-16" /></td>
-                        <td className="px-4 py-4 hidden md:table-cell"><div className="h-4 bg-zinc-800 rounded-lg w-12" /></td>
+                        <td className="px-4 py-4.5"><div className="h-4 bg-zinc-800 rounded w-4" /></td>
+                        <td className="px-4 py-4.5"><div className="h-4 bg-zinc-800 rounded w-12" /></td>
+                        <td className="px-4 py-4.5"><div className="h-4 bg-zinc-800 rounded w-16" /></td>
+                        <td className="px-4 py-4.5"><div className="h-4 bg-zinc-800 rounded w-8" /></td>
+                        <td className="px-4 py-4.5"><div className="h-4 bg-zinc-800 rounded w-24" /></td>
+                        <td className="px-4 py-4.5"><div className="h-4 bg-zinc-800 rounded w-16" /></td>
+                        <td className="px-4 py-4.5"><div className="h-4 bg-zinc-800 rounded w-10" /></td>
+                        <td className="px-4 py-4.5"><div className="h-4 bg-zinc-800 rounded w-12" /></td>
+                        <td className="px-4 py-4.5"><div className="h-4 bg-zinc-800 rounded w-12" /></td>
+                        <td className="px-4 py-4.5 hidden sm:table-cell"><div className="h-4 bg-zinc-800 rounded w-16" /></td>
+                        <td className="px-4 py-4.5 hidden sm:table-cell"><div className="h-4 bg-zinc-800 rounded w-12" /></td>
+                        <td className="px-4 py-4.5 hidden sm:table-cell"><div className="h-4 bg-zinc-800 rounded w-10" /></td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-            ) : trades.length === 0 ? (
-              /* EMPTY STATE UNIT CARD */
-              <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-12 text-center flex flex-col items-center justify-center py-16 shadow-2xl">
-                <div className="w-16 h-16 bg-zinc-950/60 rounded-full flex items-center justify-center border border-zinc-800/80 mb-4">
+            ) : allTrades.length === 0 ? (
+              /* EMPTY JOURNAL NO TRADES YET */
+              <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20 shadow-2xl">
+                <div className="w-16 h-16 bg-zinc-950/60 rounded-full flex items-center justify-center border border-zinc-800/80 mb-4 animate-pulse">
                   <BarChart className="w-8 h-8 text-zinc-650" />
                 </div>
-                <h3 className="text-xl font-bold text-zinc-200 font-display">No Trades Logged Yet</h3>
-                <p className="text-zinc-500 text-sm mt-2 max-w-sm">
-                  Log your first trade to activate your journal dashboard and compile performance analytics.
+                <h3 className="text-xl font-bold text-zinc-200 font-display">Your Trading Journal is Empty</h3>
+                <p className="text-zinc-550 text-sm mt-3 max-w-sm">
+                  Record your completed trades to visualize metric distributions, calculate dynamic win ratios, and discover key behavioral leakages.
                 </p>
                 <Link
                   to="/trade-entry"
-                  className="mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl px-5 py-3 text-xs uppercase tracking-widest font-mono transition-all inline-flex items-center gap-1.5"
+                  className="mt-8 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-xl px-6 py-3.5 text-xs uppercase tracking-widest font-mono transition-all inline-flex items-center gap-2 shadow-lg shadow-indigo-600/15"
                 >
-                  <span>Log New Trade</span>
-                  <Plus className="w-3.5 h-3.5" />
+                  <span>Log Your First Trade</span>
+                  <Plus className="w-4 h-4" />
                 </Link>
               </div>
+            ) : filteredTrades.length === 0 ? (
+              /* EMPTY LOG RESULTS FILTER ZERO */
+              <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-12 text-center flex flex-col items-center justify-center py-16 shadow-2xl">
+                <div className="w-14 h-14 bg-zinc-950/40 rounded-full flex items-center justify-center border border-zinc-800/80 mb-3 text-zinc-600">
+                  <TrendingUp className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-bold text-zinc-300 font-display">No Trades Match Filters</h3>
+                <p className="text-zinc-550 text-xs mt-2 max-w-xs">
+                  Adjust your criteria or clear active selectors to inspect matching journaled events.
+                </p>
+                <button
+                  type="button"
+                  onClick={handleResetFilters}
+                  className="mt-6 bg-zinc-950 border border-zinc-800 hover:bg-zinc-850 text-zinc-200 font-bold px-4 py-2 text-xs rounded-xl transition-all cursor-pointer inline-flex items-center gap-1.5"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>Clear Filters</span>
+                </button>
+              </div>
             ) : (
-              /* RESULTS TABLE DESKTOP / MOBILE */
-              <div className="rounded-2xl overflow-hidden border border-zinc-800 shadow-2xl bg-zinc-900">
+              /* MAIN INTERACTIVE SORTABLE DATATABLE */
+              <div className="bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="bg-zinc-950 border-b border-zinc-800/80 text-[10px] font-mono font-extrabold text-zinc-500 uppercase tracking-widest">
-                        <th className="px-4 py-4">Date</th>
+                      <tr className="bg-zinc-950 border-b border-zinc-800/80 text-[10px] font-mono font-extrabold text-zinc-500 uppercase tracking-widest select-none">
+                        <th className="px-4 py-4 w-10 text-center">#</th>
+                        
+                        {/* Sortable headers */}
+                        <th
+                          onClick={() => toggleSort('date')}
+                          className="px-4 py-4 cursor-pointer hover:text-zinc-300 transition-colors whitespace-nowrap"
+                        >
+                          <div className="flex items-center gap-1">
+                            <span>Date</span>
+                            {sortColumn === 'date' ? (
+                              sortDirection === 'asc' ? <ChevronUp className="w-3 h-3 text-indigo-400" /> : <ChevronDown className="w-3 h-3 text-indigo-400" />
+                            ) : null}
+                          </div>
+                        </th>
+
                         <th className="px-4 py-4">Symbol</th>
+                        
                         <th className="px-4 py-4 hidden md:table-cell">Dir</th>
                         <th className="px-4 py-4 hidden md:table-cell">Setup</th>
-                        <th className="px-4 py-4">P&L</th>
-                        <th className="px-4 py-4 hidden md:table-cell">R</th>
+
+                        <th
+                          onClick={() => toggleSort('pnl')}
+                          className="px-4 py-4 cursor-pointer hover:text-zinc-300 transition-colors whitespace-nowrap"
+                        >
+                          <div className="flex items-center gap-1">
+                            <span>P&L</span>
+                            {sortColumn === 'pnl' ? (
+                              sortDirection === 'asc' ? <ChevronUp className="w-3 h-3 text-indigo-400" /> : <ChevronDown className="w-3 h-3 text-indigo-400" />
+                            ) : null}
+                          </div>
+                        </th>
+
+                        <th
+                          onClick={() => toggleSort('r_multiple')}
+                          className="px-4 py-4 cursor-pointer hover:text-zinc-300 transition-colors whitespace-nowrap hidden md:table-cell"
+                        >
+                          <div className="flex items-center gap-1">
+                            <span>R</span>
+                            {sortColumn === 'r_multiple' ? (
+                              sortDirection === 'asc' ? <ChevronUp className="w-3 h-3 text-indigo-400" /> : <ChevronDown className="w-3 h-3 text-indigo-400" />
+                            ) : null}
+                          </div>
+                        </th>
+
                         <th className="px-4 py-4">Status</th>
+                        
                         <th className="px-4 py-4 hidden md:table-cell">Execution</th>
                         <th className="px-4 py-4 hidden md:table-cell">Mistakes</th>
-                        <th className="px-4 py-4 hidden md:table-cell col-span-1">Rating</th>
+                        
+                        <th
+                          onClick={() => toggleSort('trade_rating')}
+                          className="px-4 py-4 cursor-pointer hover:text-zinc-300 transition-colors whitespace-nowrap hidden md:table-cell w-20"
+                        >
+                          <div className="flex items-center gap-1">
+                            <span>Rating</span>
+                            {sortColumn === 'trade_rating' ? (
+                              sortDirection === 'asc' ? <ChevronUp className="w-3 h-3 text-indigo-400" /> : <ChevronDown className="w-3 h-3 text-indigo-400" />
+                            ) : null}
+                          </div>
+                        </th>
+
+                        <th
+                          onClick={() => toggleSort('roi')}
+                          className="px-4 py-4 cursor-pointer hover:text-zinc-300 transition-colors whitespace-nowrap hidden md:table-cell"
+                        >
+                          <div className="flex items-center gap-1">
+                            <span>ROI</span>
+                            {sortColumn === 'roi' ? (
+                              sortDirection === 'asc' ? <ChevronUp className="w-3 h-3 text-indigo-400" /> : <ChevronDown className="w-3 h-3 text-indigo-400" />
+                            ) : null}
+                          </div>
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
-                      {trades.map((item) => {
+                      {sortedTrades.map((item, index) => {
+                        const originalPosIndex = sortedTrades.length - index;
                         const hasProfit = item.pnl !== null && item.pnl > 0;
                         const hasLoss = item.pnl !== null && item.pnl < 0;
+                        const dateTagStr = getDateDisplay(item.date);
 
                         return (
                           <tr
                             key={item.id}
-                            className="border-t border-zinc-800/60 bg-zinc-900/40 hover:bg-zinc-800/30 transition-colors text-sm font-sans"
+                            onClick={() => navigate(`/trading-logs/${item.id}`)}
+                            className="border-t border-zinc-800/60 bg-zinc-900/40 hover:bg-zinc-800/30 cursor-pointer transition-colors text-sm"
                           >
-                            {/* Date formatted */}
+                            {/* Counter Index */}
+                            <td className="px-4 py-4.5 text-center text-xs font-mono font-bold text-zinc-650 w-10">
+                              {index + 1}
+                            </td>
+
+                            {/* Date Column with dynamic Today/Yesterday pill */}
                             <td className="px-4 py-4.5 whitespace-nowrap">
-                              <span className="text-zinc-400 font-mono text-xs font-semibold">
-                                {formatDateLabel(item.date)}
+                              <span className="text-zinc-400 font-mono text-xs font-semibold flex items-center gap-1">
+                                {dateTagStr.isHighlight ? (
+                                  <span className="bg-indigo-950/60 border border-indigo-700/40 text-[9px] uppercase tracking-wider text-indigo-300 font-bold px-1.5 py-0.5 rounded-sm">
+                                    {dateTagStr.label}
+                                  </span>
+                                ) : (
+                                  <span>{dateTagStr.label}</span>
+                                )}
                               </span>
                             </td>
 
@@ -323,15 +766,31 @@ export const TradingLogsPage: React.FC = () => {
                               </span>
                             </td>
 
-                            {/* Direction pill hidden below md */}
+                            {/* Direction CALL/PUT/LONG/SHORT */}
                             <td className="px-4 py-4.5 whitespace-nowrap hidden md:table-cell">
-                              {renderDirectionBadge(item.call_put)}
+                              {item.call_put ? (
+                                <span
+                                  className={`px-2 py-0.5 text-[10px] font-bold rounded-lg ${
+                                    item.call_put === 'CALL'
+                                      ? 'bg-green-950/60 text-green-400 border border-green-800/50'
+                                      : item.call_put === 'PUT'
+                                      ? 'bg-red-950/60 text-red-400 border border-red-800/40'
+                                      : item.call_put === 'LONG'
+                                      ? 'bg-blue-950/60 text-blue-400 border border-blue-800/40'
+                                      : 'bg-purple-950/60 text-purple-400 border border-purple-800/40'
+                                  }`}
+                                >
+                                  {item.call_put}
+                                </span>
+                              ) : (
+                                <span className="text-zinc-650 font-mono text-xs">—</span>
+                              )}
                             </td>
 
-                            {/* Setup selection strategy schema name */}
-                            <td className="px-4 py-4.5 whitespace-nowrap hidden md:table-cell">
+                            {/* Setup Selection Strategy Name */}
+                            <td className="px-4 py-4.5 whitespace-nowrap hidden md:table-cell max-w-[150px] truncate">
                               {item.strategies?.name ? (
-                                <span className="text-zinc-200 font-medium font-mono text-xs">
+                                <span className="text-zinc-300 font-semibold font-mono text-xs">
                                   {item.strategies.name}
                                 </span>
                               ) : (
@@ -341,18 +800,18 @@ export const TradingLogsPage: React.FC = () => {
                               )}
                             </td>
 
-                            {/* Pnl en-IN currency */}
+                            {/* Pnl Currency Format */}
                             <td className="px-4 py-4.5 whitespace-nowrap">
                               <span
-                                className={`font-mono font-extrabold ${
+                                className={`font-mono font-extrabold text-sm ${
                                   hasProfit ? 'text-green-400' : hasLoss ? 'text-red-400' : 'text-zinc-400'
                                 }`}
                               >
-                                {formatINR(item.pnl)}
+                                {item.pnl !== null ? formatINR(item.pnl) : '—'}
                               </span>
                             </td>
 
-                            {/* R Multiple formatting */}
+                            {/* R Multiple */}
                             <td className="px-4 py-4.5 whitespace-nowrap hidden md:table-cell">
                               {item.r_multiple !== null ? (
                                 <span
@@ -364,28 +823,95 @@ export const TradingLogsPage: React.FC = () => {
                                   {item.r_multiple.toFixed(2)}R
                                 </span>
                               ) : (
-                                <span className="text-zinc-600">—</span>
+                                <span className="text-zinc-650 font-mono text-xs">—</span>
                               )}
                             </td>
 
-                            {/* WIN/LOSS/BE Badge */}
+                            {/* Status WIN/LOSS */}
                             <td className="px-4 py-4.5 whitespace-nowrap">
-                              {renderStatusBadge(item.status)}
+                              {item.status === 'Win' && (
+                                <span className="px-2.5 py-0.5 text-[10px] font-extrabold bg-green-950/80 border border-green-700/80 text-green-300 rounded-lg">
+                                  WIN
+                                </span>
+                              )}
+                              {item.status === 'Loss' && (
+                                <span className="px-2.5 py-0.5 text-[10px] font-extrabold bg-red-950/80 border border-red-700/80 text-red-300 rounded-lg">
+                                  LOSS
+                                </span>
+                              )}
+                              {item.status === 'Breakeven' && (
+                                <span className="px-2.5 py-0.5 text-[10px] font-extrabold bg-zinc-800 border border-zinc-650 text-zinc-300 rounded-lg">
+                                  BE
+                                </span>
+                              )}
+                              {item.status === null && (
+                                <span className="text-zinc-650 font-mono text-xs">—</span>
+                              )}
                             </td>
 
                             {/* Execution quality */}
                             <td className="px-4 py-4.5 whitespace-nowrap hidden md:table-cell">
-                              {renderExecutionBadge(item.execution_status)}
+                              {item.execution_status ? (
+                                <span
+                                  className={`px-1.5 py-0.5 text-[10px] uppercase font-mono tracking-wide font-black rounded-md border ${
+                                    item.execution_status === 'BEST TRADE'
+                                      ? 'bg-green-950/60 text-green-400 border-green-850'
+                                      : item.execution_status === 'GOOD TRADE'
+                                      ? 'bg-teal-950/60 text-teal-400 border-teal-850'
+                                      : item.execution_status === 'AVERAGE TRADE'
+                                      ? 'bg-amber-950/60 text-amber-400 border-amber-850'
+                                      : item.execution_status === 'POOR TRADE'
+                                      ? 'bg-orange-950/60 text-orange-400 border-orange-850'
+                                      : 'bg-red-950/60 text-red-400 border-red-850'
+                                  }`}
+                                >
+                                  {item.execution_status.split(' ')[0]}
+                                </span>
+                              ) : (
+                                <span className="text-zinc-650 font-mono text-xs">—</span>
+                              )}
                             </td>
 
-                            {/* Mistakes description type */}
-                            <td className="px-4 py-4.5 whitespace-nowrap hidden md:table-cell">
-                              {renderMistakeCell(item.mistake_type)}
+                            {/* Mistakes list cell */}
+                            <td className="px-4 py-4.5 whitespace-nowrap hidden md:table-cell max-w-[125px] truncate">
+                              {item.mistake_type && item.mistake_type !== 'No Mistake' ? (
+                                <span className="text-zinc-400 font-medium text-xs">
+                                  {item.mistake_type}
+                                </span>
+                              ) : (
+                                <span className="text-zinc-650 font-mono text-xs italic">
+                                  None
+                                </span>
+                              )}
                             </td>
 
-                            {/* Rating Stars render */}
+                            {/* Stars rating */}
                             <td className="px-4 py-4.5 whitespace-nowrap hidden md:table-cell">
-                              {renderRatingStars(item.trade_rating)}
+                              {item.trade_rating && item.trade_rating > 0 ? (
+                                <div className="flex items-center gap-0.5 text-amber-400">
+                                  {Array.from({ length: item.trade_rating }).map((_, i) => (
+                                    <Star key={i} className="w-3 h-3 fill-current" />
+                                  ))}
+                                </div>
+                              ) : (
+                                <span className="text-zinc-650 font-mono text-xs">—</span>
+                              )}
+                            </td>
+
+                            {/* ROI percent decimal */}
+                            <td className="px-4 py-4.5 whitespace-nowrap hidden md:table-cell">
+                              {item.roi !== null ? (
+                                <span
+                                  className={`font-mono font-bold text-xs ${
+                                    item.roi > 0 ? 'text-green-400' : 'text-red-400'
+                                  }`}
+                                >
+                                  {item.roi > 0 ? '+' : ''}
+                                  {item.roi.toFixed(1)}%
+                                </span>
+                              ) : (
+                                <span className="text-zinc-650 font-mono text-xs">—</span>
+                              )}
                             </td>
                           </tr>
                         );
