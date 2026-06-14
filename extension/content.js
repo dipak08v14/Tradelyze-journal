@@ -16,6 +16,9 @@ let scanResults = null
 let isDragging = false
 let dragOffsetX = 0, dragOffsetY = 0
 let overlayVisible = true
+let autoScanEnabled = true
+let autoScanTimeout = null
+let autoScanInterval = null
 
 // ── HELPERS ──
 function sendMsg(type, data = {}) {
@@ -142,10 +145,18 @@ function renderOverlay() {
   // ── SESSION STATUS ──
   html += `
     <div class="tl-section">
-      <span class="${session.active ? 'tl-session-badge' : 'tl-session-badge tl-session-miss'}">
-        ${session.active ? '●' : '○'} ${session.name}
-      </span>
-      <span style="font-size:10px;color:#6B7280;margin-left:6px;">${symbol}</span>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span class="${session.active ? 'tl-session-badge' : 'tl-session-badge tl-session-miss'}">
+          ${session.active ? '●' : '○'} ${session.name}
+        </span>
+        <button id="tl-auto-toggle-btn" class="tl-toggle-btn" style="font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; border: 1px solid ${autoScanEnabled ? '#6366F1' : '#2A2D3A'}; color: ${autoScanEnabled ? '#6366F1' : '#6B7280'}; background: transparent; cursor: pointer;">
+          Auto ${autoScanEnabled ? '●' : '○'}
+        </button>
+      </div>
+      <span style="font-size:10px;color:#6B7280;">${symbol}</span>
+      <div id="tl-auto-status" style="font-size:10px; color:#6366F1; margin-bottom:6px; margin-top:4px;">
+        ${isScanning ? '⟳ Scanning...' : (scanResults?.autoScanned ? `⟳ Last scan: ${scanResults.scannedAt}` : '⟳ Auto-scanning on candle close')}
+      </div>
     </div>
   `
 
@@ -303,6 +314,18 @@ function attachOverlayEvents() {
     overlayVisible = false
   })
 
+  // Auto scan toggle
+  document.getElementById('tl-auto-toggle-btn')?.addEventListener('click', () => {
+    autoScanEnabled = !autoScanEnabled
+    if (autoScanEnabled) {
+      startAutoScanScheduler()
+    } else {
+      if (autoScanTimeout) clearTimeout(autoScanTimeout)
+      if (autoScanInterval) clearInterval(autoScanInterval)
+    }
+    renderOverlay()
+  })
+
   // Strategy select
   document.getElementById('tl-strategy-select')?.addEventListener('change', async (e) => {
     selectedStrategyId = e.target.value || null
@@ -422,6 +445,116 @@ document.addEventListener('mousemove', (e) => {
 })
 document.addEventListener('mouseup', () => { isDragging = false })
 
+// ── AUTO SCAN SYSTEM ──
+function getTimeframeMs() {
+  const tfButton = document.querySelector(
+    '[class*="timeframe"] [class*="active"], [data-value].isActive'
+  )
+  let tfText = '5'
+  if (tfButton) {
+    const raw = tfButton.textContent.trim()
+    if (raw.includes('D') || raw.includes('d')) {
+      tfText = 'D'
+    } else {
+      const match = raw.match(/\d+/)
+      if (match) {
+        let val = parseInt(match[0], 10)
+        if (raw.toLowerCase().includes('h')) val *= 60
+        tfText = String(val)
+      }
+    }
+  } else {
+    const urlMatch = window.location.href.match(/interval=([A-Z0-9]+)/i)
+    if (urlMatch) {
+      tfText = urlMatch[1]
+    }
+  }
+
+  const TF_MS = {
+    '1': 60000,
+    '5': 300000,
+    '15': 900000,
+    '30': 1800000,
+    '60': 3600000,
+    '240': 14400000,
+    'D': 86400000
+  }
+  return TF_MS[tfText] || TF_MS['5']
+}
+
+function startAutoScanScheduler() {
+  if (autoScanTimeout) clearTimeout(autoScanTimeout)
+  if (autoScanInterval) clearInterval(autoScanInterval)
+  
+  if (!autoScanEnabled) return
+
+  const tfMs = getTimeframeMs()
+  const now = Date.now()
+  const nextClose = Math.ceil(now / tfMs) * tfMs
+  const msUntilClose = nextClose - now
+
+  autoScanTimeout = setTimeout(() => {
+    autoScan()
+    autoScanInterval = setInterval(() => {
+      if (autoScanEnabled) {
+        autoScan()
+      }
+    }, tfMs)
+  }, msUntilClose)
+}
+
+async function autoScan() {
+  if (!selectedStrategyId || isScanning) return
+  isScanning = true
+  
+  // Show "Auto-scanning..." in overlay
+  const indicator = document.getElementById('tl-auto-status')
+  if (indicator) indicator.textContent = '⟳ Scanning...'
+  
+  try {
+    const imageDataUrl = captureChartCanvas()
+    if (!imageDataUrl) return
+    
+    const embedding = await sendMsg('GENERATE_EMBEDDING', { imageDataUrl })
+    if (!embedding || embedding.error) return
+    
+    const matches = await sendMsg('SEARCH_SIMILAR', {
+      embedding,
+      userId: currentUser.id,
+      setupName: null
+    })
+    
+    const topMatch = matches?.[0]
+    const visualScore = topMatch ? Math.round(topMatch.similarity * 100) : 0
+    
+    scanResults = { 
+      embedding, 
+      matches: matches || [], 
+      visualScore,
+      autoScanned: true,
+      scannedAt: new Date().toLocaleTimeString('en-IN')
+    }
+    
+    // Fire notification if score is high
+    const combined = calcCombinedScore(calcICTScore(), visualScore)
+    if (combined >= 65) {
+      chrome.runtime.sendMessage({
+        type: 'FIRE_NOTIFICATION',
+        title: `Tradelyze: ${combined}% Confidence`,
+        body: combined >= 85 ? '⚡ High confidence setup!' :
+              '👁 Setup forming — check chart'
+      })
+    }
+    
+    renderOverlay()
+  } finally {
+    isScanning = false
+    if (indicator) {
+      indicator.textContent = `⟳ Last scan: ${new Date().toLocaleTimeString('en-IN')}`
+    }
+  }
+}
+
 // ── INITIALIZE ──
 async function init() {
   // Check auth
@@ -439,6 +572,7 @@ async function init() {
   strategies = await sendMsg('GET_STRATEGIES', { userId: user.id })
 
   renderOverlay()
+  startAutoScanScheduler()
 }
 
 // Wait for TradingView to fully load
