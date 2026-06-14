@@ -1,0 +1,840 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
+import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../hooks/useToast';
+import { Sidebar } from '../components/Sidebar';
+import {
+  Menu,
+  Calendar,
+  TrendingUp,
+  TrendingDown,
+  Target,
+  AlertCircle,
+  BarChart2,
+  ArrowRight
+} from 'lucide-react';
+import {
+  ComposedChart,
+  Bar,
+  Line,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ReferenceLine,
+  ResponsiveContainer
+} from 'recharts';
+import {
+  calcTradeStats,
+  calcScoreAverages,
+  MONTH_NAMES,
+  scoreColor,
+  pnlColor,
+  formatINR,
+  formatINRShort
+} from '../lib/calculations';
+
+export const AnnualReportsPage: React.FC = () => {
+  const { user, userId, loading: authLoading } = useAuth();
+  const { showError } = useToast();
+  const navigate = useNavigate();
+
+  const [selectedYear, setSelectedYear] = useState<number>(() => new Date().getFullYear());
+  const [loading, setLoading] = useState<boolean>(true);
+  const [mobileOpen, setMobileOpen] = useState<boolean>(false);
+
+  const [trades, setTrades] = useState<any[]>([]);
+  const [psychologyData, setPsychologyData] = useState<any[]>([]);
+  const [riskData, setRiskData] = useState<any[]>([]);
+  const [rulesData, setRulesData] = useState<any[]>([]);
+  const [availableYears, setAvailableYears] = useState<number[]>([]);
+
+  // Safety Redirect
+  useEffect(() => {
+    if (!authLoading && !userId) {
+      navigate('/login');
+    }
+  }, [userId, authLoading, navigate]);
+
+  // Fetch unique years for selector
+  useEffect(() => {
+    if (!userId) return;
+    const fetchYears = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('trades')
+          .select('year')
+          .eq('user_id', userId);
+        if (error) throw error;
+
+        const currentYear = new Date().getFullYear();
+        const yearsSet = new Set<number>();
+        yearsSet.add(currentYear);
+        if (data) {
+          data.forEach((item: any) => {
+            if (typeof item.year === 'number') {
+              yearsSet.add(item.year);
+            }
+          });
+        }
+        setAvailableYears(Array.from(yearsSet).sort((a, b) => b - a));
+      } catch (err: any) {
+        console.error('Error fetching unique years:', err);
+      }
+    };
+    fetchYears();
+  }, [userId]);
+
+  // Fetch Trades & Compliances
+  useEffect(() => {
+    if (!userId) return;
+
+    const fetchAnnualData = async () => {
+      try {
+        setLoading(true);
+
+        const { data: tradesData, error: tradesError } = await supabase
+          .from('trades')
+          .select('*, strategies(name, type_of_strategy)')
+          .eq('user_id', userId)
+          .eq('year', selectedYear)
+          .order('date', { ascending: true });
+
+        if (tradesError) throw tradesError;
+
+        const fetchedTrades = tradesData || [];
+        setTrades(fetchedTrades);
+
+        if (fetchedTrades.length === 0) {
+          setPsychologyData([]);
+          setRiskData([]);
+          setRulesData([]);
+          setLoading(false);
+          return;
+        }
+
+        const tradeIds = fetchedTrades.map((t: any) => t.id);
+
+        const [psychRes, riskRes, rulesRes] = await Promise.all([
+          supabase
+            .from('trade_psychology')
+            .select('trade_id, psychological_condition_pct')
+            .in('trade_id', tradeIds)
+            .eq('user_id', userId),
+          supabase
+            .from('trade_risk_management')
+            .select('trade_id, followed_risk_rules_pct')
+            .in('trade_id', tradeIds)
+            .eq('user_id', userId),
+          supabase
+            .from('trade_rule_adherence')
+            .select('trade_id, followed')
+            .in('trade_id', tradeIds)
+            .eq('user_id', userId)
+        ]);
+
+        setPsychologyData(psychRes.data || []);
+        setRiskData(riskRes.data || []);
+        setRulesData(rulesRes.data || []);
+
+      } catch (err: any) {
+        console.error('Annual performance sync error:', err);
+        showError(err.message || 'Failed to fetch annual reports.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAnnualData();
+  }, [userId, selectedYear, showError]);
+
+  // Calculations
+  const calculatedContext = useMemo(() => {
+    const annualStats = calcTradeStats(trades);
+    const tradeIds = trades.map((t: any) => t.id);
+    const annualScores = calcScoreAverages(tradeIds, psychologyData, riskData, rulesData);
+
+    // Group trades by month
+    const monthlyData = MONTH_NAMES.map(month => {
+      const monthTrades = trades.filter((t: any) => t.month === month);
+      const stats = monthTrades.length > 0 ? calcTradeStats(monthTrades) : null;
+
+      // Calculate score for this specific month
+      let monthScores = null;
+      if (monthTrades.length > 0) {
+        const mTradeIds = monthTrades.map((t: any) => t.id);
+        const mPsych = psychologyData.filter((p: any) => mTradeIds.includes(p.trade_id));
+        const mRisk = riskData.filter((r: any) => mTradeIds.includes(r.trade_id));
+        const mRules = rulesData.filter((ru: any) => mTradeIds.includes(ru.trade_id));
+        monthScores = calcScoreAverages(mTradeIds, mPsych, mRisk, mRules);
+      }
+
+      return {
+        month,
+        trades: monthTrades,
+        stats,
+        scores: monthScores
+      };
+    });
+
+    // Annual equity curve (cumulative by month)
+    let annualCumulative = 0;
+    const annualEquityData = monthlyData.map(m => {
+      const monthPnl = m.stats ? m.stats.totalPnl : 0;
+      annualCumulative += monthPnl;
+      return {
+        month: m.month,
+        monthPnl: parseFloat(monthPnl.toFixed(2)),
+        cumPnl: parseFloat(annualCumulative.toFixed(2))
+      };
+    });
+
+    // Best and worst month by totalPnl (from months with trades)
+    const monthsWithData = monthlyData.filter(m => m.stats && m.trades.length > 0);
+    const bestMonth = monthsWithData.length > 0
+      ? monthsWithData.reduce((a, b) => ((a.stats?.totalPnl ?? 0) > (b.stats?.totalPnl ?? 0) ? a : b))
+      : null;
+    const worstMonth = monthsWithData.length > 0
+      ? monthsWithData.reduce((a, b) => ((a.stats?.totalPnl ?? 0) < (b.stats?.totalPnl ?? 0) ? a : b))
+      : null;
+
+    // Setup performance breakdown
+    const setupMap: Record<string, { trades: any[]; pnl: number }> = {};
+    trades.forEach((t: any) => {
+      const name = t.strategies?.name || 'No Setup';
+      if (!setupMap[name]) {
+        setupMap[name] = { trades: [], pnl: 0 };
+      }
+      setupMap[name].trades.push(t);
+      setupMap[name].pnl += (t.pnl || 0);
+    });
+
+    const setupList = Object.entries(setupMap).map(([name, d]) => ({
+      name,
+      tradeCount: d.trades.length,
+      pnl: d.pnl,
+      winRate: (d.trades.filter(t => t.status === 'Win').length / d.trades.length) * 100
+    })).sort((a, b) => b.pnl - a.pnl);
+
+    const bestSetup = setupList[0] || null;
+    const worstSetup = setupList[setupList.length - 1] || null;
+
+    // Most common mistake that isn't 'No Mistake'
+    const mistakeCount: Record<string, number> = {};
+    trades.filter((t: any) => t.mistake_text && t.mistake_type && t.mistake_type !== 'No Mistake').forEach((t: any) => {
+      mistakeCount[t.mistake_text] = (mistakeCount[t.mistake_text] || 0) + 1;
+    });
+    const topMistakeEntry = Object.entries(mistakeCount).sort((a, b) => b[1] - a[1])[0] || null;
+
+    return {
+      annualStats,
+      annualScores,
+      monthlyData,
+      annualEquityData,
+      monthsWithData,
+      bestMonth,
+      worstMonth,
+      setupList,
+      bestSetup,
+      worstSetup,
+      topMistakeEntry
+    };
+  }, [trades, psychologyData, riskData, rulesData]);
+
+  const {
+    annualStats,
+    annualScores,
+    monthlyData,
+    annualEquityData,
+    monthsWithData,
+    bestMonth,
+    worstMonth,
+    setupList,
+    bestSetup,
+    worstSetup,
+    topMistakeEntry
+  } = calculatedContext;
+
+  const getScoreColor = (v: number) => {
+    if (v >= 70) return 'text-green-400';
+    if (v >= 50) return 'text-amber-400';
+    return 'text-red-400';
+  };
+
+  const getScoreBg = (v: number) => {
+    if (v >= 70) return 'bg-green-500';
+    if (v >= 50) return 'bg-amber-500';
+    return 'bg-red-500';
+  };
+
+  return (
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col md:flex-row font-sans selection:bg-indigo-500/30">
+      {/* SIDEBAR NAVIGATION */}
+      <Sidebar userEmail={user?.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
+
+      {/* RIGHT SIDE CONTENT CONTAINER */}
+      <div className="flex-1 md:pl-[250px] flex flex-col min-h-screen">
+        {/* MOBILE HEADER */}
+        <header className="flex items-center justify-between px-6 py-4 border-b border-zinc-800 md:hidden bg-zinc-900 sticky top-0 z-20">
+          <div className="text-xl font-bold text-indigo-400 tracking-wider font-display">TRADELYZE</div>
+          <button
+            onClick={() => setMobileOpen(true)}
+            className="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 cursor-pointer"
+            aria-label="Open sidebar menu"
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+        </header>
+
+        {/* CONTAINER CONTENT */}
+        <main className="flex-1 overflow-y-auto px-6 py-8">
+          <div className="max-w-7xl mx-auto">
+            {/* HEADER AREA */}
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+              <div>
+                <h1 className="text-3xl font-extrabold tracking-tight text-zinc-100 font-display">
+                  Annual Reports
+                </h1>
+                <p className="text-sm text-zinc-400 mt-1">
+                  Full year analysis — all calculations from your trade data.
+                </p>
+              </div>
+
+              {/* YEAR SELECTOR */}
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-zinc-500" />
+                <select
+                  value={selectedYear}
+                  onChange={(e) => setSelectedYear(parseInt(e.target.value, 10))}
+                  className="bg-[#1A1D27] border border-[#2A2D3A] text-zinc-100 rounded-xl px-4 py-2 text-sm font-medium font-mono focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer transition-all"
+                >
+                  {availableYears.map((yr) => (
+                    <option key={yr} value={yr}>
+                      {yr}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="border-b border-[#2A2D3A] mt-5 mb-6" />
+
+            {/* SKELETON DISPLAY STATE */}
+            {loading ? (
+              <div className="space-y-6">
+                <div className="h-16 bg-[#1A1D27] border border-[#2A2D3A] rounded-xl animate-pulse" />
+                <div className="h-72 bg-[#1A1D27] border border-[#2A2D3A] rounded-xl animate-pulse" />
+                <div className="h-[400px] bg-[#1A1D27] border border-[#2A2D3A] rounded-xl animate-pulse" />
+              </div>
+            ) : trades.length === 0 ? (
+              /* EMPTY YEAR STATE */
+              <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20 shadow-xl">
+                <div className="w-16 h-16 bg-zinc-950/60 rounded-full flex items-center justify-center border border-zinc-800 mb-4">
+                  <BarChart2 className="w-8 h-8 text-zinc-500" />
+                </div>
+                <h3 className="text-xl font-bold tracking-tight text-zinc-300 font-display">
+                  No trades in {selectedYear}
+                </h3>
+                <p className="text-zinc-500 text-xs mt-1.5 max-w-sm font-sans">
+                  To view interactive charts, month-over-month summaries, and automated compliance reports, log trades for this year.
+                </p>
+                <button
+                  onClick={() => navigate('/trade-entry')}
+                  className="mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-xl px-5 py-3 text-xs uppercase tracking-wider font-mono transition-all shadow-lg shadow-indigo-600/15 cursor-pointer inline-flex items-center gap-1.5"
+                >
+                  Log a Trade <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ) : (
+              /* ACTIVE COMPREHENSIVE ANNUAL DISPLAY */
+              <div className="space-y-6 animate-fade-in">
+                
+                {/* SECTION 1: ANNUAL STATS STRIP CARD */}
+                {annualStats && (
+                  <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-5 shadow-lg">
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 text-center">
+                      
+                      {/* STAT Card: NET P&L */}
+                      <div className="bg-zinc-950/40 p-3 rounded-lg border border-zinc-900/60 flex flex-col justify-center">
+                        <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-widest font-sans">Net P&L</span>
+                        <span className={`text-[15px] font-black font-mono mt-1 ${pnlColor(annualStats.totalPnl)}`}>
+                          {formatINR(annualStats.totalPnl)}
+                        </span>
+                      </div>
+
+                      {/* STAT Card: TOTAL TRADES */}
+                      <div className="bg-zinc-950/40 p-3 rounded-lg border border-zinc-900/60 flex flex-col justify-center">
+                        <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-widest">Total Trades</span>
+                        <span className="text-[15px] font-bold text-zinc-200 font-mono mt-1">
+                          {annualStats.totalTrades}
+                        </span>
+                      </div>
+
+                      {/* STAT Card: WIN RATE */}
+                      <div className="bg-zinc-950/40 p-3 rounded-lg border border-zinc-900/60 flex flex-col justify-center">
+                        <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-widest">Win Rate</span>
+                        <span className={`text-[15px] font-black font-mono mt-1 ${getScoreColor(annualStats.winRate)}`}>
+                          {annualStats.winRate.toFixed(1)}%
+                        </span>
+                      </div>
+
+                      {/* STAT Card: PROFIT FACTOR */}
+                      <div className="bg-zinc-950/40 p-3 rounded-lg border border-zinc-900/60 flex flex-col justify-center">
+                        <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-widest">Profit Factor</span>
+                        <span className={`text-[15px] font-black font-mono mt-1 ${
+                          annualStats.profitFactor > 1.5
+                            ? 'text-green-400'
+                            : annualStats.profitFactor >= 1.0
+                            ? 'text-amber-400'
+                            : 'text-red-400'
+                        }`}>
+                          {annualStats.profitFactor === 999 ? '∞' : annualStats.profitFactor.toFixed(2)}
+                        </span>
+                      </div>
+
+                      {/* STAT Card: AVG R */}
+                      <div className="bg-zinc-950/40 p-3 rounded-lg border border-zinc-900/60 flex flex-col justify-center">
+                        <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-widest">Avg R</span>
+                        <span className={`text-[15px] font-black font-mono mt-1 ${pnlColor(annualStats.avgR)}`}>
+                          {annualStats.avgR >= 0 ? '+' : ''}{annualStats.avgR.toFixed(2)}R
+                        </span>
+                      </div>
+
+                      {/* STAT Card: ACTIVE MONTHS */}
+                      <div className="bg-zinc-950/40 p-3 rounded-lg border border-zinc-900/60 flex flex-col justify-center">
+                        <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-widest">Active Months</span>
+                        <span className="text-[15px] font-bold text-zinc-200 font-mono mt-1">
+                          {monthsWithData.length} / 12
+                        </span>
+                      </div>
+
+                      {/* STAT Card: OVERALL SCORE */}
+                      <div className="bg-zinc-950/40 p-3 rounded-lg border border-zinc-900/60 flex flex-col justify-center">
+                        <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-widest">Compliance</span>
+                        <span className={`text-[15px] font-black font-mono mt-1 ${getScoreColor(annualScores.avgOverall)}`}>
+                          {annualScores.avgOverall.toFixed(0)}%
+                        </span>
+                      </div>
+
+                    </div>
+                  </div>
+                )}
+
+                {/* SECTION 2: ANNUAL EQUITY CURVE + MONTHLY P&L COMBO CHART */}
+                {annualStats && (
+                  <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-5 shadow-lg">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-3 mb-4">
+                      <h2 className="text-md font-bold text-zinc-100 tracking-tight">
+                        Annual P&L Performance
+                      </h2>
+                      <span className={`font-black font-mono text-sm ${pnlColor(annualStats.totalPnl)}`}>
+                        Cumulative Year P&L: {formatINR(annualStats.totalPnl)}
+                      </span>
+                    </div>
+
+                    <div className="w-full">
+                      <ResponsiveContainer width="100%" height={280}>
+                        <ComposedChart data={annualEquityData} margin={{ top: 10, right: 20, left: 10, bottom: 0 }}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#1F2937" vertical={false} />
+                          <XAxis dataKey="month" tick={{ fill: '#6B7280', fontSize: 11 }} axisLine={false} tickLine={false} />
+                          <YAxis yAxisId="left" tick={{ fill: '#6B7280', fontSize: 11 }} axisLine={false} tickLine={false}
+                                 tickFormatter={v => '₹' + (v/1000).toFixed(0) + 'k'} width={55} />
+                          <YAxis yAxisId="right" orientation="right" tick={{ fill: '#6B7280', fontSize: 11 }}
+                                 axisLine={false} tickLine={false} tickFormatter={v => '₹' + (v/1000).toFixed(0) + 'k'} width={55} />
+                          <ReferenceLine yAxisId="left" y={0} stroke="#374151" strokeDasharray="4 4" />
+                          <Tooltip
+                            contentStyle={{ backgroundColor: '#1A1D27', border: '1px solid #2A2D3A', borderRadius: '8px', color: '#F9FAFB', fontSize: '12px' }}
+                            formatter={(value: any, name: any) => [formatINR(value), name === 'monthPnl' ? 'Monthly P&L' : 'Cumulative P&L']}
+                          />
+                          <Legend wrapperStyle={{ color: '#9CA3AF', fontSize: '12px' }} />
+                          <Bar yAxisId="left" dataKey="monthPnl" name="Monthly P&L" radius={[4, 4, 0, 0]}
+                               fill="#6366F1" fillOpacity={0.7}>
+                            {annualEquityData.map((entry, i) => (
+                              <Cell key={i} fill={entry.monthPnl >= 0 ? '#22C55E' : '#EF4444'} fillOpacity={0.7} />
+                            ))}
+                          </Bar>
+                          <Line yAxisId="right" type="monotone" dataKey="cumPnl" name="Cumulative P&L"
+                                stroke="#6366F1" strokeWidth={2.5} dot={{ fill: '#6366F1', r: 3 }} />
+                        </ComposedChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                )}
+
+                {/* SECTION 3: 12-MONTH PERFORMANCE TABLE */}
+                <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-5 shadow-lg">
+                  <div className="border-b border-zinc-850 pb-3 mb-4">
+                    <h2 className="text-md font-bold text-zinc-100 tracking-tight">
+                      Month-by-Month Performance
+                    </h2>
+                  </div>
+
+                  <div className="overflow-x-auto border border-zinc-800/60 rounded-xl">
+                    <table className="w-full text-left border-collapse text-sm">
+                      <thead>
+                        <tr className="bg-[#0F1117] text-[11px] font-bold text-zinc-500 uppercase tracking-wider border-b border-zinc-800/60">
+                          <th className="px-4 py-3">Month</th>
+                          <th className="px-4 py-3 text-center">Trades</th>
+                          <th className="px-4 py-3 text-center">Win</th>
+                          <th className="px-4 py-3 text-center">Loss</th>
+                          <th className="px-4 py-3 text-center">Win Rate</th>
+                          <th className="px-4 py-3 text-right">P&L</th>
+                          <th className="px-4 py-3 text-right">Avg R</th>
+                          <th className="px-4 py-3 text-center">PF</th>
+                          <th className="px-4 py-3 text-center font-sans">Score</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {monthlyData.map(({ month, trades: monthTrades, stats: mStats, scores: mScores }) => {
+                          const isBest = bestMonth && bestMonth.month === month;
+                          const isWorst = worstMonth && worstMonth.month === month;
+
+                          let customRowStyle = 'border-b border-zinc-800/40 hover:bg-zinc-900/40 transition-colors';
+                          if (mStats && mStats.totalTrades > 0) {
+                            if (isBest) {
+                              customRowStyle += ' border-l-2 border-green-600 bg-green-950/5';
+                            } else if (isWorst) {
+                              customRowStyle += ' border-l-2 border-red-600 bg-red-950/5';
+                            }
+                          }
+
+                          if (!mStats || monthTrades.length === 0) {
+                            return (
+                              <tr key={month} className="border-b border-zinc-800/40 text-zinc-600">
+                                <td className="px-4 py-3 font-medium text-xs">{month}</td>
+                                <td className="px-4 py-3 text-center font-mono">—</td>
+                                <td className="px-4 py-3 text-center font-mono">—</td>
+                                <td className="px-4 py-3 text-center font-mono">—</td>
+                                <td className="px-4 py-3 text-center font-mono">—</td>
+                                <td className="px-4 py-3 text-right font-mono">—</td>
+                                <td className="px-4 py-3 text-right font-mono">—</td>
+                                <td className="px-4 py-3 text-center font-mono">—</td>
+                                <td className="px-4 py-3 text-center font-mono">—</td>
+                              </tr>
+                            );
+                          }
+
+                          return (
+                            <tr key={month} className={customRowStyle}>
+                              {/* Month Name */}
+                              <td className="px-4 py-3 font-bold text-zinc-200 text-xs flex items-center gap-1">
+                                <span>{month}</span>
+                                {isBest && (
+                                  <span className="bg-green-950/60 text-green-400 text-[9px] font-bold rounded-lg px-2 py-0.5 border border-green-900/30 whitespace-nowrap">
+                                    ★ Best
+                                  </span>
+                                )}
+                                {isWorst && (
+                                  <span className="bg-red-950/60 text-red-400 text-[9px] font-bold rounded-lg px-2 py-0.5 border border-red-900/30 whitespace-nowrap">
+                                    ↓ Worst
+                                  </span>
+                                )}
+                              </td>
+
+                              {/* Trades Count */}
+                              <td className="px-4 py-3 text-center font-mono text-zinc-100 text-xs">
+                                {mStats.totalTrades}
+                              </td>
+
+                              {/* Win count */}
+                              <td className="px-4 py-3 text-center font-mono text-green-400 font-medium text-xs">
+                                {mStats.wins}
+                              </td>
+
+                              {/* Loss Count */}
+                              <td className="px-4 py-3 text-center font-mono text-red-400 font-medium text-xs">
+                                {mStats.losses}
+                              </td>
+
+                              {/* Win Rate */}
+                              <td className={`px-4 py-3 text-center font-mono text-xs font-semibold ${getScoreColor(mStats.winRate)}`}>
+                                {mStats.winRate.toFixed(0)}%
+                              </td>
+
+                              {/* Month overall P&L */}
+                              <td className={`px-4 py-3 text-right font-bold font-mono text-xs ${pnlColor(mStats.totalPnl)}`}>
+                                {formatINR(mStats.totalPnl)}
+                              </td>
+
+                              {/* Average R Multiple */}
+                              <td className={`px-4 py-3 text-right font-mono text-xs ${pnlColor(mStats.avgR)}`}>
+                                {mStats.avgR >= 0 ? '+' : ''}{mStats.avgR.toFixed(2)}R
+                              </td>
+
+                              {/* Profit Factor */}
+                              <td className={`px-4 py-3 text-center font-mono text-xs font-semibold ${
+                                mStats.profitFactor >= 1.0 ? 'text-green-400' : 'text-red-400'
+                              }`}>
+                                {mStats.profitFactor === 999 ? '∞' : mStats.profitFactor.toFixed(1)}
+                              </td>
+
+                              {/* Score Metric */}
+                              <td className="px-4 py-3 text-center text-xs whitespace-nowrap">
+                                {mScores ? (
+                                  <span className={`font-black font-mono ${getScoreColor(mScores.avgOverall)}`}>
+                                    {mScores.avgOverall.toFixed(0)}%
+                                  </span>
+                                ) : (
+                                  <span className="text-zinc-500">—</span>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+
+                      {/* ANNUAL TOTAL FOOTER ROW */}
+                      {annualStats && (
+                        <tfoot>
+                          <tr className="bg-zinc-950 border-t-2 border-indigo-800 font-bold">
+                            <td className="px-4 py-3.5 text-zinc-200 text-xs uppercase tracking-wider font-extrabold">
+                              YEAR {selectedYear}
+                            </td>
+                            <td className="px-4 py-3.5 text-center font-mono text-zinc-100 text-xs">
+                              {annualStats.totalTrades}
+                            </td>
+                            <td className="px-4 py-3.5 text-center font-mono text-green-400 text-xs">
+                              {annualStats.wins}
+                            </td>
+                            <td className="px-4 py-3.5 text-center font-mono text-red-400 text-xs">
+                              {annualStats.losses}
+                            </td>
+                            <td className={`px-4 py-3.5 text-center font-mono text-xs font-black ${getScoreColor(annualStats.winRate)}`}>
+                              {annualStats.winRate.toFixed(1)}%
+                            </td>
+                            <td className={`px-4 py-3.5 text-right font-mono text-sm ${pnlColor(annualStats.totalPnl)}`}>
+                              {formatINR(annualStats.totalPnl)}
+                            </td>
+                            <td className={`px-4 py-3.5 text-right font-mono text-xs ${pnlColor(annualStats.avgR)}`}>
+                              {annualStats.avgR >= 0 ? '+' : ''}{annualStats.avgR.toFixed(2)}R
+                            </td>
+                            <td className={`px-4 py-3.5 text-center font-mono text-xs font-black ${
+                              annualStats.profitFactor >= 1.0 ? 'text-green-400' : 'text-red-400'
+                            }`}>
+                              {annualStats.profitFactor === 999 ? '∞' : annualStats.profitFactor.toFixed(2)}
+                            </td>
+                            <td className={`px-4 py-3.5 text-center font-mono text-xs font-black ${getScoreColor(annualScores.avgOverall)}`}>
+                              {annualScores.avgOverall.toFixed(0)}%
+                            </td>
+                          </tr>
+                        </tfoot>
+                      )}
+                    </table>
+                  </div>
+                </div>
+
+                {/* SECTION 4: INSIGHTS GRID */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {/* CARD A — BEST MONTH */}
+                  <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-4 shadow-lg flex flex-col justify-between min-h-[140px]">
+                    <div className="flex items-start justify-between">
+                      <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-widest leading-none">
+                        Best Month
+                      </span>
+                      <TrendingUp className="w-5 h-5 text-green-400 shrink-0" />
+                    </div>
+                    <div className="mt-3">
+                      <div className="text-2xl font-black text-green-400 font-display">
+                        {bestMonth?.month || '—'}
+                      </div>
+                      <div className="text-[13px] text-green-300 font-mono font-bold mt-0.5">
+                        {bestMonth ? formatINR(bestMonth.stats?.totalPnl || 0) : ''}
+                      </div>
+                    </div>
+                    <div className="text-[10px] text-zinc-500 leading-none mt-2 font-mono">
+                      {bestMonth?.stats?.totalTrades || 0} trades | {bestMonth?.stats?.winRate.toFixed(0) || 0}% win rate
+                    </div>
+                  </div>
+
+                  {/* CARD B — WORST MONTH */}
+                  <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-4 shadow-lg flex flex-col justify-between min-h-[140px]">
+                    <div className="flex items-start justify-between">
+                      <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-widest leading-none">
+                        Worst Month
+                      </span>
+                      <TrendingDown className="w-5 h-5 text-red-400 shrink-0" />
+                    </div>
+                    <div className="mt-3">
+                      <div className="text-2xl font-black text-red-400 font-display">
+                        {worstMonth?.month || '—'}
+                      </div>
+                      <div className="text-[13px] text-red-300 font-mono font-bold mt-0.5">
+                        {worstMonth ? `(${formatINR(Math.abs(worstMonth.stats?.totalPnl || 0))})` : ''}
+                      </div>
+                    </div>
+                    <div className="text-[10px] text-zinc-500 leading-none mt-2 font-mono">
+                      {worstMonth?.stats?.totalTrades || 0} trades | {worstMonth?.stats?.winRate.toFixed(0) || 0}% win rate
+                    </div>
+                  </div>
+
+                  {/* CARD C — BEST SETUP */}
+                  <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-4 shadow-lg flex flex-col justify-between min-h-[140px]">
+                    <div className="flex items-start justify-between">
+                      <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-widest leading-none">
+                        Best Setup of Year
+                      </span>
+                      <Target className="w-5 h-5 text-indigo-400 shrink-0" />
+                    </div>
+                    <div className="mt-3 overflow-hidden">
+                      <div className="text-lg font-extrabold text-zinc-200 truncate pr-1" title={bestSetup?.name || '—'}>
+                        {bestSetup?.name || '—'}
+                      </div>
+                      <div className="text-[13px] text-green-400 font-semibold font-mono mt-0.5">
+                        {bestSetup ? formatINR(bestSetup.pnl) : ''}
+                      </div>
+                    </div>
+                    <div className="text-[10px] text-zinc-500 leading-none mt-2 font-mono">
+                      {bestSetup?.tradeCount || 0} trades | {bestSetup?.winRate.toFixed(0) || 0}% win rate
+                    </div>
+                  </div>
+
+                  {/* CARD D — MOST REPEATED MISTAKE */}
+                  <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-4 shadow-lg flex flex-col justify-between min-h-[140px]">
+                    <div className="flex items-start justify-between">
+                      <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-widest leading-none">
+                        Top Repeated Mistake
+                      </span>
+                      <AlertCircle className="w-5 h-5 text-amber-500 shrink-0" />
+                    </div>
+                    <div className="mt-3">
+                      <div className="text-xs font-bold text-zinc-200 leading-snug break-words line-clamp-2" title={topMistakeEntry ? topMistakeEntry[0] : 'None ✓'}>
+                        {topMistakeEntry ? topMistakeEntry[0] : 'None ✓'}
+                      </div>
+                      <div className="text-[11px] text-zinc-500 mt-1 font-mono">
+                        {topMistakeEntry ? (
+                          <span className="text-amber-500 font-bold">{topMistakeEntry[1]} times this year</span>
+                        ) : (
+                          <span className="text-green-400">Great discipline! No repeated mistakes!</span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-[10px] text-zinc-500 leading-none mt-2 font-mono">
+                      Audit checklist compliance
+                    </div>
+                  </div>
+                </div>
+
+                {/* SECTION 5: ANNUAL COMPLIANCE SCORES + SETUP PERFORMANCE DETAILS */}
+                <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-5 shadow-lg">
+                  <div className="border-b border-zinc-850 pb-3 mb-4">
+                    <h2 className="text-md font-bold text-zinc-100 tracking-tight">
+                      Annual Trading Scores & Setup Performance
+                    </h2>
+                    <p className="text-xs text-zinc-400 mt-1">
+                      avg across all {annualStats.totalTrades} trades this year
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start mt-4">
+                    
+                    {/* LEFT COMPONENT SCORE BARS */}
+                    <div className="space-y-4">
+                      {/* Overall Compliance */}
+                      <div className="flex justify-between items-end border-b border-[#2A2D3A] pb-2">
+                        <span className="text-sm font-semibold text-zinc-300">Yearly Average Score</span>
+                        <span className={`text-xl font-black font-mono ${getScoreColor(annualScores.avgOverall)}`}>
+                          {annualScores.avgOverall.toFixed(0)}%
+                        </span>
+                      </div>
+
+                      {/* Technical adherence */}
+                      <div className="space-y-1.5">
+                        <div className="flex justify-between text-xs">
+                          <span className="text-zinc-500 font-medium">Technical Setup Score</span>
+                          <span className={`font-bold font-mono ${getScoreColor(annualScores.avgTech)}`}>
+                            {annualScores.avgTech.toFixed(0)}%
+                          </span>
+                        </div>
+                        <div className="w-full bg-[#0F1117] h-2.5 rounded-full border border-[#2A2D3A] overflow-hidden">
+                          <div
+                            className={`h-full transition-all duration-500 ${getScoreBg(annualScores.avgTech)}`}
+                            style={{ width: `${annualScores.avgTech}%` }}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Psychology rating */}
+                      <div className="space-y-1.5">
+                        <div className="flex justify-between text-xs">
+                          <span className="text-zinc-500 font-medium">Psychological Control</span>
+                          <span className={`font-bold font-mono ${getScoreColor(annualScores.avgPsych)}`}>
+                            {annualScores.avgPsych.toFixed(0)}%
+                          </span>
+                        </div>
+                        <div className="w-full bg-[#0F1117] h-2.5 rounded-full border border-[#2A2D3A] overflow-hidden">
+                          <div
+                            className={`h-full transition-all duration-500 ${getScoreBg(annualScores.avgPsych)}`}
+                            style={{ width: `${annualScores.avgPsych}%` }}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Risk Management rating */}
+                      <div className="space-y-1.5">
+                        <div className="flex justify-between text-xs">
+                          <span className="text-zinc-500 font-medium">Risk Mgmt Discipline</span>
+                          <span className={`font-bold font-mono ${getScoreColor(annualScores.avgRisk)}`}>
+                            {annualScores.avgRisk.toFixed(0)}%
+                          </span>
+                        </div>
+                        <div className="w-full bg-[#0F1117] h-2.5 rounded-full border border-[#2A2D3A] overflow-hidden">
+                          <div
+                            className={`h-full transition-all duration-500 ${getScoreBg(annualScores.avgRisk)}`}
+                            style={{ width: `${annualScores.avgRisk}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* RIGHT SETUP PERFORMANCE BREAKDOWN */}
+                    <div className="space-y-3">
+                      <h3 className="text-sm font-semibold text-zinc-300">
+                        Setup Performance Breakdown
+                      </h3>
+
+                      <div className="overflow-x-auto border border-zinc-805 rounded-xl text-xs bg-zinc-950/20">
+                        <table className="w-full text-left">
+                          <thead>
+                            <tr className="bg-[#0F1117] text-[10px] font-bold text-zinc-500 uppercase tracking-wider border-b border-zinc-800">
+                              <th className="px-4 py-2.5">Setup Name</th>
+                              <th className="px-3 py-2.5 text-center">Trades</th>
+                              <th className="px-3 py-2.5 text-center">Win Rate</th>
+                              <th className="px-4 py-2.5 text-right">P&L</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {setupList.map((setupItem) => (
+                              <tr key={setupItem.name} className="border-b border-zinc-900 last:border-0">
+                                <td className="px-4 py-2.5 font-medium text-zinc-350">
+                                  {setupItem.name}
+                                </td>
+                                <td className="px-3 py-2.5 text-center font-mono text-zinc-400">
+                                  {setupItem.tradeCount}
+                                </td>
+                                <td className={`px-3 py-2.5 text-center font-mono font-semibold ${getScoreColor(setupItem.winRate)}`}>
+                                  {setupItem.winRate.toFixed(0)}%
+                                </td>
+                                <td className={`px-4 py-2.5 text-right font-bold font-mono ${pnlColor(setupItem.pnl)}`}>
+                                  {formatINR(setupItem.pnl)}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+            )}
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+};

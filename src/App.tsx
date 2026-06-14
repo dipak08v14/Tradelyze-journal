@@ -10,6 +10,9 @@ import { TradeEntryPage } from './pages/TradeEntryPage';
 import { TradingLogsPage } from './pages/TradingLogsPage';
 import { TradeTrackingPage } from './pages/TradeTrackingPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { TradingReportsPage } from './pages/TradingReportsPage';
+import { AnnualReportsPage } from './pages/AnnualReportsPage';
+import { AiTeacherPage } from './pages/AiTeacherPage';
 
 export default function App() {
   return (
@@ -32,33 +35,9 @@ export default function App() {
           <Route path="/trade-entry" element={<TradeEntryPage />} />
           <Route path="/trading-logs" element={<TradingLogsPage />} />
           <Route path="/trading-logs/:id" element={<TradeTrackingPage />} />
-          <Route
-            path="/reports"
-            element={
-              <PlaceholderPage
-                title="Trading Reports"
-                message="Monthly analytics and reports — Coming in Phase 6"
-              />
-            }
-          />
-          <Route
-            path="/annual-reports"
-            element={
-              <PlaceholderPage
-                title="Annual Reports"
-                message="Year-by-year performance view — Coming in Phase 8"
-              />
-            }
-          />
-          <Route
-            path="/ai-teacher"
-            element={
-              <PlaceholderPage
-                title="AI Teacher"
-                message="Ask Claude about your trading — Coming in Phase 7"
-              />
-            }
-          />
+          <Route path="/reports" element={<TradingReportsPage />} />
+          <Route path="/annual-reports" element={<AnnualReportsPage />} />
+          <Route path="/ai-teacher" element={<AiTeacherPage />} />
           <Route
             path="/settings"
             element={
