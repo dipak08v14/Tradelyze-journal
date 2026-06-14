@@ -1,0 +1,48 @@
+{
+  "manifest_version": 3,
+  "name": "Tradelyze Live",
+  "short_name": "Tradelyze",
+  "version": "1.0.0",
+  "description": "Real-time ICT setup scanner. Personalized to YOUR trades. Runs on your device.",
+  "permissions": [
+    "storage",
+    "notifications",
+    "activeTab",
+    "offscreen"
+  ],
+  "host_permissions": [
+    "https://*.tradingview.com/*",
+    "https://*.supabase.co/*",
+    "https://cdn.jsdelivr.net/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://*.tradingview.com/*"],
+      "js": ["content.js"],
+      "css": ["overlay.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Tradelyze Live",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["offscreen.html", "offscreen.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

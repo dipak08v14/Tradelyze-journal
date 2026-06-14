@@ -1,0 +1,54 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  width: 300px; min-height: 200px;
+  background: #0F1117; color: #F9FAFB;
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-size: 13px;
+}
+.hidden { display: none !important; }
+#app { padding: 16px; }
+.logo { color: #6366F1; font-weight: 800; font-size: 14px; letter-spacing: 3px; }
+.tagline { color: #6B7280; font-size: 11px; margin-top: 4px; margin-bottom: 20px; }
+.form-group { margin-bottom: 12px; }
+.form-group label { display: block; font-size: 11px; color: #9CA3AF; margin-bottom: 4px; }
+.form-group input {
+  width: 100%; background: #1A1D27; border: 1px solid #2A2D3A;
+  color: #F9FAFB; border-radius: 8px; padding: 8px 10px;
+  font-size: 12px; font-family: inherit;
+}
+.form-group input:focus { outline: none; border-color: #6366F1; }
+.btn-primary {
+  width: 100%; background: #6366F1; color: white; border: none;
+  border-radius: 8px; padding: 10px; font-size: 13px;
+  font-weight: 600; cursor: pointer; font-family: inherit; margin-top: 4px;
+}
+.btn-primary:hover { background: #4F46E5; }
+.error { color: #EF4444; font-size: 11px; margin-bottom: 8px; padding: 6px; background: #450A0A; border-radius: 6px; }
+.hint { color: #6B7280; font-size: 10px; text-align: center; margin-top: 10px; }
+.header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+.user-email { color: #6B7280; font-size: 10px; margin-top: 2px; }
+.btn-logout {
+  background: transparent; border: 1px solid #2A2D3A; color: #9CA3AF;
+  border-radius: 6px; padding: 4px 8px; font-size: 11px; cursor: pointer; font-family: inherit;
+}
+.btn-logout:hover { border-color: #EF4444; color: #EF4444; }
+.status-badge {
+  display: flex; align-items: center; gap: 6px; margin-bottom: 14px;
+  background: #052e16; border: 1px solid #166534; border-radius: 20px;
+  padding: 4px 10px; font-size: 11px; color: #4ADE80; width: fit-content;
+}
+.dot { width: 6px; height: 6px; background: #22C55E; border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.stat-card { background: #1A1D27; border: 1px solid #2A2D3A; border-radius: 8px; padding: 10px; text-align: center; }
+.stat-val { font-size: 18px; font-weight: 700; color: #F9FAFB; }
+.stat-label { font-size: 10px; color: #6B7280; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+.info-text { font-size: 11px; color: #6B7280; text-align: center; margin-bottom: 12px; line-height: 1.5; }
+.info-text strong { color: #9CA3AF; }
+.btn-app {
+  display: block; width: 100%; background: #1A1D27; border: 1px solid #6366F1;
+  color: #6366F1; border-radius: 8px; padding: 9px; text-align: center;
+  text-decoration: none; font-size: 12px; font-weight: 600;
+}
+.btn-app:hover { background: #6366F1; color: white; }
+.loading-text { color: #6B7280; font-size: 12px; text-align: center; margin-top: 20px; }

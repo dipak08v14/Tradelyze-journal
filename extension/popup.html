@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Tradelyze Live</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div id="app">
+    <div id="login-view" class="hidden">
+      <div class="logo">TRADELYZE</div>
+      <div class="tagline">Learns YOU. Not the market.</div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="email-input" placeholder="your@email.com">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="password-input" placeholder="••••••••">
+      </div>
+      <div id="login-error" class="error hidden"></div>
+      <button id="login-btn" class="btn-primary">Sign In</button>
+      <p class="hint">Use your Tradelyze account credentials</p>
+    </div>
+
+    <div id="dashboard-view" class="hidden">
+      <div class="header">
+        <div>
+          <div class="logo">TRADELYZE LIVE</div>
+          <div class="user-email" id="user-email"></div>
+        </div>
+        <button id="logout-btn" class="btn-logout">Sign Out</button>
+      </div>
+      <div class="status-badge" id="status-badge">
+        <span class="dot"></span> Loading...
+      </div>
+      <div class="stats-grid" id="stats-grid">
+        <div class="stat-card">
+          <div class="stat-val" id="stat-pnl">—</div>
+          <div class="stat-label">This Month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-wr">—</div>
+          <div class="stat-label">Win Rate</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-trades">—</div>
+          <div class="stat-label">Trades</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-r">—</div>
+          <div class="stat-label">Avg R</div>
+        </div>
+      </div>
+      <div class="info-text">
+        Open TradingView to see the Tradelyze Live overlay.<br>
+        Click the <strong>📊 TL</strong> button to toggle.
+      </div>
+      <a href="https://tradelyze.vercel.app" target="_blank" class="btn-app">
+        Open Full Journal →
+      </a>
+    </div>
+
+    <div id="loading-view">
+      <div class="logo">TRADELYZE</div>
+      <div class="loading-text">Loading...</div>
+    </div>
+  </div>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

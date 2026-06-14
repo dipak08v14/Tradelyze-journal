@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head><title>Generate Tradelyze Icons</title></head>
+<body>
+<script>
+function createIcon(size) {
+  const canvas = document.createElement('canvas')
+  canvas.width = size; canvas.height = size
+  const ctx = canvas.getContext('2d')
+  // Background circle
+  ctx.fillStyle = '#6366F1'
+  ctx.beginPath()
+  ctx.arc(size/2, size/2, size/2, 0, Math.PI*2)
+  ctx.fill()
+  // Letter T
+  ctx.fillStyle = 'white'
+  ctx.font = `bold ${Math.floor(size * 0.55)}px Arial`
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.fillText('T', size/2, size/2 + size*0.03)
+  // Download
+  const a = document.createElement('a')
+  a.download = `icon${size}.png`
+  a.href = canvas.toDataURL('image/png')
+  a.click()
+}
+window.onload = () => {
+  [16, 48, 128].forEach((s, i) => setTimeout(() => createIcon(s), i * 300))
+  document.body.innerHTML = '<p style="font-family:sans-serif;padding:20px">Icons downloaded! Move icon16.png, icon48.png, icon128.png into the /extension/icons/ folder.</p>'
+}
+</script>
+</body>
+</html>
