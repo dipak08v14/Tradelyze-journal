@@ -90,6 +90,12 @@ export const DashboardPage: React.FC = () => {
     return getLibraryConfidenceMessage(visualLibraryCount);
   }, [visualLibraryCount]);
 
+  const [accentColorState, setAccentColorState] = useState('#06b6d4');
+  useEffect(() => {
+    const color = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+    if (color) setAccentColorState(color);
+  }, []); // re-read on mount; theme changes trigger re-render via context so this will update
+
   // Safety Redirection for Auth
   useEffect(() => {
     if (!authLoading && !userId) {
@@ -429,6 +435,15 @@ export const DashboardPage: React.FC = () => {
 
   if (!user) return null;
 
+  const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || accentColorState || '#06b6d4';
+  const gridLineColor = getComputedStyle(document.documentElement).getPropertyValue('--bar').trim() || 'rgba(0,0,0,0.05)';
+  const tickColor = getComputedStyle(document.documentElement).getPropertyValue('--text-muted').trim() || '#a8a29e';
+
+  // Determine chartColor based on final cumulative P&L
+  const lastCurvePoint = stats.equityCurveData[stats.equityCurveData.length - 1];
+  const finalPnl = lastCurvePoint ? lastCurvePoint.cumPnl : 0;
+  const chartColor = finalPnl > 0 ? '#22c55e' : finalPnl < 0 ? '#ef4444' : '#94a3b8';
+
   return (
     <div className="min-h-screen flex flex-col md:flex-row font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
@@ -656,10 +671,10 @@ export const DashboardPage: React.FC = () => {
                 </div>
 
                 {/* SECTION 3: EQUITY CURVE */}
-                <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', paddingBottom: '16px', overflow: 'visible' }}>
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
                     <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5" style={{ color: 'var(--text)' }}>
-                      <TrendingUp className="w-5 h-5" style={{ color: 'var(--accent)' }} />
+                      <TrendingUp className="w-5 h-5" style={{ color: chartColor }} />
                       Cumulative P&L — {selectedMonth} {selectedYear}
                     </h2>
                     <span
@@ -676,31 +691,36 @@ export const DashboardPage: React.FC = () => {
                     </span>
                   </div>
 
-                  <div className="w-full h-[200px]">
+                  <div style={{ width: '100%', height: 260 }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart
                         data={stats.equityCurveData}
-                        margin={{ top: 10, right: 10, left: 10, bottom: 0 }}
+                        margin={{ top: 10, right: 20, left: 10, bottom: 30 }}
                       >
-                        <CartesianGrid strokeDasharray="3 3" stroke="var(--bar)" vertical={false} />
+                        <defs>
+                          <linearGradient id="pnlGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor={chartColor} stopOpacity={0.18} />
+                            <stop offset="95%" stopColor={chartColor} stopOpacity={0.01} />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke={gridLineColor} vertical={false} />
                         <XAxis
                           dataKey="day"
-                          tick={{ fill: '#6B7280', fontSize: 11 }}
-                          axisLine={false}
+                          tick={{ fontSize: 10, fill: tickColor }}
                           tickLine={false}
+                          axisLine={{ stroke: 'var(--border)' }}
                           label={{
                             value: 'Day of Month',
                             position: 'insideBottom',
-                            fill: '#4B5563',
-                            fontSize: 11,
-                            offset: -5,
+                            offset: -15,
+                            style: { fontSize: 10, fill: tickColor }
                           }}
                         />
                         <YAxis
-                          tick={{ fill: '#6B7280', fontSize: 11 }}
-                          axisLine={false}
+                          tick={{ fontSize: 10, fill: tickColor }}
                           tickLine={false}
-                          tickFormatter={(v) => '₹' + v.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                          axisLine={false}
+                          tickFormatter={(v) => `₹${v.toLocaleString('en-IN')}`}
                           width={80}
                         />
                         <ReferenceLine y={0} stroke="var(--border)" strokeDasharray="4 4" strokeWidth={1} />
@@ -722,12 +742,11 @@ export const DashboardPage: React.FC = () => {
                         <Area
                           type="monotone"
                           dataKey="cumPnl"
-                          stroke="var(--accent)"
-                          strokeWidth={2.5}
-                          fill="var(--accent)"
-                          fillOpacity={0.06}
-                          dot={false}
-                          activeDot={{ r: 5, fill: 'var(--accent)', strokeWidth: 0 }}
+                          stroke={chartColor}
+                          strokeWidth={2}
+                          fill="url(#pnlGradient)"
+                          dot={{ fill: chartColor, r: 3, strokeWidth: 0 }}
+                          activeDot={{ fill: chartColor, r: 5, strokeWidth: 0 }}
                         />
                       </AreaChart>
                     </ResponsiveContainer>

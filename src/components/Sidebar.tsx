@@ -41,7 +41,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
     { icon: PlusCircle, label: 'Trade Entry', route: '/trade-entry' },
     { icon: ScrollText, label: 'Trading Logs', route: '/trading-logs' },
     { icon: Target, label: 'Strategies', route: '/strategies' },
-    { icon: PlusCircle, label: 'Strategy Builder', route: '/strategies/new' },
     { icon: BarChart2, label: 'Monthly Reports', route: '/reports' },
     { icon: Calendar, label: 'Annual Reports', route: '/annual-reports' },
     { icon: MessageCircle, label: 'AI Teacher', route: '/ai-teacher' },
