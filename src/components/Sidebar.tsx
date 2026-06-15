@@ -1,6 +1,8 @@
 import React from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { useAuth } from '../hooks/useAuth';
+import { TrialBanner } from './TrialBanner';
 import {
   LayoutDashboard,
   PlusCircle,
@@ -23,6 +25,7 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobileOpen }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { userData, daysRemaining, trialExpired } = useAuth();
 
   const handleSignOut = async () => {
     try {
@@ -60,7 +63,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
               </linearGradient>
             </defs>
             <path d="M16 21h45.5l-3.5 11.5H41v40H26.5v-40H16Z" fill="url(#tGrad)"/>
-            <path d="M65.5 21H96L61 61h35v11.5H57.5L92.5 32.5H62L65.5 21" fill="#0f172a"/>
+            <path d="M65 21h14.5L67.8 61H96l-3.5 11.5H50Z" fill="var(--text)"/>
           </svg>
           <span style={{ fontSize: '17px', fontWeight: '800', letterSpacing: '0.8px', color: 'var(--accent)', lineHeight: '1' }}>TRADELYZE</span>
         </div>
@@ -77,7 +80,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
       </div>
 
       {/* Navigation items section */}
-      <nav className="px-3 flex-1 space-y-1.5 overflow-y-auto">
+      <nav className="px-3 flex-1 space-y-1.5 overflow-y-auto pt-3">
         {menuItems.map((item) => {
           const isActive = location.pathname === item.route || 
             (item.route === '/strategies' && location.pathname.startsWith('/strategies')) ||
@@ -113,6 +116,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
           );
         })}
       </nav>
+
+      {/* Trial Banner above footer container */}
+      <TrialBanner 
+        subscriptionPlan={userData?.subscription_plan} 
+        daysRemaining={daysRemaining} 
+        trialExpired={trialExpired} 
+      />
 
       {/* User and Sign out section */}
       <div className="px-5 py-4 mt-auto" style={{ borderTop: '1px solid var(--border)', backgroundColor: 'var(--row)' }}>

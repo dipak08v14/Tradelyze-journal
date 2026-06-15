@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
-import { supabase } from '../lib/supabaseClient'
-import { applyTheme } from '../styles/theme'
+import { supabase } from '../lib/supabase'
+import { applyTheme } from '../lib/theme'
 
 export function useTheme() {
   useEffect(() => {
     async function loadTheme() {
-      const savedTheme = localStorage.getItem('tl-theme') || 'warm'
+      const savedTheme = localStorage.getItem('tl-theme') || 'charcoal'
       const savedAccent = localStorage.getItem('tl-accent') || 'cyan'
       applyTheme(savedTheme, savedAccent)
 
@@ -20,7 +20,7 @@ export function useTheme() {
 
       if (error || !userData) return
 
-      const dbTheme = userData.theme_background || 'warm'
+      const dbTheme = userData.theme_background || 'charcoal'
       const dbAccent = userData.theme_accent || 'cyan'
       applyTheme(dbTheme, dbAccent)
     }
