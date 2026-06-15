@@ -247,7 +247,7 @@ export default function SettingsPage() {
       <Sidebar userEmail={user?.email || ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* MAIN SCREEN AREA */}
-      <main className="flex-1 overflow-y-auto w-full md:pl-[250px]">
+      <main className="flex-1 overflow-y-auto w-full md:pl-[220px]">
         {/* TOP COMPONENT */}
         <div 
           className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 md:px-8 border-b border-[var(--border)]"
@@ -527,32 +527,29 @@ export default function SettingsPage() {
                   {/* BACKGROUND THEME PICKER */}
                   <div>
                     <h4 className="text-sm font-semibold mb-3">Choose Your Background Theme</h4>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                      {Object.keys(THEMES).map((themeKey) => {
+                    <div className="flex flex-row" style={{ gap: '8px' }}>
+                      {['warm', 'cloud', 'slate', 'charcoal', 'navy', 'midnight'].map((themeKey) => {
                         const th = THEMES[themeKey as keyof typeof THEMES];
                         const isActive = selectedTheme === themeKey;
                         return (
                           <div
                             key={themeKey}
+                            id={`theme-swatch-${themeKey}`}
                             onClick={() => handlePreviewTheme(themeKey, selectedAccent)}
                             style={{
-                              backgroundColor: th.bg,
-                              borderColor: isActive ? 'var(--accent)' : 'var(--border)',
-                              borderWidth: isActive ? '2px' : '1px'
+                              width: '60px',
+                              height: '42px',
+                              borderRadius: '8px',
+                              border: isActive ? '2px solid var(--accent)' : '2px solid transparent',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              overflow: 'hidden',
                             }}
-                            className="p-3.5 rounded-2xl cursor-pointer transition-all shadow hover:scale-[1.01] flex flex-col justify-between h-[80px]"
+                            title={themeKey}
                           >
-                            <span 
-                              style={{ color: th.text }} 
-                              className="text-xs font-bold uppercase tracking-wider"
-                            >
-                              {themeKey}
-                            </span>
-                            <div className="flex gap-1.5">
-                              <div style={{ backgroundColor: th.card }} className="w-5 h-5 rounded border border-black/10 shadow-sm" />
-                              <div style={{ backgroundColor: th.bar }} className="w-5 h-5 rounded border border-black/5" />
-                              <div style={{ backgroundColor: th.row }} className="w-5 h-5 rounded border border-black/5" />
-                            </div>
+                            <div style={{ backgroundColor: th.bg, flex: 1 }} />
+                            <div style={{ backgroundColor: th.card, flex: 1 }} />
                           </div>
                         );
                       })}
@@ -561,26 +558,27 @@ export default function SettingsPage() {
 
                   {/* ACCENT SELECTION */}
                   <div className="pt-4 border-t border-[var(--border)]">
-                    <h4 className="text-sm font-semibold mb-3">Accent Highlights Color</h4>
-                    <div className="flex flex-wrap gap-4">
-                      {Object.keys(ACCENTS).map((accentKey) => {
+                    <h4 className="text-sm font-semibold mb-1">Accent Highlights Color</h4>
+                    <div className="flex flex-row" style={{ gap: '8px', marginTop: '16px' }}>
+                      {['cyan', 'indigo', 'blue', 'emerald', 'gold', 'rose', 'coral'].map((accentKey) => {
                         const acc = ACCENTS[accentKey as keyof typeof ACCENTS];
                         const isActive = selectedAccent === accentKey;
                         return (
                           <div
                             key={accentKey}
+                            id={`accent-dot-${accentKey}`}
                             onClick={() => handlePreviewTheme(selectedTheme, accentKey)}
-                            style={{ backgroundColor: acc.color }}
-                            className={`w-10 h-10 rounded-full cursor-pointer transition-all hover:scale-[1.08] flex items-center justify-center shadow-lg relative ${
-                              isActive ? 'ring-2 ring-white scale-110' : ''
-                            }`}
-                          >
-                            {isActive && (
-                              <div className="w-3.5 h-3.5 bg-white rounded-full flex items-center justify-center shadow-sm">
-                                <div style={{ backgroundColor: acc.color }} className="w-1.5 h-1.5 rounded-full" />
-                              </div>
-                            )}
-                          </div>
+                            style={{
+                              width: '36px',
+                              height: '36px',
+                              borderRadius: '50%',
+                              backgroundColor: acc.color,
+                              cursor: 'pointer',
+                              border: isActive ? '3px solid #ffffff' : '3px solid transparent',
+                              boxShadow: isActive ? `0 0 0 3px ${acc.color}` : 'none',
+                              transition: 'all 0.2s ease',
+                            }}
+                          />
                         );
                       })}
                     </div>
@@ -592,9 +590,10 @@ export default function SettingsPage() {
                     <button
                       onClick={handleSaveAppearance}
                       disabled={saving}
-                      className="bg-[var(--accent)] hover:bg-[var(--accent-light)] text-slate-950 px-5 py-2.5 rounded-xl font-bold cursor-pointer text-sm shadow shadow-indigo-200/5 transition-all"
+                      style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
+                      className="hover:opacity-95 px-5 py-2.5 rounded-xl font-bold cursor-pointer text-sm shadow transition-all"
                     >
-                      {saving ? 'Saving...' : 'Save Appearance'}
+                      {saving ? 'Saving...' : 'Save Theme'}
                     </button>
                   </div>
                 </div>

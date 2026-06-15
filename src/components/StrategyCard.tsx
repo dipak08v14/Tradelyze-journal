@@ -146,15 +146,16 @@ export const StrategyCard: React.FC<StrategyCardProps> = ({
 
   return (
     <div
-      className="rounded-2xl transition-all duration-200 flex flex-col justify-between cursor-pointer group shadow-sm hover:shadow-md"
+      className="flex flex-col justify-between cursor-pointer group hover:-translate-y-[2px] hover:shadow-[0_4px_20px_rgba(0,0,0,0.08)] transition-all duration-[200ms]"
       style={{ 
         backgroundColor: 'var(--card)', 
         border: '0.5px solid var(--border)',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.02)'
+        borderRadius: '12px',
+        padding: '20px'
       }}
       onClick={() => navigate(`/strategies/${strategy.id}/edit`)}
     >
-      <div className="p-6">
+      <div>
         {/* TOP ROW */}
         <div className="flex items-center justify-between" onClick={(e) => e.stopPropagation()}>
           <div className="flex items-center flex-1 min-w-0 pr-2">
@@ -250,15 +251,15 @@ export const StrategyCard: React.FC<StrategyCardProps> = ({
               {[1, 2, 3, 4].map((i) => (
                 <div 
                   key={i} 
-                  className="rounded-xl p-2.5 h-12 animate-pulse" 
-                  style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}
+                  className="animate-pulse" 
+                  style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px', padding: '10px 12px', height: '52px' }}
                 />
               ))}
             </div>
           ) : totalTrades === 0 ? (
             <div 
-              className="rounded-xl p-3 text-center"
-              style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}
+              className="text-center"
+              style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px', padding: '10px 12px' }}
             >
               <span className="text-xs italic font-medium" style={{ color: 'var(--text-muted)' }}>No trades logged yet</span>
             </div>
@@ -266,8 +267,8 @@ export const StrategyCard: React.FC<StrategyCardProps> = ({
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
               {/* TRADES count */}
               <div 
-                className="rounded-xl p-3 flex flex-col justify-center"
-                style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}
+                className="flex flex-col justify-center"
+                style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px', padding: '10px 12px' }}
               >
                 <span className="font-extrabold text-base tracking-tight font-display" style={{ color: 'var(--text)' }}>{totalTrades}</span>
                 <span className="text-[9px] uppercase tracking-wider font-bold mt-0.5" style={{ color: 'var(--text-muted)' }}>Trades</span>
@@ -275,8 +276,8 @@ export const StrategyCard: React.FC<StrategyCardProps> = ({
               
               {/* WIN RATE */}
               <div 
-                className="rounded-xl p-3 flex flex-col justify-center"
-                style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}
+                className="flex flex-col justify-center"
+                style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px', padding: '10px 12px' }}
               >
                 <span className="font-extrabold text-base tracking-tight font-display" style={{ color: winRate >= 60 ? '#22c55e' : winRate >= 40 ? '#f59e0b' : '#ef4444' }}>{winRate}%</span>
                 <span className="text-[9px] uppercase tracking-wider font-bold mt-0.5" style={{ color: 'var(--text-muted)' }}>Win Rate</span>
@@ -284,8 +285,8 @@ export const StrategyCard: React.FC<StrategyCardProps> = ({
 
               {/* AVG R */}
               <div 
-                className="rounded-xl p-3 flex flex-col justify-center"
-                style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}
+                className="flex flex-col justify-center"
+                style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px', padding: '10px 12px' }}
               >
                 <span className="font-extrabold text-base tracking-tight font-display" style={{ color: avgR > 0 ? '#22c55e' : avgR < 0 ? '#ef4444' : 'var(--text-sub)' }}>
                   {avgR > 0 ? '+' : ''}{avgR.toFixed(1)}R
@@ -295,8 +296,8 @@ export const StrategyCard: React.FC<StrategyCardProps> = ({
 
               {/* TOTAL P&L */}
               <div 
-                className="rounded-xl p-3 flex flex-col justify-center"
-                style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}
+                className="flex flex-col justify-center"
+                style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px', padding: '10px 12px' }}
               >
                 <span className="font-extrabold text-base tracking-tight font-display" style={{ color: totalPnL > 0 ? '#22c55e' : totalPnL < 0 ? '#ef4444' : 'var(--text-sub)' }}>
                   {formatCurrency(totalPnL)}
@@ -331,7 +332,7 @@ export const StrategyCard: React.FC<StrategyCardProps> = ({
 
       {/* FOOTER ROW */}
       <div 
-        className="px-6 py-4 flex items-center justify-between"
+        className="mt-5 pt-4 flex items-center justify-between"
         style={{ borderTop: '0.5px solid var(--border)' }}
       >
         <div className="flex items-center gap-1.5" style={{ color: 'var(--text-muted)' }}>

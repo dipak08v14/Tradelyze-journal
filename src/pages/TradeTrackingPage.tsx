@@ -480,7 +480,7 @@ const TradeTrackingPageContent: React.FC = () => {
       <Sidebar userEmail={user.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* MAIN CONTAINER */}
-      <div className="flex-1 md:pl-[250px] flex flex-col min-h-screen">
+      <div className="flex-1 md:pl-[220px] flex flex-col min-h-screen">
         {/* MOBILE HEADER BAR */}
         <header 
           className="flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-25"
@@ -625,7 +625,7 @@ const TradeTrackingPageContent: React.FC = () => {
               <div className="lg:col-span-2 space-y-6">
                 
                 {/* CARD A: TRADE DETAILS */}
-                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }} className="rounded-2xl p-6 shadow-sm relative">
+                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="rounded-xl p-6 shadow-sm relative">
                   <div className="flex items-center gap-2 mb-4">
                     <Briefcase className="w-5 h-5 text-[#06b6d4]" />
                     <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display">Trade Accountancies</h2>
@@ -784,7 +784,7 @@ const TradeTrackingPageContent: React.FC = () => {
                 </section>
 
                 {/* CARD B: ENTRY RULES SHAPED DISPLAY */}
-                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }} className="rounded-2xl p-6 shadow-sm relative">
+                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="rounded-xl p-6 shadow-sm relative">
                   <div className="flex items-center justify-between mb-2 font-sans">
                     <div className="flex items-center gap-2">
                       <Layers className="w-5 h-5 text-green-500" />
@@ -798,7 +798,7 @@ const TradeTrackingPageContent: React.FC = () => {
                 </section>
 
                 {/* CARD C: EXIT RULES SHAPED DISPLAY */}
-                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }} className="rounded-2xl p-6 shadow-sm relative">
+                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="rounded-xl p-6 shadow-sm relative">
                   <div className="flex items-center justify-between mb-2 font-sans">
                     <div className="flex items-center gap-2">
                       <Layers className="w-5 h-5 text-red-500" />
@@ -812,7 +812,7 @@ const TradeTrackingPageContent: React.FC = () => {
                 </section>
 
                 {/* CARD D: GENERAL EXECUTION QUALITY & TRADER NOTES */}
-                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }} className="rounded-2xl p-6 shadow-sm relative">
+                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="rounded-xl p-6 shadow-sm relative">
                   <div className="flex items-center gap-2 mb-4">
                     <Star className="w-5 h-5 text-amber-500" />
                     <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display">Execution & Notes</h2>
@@ -904,7 +904,7 @@ const TradeTrackingPageContent: React.FC = () => {
               <div className="space-y-6">
                 
                 {/* CARD E: KEY PERFORMANCE SCOREBOARD + SPIDER RADAR */}
-                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }} className="rounded-2xl p-6 shadow-sm">
+                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="rounded-xl p-6 shadow-sm">
                   <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display mb-1">
                     Performance Score
                   </h2>
@@ -930,8 +930,8 @@ const TradeTrackingPageContent: React.FC = () => {
                       </div>
                       <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-2 rounded-full overflow-hidden w-full">
                         <div
-                          className={`h-full rounded-full transition-all duration-300 ${getScoreFillColor(technicalScore)}`}
-                          style={{ width: `${technicalScore}%` }}
+                          className="h-full rounded-full transition-all duration-300"
+                          style={{ width: `${technicalScore}%`, backgroundColor: 'var(--accent)' }}
                         />
                       </div>
                     </div>
@@ -944,8 +944,8 @@ const TradeTrackingPageContent: React.FC = () => {
                       </div>
                       <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-2 rounded-full overflow-hidden w-full">
                         <div
-                          className={`h-full rounded-full transition-all duration-300 ${getScoreFillColor(psychScore)}`}
-                          style={{ width: `${psychScore}%` }}
+                          className="h-full rounded-full transition-all duration-300"
+                          style={{ width: `${psychScore}%`, backgroundColor: 'var(--accent)' }}
                         />
                       </div>
                     </div>
@@ -958,8 +958,8 @@ const TradeTrackingPageContent: React.FC = () => {
                       </div>
                       <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-2 rounded-full overflow-hidden w-full">
                         <div
-                          className={`h-full rounded-full transition-all duration-300 ${getScoreFillColor(riskScore)}`}
-                          style={{ width: `${riskScore}%` }}
+                          className="h-full rounded-full transition-all duration-300"
+                          style={{ width: `${riskScore}%`, backgroundColor: 'var(--accent)' }}
                         />
                       </div>
                     </div>
@@ -976,7 +976,7 @@ const TradeTrackingPageContent: React.FC = () => {
                 </section>
 
                 {/* CARD F: PSYCHOLOGY SUB-METRICS ANALYSIS */}
-                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }} className="rounded-2xl p-6 shadow-sm">
+                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="rounded-xl p-6 shadow-sm">
                   <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display">
                     Psychology Spectrum
                   </h2>
@@ -994,7 +994,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           <span style={{ color: 'var(--text)' }} className="font-bold font-mono">{psychology.external_stress_pct}%</span>
                         </div>
                         <div style={{ backgroundColor: 'var(--bar)' }} className="h-1.5 rounded-full overflow-hidden w-full">
-                          <div className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-cyan-400" style={{ width: `${psychology.external_stress_pct}%` }} />
+                          <div className="h-full rounded-full" style={{ width: `${psychology.external_stress_pct}%`, backgroundColor: 'var(--accent)' }} />
                         </div>
                       </div>
 
@@ -1005,7 +1005,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           <span style={{ color: 'var(--text)' }} className="font-bold font-mono">{psychology.price_action_reading_pct}%</span>
                         </div>
                         <div style={{ backgroundColor: 'var(--bar)' }} className="h-1.5 rounded-full overflow-hidden w-full">
-                          <div className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-cyan-400" style={{ width: `${psychology.price_action_reading_pct}%` }} />
+                          <div className="h-full rounded-full" style={{ width: `${psychology.price_action_reading_pct}%`, backgroundColor: 'var(--accent)' }} />
                         </div>
                       </div>
 
@@ -1016,7 +1016,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           <span style={{ color: 'var(--text)' }} className="font-bold font-mono">{psychology.confidence_pct}%</span>
                         </div>
                         <div style={{ backgroundColor: 'var(--bar)' }} className="h-1.5 rounded-full overflow-hidden w-full">
-                          <div className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-cyan-400" style={{ width: `${psychology.confidence_pct}%` }} />
+                          <div className="h-full rounded-full" style={{ width: `${psychology.confidence_pct}%`, backgroundColor: 'var(--accent)' }} />
                         </div>
                       </div>
 
@@ -1027,7 +1027,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           <span style={{ color: 'var(--text)' }} className="font-bold font-mono">{psychology.entry_levels_pct}%</span>
                         </div>
                         <div style={{ backgroundColor: 'var(--bar)' }} className="h-1.5 rounded-full overflow-hidden w-full">
-                          <div className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-cyan-400" style={{ width: `${psychology.entry_levels_pct}%` }} />
+                          <div className="h-full rounded-full" style={{ width: `${psychology.entry_levels_pct}%`, backgroundColor: 'var(--accent)' }} />
                         </div>
                       </div>
 
@@ -1041,7 +1041,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           <span className="text-amber-500 font-bold font-mono">{psychology.anxiety_pct}%</span>
                         </div>
                         <div style={{ backgroundColor: 'var(--bar)' }} className="h-1.5 rounded-full overflow-hidden w-full">
-                          <div className="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-400" style={{ width: `${psychology.anxiety_pct}%` }} />
+                          <div className="h-full rounded-full" style={{ width: `${psychology.anxiety_pct}%`, backgroundColor: '#f59e0b' }} />
                         </div>
                       </div>
 
@@ -1055,7 +1055,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           <span className="text-red-500 font-bold font-mono">{psychology.fear_pct}%</span>
                         </div>
                         <div style={{ backgroundColor: 'var(--bar)' }} className="h-1.5 rounded-full overflow-hidden w-full">
-                          <div className="h-full rounded-full bg-gradient-to-r from-red-500 to-red-400" style={{ width: `${psychology.fear_pct}%` }} />
+                          <div className="h-full rounded-full" style={{ width: `${psychology.fear_pct}%`, backgroundColor: '#ef4444' }} />
                         </div>
                       </div>
 
@@ -1073,7 +1073,7 @@ const TradeTrackingPageContent: React.FC = () => {
                 </section>
 
                 {/* CARD G: RISK MANAGEMENT RULES FOLLOWED */}
-                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }} className="rounded-2xl p-6 shadow-sm">
+                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="rounded-xl p-6 shadow-sm">
                   <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display">Risk Management</h2>
                   <p style={{ color: 'var(--text-muted)' }} className="text-[11px] font-mono uppercase tracking-wider mb-2">Exposure analysis</p>
 
@@ -1103,8 +1103,8 @@ const TradeTrackingPageContent: React.FC = () => {
                         </div>
                         <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-2 rounded-full overflow-hidden w-full">
                           <div
-                            className={`h-full rounded-full transition-all duration-300 ${getScoreFillColor(riskScore)}`}
-                            style={{ width: `${riskScore}%` }}
+                            className="h-full rounded-full transition-all duration-300"
+                            style={{ width: `${riskScore}%`, backgroundColor: 'var(--accent)' }}
                           />
                         </div>
                       </div>
@@ -1113,7 +1113,7 @@ const TradeTrackingPageContent: React.FC = () => {
                 </section>
 
                    {/* CARD H: MEDIA VIEWER ZONE */}
-                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }} className="rounded-2xl p-6 shadow-sm">
+                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="rounded-xl p-6 shadow-sm">
                   <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display mb-3">
                     Trade Attachments
                   </h2>
@@ -1204,7 +1204,7 @@ const TradeTrackingPageContent: React.FC = () => {
                 </section>
 
                 {/* SPECIAL CARD: VISUAL PATTERN MATCH */}
-                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }} className="rounded-2xl p-6 shadow-sm">
+                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="rounded-xl p-6 shadow-sm">
                   <div className="flex items-center gap-2 mb-4 font-sans">
                     <Sparkles className="w-5 h-5 text-cyan-500" />
                     <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display">
@@ -1330,6 +1330,30 @@ const TradeTrackingPageContent: React.FC = () => {
                     </div>
                   )}
                 </section>
+
+                {/* ASK AI BUTTON AT BOTTOM OF RIGHT COLUMN */}
+                <button
+                  type="button"
+                  style={{
+                    backgroundColor: 'var(--accent)',
+                    color: '#ffffff',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: '12px',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px'
+                  }}
+                  className="hover:opacity-90 transition-all shadow-sm"
+                >
+                  <Sparkles className="w-4 h-4 text-white" />
+                  <span>Ask AI Assistant</span>
+                </button>
               </div>
             </div>
           </div>

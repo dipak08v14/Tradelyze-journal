@@ -70,11 +70,17 @@ export const RuleChecklist: React.FC<RuleChecklistProps> = ({
             <button
               type="button"
               onClick={() => handleToggle(rule.id, 'Y', rule.followed)}
-              className={`px-3 py-1 text-sm rounded-md transition-all cursor-pointer ${
-                rule.followed === true
-                  ? 'bg-green-500/10 border border-green-500 text-green-600 font-bold'
-                  : 'bg-transparent border border-[var(--border)] text-zinc-400 hover:border-green-600 hover:text-green-600'
-              }`}
+              style={rule.followed === true ? {
+                border: '0.5px solid #22c55e',
+                backgroundColor: 'rgba(34,197,94,0.15)',
+                color: '#22c55e',
+                fontWeight: 700
+              } : {
+                border: '0.5px solid var(--border)',
+                backgroundColor: 'transparent',
+                color: 'var(--text-sub)'
+              }}
+              className="px-3 py-1 text-sm rounded-md transition-all cursor-pointer"
             >
               Y
             </button>
@@ -83,11 +89,17 @@ export const RuleChecklist: React.FC<RuleChecklistProps> = ({
             <button
               type="button"
               onClick={() => handleToggle(rule.id, 'N', rule.followed)}
-              className={`px-3 py-1 text-sm rounded-md transition-all cursor-pointer ${
-                rule.followed === false
-                  ? 'bg-red-500/10 border border-red-500 text-red-600 font-bold'
-                  : 'bg-transparent border border-[var(--border)] text-zinc-400 hover:border-red-600 hover:text-red-400'
-              }`}
+              style={rule.followed === false ? {
+                border: '0.5px solid #ef4444',
+                backgroundColor: 'rgba(239,68,68,0.15)',
+                color: '#ef4444',
+                fontWeight: 700
+              } : {
+                border: '0.5px solid var(--border)',
+                backgroundColor: 'transparent',
+                color: 'var(--text-sub)'
+              }}
+              className="px-3 py-1 text-sm rounded-md transition-all cursor-pointer"
             >
               N
             </button>

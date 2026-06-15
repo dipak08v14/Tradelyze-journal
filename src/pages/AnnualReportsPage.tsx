@@ -276,7 +276,7 @@ export const AnnualReportsPage: React.FC = () => {
       <Sidebar userEmail={user?.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* RIGHT SIDE CONTENT CONTAINER */}
-      <div className="flex-1 md:pl-[250px] flex flex-col min-h-screen">
+      <div className="flex-1 md:pl-[220px] flex flex-col min-h-screen">
         {/* MOBILE HEADER */}
         <header 
           className="flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20"
@@ -466,13 +466,13 @@ export const AnnualReportsPage: React.FC = () => {
                           />
                           <Legend wrapperStyle={{ color: 'var(--text-sub)', fontSize: '12px' }} />
                           <Bar yAxisId="left" dataKey="monthPnl" name="Monthly P&L" radius={[4, 4, 0, 0]}
-                               fill="#6366F1" fillOpacity={0.7}>
+                               fill="var(--accent)" fillOpacity={0.7}>
                             {annualEquityData.map((entry, i) => (
-                              <Cell key={i} fill={entry.monthPnl >= 0 ? '#22C55E' : '#EF4444'} fillOpacity={0.7} />
+                              <Cell key={i} fill={entry.monthPnl >= 0 ? 'var(--accent)' : '#ef4444'} fillOpacity={0.7} />
                             ))}
                           </Bar>
                           <Line yAxisId="right" type="monotone" dataKey="cumPnl" name="Cumulative P&L"
-                                stroke="#6366F1" strokeWidth={2.5} dot={{ fill: '#6366F1', r: 3 }} />
+                                stroke="var(--accent)" strokeWidth={2.5} dot={{ fill: 'var(--accent)', r: 3 }} />
                         </ComposedChart>
                       </ResponsiveContainer>
                     </div>
@@ -503,19 +503,22 @@ export const AnnualReportsPage: React.FC = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {monthlyData.map(({ month, trades: monthTrades, stats: mStats, scores: mScores }) => {
+                        {monthlyData.map(({ month, trades: monthTrades, stats: mStats, scores: mScores }, idx) => {
                           const isBest = bestMonth && bestMonth.month === month;
                           const isWorst = worstMonth && worstMonth.month === month;
 
                           let customRowStyle = 'border-b transition-colors hover:bg-[var(--row)]';
                           let customStyle: React.CSSProperties = { borderColor: 'var(--border)' };
+                          
+                          if (idx % 2 !== 0) {
+                            customStyle.backgroundColor = 'var(--row)';
+                          }
+
                           if (mStats && mStats.totalTrades > 0) {
                             if (isBest) {
-                              customStyle.borderLeft = '2px solid #22c55e';
-                              customStyle.backgroundColor = 'rgba(34, 197, 94, 0.05)';
+                              customStyle.borderLeft = '3px solid #22c55e';
                             } else if (isWorst) {
-                              customStyle.borderLeft = '2px solid #ef4444';
-                              customStyle.backgroundColor = 'rgba(239, 68, 68, 0.05)';
+                              customStyle.borderLeft = '3px solid #ef4444';
                             }
                           }
 
@@ -768,8 +771,8 @@ export const AnnualReportsPage: React.FC = () => {
                         </div>
                         <div style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)' }} className="w-full h-2.5 rounded-full border overflow-hidden">
                           <div
-                            className={`h-full transition-all duration-500 ${getScoreBg(annualScores.avgTech)}`}
-                            style={{ width: `${annualScores.avgTech}%` }}
+                            className="h-full transition-all duration-500"
+                            style={{ width: `${annualScores.avgTech}%`, backgroundColor: 'var(--accent)' }}
                           />
                         </div>
                       </div>
@@ -784,8 +787,8 @@ export const AnnualReportsPage: React.FC = () => {
                         </div>
                         <div style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)' }} className="w-full h-2.5 rounded-full border overflow-hidden">
                           <div
-                            className={`h-full transition-all duration-500 ${getScoreBg(annualScores.avgPsych)}`}
-                            style={{ width: `${annualScores.avgPsych}%` }}
+                            className="h-full transition-all duration-500"
+                            style={{ width: `${annualScores.avgPsych}%`, backgroundColor: 'var(--accent)' }}
                           />
                         </div>
                       </div>
@@ -800,8 +803,8 @@ export const AnnualReportsPage: React.FC = () => {
                         </div>
                         <div style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)' }} className="w-full h-2.5 rounded-full border overflow-hidden">
                           <div
-                            className={`h-full transition-all duration-500 ${getScoreBg(annualScores.avgRisk)}`}
-                            style={{ width: `${annualScores.avgRisk}%` }}
+                            className="h-full transition-all duration-500"
+                            style={{ width: `${annualScores.avgRisk}%`, backgroundColor: 'var(--accent)' }}
                           />
                         </div>
                       </div>

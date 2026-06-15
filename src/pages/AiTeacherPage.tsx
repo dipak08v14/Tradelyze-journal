@@ -514,7 +514,7 @@ export const AiTeacherPage: React.FC = () => {
       <Sidebar userEmail={user.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* MAIN CONTAINER AREA */}
-      <div className="flex-1 md:pl-[250px] flex flex-col min-h-screen">
+      <div className="flex-1 md:pl-[220px] flex flex-col min-h-screen">
         {/* MOBILE TOPBAR HEADER */}
         <header 
           className="flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20"
@@ -620,32 +620,32 @@ export const AiTeacherPage: React.FC = () => {
                 <div className="grid grid-cols-1 gap-2">
                   <button
                     onClick={() => handlePredefined("What is my top repeated mistake and how can I resolve it using ICT concepts?")}
-                    style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
-                    className="w-full text-left p-3 rounded-xl border hover:border-[var(--accent)] hover:bg-[var(--bar)] transition-all text-xs text-zinc-500 hover:text-[var(--accent)] cursor-pointer font-semibold flex items-center justify-between group"
+                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '20px' }}
+                    className="w-full text-left py-2.5 px-4 transition-all text-xs text-zinc-500 cursor-pointer font-semibold hover:bg-[var(--accent-muted)] hover:text-[var(--accent)] hover:border-[var(--accent)] flex items-center justify-between group"
                   >
                     <span>What is my top repeated mistake?</span>
                     <ArrowRight style={{ color: 'var(--accent)' }} className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transform translate-x-[-4px] group-hover:translate-x-0 transition-all font-bold" />
                   </button>
                   <button
                     onClick={() => handlePredefined("Analyze my emotional condition and discipline scores. Are there patterns?")}
-                    style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
-                    className="w-full text-left p-3 rounded-xl border hover:border-[var(--accent)] hover:bg-[var(--bar)] transition-all text-xs text-zinc-500 hover:text-[var(--accent)] cursor-pointer font-semibold flex items-center justify-between group"
+                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '20px' }}
+                    className="w-full text-left py-2.5 px-4 transition-all text-xs text-zinc-500 cursor-pointer font-semibold hover:bg-[var(--accent-muted)] hover:text-[var(--accent)] hover:border-[var(--accent)] flex items-center justify-between group"
                   >
                     <span>Analyze emotional condition and scores?</span>
                     <ArrowRight style={{ color: 'var(--accent)' }} className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transform translate-x-[-4px] group-hover:translate-x-0 transition-all font-bold" />
                   </button>
                   <button
                     onClick={() => handlePredefined("Are my Win Rate and R-Multiple aligned for long-term consistency?")}
-                    style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
-                    className="w-full text-left p-3 rounded-xl border hover:border-[var(--accent)] hover:bg-[var(--bar)] transition-all text-xs text-zinc-500 hover:text-[var(--accent)] cursor-pointer font-semibold flex items-center justify-between group"
+                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '20px' }}
+                    className="w-full text-left py-2.5 px-4 transition-all text-xs text-zinc-500 cursor-pointer font-semibold hover:bg-[var(--accent-muted)] hover:text-[var(--accent)] hover:border-[var(--accent)] flex items-center justify-between group"
                   >
                     <span>Win Rate & R-Multiple long-term consistency?</span>
                     <ArrowRight style={{ color: 'var(--accent)' }} className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transform translate-x-[-4px] group-hover:translate-x-0 transition-all font-bold" />
                   </button>
                   <button
                     onClick={() => handlePredefined("Provide a step-by-step trading plan to improve my risk-to-reward ratio.")}
-                    style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
-                    className="w-full text-left p-3 rounded-xl border hover:border-[var(--accent)] hover:bg-[var(--bar)] transition-all text-xs text-zinc-500 hover:text-[var(--accent)] cursor-pointer font-semibold flex items-center justify-between group"
+                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '20px' }}
+                    className="w-full text-left py-2.5 px-4 transition-all text-xs text-zinc-500 cursor-pointer font-semibold hover:bg-[var(--accent-muted)] hover:text-[var(--accent)] hover:border-[var(--accent)] flex items-center justify-between group"
                   >
                     <span>Get a plan to improve my risk ratio</span>
                     <ArrowRight style={{ color: 'var(--accent)' }} className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transform translate-x-[-4px] group-hover:translate-x-0 transition-all font-bold" />
@@ -688,7 +688,7 @@ export const AiTeacherPage: React.FC = () => {
             </aside>
 
             {/* RIGHT SIDE CHAT PANE (2/3 Width) */}
-            <main style={{ backgroundColor: 'var(--bg)' }} className="flex-1 flex flex-col overflow-hidden h-full">
+            <main style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px' }} className="flex-1 flex flex-col overflow-hidden h-full m-4">
               
               {/* THREAD CONTAINER */}
               <div className="flex-1 p-6 overflow-y-auto space-y-4">
@@ -708,10 +708,22 @@ export const AiTeacherPage: React.FC = () => {
                     <div
                       style={
                         msg.role === 'user'
-                          ? { backgroundColor: 'var(--chat-user-bg, #EEF2F6)', borderColor: 'var(--border)', color: 'var(--text)' }
-                          : { backgroundColor: 'var(--card)', borderColor: 'var(--border)' }
+                          ? { 
+                              backgroundColor: 'var(--accent-muted)', 
+                              borderLeft: '3px solid var(--accent)', 
+                              borderRadius: '8px', 
+                              padding: '12px 16px',
+                              color: 'var(--text)' 
+                            }
+                          : { 
+                              backgroundColor: 'var(--card)', 
+                              border: '0.5px solid var(--border)', 
+                              borderRadius: '8px', 
+                              padding: '14px 16px',
+                              color: 'var(--text-sub)' 
+                            }
                       }
-                      className="max-w-2xl px-5 py-4 rounded-2xl border font-sans"
+                      className="max-w-2xl font-sans"
                     >
                       {msg.role === 'user' ? (
                         <p style={{ color: 'var(--text)' }} className="text-sm leading-relaxed whitespace-pre-wrap font-medium">{msg.content}</p>
@@ -724,19 +736,19 @@ export const AiTeacherPage: React.FC = () => {
 
                 {/* Claude Typing State loader indicator */}
                 {askingAI && (
-                  <div className="flex gap-4 justify-start animate-pulse">
-                    <div style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)' }} className="w-8 h-8 rounded-xl border shrink-0 flex items-center justify-center animate-spin">
-                      <RefreshCw style={{ color: 'var(--accent)' }} className="w-4 h-4" />
-                    </div>
-                    <div style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }} className="max-w-md border px-5 py-3.5 rounded-2xl rounded-tl-none flex flex-col gap-2">
-                      <div className="flex items-center gap-2 text-xs">
-                        <span style={{ backgroundColor: 'var(--accent)' }} className="w-2 h-2 rounded-full animate-ping" />
-                        <span style={{ color: 'var(--text)' }} className="font-semibold tracking-wide">Evaluating trading stages & setups...</span>
-                      </div>
-                      <div style={{ backgroundColor: 'var(--border)' }} className="h-1.5 rounded w-48 animate-pulse" />
-                      <div style={{ backgroundColor: 'var(--border)' }} className="h-1.5 rounded w-32 animate-pulse" />
-                    </div>
-                  </div>
+                   <div className="flex gap-4 justify-start animate-pulse">
+                     <div style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)' }} className="w-8 h-8 rounded-xl border shrink-0 flex items-center justify-center animate-spin">
+                       <RefreshCw style={{ color: 'var(--accent)' }} className="w-4 h-4" />
+                     </div>
+                     <div style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }} className="max-w-md border px-5 py-3.5 rounded-2xl rounded-tl-none flex flex-col gap-2">
+                       <div className="flex items-center gap-2 text-xs">
+                         <span style={{ backgroundColor: 'var(--accent)' }} className="w-2 h-2 rounded-full animate-ping" />
+                         <span style={{ color: 'var(--text)' }} className="font-semibold tracking-wide">Evaluating trading stages & setups...</span>
+                       </div>
+                       <div style={{ backgroundColor: 'var(--border)' }} className="h-1.5 rounded w-48 animate-pulse" />
+                       <div style={{ backgroundColor: 'var(--border)' }} className="h-1.5 rounded w-32 animate-pulse" />
+                     </div>
+                   </div>
                 )}
 
                 <div ref={chatEndRef} />
@@ -759,16 +771,23 @@ export const AiTeacherPage: React.FC = () => {
                         ? "Ask about this specific trade (e.g., 'What was my anxiety level compared to the rules followed?')" 
                         : "Ask your AI Teacher about setups, mental indicators, or trading consistency..."
                     }
-                    style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)', color: 'var(--text)' }}
-                    className="flex-1 min-h-[50px] max-h-[140px] border rounded-2xl py-3.5 px-4 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--accent)] focus:border-[var(--accent)] resize-none font-sans scrollbar-hide"
+                    style={{ 
+                      backgroundColor: 'var(--card)', 
+                      border: '0.5px solid var(--border)', 
+                      borderRadius: '8px', 
+                      padding: '12px 14px', 
+                      fontSize: '13px', 
+                      color: 'var(--text)' 
+                    }}
+                    className="flex-1 min-h-[50px] max-h-[140px] focus:outline-none focus:ring-1 focus:ring-[var(--accent)] focus:border-[var(--accent)] resize-none font-sans scrollbar-hide pr-12 py-3"
                     rows={1}
                   />
                   <button
                     type="submit"
                     disabled={!question.trim() || askingAI}
                     style={{
-                      backgroundColor: question.trim() && !askingAI ? 'var(--accent)' : 'var(--bar)',
-                      color: question.trim() && !askingAI ? '#ffffff' : 'var(--text-muted)',
+                      backgroundColor: 'var(--accent)',
+                      color: '#ffffff',
                       border: 'none',
                       cursor: question.trim() && !askingAI ? 'pointer' : 'not-allowed',
                       width: '40px',
@@ -777,7 +796,8 @@ export const AiTeacherPage: React.FC = () => {
                       borderRadius: '8px',
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'center'
+                      justifyContent: 'center',
+                      opacity: question.trim() && !askingAI ? 1 : 0.5
                     }}
                     className="absolute right-3.5 top-3 hover:opacity-90 transition-all"
                   >

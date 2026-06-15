@@ -669,7 +669,7 @@ export const StrategyBuilderPage: React.FC = () => {
       <Sidebar userEmail={user.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* RIGHT SIDE VIEW */}
-      <div className="flex-1 md:pl-[250px] flex flex-col min-h-screen">
+      <div className="flex-1 md:pl-[220px] flex flex-col min-h-screen">
         {/* MOBILE TOPBAR header */}
         <header 
           className="flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-25"
@@ -761,7 +761,7 @@ export const StrategyBuilderPage: React.FC = () => {
                 <div className="lg:col-span-2 space-y-6">
                   
                   {/* CARD 1: STRATEGY DETAILS */}
-                  <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }} className="rounded-2xl p-6 shadow-sm relative overflow-hidden">
+                  <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '20px' }} className="relative overflow-hidden">
                     <h2 style={{ color: 'var(--text)', borderColor: 'var(--border)' }} className="text-lg font-bold border-b pb-3 font-display">
                       Strategy Details
                     </h2>
@@ -769,7 +769,7 @@ export const StrategyBuilderPage: React.FC = () => {
                     <div className="space-y-5 mt-5">
                       {/* Name Entry */}
                       <div>
-                        <label style={{ color: 'var(--text-muted)' }} className="block text-xs font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="strat_name">
+                        <label style={{ color: 'var(--text-muted)' }} className="block text-[11px] font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="strat_name">
                           Strategy Name *
                         </label>
                         <input
@@ -778,8 +778,15 @@ export const StrategyBuilderPage: React.FC = () => {
                           value={name}
                           onChange={(e) => setName(e.target.value)}
                           placeholder="e.g. Morning Top Reversal"
-                          style={{ backgroundColor: 'var(--bg)', border: showErrors && !name.trim() ? '1px solid #ef4444' : '0.5px solid var(--border)', color: 'var(--text)' }}
-                          className="rounded-xl px-4 py-2.5 w-full focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 placeholder-zinc-400 transition-all duration-150"
+                          style={{ 
+                            backgroundColor: 'var(--card)', 
+                            border: showErrors && !name.trim() ? '1px solid #ef4444' : '0.5px solid var(--border)', 
+                            borderRadius: '8px', 
+                            padding: '10px 14px', 
+                            fontSize: '13px', 
+                            color: 'var(--text)' 
+                          }}
+                          className="w-full focus:border-[var(--accent)] focus:ring-[var(--accent)] focus:ring-1 focus:outline-none placeholder-[var(--text-muted)] transition-all duration-150 text-sm"
                         />
                         {showErrors && !name.trim() && (
                           <p className="mt-1.5 text-red-500 text-xs font-semibold">
@@ -789,9 +796,9 @@ export const StrategyBuilderPage: React.FC = () => {
                       </div>
 
                       {/* Row 1 Entry */}
-                      <div className="grid grid-cols-2 gap-4 font-sans">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 font-sans">
                         <div>
-                          <label style={{ color: 'var(--text-muted)' }} className="block text-xs font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="sr_no">
+                          <label style={{ color: 'var(--text-muted)' }} className="block text-[11px] font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="sr_no">
                             Sr. No.
                           </label>
                           <input
@@ -800,40 +807,60 @@ export const StrategyBuilderPage: React.FC = () => {
                             min="1"
                             value={isNaN(srNo) ? '' : srNo}
                             onChange={(e) => setSrNo(parseInt(e.target.value, 10))}
-                            style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
-                            className="rounded-xl px-4 py-2.5 w-full focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all text-sm font-mono"
+                            style={{ 
+                              backgroundColor: 'var(--card)', 
+                              border: '0.5px solid var(--border)', 
+                              borderRadius: '8px', 
+                              padding: '10px 14px', 
+                              fontSize: '13px', 
+                              color: 'var(--text)' 
+                            }}
+                            className="w-full focus:border-[var(--accent)] focus:ring-[var(--accent)] focus:ring-1 focus:outline-none transition-all text-sm font-mono"
                             required
                           />
                         </div>
 
                         <div>
-                          <label style={{ color: 'var(--text-muted)' }} className="block text-xs font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="strat_type">
+                          <label style={{ color: 'var(--text-muted)' }} className="block text-[11px] font-bold uppercase tracking-wider mb-2 font-mono">
                             Type of Strategy *
                           </label>
-                          <select
-                            id="strat_type"
-                            value={typeOfStrategy}
-                            onChange={(e) => setTypeOfStrategy(e.target.value as any)}
-                            style={{ backgroundColor: 'var(--bg)', border: showErrors && !typeOfStrategy ? '1px solid #ef4444' : '0.5px solid var(--border)', color: 'var(--text)' }}
-                            className="rounded-xl px-4 py-2.5 w-full focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all text-sm"
-                          >
-                            <option value="" disabled>— Select type —</option>
-                            <option value="Breakout">Breakout</option>
-                            <option value="Reversal">Reversal</option>
-                            <option value="Neutral">Neutral</option>
-                          </select>
+                          <div className="flex flex-wrap gap-2.5 mt-1.5">
+                            {(['Breakout', 'Reversal', 'Neutral'] as const).map((type) => {
+                              const isSelected = typeOfStrategy === type;
+                              return (
+                                <button
+                                  key={type}
+                                  type="button"
+                                  onClick={() => setTypeOfStrategy(type)}
+                                  style={{
+                                    borderRadius: '8px',
+                                    padding: '8px 16px',
+                                    fontSize: '12px',
+                                    fontWeight: 600,
+                                    border: isSelected ? '1px solid var(--accent)' : '0.5px solid var(--border)',
+                                    backgroundColor: isSelected ? 'var(--accent-muted)' : 'transparent',
+                                    color: isSelected ? 'var(--accent)' : 'var(--text-sub)',
+                                    cursor: 'pointer'
+                                  }}
+                                  className="transition-all hover:opacity-90 active:scale-95"
+                                >
+                                  {type.toUpperCase()}
+                                </button>
+                              );
+                            })}
+                          </div>
                           {showErrors && !typeOfStrategy && (
                             <p className="mt-1.5 text-red-500 text-xs font-semibold">
-                              Please select a type.
+                              Please select a type of strategy.
                             </p>
                           )}
                         </div>
                       </div>
 
                       {/* Row 2 Entry */}
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                          <label style={{ color: 'var(--text-muted)' }} className="block text-xs font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="sub_type">
+                          <label style={{ color: 'var(--text-muted)' }} className="block text-[11px] font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="sub_type">
                             Sub Type
                           </label>
                           <input
@@ -842,21 +869,35 @@ export const StrategyBuilderPage: React.FC = () => {
                             value={subType}
                             onChange={(e) => setSubType(e.target.value)}
                             placeholder="e.g. HTF OB Reversal, Scalp"
-                            style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
-                            className="rounded-xl px-4 py-2.5 w-full focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 placeholder-zinc-450 transition-all duration-150 text-sm"
+                            style={{ 
+                              backgroundColor: 'var(--card)', 
+                              border: '0.5px solid var(--border)', 
+                              borderRadius: '8px', 
+                              padding: '10px 14px', 
+                              fontSize: '13px', 
+                              color: 'var(--text)' 
+                            }}
+                            className="w-full focus:border-[var(--accent)] focus:ring-[var(--accent)] focus:ring-1 focus:outline-none placeholder-[var(--text-muted)] transition-all duration-150 text-sm"
                           />
                         </div>
 
                         <div>
-                          <label style={{ color: 'var(--text-muted)' }} className="block text-xs font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="status">
+                          <label style={{ color: 'var(--text-muted)' }} className="block text-[11px] font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="status">
                             Status
                           </label>
                           <select
                             id="status"
                             value={status}
                             onChange={(e) => setStatus(e.target.value as any)}
-                            style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
-                            className="rounded-xl px-4 py-2.5 w-full focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all text-sm"
+                            style={{ 
+                              backgroundColor: 'var(--card)', 
+                              border: '0.5px solid var(--border)', 
+                              borderRadius: '8px', 
+                              padding: '10px 14px', 
+                              fontSize: '13px', 
+                              color: 'var(--text)' 
+                            }}
+                            className="w-full focus:border-[var(--accent)] focus:ring-[var(--accent)] focus:ring-1 focus:outline-none transition-all text-sm"
                           >
                             <option value="active">Active</option>
                             <option value="not_working">Not Working Well</option>
@@ -867,7 +908,7 @@ export const StrategyBuilderPage: React.FC = () => {
 
                       {/* Notes Entries */}
                       <div>
-                        <label style={{ color: 'var(--text-muted)' }} className="block text-xs font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="notes">
+                        <label style={{ color: 'var(--text-muted)' }} className="block text-[11px] font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="notes">
                           Notes
                         </label>
                         <textarea
@@ -876,19 +917,26 @@ export const StrategyBuilderPage: React.FC = () => {
                           value={notes}
                           onChange={(e) => setNotes(e.target.value)}
                           placeholder="Describe when this setup forms, ideal market conditions, personal observations. This is your trading notes for this strategy..."
-                          style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
-                          className="rounded-xl px-4 py-3 w-full focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 placeholder-zinc-450 transition-all resize-y text-sm"
+                          style={{ 
+                            backgroundColor: 'var(--card)', 
+                            border: '0.5px solid var(--border)', 
+                            borderRadius: '8px', 
+                            padding: '10px 14px', 
+                            fontSize: '13px', 
+                            color: 'var(--text)' 
+                          }}
+                          className="w-full focus:border-[var(--accent)] focus:ring-[var(--accent)] focus:ring-1 focus:outline-none placeholder-[var(--text-muted)] transition-all resize-y text-sm"
                         />
                       </div>
                     </div>
                   </section>
 
                   {/* CARD 2: ENTRY RULES */}
-                  <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }} className="rounded-2xl p-6 shadow-sm relative overflow-hidden font-sans">
+                  <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '20px' }} className="relative overflow-hidden font-sans">
                     <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between border-b pb-3">
                       <div>
                         <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display">Entry Rules</h2>
-                        <p className="text-xs text-zinc-500 mt-0.5">
+                        <p style={{ color: 'var(--text-sub)' }} className="text-xs mt-0.5">
                           Criteria required BEFORE entering trades. These auto-populate as checklist items.
                         </p>
                       </div>
@@ -899,9 +947,13 @@ export const StrategyBuilderPage: React.FC = () => {
 
                     <div className="mt-4 space-y-2.5">
                       {entryRules.map((rule, idx) => (
-                        <div key={rule.id} className="flex items-center gap-2">
+                        <div 
+                          key={rule.id} 
+                          className="flex items-center gap-2 p-2"
+                          style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px' }}
+                        >
                           {/* Order Badge */}
-                          <span style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text-muted)' }} className="text-xs font-mono font-bold rounded-xl py-2.5 w-10 text-center shrink-0">
+                          <span style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text-muted)' }} className="text-xs font-mono font-bold rounded-md py-1 px-2 shrink-0">
                             #{rule.rule_order}
                           </span>
 
@@ -910,38 +962,40 @@ export const StrategyBuilderPage: React.FC = () => {
                             value={rule.rule_text}
                             onChange={(e) => handleRuleTextChange(idx, e.target.value, 'entry')}
                             placeholder={idx === 0 ? 'e.g. Liquidity sweep at HTF key level' : `Enter rule #${idx + 1}...`}
-                            style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
-                            className="text-sm rounded-xl px-4 py-2.5 flex-1 focus:border-indigo-500 focus:outline-none transition-all placeholder-zinc-400"
+                            style={{ backgroundColor: 'transparent', border: 'none', color: 'var(--text)', fontSize: '13px' }}
+                            className="flex-1 focus:outline-none transition-all placeholder-[var(--text-muted)] w-full py-1.5 px-1"
                           />
 
                           {/* Control Swappings */}
-                          <button
-                            type="button"
-                            onClick={() => moveRuleUp(idx, 'entry')}
-                            disabled={idx === 0}
-                            className="text-zinc-500 hover:text-white p-2 rounded-lg hover:bg-zinc-800 transition-colors disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer"
-                            title="Move Up"
-                          >
-                            <ChevronUp className="w-4 h-4" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => moveRuleDown(idx, 'entry')}
-                            disabled={idx === entryRules.length - 1}
-                            className="text-zinc-500 hover:text-white p-2 rounded-lg hover:bg-zinc-800 transition-colors disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer"
-                            title="Move Down"
-                          >
-                            <ChevronDown className="w-4 h-4" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveRule(idx, 'entry')}
-                            disabled={entryRules.length <= 1}
-                            className="text-zinc-500 hover:text-red-400 p-2 rounded-lg hover:bg-zinc-800 transition-colors disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer"
-                            title="Delete rule"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                          <div className="flex items-center gap-0.5 pr-1">
+                            <button
+                              type="button"
+                              onClick={() => moveRuleUp(idx, 'entry')}
+                              disabled={idx === 0}
+                              className="text-zinc-500 hover:text-[var(--accent)] p-1.5 rounded transition-colors disabled:opacity-30 disabled:hover:text-zinc-500 cursor-pointer"
+                              title="Move Up"
+                            >
+                              <ChevronUp className="w-4 h-4" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => moveRuleDown(idx, 'entry')}
+                              disabled={idx === entryRules.length - 1}
+                              className="text-zinc-500 hover:text-[var(--accent)] p-1.5 rounded transition-colors disabled:opacity-30 disabled:hover:text-zinc-500 cursor-pointer"
+                              title="Move Down"
+                            >
+                              <ChevronDown className="w-4 h-4" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveRule(idx, 'entry')}
+                              disabled={entryRules.length <= 1}
+                              className="text-zinc-500 hover:text-red-400 p-1.5 rounded transition-colors disabled:opacity-30 disabled:hover:text-zinc-500 cursor-pointer"
+                              title="Delete rule"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -951,8 +1005,17 @@ export const StrategyBuilderPage: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => handleAddRule('entry')}
-                          style={{ color: 'var(--accent)', borderColor: 'var(--border)' }}
-                          className="w-full py-3 border border-dashed rounded-xl text-xs font-bold hover:opacity-90 transition-all cursor-pointer text-center font-sans uppercase tracking-wider bg-transparent"
+                          style={{ 
+                            border: '1.5px dashed var(--accent)', 
+                            backgroundColor: 'transparent',
+                            color: 'var(--accent)',
+                            borderRadius: '8px',
+                            padding: '8px 16px',
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            cursor: 'pointer' 
+                          }}
+                          className="w-full text-center uppercase tracking-wider font-sans hover:bg-[var(--accent-muted)] transition-all"
                         >
                           ＋ ADD ENTRY RULE
                         </button>
@@ -968,21 +1031,25 @@ export const StrategyBuilderPage: React.FC = () => {
                   <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '20px' }} className="relative overflow-hidden font-sans">
                     <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between border-b pb-3">
                       <div>
-                        <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">Exit Rules</h2>
-                        <p style={{ color: 'var(--text-muted)', fontSize: '13px' }} className="mt-0.5">
+                        <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display">Exit Rules</h2>
+                        <p style={{ color: 'var(--text-sub)' }} className="text-xs mt-0.5">
                           Criteria suggesting when to secure the trade. These auto-populate in checklists.
                         </p>
                       </div>
-                      <span style={{ backgroundColor: 'var(--bar)', color: 'var(--text-muted)', borderRadius: '999px', padding: '2px 8px', fontSize: '11px' }} className="font-mono">
+                      <span style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text-muted)' }} className="text-xs font-mono rounded-lg px-2.5 py-1">
                         {exitRules.length} / 10
                       </span>
                     </div>
 
                     <div className="mt-4 space-y-2.5">
                       {exitRules.map((rule, idx) => (
-                        <div key={rule.id} className="flex items-center gap-2">
+                        <div 
+                          key={rule.id} 
+                          className="flex items-center gap-2 p-2"
+                          style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px' }}
+                        >
                           {/* Order Badge */}
-                          <span style={{ backgroundColor: 'var(--bar)', color: 'var(--text-sub)', border: '0.5px solid var(--border)', borderRadius: '50%', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="text-xs font-mono font-bold shrink-0">
+                          <span style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text-muted)' }} className="text-xs font-mono font-bold rounded-md py-1 px-2 shrink-0">
                             #{rule.rule_order}
                           </span>
 
@@ -991,38 +1058,40 @@ export const StrategyBuilderPage: React.FC = () => {
                             value={rule.rule_text}
                             onChange={(e) => handleRuleTextChange(idx, e.target.value, 'exit')}
                             placeholder={idx === 0 ? 'e.g. Primary structural resistance reached' : `Enter rule #${idx + 1}...`}
-                            style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px', color: 'var(--text)' }}
-                            className="text-sm px-4 py-2.5 flex-1 focus:outline-none transition-all placeholder-[var(--text-muted)] placeholder-zinc-500"
+                            style={{ backgroundColor: 'transparent', border: 'none', color: 'var(--text)', fontSize: '13px' }}
+                            className="flex-1 focus:outline-none transition-all placeholder-[var(--text-muted)] w-full py-1.5 px-1"
                           />
 
                           {/* Control Swappings */}
-                          <button
-                            type="button"
-                            onClick={() => moveRuleUp(idx, 'exit')}
-                            disabled={idx === 0}
-                            className="text-zinc-500 hover:text-white p-2 rounded-lg hover:bg-zinc-800 transition-colors disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer"
-                            title="Move Up"
-                          >
-                            <ChevronUp className="w-4 h-4" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => moveRuleDown(idx, 'exit')}
-                            disabled={idx === exitRules.length - 1}
-                            className="text-zinc-500 hover:text-white p-2 rounded-lg hover:bg-zinc-800 transition-colors disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer"
-                            title="Move Down"
-                          >
-                            <ChevronDown className="w-4 h-4" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveRule(idx, 'exit')}
-                            disabled={exitRules.length <= 1}
-                            className="text-zinc-500 hover:text-red-400 p-2 rounded-lg hover:bg-zinc-800 transition-colors disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer"
-                            title="Delete rule"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                          <div className="flex items-center gap-0.5 pr-1">
+                            <button
+                              type="button"
+                              onClick={() => moveRuleUp(idx, 'exit')}
+                              disabled={idx === 0}
+                              className="text-zinc-500 hover:text-[var(--accent)] p-1.5 rounded transition-colors disabled:opacity-30 disabled:hover:text-zinc-500 cursor-pointer"
+                              title="Move Up"
+                            >
+                              <ChevronUp className="w-4 h-4" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => moveRuleDown(idx, 'exit')}
+                              disabled={idx === exitRules.length - 1}
+                              className="text-zinc-500 hover:text-[var(--accent)] p-1.5 rounded transition-colors disabled:opacity-30 disabled:hover:text-zinc-500 cursor-pointer"
+                              title="Move Down"
+                            >
+                              <ChevronDown className="w-4 h-4" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveRule(idx, 'exit')}
+                              disabled={exitRules.length <= 1}
+                              className="text-zinc-500 hover:text-red-400 p-1.5 rounded transition-colors disabled:opacity-30 disabled:hover:text-zinc-500 cursor-pointer"
+                              title="Delete rule"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -1032,8 +1101,17 @@ export const StrategyBuilderPage: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => handleAddRule('exit')}
-                          style={{ color: 'var(--accent)', backgroundColor: 'transparent', border: 'none', fontSize: '13px', fontWeight: 500, cursor: 'pointer' }}
-                          className="w-full py-3 text-center uppercase tracking-wider font-sans hover:opacity-90 transition-all"
+                          style={{ 
+                            border: '1.5px dashed var(--accent)', 
+                            backgroundColor: 'transparent',
+                            color: 'var(--accent)',
+                            borderRadius: '8px',
+                            padding: '8px 16px',
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            cursor: 'pointer' 
+                          }}
+                          className="w-full text-center uppercase tracking-wider font-sans hover:bg-[var(--accent-muted)] transition-all"
                         >
                           ＋ ADD EXIT RULE
                         </button>
@@ -1045,13 +1123,42 @@ export const StrategyBuilderPage: React.FC = () => {
                     </div>
                   </section>
 
+                  {/* BOTTOM SAVE ACTION CARD */}
+                  <div className="pt-2">
+                    <button
+                      onClick={handleSave}
+                      disabled={saving || !name.trim() || !typeOfStrategy}
+                      style={{
+                        backgroundColor: saving || !name.trim() || !typeOfStrategy ? 'var(--border)' : 'var(--accent)',
+                        color: 'white',
+                        borderRadius: '10px',
+                        padding: '14px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        width: '100%',
+                        cursor: saving || !name.trim() || !typeOfStrategy ? 'not-allowed' : 'pointer',
+                        border: 'none'
+                      }}
+                      className="hover:opacity-90 transition-all font-display shadow-lg shadow-cyan-500/10 flex items-center justify-center gap-2"
+                    >
+                      {saving ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin text-white" />
+                          <span>Saving Strategy...</span>
+                        </>
+                      ) : (
+                        <span>Save Strategy</span>
+                      )}
+                    </button>
+                  </div>
+
                 </div>
 
                 {/* RIGHT WORKSPACE: SPANS 1 COL */}
                 <div className="lg:col-span-1 space-y-6">
                   
                   {/* CARD 4: REFERENCE IMAGES */}
-                  <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }} className="rounded-2xl p-6 shadow-sm relative overflow-hidden font-sans">
+                  <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '20px' }} className="relative overflow-hidden font-sans">
                     <div style={{ borderColor: 'var(--border)' }} className="flex justify-between items-center border-b pb-3">
                       <div>
                         <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display">Reference Images</h2>
@@ -1074,11 +1181,12 @@ export const StrategyBuilderPage: React.FC = () => {
                         onClick={triggerFileBrowser}
                         style={{
                           backgroundColor: dragActive ? 'rgba(6, 182, 212, 0.05)' : 'var(--bar)',
-                          borderColor: dragActive ? 'var(--accent)' : 'var(--border)',
-                          borderWidth: '2px',
-                          borderStyle: 'dashed'
+                          border: dragActive ? '1.5px dashed var(--accent)' : '1.5px dashed var(--border)',
+                          borderRadius: '10px',
+                          padding: '32px',
+                          cursor: 'pointer'
                         }}
-                        className="mt-4 rounded-2xl p-6 text-center transition-all cursor-pointer"
+                        className="mt-4 text-center transition-all hover:border-[var(--accent)]"
                       >
                         <input
                           type="file"
@@ -1096,7 +1204,7 @@ export const StrategyBuilderPage: React.FC = () => {
                         </p>
                       </div>
                     ) : (
-                      <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', color: 'var(--text-muted)' }} className="mt-4 rounded-2xl p-4 text-center text-xs">
+                      <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', color: 'var(--text-muted)' }} className="mt-4 rounded-xl p-4 text-center text-xs">
                         10/10 images — maximum reached
                       </div>
                     )}
@@ -1157,7 +1265,7 @@ export const StrategyBuilderPage: React.FC = () => {
 
                   {/* CARD 5: PERFORMANCE STATS */}
                   {isEditMode && (
-                    <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }} className="rounded-2xl p-6 shadow-sm relative overflow-hidden font-sans">
+                    <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '20px' }} className="relative overflow-hidden font-sans">
                       <h2 style={{ color: 'var(--text)', borderColor: 'var(--border)' }} className="text-lg font-bold border-b pb-3 font-display">
                         Performance Stats
                       </h2>

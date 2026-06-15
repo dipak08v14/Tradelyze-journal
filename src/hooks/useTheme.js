@@ -1,30 +1,24 @@
 import { useEffect } from 'react'
+import { applyTheme } from '../styles/theme'
 import { supabase } from '../lib/supabase'
-import { applyTheme } from '../lib/theme'
 
 export function useTheme() {
   useEffect(() => {
-    async function loadTheme() {
-      const savedTheme = localStorage.getItem('tl-theme') || 'charcoal'
-      const savedAccent = localStorage.getItem('tl-accent') || 'cyan'
-      applyTheme(savedTheme, savedAccent)
-
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session?.user) return
-
-      const { data: userData, error } = await supabase
-        .from('users')
+    const savedTheme = localStorage.getItem('tl-theme') || 'warm'
+    const savedAccent = localStorage.getItem('tl-accent') || 'cyan'
+    applyTheme(savedTheme, savedAccent)
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return
+      supabase.from('users')
         .select('theme_background, theme_accent')
-        .eq('id', session.user.id)
+        .eq('id', user.id)
         .single()
-
-      if (error || !userData) return
-
-      const dbTheme = userData.theme_background || 'charcoal'
-      const dbAccent = userData.theme_accent || 'cyan'
-      applyTheme(dbTheme, dbAccent)
-    }
-
-    loadTheme()
+        .then(({ data }) => {
+          if (data) applyTheme(
+            data.theme_background || savedTheme,
+            data.theme_accent || savedAccent
+          )
+        })
+    })
   }, [])
 }

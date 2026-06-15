@@ -31,7 +31,7 @@ export const PlaceholderPage: React.FC<PlaceholderPageProps> = ({ title, message
       <Sidebar userEmail={user.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* MAIN CONTENT AREA */}
-      <div className="flex-1 md:pl-[250px] flex flex-col min-h-screen">
+      <div className="flex-1 md:pl-[220px] flex flex-col min-h-screen">
         {/* MOBILE TOPBAR header */}
         <header 
           className="flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20"

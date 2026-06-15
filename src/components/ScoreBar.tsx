@@ -5,6 +5,7 @@ interface ScoreBarProps {
   value: number;
   subLabel: string;
   fillColorClass?: string;
+  fillColor?: string;
   id?: string;
 }
 
@@ -13,12 +14,13 @@ export const ScoreBar: React.FC<ScoreBarProps> = ({
   value,
   subLabel,
   fillColorClass = 'bg-indigo-600',
+  fillColor,
   id
 }) => {
   const getScoreColor = (val: number) => {
-    if (val >= 70) return 'text-green-600';
-    if (val >= 50) return 'text-amber-600';
-    return 'text-red-600';
+    if (val >= 70) return 'text-[#22c55e]';
+    if (val >= 50) return 'text-[#f59e0b]';
+    return 'text-[#ef4444]';
   };
 
   return (
@@ -32,8 +34,11 @@ export const ScoreBar: React.FC<ScoreBarProps> = ({
       
       <div style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)' }} className="w-full h-2.5 rounded-full border overflow-hidden">
         <div
-          className={`h-full ${fillColorClass} rounded-full transition-all duration-500`}
-          style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
+          className={`h-full ${fillColor ? '' : fillColorClass} rounded-full transition-all duration-500`}
+          style={{ 
+            width: `${Math.min(100, Math.max(0, value))}%`,
+            backgroundColor: fillColor || undefined
+          }}
         />
       </div>
       

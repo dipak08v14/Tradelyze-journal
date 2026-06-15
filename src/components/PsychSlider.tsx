@@ -7,6 +7,7 @@ interface PsychSliderProps {
   hint: string;
   valueColorClass?: string;
   accentClass?: string;
+  accentColor?: string;
   id?: string;
 }
 
@@ -17,6 +18,7 @@ export const PsychSlider: React.FC<PsychSliderProps> = ({
   hint,
   valueColorClass = 'text-indigo-600',
   accentClass = 'accent-indigo-500',
+  accentColor,
   id
 }) => {
   return (
@@ -33,8 +35,8 @@ export const PsychSlider: React.FC<PsychSliderProps> = ({
         step="5"
         value={value}
         onChange={(e) => onChange(parseInt(e.target.value, 10))}
-        style={{ backgroundColor: 'var(--bar)' }}
-        className={`w-full h-2 rounded-lg appearance-none cursor-pointer ${accentClass}`}
+        style={{ backgroundColor: 'var(--bar)', accentColor: accentColor || 'var(--accent)' }}
+        className="w-full h-2 rounded-lg appearance-none cursor-pointer"
       />
       
       <div style={{ color: 'var(--text-muted)' }} className="text-[11px] italic">

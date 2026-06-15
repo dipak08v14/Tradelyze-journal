@@ -212,17 +212,31 @@ export const DashboardPage: React.FC = () => {
     });
   };
 
-  // Score colors rule helper (green-400 >= 70, amber-400 >= 50, red-400 < 50)
+  // Score colors rule helper (green >= 70, amber >= 50, red < 50)
   const getScoreColorClass = (score: number) => {
-    if (score >= 70) return 'text-green-400';
-    if (score >= 50) return 'text-amber-400';
-    return 'text-red-400';
+    if (score >= 70) return 'text-[#22c55e] font-bold';
+    if (score >= 50) return 'text-[#f59e0b] font-bold';
+    return 'text-[#ef4444] font-bold';
+  };
+
+  const getPercentTextColor = (score: number) => {
+    if (score >= 70) return '#22c55e';
+    if (score >= 50) return '#f59e0b';
+    return '#ef4444';
   };
 
   const getScoreBgClass = (score: number) => {
-    if (score >= 70) return 'bg-green-500';
-    if (score >= 50) return 'bg-amber-500';
-    return 'bg-red-500';
+    if (score >= 70) return 'bg-[#22c55e]';
+    if (score >= 50) return 'bg-[#f59e0b]';
+    return 'bg-[#ef4444]';
+  };
+
+  const formatPnlNoDecimals = (value: number) => {
+    const formatted = Math.abs(value).toLocaleString('en-IN', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+    return `${value < 0 ? '-' : ''}₹${formatted}`;
   };
 
   // Memoized Metric Variables
@@ -421,7 +435,7 @@ export const DashboardPage: React.FC = () => {
       <Sidebar userEmail={user.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* RIGHT SIDE MAIN CONTAINER */}
-      <div className="flex-1 md:pl-[250px] flex flex-col min-h-screen">
+      <div className="flex-1 md:pl-[220px] flex flex-col min-h-screen">
         {/* MOBILE HEADER BAR */}
         <header 
           className="flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20"
@@ -486,6 +500,25 @@ export const DashboardPage: React.FC = () => {
                   </select>
                 </div>
 
+                {/* ASK AI BUTTON */}
+                <button
+                  id="dashboard-header-ask-ai"
+                  onClick={() => navigate('/ai-teacher')}
+                  style={{
+                    backgroundColor: 'var(--accent-muted)',
+                    color: 'var(--accent)',
+                    border: '1px solid var(--accent)',
+                    borderRadius: '8px',
+                    padding: '6px 14px',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                    cursor: 'pointer'
+                  }}
+                  className="shrink-0 transition-all hover:opacity-90 flex items-center justify-center font-sans"
+                >
+                  Ask AI
+                </button>
+
                 {/* OVERALL SCORE PILL */}
                 {!loading && trades.length > 0 && (
                   <div
@@ -513,16 +546,15 @@ export const DashboardPage: React.FC = () => {
             {/* SKELETON LOADER STATE */}
             {loading ? (
               <div className="space-y-6">
-                {/* Loader 1: Key Stats Strip */}
-                <div style={{ backgroundColor: 'var(--bar)', borderRadius: '12px' }} className="px-5 py-4 relative overflow-hidden">
-                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-                    {Array.from({ length: 7 }).map((_, idx) => (
-                      <div key={idx} className="flex flex-col items-center space-y-2">
-                        <div className="h-6 w-16 skeleton" style={{ borderRadius: '4px' }} />
-                        <div className="h-3 w-20 skeleton" style={{ borderRadius: '4px' }} />
-                      </div>
-                    ))}
-                  </div>
+                {/* Loader 1: Key Stats Strip as 4 Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                  {Array.from({ length: 4 }).map((_, idx) => (
+                    <div key={idx} style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '10px' }} className="p-4 h-24 relative overflow-hidden flex flex-col justify-between">
+                      <div className="h-3 w-16 skeleton" style={{ borderRadius: '4px' }} />
+                      <div className="h-6 w-24 skeleton" style={{ borderRadius: '4px' }} />
+                      <div className="h-3 w-20 skeleton" style={{ borderRadius: '4px' }} />
+                    </div>
+                  ))}
                 </div>
 
                 {/* Loader 2: Equity Curve */}
@@ -568,110 +600,57 @@ export const DashboardPage: React.FC = () => {
             ) : (
               /* ACTIVE DASHBOARD RENDER OUT */
               <div className="space-y-5">
-                {/* SECTION 2: KEY STATS STRIP */}
-                <div className="rounded-xl px-5 py-4" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
-                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 divide-y lg:divide-y-0 lg:divide-x" style={{ borderColor: 'var(--border)' }}>
-                    {/* STAT 1 — NET P&L */}
-                    <div className="text-center pt-3 lg:pt-0">
-                      <div
-                        className={`font-mono font-black text-lg md:text-xl truncate ${
-                          stats.totalPnl > 0
-                            ? 'text-green-400'
-                            : stats.totalPnl < 0
-                            ? 'text-red-400'
-                            : ''
-                        }`}
-                        style={{ color: stats.totalPnl === 0 ? 'var(--text-sub)' : undefined }}
-                      >
-                        {formatINR(stats.totalPnl)}
-                      </div>
-                      <div className="text-[10px] uppercase tracking-wider font-semibold mt-1" style={{ color: 'var(--text-muted)' }}>
-                        Net P&L
-                      </div>
+                {/* SECTION 2: KEY STATS ROW */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                  {/* Card 1 — NET P&L */}
+                  <div className="p-[14px] px-[18px] rounded-[10px]" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                    <div className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
+                      NET P&L
                     </div>
-
-                    {/* STAT 2 — TOTAL TRADES */}
-                    <div className="text-center pt-3 lg:pt-0 lg:pl-3" style={{ borderColor: 'var(--border)' }}>
-                      <div className="font-mono font-black text-lg md:text-xl" style={{ color: 'var(--text)' }}>
-                        {stats.totalTrades}
-                      </div>
-                      <div className="text-[10px] uppercase tracking-wider font-semibold mt-1" style={{ color: 'var(--text-muted)' }}>
-                        Total Trades
-                      </div>
-                      <div className="text-[9px] font-mono mt-0.5" style={{ color: 'var(--text-muted)' }}>
-                        {stats.wins.length}W / {stats.losses.length}L / {stats.breakevens.length}BE
-                      </div>
+                    <div className="text-[26px] font-bold tracking-tight font-sans leading-none" style={{ color: stats.totalPnl > 0 ? '#22c55e' : stats.totalPnl < 0 ? '#ef4444' : 'var(--text)', letterSpacing: '-0.5px' }}>
+                      {formatPnlNoDecimals(stats.totalPnl)}
                     </div>
-
-                    {/* STAT 3 — WIN RATE */}
-                    <div className="text-center pt-3 lg:pt-0 lg:pl-3" style={{ borderColor: 'var(--border)' }}>
-                      <div className={`font-mono font-black text-lg md:text-xl ${getScoreColorClass(stats.winRate)}`}>
-                        {stats.winRate.toFixed(1)}%
-                      </div>
-                      <div className="text-[10px] uppercase tracking-wider font-semibold mt-1" style={{ color: 'var(--text-muted)' }}>
-                        Win Rate
-                      </div>
+                    <div className="text-[11px] mt-1 font-medium" style={{ color: 'var(--text-sub)' }}>
+                      This month
                     </div>
+                  </div>
 
-                    {/* STAT 4 — PROFIT FACTOR */}
-                    <div className="text-center pt-3 lg:pt-0 lg:pl-3" style={{ borderColor: 'var(--border)' }}>
-                      <div
-                        className={`font-mono font-black text-lg md:text-xl ${
-                          stats.profitFactor > 1.5
-                            ? 'text-green-400'
-                            : stats.profitFactor >= 1.0
-                            ? 'text-amber-400'
-                            : 'text-red-400'
-                        }`}
-                      >
-                        {stats.profitFactor === 999 ? '∞' : stats.profitFactor.toFixed(2)}
-                      </div>
-                      <div className="text-[10px] uppercase tracking-wider font-semibold mt-1" style={{ color: 'var(--text-muted)' }}>
-                        Profit Factor
-                      </div>
+                  {/* Card 2 — TOTAL TRADES */}
+                  <div className="p-[14px] px-[18px] rounded-[10px]" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                    <div className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
+                      TOTAL TRADES
                     </div>
-
-                    {/* STAT 5 — AVG R */}
-                    <div className="text-center pt-3 lg:pt-0 lg:pl-3" style={{ borderColor: 'var(--border)' }}>
-                      <div
-                        className={`font-mono font-black text-lg md:text-xl ${
-                          stats.avgR > 0
-                            ? 'text-green-400'
-                            : stats.avgR < 0
-                            ? 'text-red-400'
-                            : ''
-                        }`}
-                        style={{ color: stats.avgR === 0 ? 'var(--text-sub)' : undefined }}
-                      >
-                        {stats.avgR >= 0 ? '+' : ''}
-                        {stats.avgR.toFixed(2)}R
-                      </div>
-                      <div className="text-[10px] uppercase tracking-wider font-semibold mt-1" style={{ color: 'var(--text-muted)' }}>
-                        Avg R-Multiple
-                      </div>
+                    <div className="text-[26px] font-bold tracking-tight font-sans leading-none" style={{ color: 'var(--text)', letterSpacing: '-0.5px' }}>
+                      {stats.totalTrades}
                     </div>
-
-                    {/* STAT 6 — TRADING DAYS */}
-                    <div className="text-center pt-3 lg:pt-0 lg:pl-3" style={{ borderColor: 'var(--border)' }}>
-                      <div className="font-mono font-black text-lg md:text-xl" style={{ color: 'var(--text)' }}>
-                        {stats.tradingDaysCount}
-                      </div>
-                      <div className="text-[10px] uppercase tracking-wider font-semibold mt-1" style={{ color: 'var(--text-muted)' }}>
-                        Days Traded
-                      </div>
-                      <div className="text-[9px] font-mono mt-0.5" style={{ color: 'var(--text-muted)' }}>
-                        {stats.winDays}W / {stats.lossDays}L / {stats.dntDays} DNT
-                      </div>
+                    <div className="text-[11px] mt-1 font-semibold" style={{ color: 'var(--text-sub)' }}>
+                      W: {stats.wins.length} &middot; L: {stats.losses.length} &middot; BE: {stats.breakevens.length}
                     </div>
+                  </div>
 
-                    {/* STAT 7 — WIN DAYS % */}
-                    <div className="text-center pt-3 lg:pt-0 lg:pl-3" style={{ borderColor: 'var(--border)' }}>
-                      <div className={`font-mono font-black text-lg md:text-xl ${getScoreColorClass(stats.winDaysPct)}`}>
-                        {stats.winDaysPct.toFixed(0)}%
-                      </div>
-                      <div className="text-[10px] uppercase tracking-wider font-semibold mt-1" style={{ color: 'var(--text-muted)' }}>
-                        Win Days
-                      </div>
+                  {/* Card 3 — WIN RATE */}
+                  <div className="p-[14px] px-[18px] rounded-[10px]" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                    <div className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
+                      WIN RATE
+                    </div>
+                    <div className="text-[26px] font-bold tracking-tight font-sans leading-none" style={{ color: 'var(--accent)', letterSpacing: '-0.5px' }}>
+                      {stats.winRate.toFixed(0)}%
+                    </div>
+                    <div className="text-[11px] mt-1 font-medium" style={{ color: 'var(--text-sub)' }}>
+                      Win days this month
+                    </div>
+                  </div>
+
+                  {/* Card 4 — PROFIT FACTOR */}
+                  <div className="p-[14px] px-[18px] rounded-[10px]" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                    <div className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
+                      PROFIT FACTOR
+                    </div>
+                    <div className="text-[26px] font-bold tracking-tight font-sans leading-none" style={{ color: stats.profitFactor > 1.5 ? '#22c55e' : stats.profitFactor > 1.0 ? '#f59e0b' : '#ef4444', letterSpacing: '-0.5px' }}>
+                      {stats.profitFactor === 999 ? '∞' : stats.profitFactor.toFixed(2)}
+                    </div>
+                    <div className="text-[11px] mt-1 font-medium" style={{ color: 'var(--text-sub)' }}>
+                      Target: &gt;1.5
                     </div>
                   </div>
                 </div>
@@ -680,15 +659,15 @@ export const DashboardPage: React.FC = () => {
                 <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
                     <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5" style={{ color: 'var(--text)' }}>
-                      <TrendingUp className="w-5 h-5 text-indigo-400" />
+                      <TrendingUp className="w-5 h-5" style={{ color: 'var(--accent)' }} />
                       Cumulative P&L — {selectedMonth} {selectedYear}
                     </h2>
                     <span
                       className={`font-mono font-extrabold text-sm ${
                         stats.totalPnl > 0
-                          ? 'text-green-400'
+                          ? 'text-[#22c55e]'
                           : stats.totalPnl < 0
-                          ? 'text-red-400'
+                          ? 'text-[#ef4444]'
                           : ''
                       }`}
                       style={{ color: stats.totalPnl === 0 ? 'var(--text-sub)' : undefined }}
@@ -697,23 +676,13 @@ export const DashboardPage: React.FC = () => {
                     </span>
                   </div>
 
-                  <div className="w-full h-[280px]">
+                  <div className="w-full h-[200px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart
                         data={stats.equityCurveData}
                         margin={{ top: 10, right: 10, left: 10, bottom: 0 }}
                       >
-                        <defs>
-                          <linearGradient id="equityUp" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#22C55E" stopOpacity={0.2} />
-                            <stop offset="95%" stopColor="#22C55E" stopOpacity={0} />
-                          </linearGradient>
-                          <linearGradient id="equityDown" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#EF4444" stopOpacity={0.1} />
-                            <stop offset="95%" stopColor="#EF4444" stopOpacity={0} />
-                          </linearGradient>
-                        </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" vertical={false} />
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--bar)" vertical={false} />
                         <XAxis
                           dataKey="day"
                           tick={{ fill: '#6B7280', fontSize: 11 }}
@@ -731,10 +700,10 @@ export const DashboardPage: React.FC = () => {
                           tick={{ fill: '#6B7280', fontSize: 11 }}
                           axisLine={false}
                           tickLine={false}
-                          tickFormatter={(v) => '₹' + v.toLocaleString('en-IN')}
+                          tickFormatter={(v) => '₹' + v.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                           width={80}
                         />
-                        <ReferenceLine y={0} stroke="#374151" strokeDasharray="4 4" strokeWidth={1.5} />
+                        <ReferenceLine y={0} stroke="var(--border)" strokeDasharray="4 4" strokeWidth={1} />
                         <RechartsTooltip
                           contentStyle={{
                             backgroundColor: 'var(--card)',
@@ -753,11 +722,12 @@ export const DashboardPage: React.FC = () => {
                         <Area
                           type="monotone"
                           dataKey="cumPnl"
-                          stroke={stats.totalPnl >= 0 ? '#22C55E' : '#EF4444'}
+                          stroke="var(--accent)"
                           strokeWidth={2.5}
-                          fill={stats.totalPnl >= 0 ? 'url(#equityUp)' : 'url(#equityDown)'}
+                          fill="var(--accent)"
+                          fillOpacity={0.06}
                           dot={false}
-                          activeDot={{ r: 5, fill: '#6366F1', strokeWidth: 0 }}
+                          activeDot={{ r: 5, fill: 'var(--accent)', strokeWidth: 0 }}
                         />
                       </AreaChart>
                     </ResponsiveContainer>
@@ -1061,7 +1031,7 @@ export const DashboardPage: React.FC = () => {
                               { metric: 'Risk Mgmt', score: parseFloat(stats.avgRiskScore.toFixed(1)) }
                             ]}
                           >
-                            <PolarGrid stroke="var(--border)" />
+                            <PolarGrid stroke="var(--bar)" />
                             <PolarAngleAxis
                               dataKey="metric"
                               tick={{ fill: 'var(--text-sub)', fontSize: 11, fontFamily: 'Inter' }}
@@ -1075,11 +1045,11 @@ export const DashboardPage: React.FC = () => {
                             <Radar
                               name="Avg Score"
                               dataKey="score"
-                              stroke="#6366F1"
-                              fill="#6366F1"
-                              fillOpacity={0.25}
-                              strokeWidth={2}
-                              dot={{ fill: '#6366F1', r: 3, strokeWidth: 0 }}
+                              stroke="var(--accent)"
+                              fill="var(--accent)"
+                              fillOpacity={0.18}
+                              strokeWidth={1.5}
+                              dot={{ fill: 'var(--accent)', r: 3, strokeWidth: 0 }}
                             />
                           </RadarChart>
                         </ResponsiveContainer>
@@ -1091,14 +1061,14 @@ export const DashboardPage: React.FC = () => {
                         <div>
                           <div className="flex justify-between items-center mb-1">
                             <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>Technical (Rules)</span>
-                            <span className={`text-xs font-mono font-bold ${getScoreColorClass(stats.avgTechScore)}`}>
+                            <span className="text-xs font-mono font-bold" style={{ color: getPercentTextColor(stats.avgTechScore) }}>
                               {stats.avgTechScore.toFixed(0)}%
                             </span>
                           </div>
-                          <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}>
+                          <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
                             <div
-                              className="h-full bg-indigo-600 rounded-full transition-all duration-500"
-                              style={{ width: `${stats.avgTechScore}%` }}
+                              className="h-full rounded-full transition-all duration-500"
+                              style={{ width: `${stats.avgTechScore}%`, backgroundColor: 'var(--accent)' }}
                             />
                           </div>
                         </div>
@@ -1107,14 +1077,14 @@ export const DashboardPage: React.FC = () => {
                         <div>
                           <div className="flex justify-between items-center mb-1">
                             <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>Psychology</span>
-                            <span className={`text-xs font-mono font-bold ${getScoreColorClass(stats.avgPsychScore)}`}>
+                            <span className="text-xs font-mono font-bold" style={{ color: getPercentTextColor(stats.avgPsychScore) }}>
                               {stats.avgPsychScore.toFixed(0)}%
                             </span>
                           </div>
-                          <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}>
+                          <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
                             <div
-                              className="h-full bg-purple-600 rounded-full transition-all duration-500"
-                              style={{ width: `${stats.avgPsychScore}%` }}
+                              className="h-full rounded-full transition-all duration-500"
+                              style={{ width: `${stats.avgPsychScore}%`, backgroundColor: 'var(--accent)' }}
                             />
                           </div>
                         </div>
@@ -1123,14 +1093,14 @@ export const DashboardPage: React.FC = () => {
                         <div>
                           <div className="flex justify-between items-center mb-1">
                             <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>Risk Management</span>
-                            <span className={`text-xs font-mono font-bold ${getScoreColorClass(stats.avgRiskScore)}`}>
+                            <span className="text-xs font-mono font-bold" style={{ color: getPercentTextColor(stats.avgRiskScore) }}>
                               {stats.avgRiskScore.toFixed(0)}%
                             </span>
                           </div>
-                          <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}>
+                          <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
                             <div
-                              className="h-full bg-teal-500 rounded-full transition-all duration-500"
-                              style={{ width: `${stats.avgRiskScore}%` }}
+                              className="h-full rounded-full transition-all duration-500"
+                              style={{ width: `${stats.avgRiskScore}%`, backgroundColor: 'var(--accent)' }}
                             />
                           </div>
                         </div>
@@ -1153,7 +1123,7 @@ export const DashboardPage: React.FC = () => {
                 </div>
 
                 {/* SECTION 6: CONSECUTIVE DAYS / STREAK CARD */}
-                <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
                   <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5 mb-5" style={{ color: 'var(--text)' }}>
                     <Flame className="w-5 h-5 text-amber-500" />
                     Streak Analysis — {selectedMonth} {selectedYear}
@@ -1214,7 +1184,7 @@ export const DashboardPage: React.FC = () => {
                 </div>
 
                 {/* SECTION 7: VISUAL PATTERN DATABASE / LIBRARY STATS CARD */}
-                <div className="rounded-xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                <div className="rounded-xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                       <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5 font-display" style={{ color: 'var(--text)' }}>
@@ -1251,6 +1221,55 @@ export const DashboardPage: React.FC = () => {
                       Adding more trade screenshots dynamically strengthens matching accuracy for future visual queries.
                     </p>
                   </div>
+                </div>
+
+                {/* SECTION 8: RECENT TRADES */}
+                <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
+                  <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5 mb-4 font-display" style={{ color: 'var(--text)' }}>
+                    Recent Trades — {selectedMonth} {selectedYear}
+                  </h2>
+                  {trades.length === 0 ? (
+                    <p className="text-xs" style={{ color: 'var(--text-muted)' }}>No logged trades found for this period.</p>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse text-xs">
+                        <thead>
+                          <tr className="border-b" style={{ borderColor: 'var(--border)' }}>
+                            <th className="pb-3 font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Date</th>
+                            <th className="pb-3 font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Symbol</th>
+                            <th className="pb-3 font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Type</th>
+                            <th className="pb-3 font-semibold uppercase tracking-wider text-right" style={{ color: 'var(--text-muted)' }}>P&L</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y" style={{ borderColor: 'var(--border)' }}>
+                          {trades.slice().reverse().slice(0, 5).map((trade: any) => (
+                            <tr
+                              key={trade.id}
+                              className="transition-colors duration-120"
+                              style={{ cursor: 'pointer' }}
+                              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--row)')}
+                              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                            >
+                              <td className="py-3 font-mono" style={{ color: 'var(--text)' }}>
+                                {trade.trade_date ? new Date(trade.trade_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
+                              </td>
+                              <td className="py-3 font-bold" style={{ color: 'var(--text)' }}>
+                                {trade.symbol}
+                              </td>
+                              <td className="py-3 font-sans">
+                                <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${trade.direction === 'BUY' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
+                                  {trade.direction}
+                                </span>
+                              </td>
+                              <td className={`py-3 font-mono font-bold text-right ${trade.pnl > 0 ? 'text-[#22c55e]' : trade.pnl < 0 ? 'text-[#ef4444]' : ''}`} style={{ color: trade.pnl === 0 ? 'var(--text-sub)' : undefined }}>
+                                {formatINR(trade.pnl)}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
                 </div>
               </div>
             )}

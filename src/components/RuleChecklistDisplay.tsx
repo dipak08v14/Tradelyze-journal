@@ -48,17 +48,15 @@ export const RuleChecklistDisplay: React.FC<RuleChecklistDisplayProps> = ({
           {/* Read-only Followed value badge */}
           <div className="shrink-0">
             {rule.followed === true ? (
-              <span className="inline-block bg-green-950/85 border border-green-700/80 text-green-400 rounded-md px-3 py-1 text-xs font-extrabold font-mono">
+              <span style={{ backgroundColor: 'rgba(34,197,94,0.12)', color: '#22c55e', borderRadius: '999px', padding: '2px 8px', fontSize: '10px', fontWeight: 700 }} className="inline-block font-sans">
                 Y
               </span>
             ) : rule.followed === false ? (
-              <span className="inline-block bg-red-950/85 border border-red-700/80 text-red-400 rounded-md px-3 py-1 text-xs font-extrabold font-mono">
+              <span style={{ backgroundColor: 'rgba(239,68,68,0.12)', color: '#ef4444', borderRadius: '999px', padding: '2px 8px', fontSize: '10px', fontWeight: 700 }} className="inline-block font-sans">
                 N
               </span>
             ) : (
-              <span className="inline-block bg-zinc-850/80 border border-zinc-700 text-zinc-500 rounded-md px-3 py-1 text-xs font-extrabold font-mono">
-                —
-              </span>
+              <span className="text-zinc-500 font-bold font-mono">—</span>
             )}
           </div>
         </div>

@@ -302,6 +302,12 @@ export const TradingLogsPage: React.FC = () => {
     return 'text-red-400';
   };
 
+  const getProfitFactorColor = (pf: number) => {
+    if (pf === Infinity || pf > 1.5) return '#22c55e';
+    if (pf > 1) return '#f59e0b';
+    return '#ef4444';
+  };
+
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
@@ -318,7 +324,7 @@ export const TradingLogsPage: React.FC = () => {
       <Sidebar userEmail={user.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* RIGHT SIDE MAIN CONTAINER */}
-      <div className="flex-1 md:pl-[250px] flex flex-col min-h-screen">
+      <div className="flex-1 md:pl-[220px] flex flex-col min-h-screen">
         {/* MOBILE HEADER BAR */}
         <header 
           className="flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20"
@@ -543,7 +549,7 @@ export const TradingLogsPage: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="rounded-2xl p-4 mb-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+            <div className="sticky top-0 z-20 p-4 mb-5 shadow-sm" style={{ backgroundColor: 'var(--card)', borderBottom: '0.5px solid var(--border)', position: 'sticky', top: '0', zIndex: 20 }}>
               <div className="flex flex-wrap items-center justify-between sm:justify-start gap-y-3 gap-x-6 text-sm md:divide-x" style={{ color: 'var(--text-sub)', borderColor: 'var(--border)' }}>
                 <div className="font-medium pr-1">
                   Showing <span className="font-extrabold text-indigo-400">{stats.count}</span> trades
@@ -567,14 +573,14 @@ export const TradingLogsPage: React.FC = () => {
 
                 <div className="md:pl-6 flex items-center gap-1.5" style={{ borderColor: 'var(--border)' }}>
                   <span>Win Rate:</span>
-                  <span className={`font-extrabold ${getWinRateColor(stats.winRate)}`}>
+                  <span style={{ color: 'var(--accent)', fontWeight: 700 }}>
                     {stats.winRate.toFixed(0)}%
                   </span>
                 </div>
 
                 <div className="md:pl-6 flex items-center gap-1.5" style={{ borderColor: 'var(--border)' }}>
                   <span>Avg R:</span>
-                  <span className={`font-mono font-extrabold ${getAvgRColor(stats.avgR)}`}>
+                  <span style={{ color: 'var(--accent)', fontWeight: 700 }} className="font-mono">
                     {stats.avgR > 0 ? '+' : ''}
                     {stats.avgR.toFixed(2)}R
                   </span>
@@ -583,15 +589,11 @@ export const TradingLogsPage: React.FC = () => {
                 <div className="md:pl-6 flex items-center gap-1.5 pr-2" style={{ borderColor: 'var(--border)' }}>
                   <span>Profit Factor:</span>
                   <span
-                    className={`font-mono font-extrabold ${
-                      stats.profitFactor === Infinity
-                        ? 'text-green-400'
-                        : stats.profitFactor > 1.5
-                        ? 'text-green-400'
-                        : stats.profitFactor > 1.0
-                        ? 'text-amber-400'
-                        : 'text-red-400'
-                    }`}
+                    style={{
+                      color: getProfitFactorColor(stats.profitFactor),
+                      fontWeight: 700
+                    }}
+                    className="font-mono"
                   >
                     {stats.profitFactor === Infinity ? 'MAX' : stats.profitFactor.toFixed(2)}
                   </span>
@@ -617,6 +619,7 @@ export const TradingLogsPage: React.FC = () => {
                       <th className="px-4 py-4 hidden sm:table-cell">Mistakes</th>
                       <th className="px-4 py-4 hidden sm:table-cell">Rating</th>
                       <th className="px-4 py-4 hidden sm:table-cell">ROI</th>
+                      <th className="px-4 py-4 w-12 text-center">AI</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -634,6 +637,7 @@ export const TradingLogsPage: React.FC = () => {
                         <td className="px-4 py-4.5 hidden sm:table-cell"><div className="h-4 rounded w-16" style={{ backgroundColor: 'var(--row)' }} /></td>
                         <td className="px-4 py-4.5 hidden sm:table-cell"><div className="h-4 rounded w-12" style={{ backgroundColor: 'var(--row)' }} /></td>
                         <td className="px-4 py-4.5 hidden sm:table-cell"><div className="h-4 rounded w-10" style={{ backgroundColor: 'var(--row)' }} /></td>
+                        <td className="px-4 py-4.5 text-center"><div className="h-4 rounded w-8 mx-auto" style={{ backgroundColor: 'var(--row)' }} /></td>
                       </tr>
                     ))}
                   </tbody>
@@ -679,11 +683,11 @@ export const TradingLogsPage: React.FC = () => {
               </div>
             ) : (
               /* MAIN INTERACTIVE SORTABLE DATATABLE */
-              <div className="rounded-2xl shadow-sm overflow-hidden" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+              <div className="rounded-xl shadow-sm overflow-hidden" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="border-b text-[10px] font-mono font-extrabold uppercase tracking-widest select-none" style={{ backgroundColor: 'var(--row)', borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
+                      <tr className="border-b text-[10px] font-sans font-semibold uppercase tracking-widest select-none" style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
                         <th className="px-4 py-4 w-10 text-center">#</th>
                         
                         {/* Sortable headers */}
@@ -756,6 +760,7 @@ export const TradingLogsPage: React.FC = () => {
                             ) : null}
                           </div>
                         </th>
+                        <th className="px-4 py-4 w-12 text-center">AI</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -769,16 +774,16 @@ export const TradingLogsPage: React.FC = () => {
                           <tr
                             key={item.id}
                             onClick={() => navigate(`/trading-logs/${item.id}`)}
-                            className="border-t hover:bg-zinc-100/10 cursor-pointer transition-colors text-sm"
-                            style={{ borderColor: 'var(--border)', color: 'var(--text)' }}
+                            className="hover:bg-[var(--row)] cursor-pointer transition-colors text-sm"
+                            style={{ borderBottom: '0.5px solid var(--border)', color: 'var(--text)' }}
                           >
                             {/* Counter Index */}
-                            <td className="px-4 py-4.5 text-center text-xs font-mono font-bold w-10" style={{ color: 'var(--text-muted)' }}>
+                            <td style={{ padding: '10px 16px', color: 'var(--text-muted)' }} className="text-center text-xs font-mono font-bold w-10">
                               {index + 1}
                             </td>
 
                             {/* Date Column with dynamic Today/Yesterday pill */}
-                            <td className="px-4 py-4.5 whitespace-nowrap">
+                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap">
                               <span className="font-mono text-xs font-semibold flex items-center gap-1" style={{ color: 'var(--text-sub)' }}>
                                 {dateTagStr.label === 'Today' || dateTagStr.label === 'Yesterday' ? (
                                   <span
@@ -803,14 +808,14 @@ export const TradingLogsPage: React.FC = () => {
                             </td>
 
                             {/* Symbol text-white */}
-                            <td className="px-4 py-4.5 whitespace-nowrap">
+                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap">
                               <span className="font-bold font-mono tracking-wide" style={{ color: 'var(--text)' }}>
                                 {item.symbol}
                               </span>
                             </td>
 
                             {/* Direction CALL/PUT/LONG/SHORT */}
-                            <td className="px-4 py-4.5 whitespace-nowrap hidden md:table-cell">
+                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap hidden md:table-cell">
                               {item.call_put ? (
                                 <span
                                   className={`px-2 py-0.5 text-[10px] font-bold rounded-lg ${
@@ -831,7 +836,7 @@ export const TradingLogsPage: React.FC = () => {
                             </td>
 
                             {/* Setup Selection Strategy Name */}
-                            <td className="px-4 py-4.5 whitespace-nowrap hidden md:table-cell max-w-[150px] truncate">
+                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap hidden md:table-cell max-w-[150px] truncate">
                               {item.strategies?.name ? (
                                 <span className="font-semibold font-mono text-xs" style={{ color: 'var(--text-sub)' }}>
                                   {item.strategies.name}
@@ -844,19 +849,20 @@ export const TradingLogsPage: React.FC = () => {
                             </td>
 
                             {/* Pnl Currency Format */}
-                            <td className="px-4 py-4.5 whitespace-nowrap">
+                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap">
                               <span
-                                className={`font-mono font-extrabold text-sm ${
-                                  hasProfit ? 'text-green-500' : hasLoss ? 'text-red-500' : ''
-                                }`}
-                                style={{ color: (!hasProfit && !hasLoss) ? 'var(--text-muted)' : undefined }}
+                                style={{
+                                  color: hasProfit ? '#22c55e' : hasLoss ? '#ef4444' : 'var(--text-muted)',
+                                  fontWeight: 700
+                                }}
+                                className="font-mono text-sm"
                               >
                                 {item.pnl !== null ? formatINR(item.pnl) : '—'}
                               </span>
                             </td>
 
                             {/* R Multiple */}
-                            <td className="px-4 py-4.5 whitespace-nowrap hidden md:table-cell">
+                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap hidden md:table-cell">
                               {item.r_multiple !== null ? (
                                 <span
                                   className={`font-mono font-bold text-xs ${
@@ -872,14 +878,14 @@ export const TradingLogsPage: React.FC = () => {
                             </td>
 
                             {/* Status WIN/LOSS */}
-                            <td className="px-4 py-4.5 whitespace-nowrap">
+                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap">
                               {item.status === 'Win' && (
-                                <span className="px-2.5 py-0.5 text-[10px] font-extrabold bg-green-500/10 border border-green-500/25 text-green-600 rounded-lg">
+                                <span style={{ backgroundColor: 'rgba(34,197,94,0.12)', color: '#22c55e' }} className="px-2.5 py-0.5 text-[10px] font-extrabold rounded-lg">
                                   WIN
                                 </span>
                               )}
                               {item.status === 'Loss' && (
-                                <span className="px-2.5 py-0.5 text-[10px] font-extrabold bg-red-500/10 border border-red-500/25 text-red-600 rounded-lg">
+                                <span style={{ backgroundColor: 'rgba(239,68,68,0.12)', color: '#ef4444' }} className="px-2.5 py-0.5 text-[10px] font-extrabold rounded-lg">
                                   LOSS
                                 </span>
                               )}
@@ -894,22 +900,34 @@ export const TradingLogsPage: React.FC = () => {
                             </td>
 
                             {/* Execution quality */}
-                            <td className="px-4 py-4.5 whitespace-nowrap hidden md:table-cell">
+                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap hidden md:table-cell">
                               {item.execution_status ? (
                                 <span
-                                  className={`px-1.5 py-0.5 text-[10px] uppercase font-mono tracking-wide font-black rounded-md border ${
-                                    item.execution_status === 'BEST TRADE'
-                                      ? 'bg-green-500/10 text-green-500 border border-green-500/20'
-                                      : item.execution_status === 'GOOD TRADE'
-                                      ? 'bg-teal-500/10 text-teal-550 border border-teal-500/25'
-                                      : item.execution_status === 'AVERAGE TRADE'
-                                      ? 'bg-amber-500/10 text-amber-550 border border-amber-500/25'
-                                      : item.execution_status === 'POOR TRADE'
-                                      ? 'bg-orange-500/10 text-orange-500 border border-orange-500/25'
-                                      : 'bg-red-500/10 text-red-500 border border-red-500/20'
-                                  }`}
+                                  style={{
+                                    backgroundColor:
+                                      item.execution_status === 'BEST TRADE'
+                                        ? 'rgba(34,197,94,0.12)'
+                                        : item.execution_status === 'GOOD TRADE'
+                                        ? 'rgba(20,184,166,0.12)'
+                                        : item.execution_status === 'AVERAGE TRADE'
+                                        ? 'rgba(234,179,8,0.12)'
+                                        : item.execution_status === 'POOR TRADE'
+                                        ? 'rgba(249,115,22,0.12)'
+                                        : 'rgba(239,68,68,0.12)',
+                                    color:
+                                      item.execution_status === 'BEST TRADE'
+                                        ? '#22c55e'
+                                        : item.execution_status === 'GOOD TRADE'
+                                        ? '#14b8a6'
+                                        : item.execution_status === 'AVERAGE TRADE'
+                                        ? '#ca8a04'
+                                        : item.execution_status === 'POOR TRADE'
+                                        ? '#f97316'
+                                        : '#ef4444',
+                                  }}
+                                  className="px-1.5 py-0.5 text-[10px] uppercase font-mono tracking-wide font-extrabold rounded-md"
                                 >
-                                  {item.execution_status.split(' ')[0]}
+                                  {item.execution_status}
                                 </span>
                               ) : (
                                 <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
@@ -917,7 +935,7 @@ export const TradingLogsPage: React.FC = () => {
                             </td>
 
                             {/* Mistakes list cell */}
-                            <td className="px-4 py-4.5 whitespace-nowrap hidden md:table-cell max-w-[125px] truncate">
+                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap hidden md:table-cell max-w-[125px] truncate">
                               {item.mistake_type && item.mistake_type !== 'No Mistake' ? (
                                 <span className="text-xs" style={{ color: 'var(--text-sub)' }}>
                                   {item.mistake_type}
@@ -930,7 +948,7 @@ export const TradingLogsPage: React.FC = () => {
                             </td>
 
                             {/* Stars rating */}
-                            <td className="px-4 py-4.5 whitespace-nowrap hidden md:table-cell">
+                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap hidden md:table-cell">
                               {item.trade_rating && item.trade_rating > 0 ? (
                                 <div className="flex items-center gap-0.5 text-amber-500">
                                   {Array.from({ length: item.trade_rating }).map((_, i) => (
@@ -943,7 +961,7 @@ export const TradingLogsPage: React.FC = () => {
                             </td>
 
                             {/* ROI percent decimal */}
-                            <td className="px-4 py-4.5 whitespace-nowrap hidden md:table-cell">
+                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap hidden md:table-cell">
                               {item.roi !== null ? (
                                 <span
                                   className={`font-mono font-bold text-xs ${
@@ -956,6 +974,30 @@ export const TradingLogsPage: React.FC = () => {
                               ) : (
                                 <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
                               )}
+                            </td>
+
+                            {/* AI Action column */}
+                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap text-center">
+                              <button
+                                id={`logs-table-ask-ai-${item.id}`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(`/ai-teacher?tradeId=${item.id}`);
+                                }}
+                                style={{
+                                  backgroundColor: 'var(--accent-muted)',
+                                  color: 'var(--accent)',
+                                  borderRadius: '6px',
+                                  padding: '4px 8px',
+                                  fontSize: '11px',
+                                  fontWeight: 650,
+                                  border: 'none',
+                                  cursor: 'pointer'
+                                }}
+                                className="transition-all hover:opacity-85 font-sans"
+                              >
+                                AI
+                              </button>
                             </td>
                           </tr>
                         );

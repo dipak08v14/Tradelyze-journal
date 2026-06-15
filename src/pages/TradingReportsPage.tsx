@@ -232,7 +232,7 @@ export const TradingReportsPage: React.FC = () => {
       <Sidebar userEmail={user?.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* RIGHT SIDE MAIN CONTAINER */}
-      <div className="flex-1 md:pl-[250px] flex flex-col min-h-screen">
+      <div className="flex-1 md:pl-[220px] flex flex-col min-h-screen">
         {/* MOBILE HEADER BAR */}
         <header 
           className="flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20"
@@ -355,7 +355,7 @@ export const TradingReportsPage: React.FC = () => {
                   </div>
 
                   {/* TABLE VIEW WRAPPER */}
-                  <div className="overflow-x-auto mt-5 rounded-xl border" style={{ borderColor: 'var(--border)' }}>
+                  <div className="overflow-x-auto mt-5" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px' }}>
                     <table className="w-full text-left border-collapse text-sm">
                       <thead>
                         <tr style={{ backgroundColor: 'var(--bar)' }} className="text-[11.5px] font-bold text-zinc-500 uppercase tracking-wider border-b">
@@ -384,7 +384,12 @@ export const TradingReportsPage: React.FC = () => {
                               className="border-b transition-colors hover:bg-[var(--row)]"
                             >
                               {/* Date Column */}
-                              <td className="px-4 py-3 font-semibold text-xs whitespace-nowrap" style={{ color: 'var(--text)' }}>
+                              <td 
+                                className="px-4 py-3 font-semibold text-xs whitespace-nowrap" 
+                                style={{ 
+                                  color: row.dayStatus === 'Win' ? '#22c55e' : row.dayStatus === 'Loss' ? '#ef4444' : 'var(--text)' 
+                                }}
+                              >
                                 {formattedDate}
                               </td>
 
@@ -486,11 +491,11 @@ export const TradingReportsPage: React.FC = () => {
                 </div>
 
                 {/* RIGHT SIDE STATISTICAL PANELS */}
-                <div className="lg:col-span-1 space-y-5 lg:sticky lg:top-4">
+                <div className="lg:col-span-1 space-y-6 lg:sticky lg:top-4 p-5" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px' }}>
                   
                   {/* CARD 1: MONTH SUMMARY PANEL */}
                   {stats && (
-                    <div className="shadow-sm p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
+                    <div>
                       <h3 className="text-xs font-bold uppercase tracking-widest pb-3 border-b" style={{ color: 'var(--text)', fontWeight: 600, letterSpacing: '0.5px', borderColor: 'var(--border)' }}>
                         {selectedMonth} {selectedYear} Summary
                       </h3>
@@ -553,14 +558,29 @@ export const TradingReportsPage: React.FC = () => {
                         </div>
 
                         {/* Profit Factor */}
-                        <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
-                          <span className="font-medium" style={{ color: 'var(--text-sub)', fontSize: '13px' }}>Profit Factor</span>
-                          <span
-                            className="font-mono"
-                            style={{ color: stats.profitFactor >= 1.0 ? '#22c55e' : '#ef4444', fontSize: '13px', fontWeight: 600 }}
-                          >
-                            {stats.profitFactor === 999 ? '∞' : stats.profitFactor.toFixed(2)}
-                          </span>
+                        <div className="py-2.5 border-b" style={{ borderColor: 'var(--border)' }}>
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="font-medium" style={{ color: 'var(--text-sub)', fontSize: '13px' }}>Profit Factor</span>
+                            <span
+                              className="font-mono"
+                              style={{ 
+                                color: stats.profitFactor > 1.5 ? '#22c55e' : stats.profitFactor > 1.0 ? '#f59e0b' : '#ef4444', 
+                                fontSize: '13px', 
+                                fontWeight: 700 
+                              }}
+                            >
+                              {stats.profitFactor === 999 ? '∞' : stats.profitFactor.toFixed(2)}
+                            </span>
+                          </div>
+                          <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--bar)' }}>
+                            <div
+                              className="h-full transition-all duration-500 rounded-full"
+                              style={{
+                                width: `${Math.min((stats.profitFactor === 999 ? 3.0 : stats.profitFactor) / 3.0 * 100, 100)}%`,
+                                backgroundColor: stats.profitFactor > 1.5 ? '#22c55e' : stats.profitFactor > 1.0 ? '#f59e0b' : '#ef4444'
+                              }}
+                            />
+                          </div>
                         </div>
 
                         {/* Avg R */}
@@ -648,7 +668,7 @@ export const TradingReportsPage: React.FC = () => {
                   )}
 
                   {/* CARD 2: TRADING COMPLIANCE SCORES */}
-                  <div className="rounded-xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
+                  <div className="border-t pt-5 mt-5" style={{ borderColor: 'var(--border)' }}>
                     <h3 className="text-sm font-bold uppercase tracking-widest pb-3 border-b" style={{ color: 'var(--text)', borderColor: 'var(--border)' }}>
                       Avg Trade Scores
                     </h3>
@@ -672,8 +692,8 @@ export const TradingReportsPage: React.FC = () => {
                         </div>
                         <div className="w-full h-2 rounded-full overflow-hidden border" style={{ backgroundColor: 'var(--row)', borderColor: 'var(--border)' }}>
                           <div
-                            className={`h-full transition-all duration-500 ${getScoreBg(scores.avgTech)}`}
-                            style={{ width: `${scores.avgTech}%` }}
+                            className="h-full transition-all duration-500"
+                            style={{ width: `${scores.avgTech}%`, backgroundColor: 'var(--accent)' }}
                           />
                         </div>
                       </div>
@@ -688,8 +708,8 @@ export const TradingReportsPage: React.FC = () => {
                         </div>
                         <div className="w-full h-2 rounded-full overflow-hidden border" style={{ backgroundColor: 'var(--row)', borderColor: 'var(--border)' }}>
                           <div
-                            className={`h-full transition-all duration-500 ${getScoreBg(scores.avgPsych)}`}
-                            style={{ width: `${scores.avgPsych}%` }}
+                            className="h-full transition-all duration-500"
+                            style={{ width: `${scores.avgPsych}%`, backgroundColor: 'var(--accent)' }}
                           />
                         </div>
                       </div>
@@ -704,8 +724,8 @@ export const TradingReportsPage: React.FC = () => {
                         </div>
                         <div className="w-full h-2 rounded-full overflow-hidden border" style={{ backgroundColor: 'var(--row)', borderColor: 'var(--border)' }}>
                           <div
-                            className={`h-full transition-all duration-500 ${getScoreBg(scores.avgRisk)}`}
-                            style={{ width: `${scores.avgRisk}%` }}
+                            className="h-full transition-all duration-500"
+                            style={{ width: `${scores.avgRisk}%`, backgroundColor: 'var(--accent)' }}
                           />
                         </div>
                       </div>
@@ -713,7 +733,7 @@ export const TradingReportsPage: React.FC = () => {
                   </div>
 
                   {/* CARD 3: PSYCHOLOGICAL & TECHNICAL MISTAKES */}
-                  <div className="rounded-xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
+                  <div className="border-t pt-5 mt-5" style={{ borderColor: 'var(--border)' }}>
                     <h3 className="text-sm font-bold uppercase tracking-widest pb-3 border-b" style={{ color: 'var(--text)', borderColor: 'var(--border)' }}>
                       Mistakes This Month
                     </h3>

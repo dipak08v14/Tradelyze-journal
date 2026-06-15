@@ -29,7 +29,7 @@ export const RadarScoreChart: React.FC<RadarScoreChartProps> = ({
     <div className="w-full h-[220px]">
       <ResponsiveContainer width="100%" height="100%">
         <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
-          <PolarGrid stroke="#2A2D3A" />
+          <PolarGrid stroke="var(--bar)" />
           <PolarAngleAxis
             dataKey="metric"
             tick={{ fill: '#9CA3AF', fontSize: 11, fontFamily: 'Inter' }}
@@ -43,11 +43,11 @@ export const RadarScoreChart: React.FC<RadarScoreChartProps> = ({
           <Radar
             name="Score"
             dataKey="score"
-            stroke="#6366F1"
-            fill="#6366F1"
-            fillOpacity={0.25}
-            dot={{ fill: '#6366F1', r: 3, strokeWidth: 0 }}
-            strokeWidth={2}
+            stroke="var(--accent)"
+            fill="var(--accent)"
+            fillOpacity={0.18}
+            dot={{ fill: 'var(--accent)', r: 3, strokeWidth: 0 }}
+            strokeWidth={1.5}
           />
         </RadarChart>
       </ResponsiveContainer>
