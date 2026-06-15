@@ -102,6 +102,9 @@ export function TopNav() {
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <div
           style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
             fontSize: '15px',
             fontWeight: 800,
             letterSpacing: '0.8px',
@@ -110,6 +113,16 @@ export function TopNav() {
             userSelect: 'none'
           }}
         >
+          <svg width="22" height="20" viewBox="0 0 108 102" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="topnavGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="var(--accent)" />
+                <stop offset="100%" stopColor="var(--accent)" stopOpacity={0.8} />
+              </linearGradient>
+            </defs>
+            <path d="M16 21h45.5l-3.5 11.5H41v40H26.5v-40H16Z" fill="url(#topnavGrad)" />
+            <path d="M65 21h14.5L67.8 61H96l-3.5 11.5H50Z" fill="var(--text)" />
+          </svg>
           TRADELYZE
         </div>
 

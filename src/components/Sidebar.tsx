@@ -62,9 +62,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
       {/* Top logo section */}
       <div className="flex flex-col gap-2" style={{ padding: '20px 16px', borderBottom: '0.5px solid var(--border)' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-          <span style={{ fontSize: '14px', fontWeight: '800', letterSpacing: '1px', color: 'var(--accent)', fontFamily: 'Inter, sans-serif' }}>
-            TRADELYZE
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <svg width="22" height="20" viewBox="0 0 108 102" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="sidebarGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--accent)" />
+                  <stop offset="100%" stopColor="var(--accent)" stopOpacity={0.8} />
+                </linearGradient>
+              </defs>
+              <path d="M16 21h45.5l-3.5 11.5H41v40H26.5v-40H16Z" fill="url(#sidebarGrad)" />
+              <path d="M65 21h14.5L67.8 61H96l-3.5 11.5H50Z" fill="var(--text)" />
+            </svg>
+            <span style={{ fontSize: '14px', fontWeight: '800', letterSpacing: '1px', color: 'var(--accent)', fontFamily: 'Inter, sans-serif' }}>
+              TRADELYZE
+            </span>
+          </div>
           {mobileOpen && (
             <button
               onClick={() => setMobileOpen(false)}
