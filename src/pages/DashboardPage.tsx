@@ -444,6 +444,12 @@ export const DashboardPage: React.FC = () => {
   const finalPnl = lastCurvePoint ? lastCurvePoint.cumPnl : 0;
   const chartColor = finalPnl > 0 ? '#22c55e' : finalPnl < 0 ? '#ef4444' : '#94a3b8';
 
+  const curveValues = stats.equityCurveData.map(d => d.cumPnl);
+  const minVal = Math.min(...curveValues, 0);
+  const maxVal = Math.max(...curveValues, 0);
+  const range = maxVal - minVal;
+  const zeroPercent = range > 0 ? (maxVal / range) * 100 : 0;
+
   return (
     <div className="min-h-screen flex flex-col md:flex-row font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
@@ -698,9 +704,20 @@ export const DashboardPage: React.FC = () => {
                         margin={{ top: 10, right: 20, left: 10, bottom: 30 }}
                       >
                         <defs>
-                          <linearGradient id="pnlGradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor={chartColor} stopOpacity={0.18} />
-                            <stop offset="95%" stopColor={chartColor} stopOpacity={0.01} />
+                          {/* Area fill gradient — green above zero, red below zero */}
+                          <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#22c55e" stopOpacity={0.15} />
+                            <stop offset={`${zeroPercent}%`} stopColor="#22c55e" stopOpacity={0.08} />
+                            <stop offset={`${zeroPercent}%`} stopColor="#ef4444" stopOpacity={0.08} />
+                            <stop offset="100%" stopColor="#ef4444" stopOpacity={0.15} />
+                          </linearGradient>
+
+                          {/* Line stroke gradient — green above zero, red below zero */}
+                          <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#22c55e" stopOpacity={1} />
+                            <stop offset={`${zeroPercent}%`} stopColor="#22c55e" stopOpacity={1} />
+                            <stop offset={`${zeroPercent}%`} stopColor="#ef4444" stopOpacity={1} />
+                            <stop offset="100%" stopColor="#ef4444" stopOpacity={1} />
                           </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" stroke={gridLineColor} vertical={false} />
@@ -723,7 +740,12 @@ export const DashboardPage: React.FC = () => {
                           tickFormatter={(v) => `₹${v.toLocaleString('en-IN')}`}
                           width={80}
                         />
-                        <ReferenceLine y={0} stroke="var(--border)" strokeDasharray="4 4" strokeWidth={1} />
+                        <ReferenceLine
+                          y={0}
+                          stroke="rgba(0,0,0,0.15)"
+                          strokeDasharray="4 4"
+                          strokeWidth={1}
+                        />
                         <RechartsTooltip
                           contentStyle={{
                             backgroundColor: 'var(--card)',
@@ -731,10 +753,16 @@ export const DashboardPage: React.FC = () => {
                             borderRadius: '8px',
                             color: 'var(--text)',
                           }}
-                          formatter={(value: any, name: string) => [
-                            '₹' + value.toLocaleString('en-IN'),
-                            name === 'cumPnl' ? 'Cumulative P&L' : 'Daily P&L',
-                          ]}
+                          formatter={(value: any, name: string) => {
+                            const decimalValue = Number(value) || 0;
+                            const isPositive = decimalValue >= 0;
+                            return [
+                              <span key="val" style={{ color: isPositive ? '#22c55e' : '#ef4444', fontWeight: 'bold' }}>
+                                {'₹' + value.toLocaleString('en-IN')}
+                              </span>,
+                              name === 'cumPnl' ? 'Cumulative P&L' : 'Daily P&L',
+                            ];
+                          }}
                           labelFormatter={(label) =>
                             label === '0' ? 'Month Start' : `Day ${label}`
                           }
@@ -742,11 +770,21 @@ export const DashboardPage: React.FC = () => {
                         <Area
                           type="monotone"
                           dataKey="cumPnl"
-                          stroke={chartColor}
+                          stroke="url(#lineGradient)"
                           strokeWidth={2}
-                          fill="url(#pnlGradient)"
-                          dot={{ fill: chartColor, r: 3, strokeWidth: 0 }}
-                          activeDot={{ fill: chartColor, r: 5, strokeWidth: 0 }}
+                          fill="url(#areaGradient)"
+                          dot={(props: any) => {
+                            const { cx, cy, payload } = props;
+                            const val = payload?.cumPnl ?? payload?.value ?? 0;
+                            const color = val >= 0 ? '#22c55e' : '#ef4444';
+                            return <circle key={`dot-${cx}-${cy}`} cx={cx} cy={cy} r={3} fill={color} strokeWidth={0} />;
+                          }}
+                          activeDot={(props: any) => {
+                            const { cx, cy, payload } = props;
+                            const val = payload?.cumPnl ?? payload?.value ?? 0;
+                            const color = val >= 0 ? '#22c55e' : '#ef4444';
+                            return <circle key={`active-dot-${cx}-${cy}`} cx={cx} cy={cy} r={5} fill={color} strokeWidth={0} />;
+                          }}
                         />
                       </AreaChart>
                     </ResponsiveContainer>
