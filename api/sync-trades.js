@@ -11,8 +11,11 @@ export default async function handler(req, res) {
   let body = {}
   if (typeof req.body === 'string') {
     try {
-      body = JSON.parse(req.body)
+      const clean = req.body.replace(/^\uFEFF/, '').replace(/^\xEF\xBB\xBF/, '').trim()
+      console.log('body string preview:', clean.substring(0, 80))
+      body = JSON.parse(clean)
     } catch (e) {
+      console.error('body parse failed, raw preview:', String(req.body).substring(0, 80))
       return res.status(400).json({ error: 'Invalid JSON body' })
     }
   } else if (req.body) {
