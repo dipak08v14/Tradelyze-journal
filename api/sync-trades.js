@@ -13,33 +13,26 @@ function readRawBody(req) {
   })
 }
 
-function sanitizeJSON(text) {
-  return text.replace(/[\x00-\x1F\x7F]/g, (char) => {
-    switch (char.charCodeAt(0)) {
-      case 0x08: return '\\b'
-      case 0x09: return '\\t'
-      case 0x0A: return '\\n'
-      case 0x0C: return '\\f'
-      case 0x0D: return '\\r'
-      default:   return '\\u' + char.charCodeAt(0).toString(16).padStart(4, '0')
-    }
-  })
-}
+function cleanAndParse(text) {
+  let t = text
+    .replace(/^\uFEFF/, '')
+    .replace(/\x00/g, '')
+    .replace(/[\x00-\x08\x0B\x0E-\x1F\x7F]/g, '')
+    .replace(/\r/g, '\\r')
+    .replace(/\t/g, '\\t')
+    .trim()
 
-function parseBody(text) {
-  try {
-    return JSON.parse(text)
-  } catch (e) {
-    try {
-      console.log('first parse failed at position', text.length, '— trying with appended }')
-      return JSON.parse(text + '}')
-    } catch (e2) {
-      try {
-        return JSON.parse(text + ']}')
-      } catch (e3) {
-        throw e
+  try { return JSON.parse(t) } catch (e1) {
+    const last = Math.max(t.lastIndexOf('}'), t.lastIndexOf(']'))
+    if (last > 0) {
+      const trimmed = t.substring(0, last + 1)
+      try { return JSON.parse(trimmed) } catch (e2) {
+        try { return JSON.parse(trimmed + '}') } catch (e3) {
+          throw e1
+        }
       }
     }
+    throw e1
   }
 }
 
@@ -61,10 +54,8 @@ export default async function handler(req, res) {
       body = rb
     } else {
       const raw = await readRawBody(req)
-      let text = raw.length > 0 ? raw.toString('utf8') : String(rb || '')
-      text = text.replace(/^\uFEFF/, '').trim()
-      text = sanitizeJSON(text)
-      if (text) body = parseBody(text)
+      const text = raw.length > 0 ? raw.toString('utf8') : String(rb || '')
+      if (text) body = cleanAndParse(text)
     }
   } catch (e) {
     console.error('body error:', e.message)
