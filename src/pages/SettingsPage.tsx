@@ -81,6 +81,7 @@ export default function SettingsPage() {
     duplicateCount: number;
     errorCount: number;
     completed: boolean;
+    errorMessages?: string[];
   } | null>(null);
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -129,12 +130,10 @@ export default function SettingsPage() {
 
   // CSV Import helper functions
   const handleDownloadTemplate = () => {
-    const csvContent = [
-      'Date,Symbol,Direction,PnL,Quantity,EntryPrice,ExitPrice,EntryTime,ExitTime,Commission,Notes',
-      '2026-06-10,XAUUSD,LONG,145.50,0.10,2374.50,2389.00,19:07,21:23,2.50,Strong OB setup',
-      '2026-06-11,BANKNIFTY,SHORT,-380.00,25,44250.00,44098.00,09:20,10:15,18.00,False breakout',
-      '2026-06-12,BTCUSDT,LONG,220.00,0.05,67200.00,67640.00,14:30,16:45,1.20,'
-    ].join('\n');
+    const csvContent = `Date,Symbol,Direction,PnL,Quantity,EntryPrice,ExitPrice,EntryTime,ExitTime,Commission,Notes
+2026-06-10,XAUUSD,LONG,145.50,0.10,2374.50,2389.00,19:07,21:23,2.50,Strong OB setup
+2026-06-11,BANKNIFTY,SHORT,-380.00,25,44250.00,44098.00,09:20,10:15,18.00,False breakout
+2026-06-12,BTCUSDT,LONG,220.00,0.05,67200.00,67640.00,14:30,16:45,1.20,`;
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -224,85 +223,86 @@ export default function SettingsPage() {
     if (!userId || csvRows.length === 0) return;
     
     setImportingCsv(true);
-    setCsvImportProgress(`Importing... (0 / ${csvRows.length})`);
-    
-    let importedCount = 0;
-    let duplicateCount = 0;
-    let errorCount = 0;
+    setCsvImportProgress(`Importing...`);
     
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        showError('You must be logged in to import trades.');
-        return;
+      const validRows = csvRows;
+
+      const { data: { user }, error: authError } = await supabase.auth.getUser()
+      if (authError || !user) {
+        alert('Authentication error. Please refresh the page and try again.')
+        return
       }
-      const currentUserId = user.id;
 
-      for (let i = 0; i < csvRows.length; i++) {
-        const row = csvRows[i];
-        setCsvImportProgress(`Importing... (${i + 1} / ${csvRows.length})`);
+      let importedCount = 0
+      let duplicateCount = 0
+      let errorMessages: string[] = []
 
-        const dateStr = row.Date.trim();
-        const dateParts = dateStr.split('-');
-        const yearNum = parseInt(dateParts[0]);
-        const monthNum = parseInt(dateParts[1]);
-        const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        const monthStr = monthNames[monthNum - 1];
-        const pnlNum = parseFloat(String(row.PnL).replace(/[^0-9.-]/g, ''));
-        const hashInput = String(row.Symbol || '') + String(row.Date || '') + String(row.PnL || '');
-        const hashVal = hashInput.split('').reduce((a, c) => Math.imul(31, a) + c.charCodeAt(0) | 0, 0);
-        const brokerTicket = 'csv_' + Math.abs(hashVal).toString(36);
+      for (const row of validRows) {
+        try {
+          const dateStr = String(row.Date || '').trim()
+          const pnlNum = parseFloat(String(row.PnL || '0').replace(/[^0-9.-]/g, ''))
+          const symbolStr = String(row.Symbol || '').trim().toUpperCase()
+          const directionStr = String(row.Direction || '').trim().toUpperCase()
+          const dateParts = dateStr.split('-')
+          const yearNum = parseInt(dateParts[0])
+          const monthNum = parseInt(dateParts[1])
+          const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+          const monthStr = monthNames[monthNum - 1] || 'Jan'
+          const hashInput = symbolStr + dateStr + String(pnlNum)
+          const hashVal = hashInput.split('').reduce((a, c) => Math.imul(31, a) + c.charCodeAt(0) | 0, 0)
+          const brokerTicket = 'csv_' + Math.abs(hashVal).toString(36)
 
-        const tradeObj = {
-          user_id: currentUserId,
-          date: dateStr,
-          symbol: String(row.Symbol || '').trim().toUpperCase(),
-          call_put: String(row.Direction || '').trim().toUpperCase(),
-          pnl: pnlNum,
-          status: pnlNum > 0 ? 'Win' : pnlNum < 0 ? 'Loss' : 'Breakeven',
-          quantity: row.Quantity && row.Quantity !== '' ? parseFloat(row.Quantity) : null,
-          entry_time: row.EntryTime && row.EntryTime !== '' ? String(row.EntryTime).trim() : null,
-          exit_time: row.ExitTime && row.ExitTime !== '' ? String(row.ExitTime).trim() : null,
-          fees: row.Commission && row.Commission !== '' ? parseFloat(row.Commission) : 0,
-          notes: row.Notes && row.Notes !== '' ? String(row.Notes).trim() : null,
-          month: monthStr,
-          year: yearNum,
-          sync_source: 'csv',
-          needs_review: true,
-          broker_name: 'CSV Import',
-          broker_ticket: brokerTicket
-        };
+          const { data: existing } = await supabase
+            .from('trades')
+            .select('id')
+            .eq('broker_ticket', brokerTicket)
+            .eq('user_id', user.id)
+            .maybeSingle()
 
-        const { data: existingTrade } = await supabase
-          .from('trades')
-          .select('id')
-          .eq('broker_ticket', brokerTicket)
-          .eq('user_id', currentUserId)
-          .maybeSingle();
+          if (existing) {
+            duplicateCount++
+            continue
+          }
 
-        if (existingTrade) {
-          duplicateCount++;
-          continue;
-        }
+          const tradeToInsert = {
+            user_id: user.id,
+            date: dateStr,
+            symbol: symbolStr,
+            call_put: directionStr,
+            pnl: pnlNum,
+            status: pnlNum > 0 ? 'Win' : pnlNum < 0 ? 'Loss' : 'Breakeven',
+            month: monthStr,
+            year: yearNum,
+            sync_source: 'csv',
+            needs_review: true,
+            broker_name: 'CSV Import',
+            broker_ticket: brokerTicket,
+            fees: row.Commission && row.Commission !== '' ? parseFloat(String(row.Commission).replace(/[^0-9.-]/g, '')) : 0,
+            quantity: row.Quantity && row.Quantity !== '' ? parseFloat(row.Quantity) : null,
+            entry_time: row.EntryTime && row.EntryTime !== '' ? String(row.EntryTime).trim() : null,
+            exit_time: row.ExitTime && row.ExitTime !== '' ? String(row.ExitTime).trim() : null,
+            notes: row.Notes && row.Notes !== '' ? String(row.Notes).trim() : null
+          }
 
-        const { error: insertError } = await supabase
-          .from('trades')
-          .insert(tradeObj);
+          const { error: insertError } = await supabase.from('trades').insert(tradeToInsert)
 
-        if (insertError !== null) {
-          console.error('Insert error for row:', row, insertError);
-          errorCount++;
-          continue;
-        } else {
-          importedCount++;
+          if (insertError) {
+            errorMessages.push('Row ' + symbolStr + ' ' + dateStr + ': ' + insertError.message)
+          } else {
+            importedCount++
+          }
+        } catch (rowError: any) {
+          errorMessages.push('Row processing error: ' + rowError.message)
         }
       }
 
       setCsvImportResults({
         successCount: importedCount,
         duplicateCount,
-        errorCount,
-        completed: true
+        errorCount: errorMessages.length,
+        completed: true,
+        errorMessages
       });
 
       if (importedCount > 0) {
@@ -1590,7 +1590,7 @@ export default function SettingsPage() {
                   <div className="space-y-6 py-4 flex flex-col items-center text-center">
                     <CheckCircle className="w-16 h-16 text-[#22c55e] animate-pulse" />
                     
-                    <div className="space-y-2">
+                    <div className="space-y-2 w-full">
                       <h2 className="text-lg font-bold text-[#22c55e]">
                         ✓ Successfully imported {csvImportResults.successCount} trades
                       </h2>
@@ -1602,9 +1602,16 @@ export default function SettingsPage() {
                       )}
                       
                       {csvImportResults.errorCount > 0 && (
-                        <p className="text-[13px] text-red-400">
-                          {csvImportResults.errorCount} rows had errors and were skipped
-                        </p>
+                        <div className="space-y-2 text-left w-full mt-2">
+                          <p className="text-[13px] text-[#ef4444] font-semibold">
+                            {csvImportResults.errorCount} rows had errors and were skipped:
+                          </p>
+                          <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 max-h-[160px] overflow-y-auto font-mono text-[11px] text-red-400 space-y-1">
+                            {csvImportResults.errorMessages?.map((msg, i) => (
+                              <div key={i} className="leading-snug">• {msg}</div>
+                            ))}
+                          </div>
+                        </div>
                       )}
                     </div>
 
