@@ -1,6 +1,33 @@
 import { createClient } from '@supabase/supabase-js';
 import { decrypt } from './_encryption.js';
 
+function getOptionType(leg) {
+  if (!leg) return null;
+  const raw = leg.raw_response || leg;
+  
+  // Method 1: Check drvOptionType field directly
+  // Dhan may return 'CE', 'PE', 'CALL', 'PUT', null, or the string 'NA'
+  if (raw.drvOptionType === 'CE') return 'CALL';
+  if (raw.drvOptionType === 'PE') return 'PUT';
+  if (raw.drvOptionType === 'CALL') return 'CALL';
+  if (raw.drvOptionType === 'PUT') return 'PUT';
+
+  // Method 2: Parse from tradingSymbol (NSE format ends with CE or PE)
+  // Example: 'NIFTY2407225050CE' or 'BANKNIFTY2406456000PE'
+  const tradingSymbol = (raw.tradingSymbol || leg.symbol || '').toUpperCase().trim();
+  if (tradingSymbol.endsWith('CE')) return 'CALL';
+  if (tradingSymbol.endsWith('PE')) return 'PUT';
+
+  // Method 3: Parse from customSymbol (human-readable, contains the word CALL or PUT)
+  // Example: 'NIFTY 24 JUL 25050 CALL' or 'BANKNIFTY 17 JUL 56000 PUT'
+  const customSymbol = (raw.customSymbol || '').toUpperCase().trim();
+  if (customSymbol.includes(' CALL') || customSymbol.endsWith('CALL')) return 'CALL';
+  if (customSymbol.includes(' PUT') || customSymbol.endsWith('PUT')) return 'PUT';
+
+  // Not an options trade (equity, futures, currency)
+  return null;
+}
+
 export default async function handler(req, res) {
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -369,17 +396,7 @@ export default async function handler(req, res) {
 
         // Run through each unmatched leg
         for (const leg of unmatchedLegs || []) {
-          let optionType = null;
-          const rawLegResponse = leg.raw_response || {};
-          const drvOptionType = String(rawLegResponse.drvOptionType || '').trim().toUpperCase();
-
-          if (drvOptionType === 'CE') {
-            optionType = 'CALL';
-          } else if (drvOptionType === 'PE') {
-            optionType = 'PUT';
-          } else {
-            optionType = null;
-          }
+          const optionType = getOptionType(leg);
 
           const transactionType = String(leg.transaction_type || '').toUpperCase();
 

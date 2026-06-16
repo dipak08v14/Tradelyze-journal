@@ -80,6 +80,7 @@ export default function SettingsPage() {
   const [showImportConfirm, setShowImportConfirm] = useState(false);
   const [showDisconnectConfirm, setShowDisconnectConfirm] = useState(false);
   const [dhanOpenPositionsCount, setDhanOpenPositionsCount] = useState(0);
+  const [repairingDhanOptions, setRepairingDhanOptions] = useState(false);
 
   // CSV Import states
   const [isCsvModalOpen, setIsCsvModalOpen] = useState(false);
@@ -289,6 +290,39 @@ export default function SettingsPage() {
       showError('Disconnection failed: ' + err.message);
     } finally {
       setDisconnectingDhan(false);
+    }
+  };
+
+  const handleRepairDhanOptions = async () => {
+    try {
+      setRepairingDhanOptions(true);
+      const { data: sessionData } = await supabase.auth.getSession();
+      const tok = sessionData?.session?.access_token;
+      if (!tok) {
+        showError('Authentication token missing.');
+        return;
+      }
+
+      const res = await fetch('/api/dhan-repair-options', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tok}`
+        }
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        showError(data.error || 'Failed to repair option types.');
+        return;
+      }
+
+      showSuccess(`Option Types Repaired! Updated ${data.updated_count} trades.`);
+      await fetchConnections();
+    } catch (err: any) {
+      showError('Repair failed: ' + err.message);
+    } finally {
+      setRepairingDhanOptions(false);
     }
   };
 
@@ -1410,6 +1444,26 @@ export default function SettingsPage() {
                                   Disconnect
                                 </button>
                               </div>
+
+                              {dhanConnComp.total_synced > 0 && (
+                                <div className="pt-2 border-t border-[var(--border)] mt-2">
+                                  <button
+                                    disabled={repairingDhanOptions}
+                                    onClick={handleRepairDhanOptions}
+                                    style={{ border: '1px solid var(--border-md)', background: 'transparent', color: 'var(--accent)' }}
+                                    className="hover:bg-[var(--row)] font-bold px-3 py-1.5 rounded-lg cursor-pointer text-xs h-8 flex items-center justify-center gap-1.5"
+                                  >
+                                    {repairingDhanOptions ? (
+                                      <>
+                                        <span className="animate-spin w-3 h-3 rounded-full border border-[var(--accent)] border-t-transparent"></span>
+                                        Fixing Option Types...
+                                      </>
+                                    ) : (
+                                      'Fix Option Types'
+                                    )}
+                                  </button>
+                                </div>
+                              )}
 
                               {showImportConfirm && (
                                 <div className="bg-[var(--bg)] border border-[var(--border)] p-4 rounded-xl space-y-3 mt-2">
