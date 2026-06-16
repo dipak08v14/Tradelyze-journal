@@ -154,7 +154,7 @@ async function searchSimilarTrades(embedding, userId, setupName) {
   if (matches.length === 0) return []
   const tradeIds = matches.map(m => m.trade_id).join(',')
   const tradeDetails = await supabaseFetch(
-    `/rest/v1/trades?id=in.(${tradeIds})&user_id=eq.${userId}&select=id,date,symbol,call_put,pnl,r_multiple,status`
+    `/rest/v1/trades?id=in.(${tradeIds})&user_id=eq.${userId}&select=id,date,symbol,direction,option_type,pnl,r_multiple,status`
   )
 
   return matches.map(m => {

@@ -1169,21 +1169,22 @@ export const TradingLogsPage: React.FC = () => {
                               </div>
                             </td>
 
-                            {/* Direction CALL/PUT/LONG/SHORT */}
+                            {/* Direction column rendering */}
                             <td style={{ padding: '10px 16px' }} className="whitespace-nowrap hidden md:table-cell">
-                              {item.call_put ? (
+                              {item.direction ? (
                                 <span
-                                  className={`px-2 py-0.5 text-[10px] font-bold rounded-lg ${
-                                    item.call_put === 'CALL'
-                                      ? 'bg-green-500/10 text-green-500 border border-green-500/20'
-                                      : item.call_put === 'PUT'
-                                      ? 'bg-red-500/10 text-red-500 border border-red-500/20'
-                                      : item.call_put === 'LONG'
-                                      ? 'bg-blue-500/10 text-blue-500 border border-blue-500/20'
-                                      : 'bg-purple-500/10 text-purple-500 border border-purple-500/20'
-                                  }`}
+                                  style={{
+                                    backgroundColor: item.direction === 'LONG' ? 'rgba(34,197,94,0.12)' : 'rgba(239,68,68,0.12)',
+                                    color: item.direction === 'LONG' ? '#22c55e' : '#ef4444',
+                                    borderRadius: '999px',
+                                    padding: '2px 10px',
+                                    fontSize: '10px',
+                                    fontWeight: 700,
+                                    border: 'none'
+                                  }}
+                                  className="inline-block"
                                 >
-                                  {item.call_put}
+                                  {item.direction}
                                 </span>
                               ) : (
                                 <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>

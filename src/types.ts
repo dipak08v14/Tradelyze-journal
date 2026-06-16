@@ -23,7 +23,8 @@ export interface Trade {
   strategy_id: string | null;
   date: string;
   symbol: string;
-  call_put: 'CALL' | 'PUT' | 'LONG' | 'SHORT' | null;
+  direction: 'LONG' | 'SHORT' | null;
+  option_type: 'CALL' | 'PUT' | null;
   risk: number | null;
   investment: number | null;
   pnl: number | null;

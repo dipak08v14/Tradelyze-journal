@@ -543,7 +543,7 @@ const TradeTrackingPageContent: React.FC = () => {
               <div>
                 <div className="flex flex-wrap items-center gap-2.5">
                   <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-zinc-100 font-display">
-                    {trade.symbol} — {trade.call_put || 'Trade Profile'}
+                    {trade.symbol} — Trade Profile
                   </h1>
 
                   {/* WIN/LOSS tag */}
@@ -576,6 +576,55 @@ const TradeTrackingPageContent: React.FC = () => {
                     </div>
                   )}
                   {!trade.strategies && <span className="text-zinc-650 italic">No Setup Linked</span>}
+                </div>
+
+                {/* DIRECTION & OPTION TYPE Row */}
+                <div className="flex items-center gap-8 mt-4 border border-[var(--border)] bg-[var(--bar)] p-3 rounded-xl max-w-xs">
+                  <div>
+                    <span style={{ color: 'var(--text-muted)' }} className="block text-[9px] font-bold uppercase tracking-wider font-mono">DIRECTION</span>
+                    <div className="mt-1">
+                      {trade.direction ? (
+                        <span
+                          style={{
+                            backgroundColor: trade.direction === 'LONG' ? 'rgba(34,197,94,0.12)' : 'rgba(239,68,68,0.12)',
+                            color: trade.direction === 'LONG' ? '#22c55e' : '#ef4444',
+                            borderRadius: '999px',
+                            padding: '2px 10px',
+                            fontSize: '10px',
+                            fontWeight: 700,
+                            border: 'none'
+                          }}
+                          className="inline-block"
+                        >
+                          {trade.direction}
+                        </span>
+                      ) : (
+                        <span className="font-mono text-xs text-zinc-500">—</span>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <span style={{ color: 'var(--text-muted)' }} className="block text-[9px] font-bold uppercase tracking-wider font-mono">OPTION TYPE</span>
+                    <div className="mt-1">
+                      {trade.option_type === 'CALL' || trade.option_type === 'PUT' ? (
+                        <span
+                          style={{
+                            backgroundColor: 'var(--accent-muted)',
+                            color: 'var(--accent)',
+                            borderRadius: '999px',
+                            padding: '2px 8px',
+                            fontSize: '10px',
+                            fontWeight: 700
+                          }}
+                          className="inline-block"
+                        >
+                          {trade.option_type}
+                        </span>
+                      ) : (
+                        <span style={{ color: 'var(--text-muted)' }} className="text-xs font-mono font-medium">NONE</span>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
 

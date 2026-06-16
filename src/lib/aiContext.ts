@@ -99,7 +99,8 @@ export function buildContextString({
     ctx += `\n=== RECENT TRADES (Last ${recentTrades.length}) ===\n`;
     ctx += `Date | Symbol | Dir | Setup | P&L | R | Status | Execution | Mistake\n`;
     recentTrades.forEach(t => {
-      ctx += `${t.date} | ${t.symbol} | ${t.call_put || '—'} | ${t.strategies?.name || 'No Setup'} | ₹${(t.pnl || 0).toLocaleString('en-IN')} | ${t.r_multiple?.toFixed(1) || '—'}R | ${t.status || '—'} | ${t.execution_status || '—'} | ${t.mistake_text || 'None'}\n`;
+      const dirStr = `${t.direction || ''}${t.option_type ? ` (${t.option_type})` : ''}` || '—';
+      ctx += `${t.date} | ${t.symbol} | ${dirStr} | ${t.strategies?.name || 'No Setup'} | ₹${(t.pnl || 0).toLocaleString('en-IN')} | ${t.r_multiple?.toFixed(1) || '—'}R | ${t.status || '—'} | ${t.execution_status || '—'} | ${t.mistake_text || 'None'}\n`;
     });
   }
 
@@ -113,8 +114,9 @@ export function buildContextString({
   }
 
   if (specificTrade) {
+    const specDirStr = `${specificTrade.direction || ''}${specificTrade.option_type ? ` (${specificTrade.option_type})` : ''}`;
     ctx += `\n=== SPECIFIC TRADE BEING ANALYZED ===\n`;
-    ctx += `Trade: ${specificTrade.symbol} ${specificTrade.call_put || ''} — ${specificTrade.date}\n`;
+    ctx += `Trade: ${specificTrade.symbol} ${specDirStr} — ${specificTrade.date}\n`;
     ctx += `Setup: ${specificTrade.strategies?.name || 'No Setup'}\n`;
     ctx += `P&L: ₹${(specificTrade.pnl || 0).toLocaleString('en-IN')} (${specificTrade.r_multiple?.toFixed(2) || '—'}R) — ${specificTrade.status}\n`;
     ctx += `Investment: ₹${(specificTrade.investment || 0).toLocaleString('en-IN')} | Risk: ₹${(specificTrade.risk || 0).toLocaleString('en-IN')}\n`;

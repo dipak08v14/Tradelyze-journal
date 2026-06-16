@@ -36,7 +36,8 @@ export const TradeEntryPage: React.FC = () => {
   const [date, setDate] = useState<string>(() => new Date().toISOString().split('T')[0]);
   const [entryTime, setEntryTime] = useState<string>('');
   const [symbol, setSymbol] = useState<string>('');
-  const [callPut, setCallPut] = useState<'CALL' | 'PUT' | 'LONG' | 'SHORT' | null>(null);
+  const [direction, setDirection] = useState<'LONG' | 'SHORT' | null>(null);
+  const [optionType, setOptionType] = useState<'CALL' | 'PUT' | null>(null);
   const [strategyId, setStrategyId] = useState<string>('');
   const [openingCondition, setOpeningCondition] = useState<string>('');
   const [hourlyTrend, setHourlyTrend] = useState<'UP' | 'DOWN' | 'CONSOLIDATION' | null>(null);
@@ -177,7 +178,8 @@ export const TradeEntryPage: React.FC = () => {
           setDate(tradeData.date || '');
           setEntryTime(tradeData.entry_time || '');
           setSymbol(tradeData.symbol || '');
-          setCallPut(tradeData.call_put || null);
+          setDirection(tradeData.direction || null);
+          setOptionType(tradeData.option_type || null);
           setStrategyId(tradeData.strategy_id || '');
           setOpeningCondition(tradeData.opening_condition || '');
           setHourlyTrend(tradeData.hourly_trend || null);
@@ -536,6 +538,10 @@ export const TradeEntryPage: React.FC = () => {
       showError('Date and Symbol are required * before logging.');
       return;
     }
+    if (!direction) {
+      showError('Direction is a required field.');
+      return;
+    }
 
     try {
       setSaving(true);
@@ -584,7 +590,8 @@ export const TradeEntryPage: React.FC = () => {
             strategy_id: strategyId || null,
             date: date,
             symbol: symbol.toUpperCase().trim(),
-            call_put: callPut || null,
+            direction: direction,
+            option_type: optionType,
             risk: risk !== '' ? parseFloat(risk) : null,
             investment: investment !== '' ? parseFloat(investment) : null,
             pnl: pnl !== '' ? parseFloat(pnl) : null,
@@ -635,7 +642,8 @@ export const TradeEntryPage: React.FC = () => {
             strategy_id: strategyId || null,
             date: date,
             symbol: symbol.toUpperCase().trim(),
-            call_put: callPut || null,
+            direction: direction,
+            option_type: optionType,
             risk: risk !== '' ? parseFloat(risk) : null,
             investment: investment !== '' ? parseFloat(investment) : null,
             pnl: pnl !== '' ? parseFloat(pnl) : null,
@@ -867,7 +875,8 @@ export const TradeEntryPage: React.FC = () => {
     setDate(new Date().toISOString().split('T')[0]);
     setEntryTime('');
     setSymbol('');
-    setCallPut(null);
+    setDirection(null);
+    setOptionType(null);
     setStrategyId('');
     setOpeningCondition('');
     setHourlyTrend(null);
@@ -1088,8 +1097,8 @@ export const TradeEntryPage: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Symbol and Direction pill row */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Symbol, Direction, and Option Type row */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
                         <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
                           Symbol <span className="text-[var(--accent)]">*</span>
@@ -1106,40 +1115,71 @@ export const TradeEntryPage: React.FC = () => {
                       </div>
                       <div>
                         <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
-                          Direction
+                          DIRECTION <span className="text-[var(--accent)]">*</span>
                         </label>
-                        <div className="grid grid-cols-4 gap-1.5 font-sans">
-                          {(['CALL', 'PUT', 'LONG', 'SHORT'] as const).map((dir) => {
-                            const isSel = callPut === dir;
-                            const isGreen = dir === 'CALL' || dir === 'LONG';
+                        <div className="grid grid-cols-2 gap-1.5 font-sans">
+                          {(['LONG', 'SHORT'] as const).map((dir) => {
+                            const isSel = direction === dir;
                             
                             const defaultStyle = {
                               backgroundColor: 'transparent',
-                              border: '0.5px solid var(--border)',
+                              border: '1px solid var(--border)',
                               color: 'var(--text-sub)'
                             };
 
-                            const activeStyle = isGreen ? {
+                            const activeStyle = dir === 'LONG' ? {
                               backgroundColor: 'rgba(34,197,94,0.12)',
-                              borderColor: '#22c55e',
-                              color: '#22c55e',
-                              borderWidth: '1px'
+                              border: '1.5px solid #22c55e',
+                              color: '#22c55e'
                             } : {
                               backgroundColor: 'rgba(239,68,68,0.12)',
-                              borderColor: '#ef4444',
-                              color: '#ef4444',
-                              borderWidth: '1px'
+                              border: '1.5px solid #ef4444',
+                              color: '#ef4444'
                             };
 
                             return (
                               <button
                                 key={dir}
                                 type="button"
-                                onClick={() => setCallPut(callPut === dir ? null : dir)}
+                                onClick={() => setDirection(dir)}
                                 style={isSel ? activeStyle : defaultStyle}
                                 className="rounded-lg py-2 px-4 text-[12px] font-semibold text-center cursor-pointer transition-all border"
                               >
                                 {dir}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                      <div>
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                          OPTION TYPE
+                        </label>
+                        <div className="grid grid-cols-3 gap-1.5 font-sans">
+                          {(['NONE', 'CALL', 'PUT'] as const).map((opt) => {
+                            const isSelected = opt === 'NONE' ? optionType === null : optionType === opt;
+                            
+                            const defaultStyle = {
+                              backgroundColor: 'transparent',
+                              border: '1px solid var(--border)',
+                              color: 'var(--text-sub)'
+                            };
+
+                            const activeStyle = {
+                              backgroundColor: 'var(--accent-muted)',
+                              border: '1.5px solid var(--accent)',
+                              color: 'var(--accent)'
+                            };
+
+                            return (
+                              <button
+                                key={opt}
+                                type="button"
+                                onClick={() => setOptionType(opt === 'NONE' ? null : opt)}
+                                style={isSelected ? activeStyle : defaultStyle}
+                                className="rounded-lg py-2 px-4 text-[12px] font-semibold text-center cursor-pointer transition-all border"
+                              >
+                                {opt}
                               </button>
                             );
                           })}

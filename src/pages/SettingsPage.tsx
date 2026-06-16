@@ -287,11 +287,27 @@ export default function SettingsPage() {
             continue
           }
 
+          let finalDirection: 'LONG' | 'SHORT' = 'LONG'
+          let finalOptionType: 'CALL' | 'PUT' | null = null
+
+          if (directionStr === 'SHORT') {
+            finalDirection = 'SHORT'
+          } else if (directionStr === 'CALL') {
+            finalDirection = 'LONG'
+            finalOptionType = 'CALL'
+          } else if (directionStr === 'PUT') {
+            finalDirection = 'SHORT'
+            finalOptionType = 'PUT'
+          } else {
+            finalDirection = 'LONG'
+          }
+
           const tradeToInsert = {
             user_id: user.id,
             date: dateStr,
             symbol: symbolStr,
-            call_put: directionStr,
+            direction: finalDirection,
+            option_type: finalOptionType,
             pnl: pnlNum,
             status: pnlNum > 0 ? 'Win' : pnlNum < 0 ? 'Loss' : 'Breakeven',
             month: monthStr,
