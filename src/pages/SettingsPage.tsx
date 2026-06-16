@@ -129,13 +129,12 @@ export default function SettingsPage() {
 
   // CSV Import helper functions
   const handleDownloadTemplate = () => {
-    const headers = 'Date,Symbol,Direction,PnL,Quantity,EntryPrice,ExitPrice,EntryTime,ExitTime,Commission,Notes';
-    const rows = [
+    const csvContent = [
+      'Date,Symbol,Direction,PnL,Quantity,EntryPrice,ExitPrice,EntryTime,ExitTime,Commission,Notes',
       '2026-06-10,XAUUSD,LONG,145.50,0.10,2374.50,2389.00,19:07,21:23,2.50,Strong OB setup',
       '2026-06-11,BANKNIFTY,SHORT,-380.00,25,44250.00,44098.00,09:20,10:15,18.00,False breakout',
       '2026-06-12,BTCUSDT,LONG,220.00,0.05,67200.00,67640.00,14:30,16:45,1.20,'
-    ];
-    const csvContent = [headers, ...rows].join('\n');
+    ].join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -227,101 +226,87 @@ export default function SettingsPage() {
     setImportingCsv(true);
     setCsvImportProgress(`Importing... (0 / ${csvRows.length})`);
     
-    let successCount = 0;
+    let importedCount = 0;
     let duplicateCount = 0;
     let errorCount = 0;
     
     try {
-      const toInsert: any[] = [];
-      
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        showError('You must be logged in to import trades.');
+        return;
+      }
+      const currentUserId = user.id;
+
       for (let i = 0; i < csvRows.length; i++) {
         const row = csvRows[i];
-        const symbolVal = (row.Symbol || '').trim().toUpperCase();
-        const dateVal = (row.Date || '').trim();
-        const pnlStr = (row.PnL || '').trim();
-        const pnlVal = parseFloat(pnlStr || '0');
-        
-        // Simple hash formula from user instructions:
-        const hashKey = String(symbolVal + dateVal + String(pnlStr));
-        const hash = hashKey.split('').reduce((a,c) => Math.imul(31,a)+c.charCodeAt(0)|0, 0).toString(36);
-        const broker_ticket = 'csv_' + hash;
-        
-        // Before inserting each row, check if broker_ticket already exists in trades table for this user
-        const { data: existing, error: existError } = await supabase
-          .from('trades')
-          .select('id')
-          .eq('broker_ticket', broker_ticket)
-          .eq('user_id', userId)
-          .maybeSingle();
-          
-        if (existError) {
-          console.error('Check duplicate error:', existError);
-          errorCount++;
-          continue;
-        }
-        
-        if (existing) {
-          duplicateCount++;
-          continue;
-        }
-        
-        const parts = dateVal.split('-');
-        const yearNum = parseInt(parts[0], 10);
-        const monthNum = parseInt(parts[1], 10);
-        const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        const monthAbbr = MONTH_NAMES[monthNum - 1] || 'Jan';
-        
+        setCsvImportProgress(`Importing... (${i + 1} / ${csvRows.length})`);
+
+        const dateStr = row.Date.trim();
+        const dateParts = dateStr.split('-');
+        const yearNum = parseInt(dateParts[0]);
+        const monthNum = parseInt(dateParts[1]);
+        const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const monthStr = monthNames[monthNum - 1];
+        const pnlNum = parseFloat(String(row.PnL).replace(/[^0-9.-]/g, ''));
+        const hashInput = String(row.Symbol || '') + String(row.Date || '') + String(row.PnL || '');
+        const hashVal = hashInput.split('').reduce((a, c) => Math.imul(31, a) + c.charCodeAt(0) | 0, 0);
+        const brokerTicket = 'csv_' + Math.abs(hashVal).toString(36);
+
         const tradeObj = {
-          user_id: userId,
-          date: dateVal,
-          symbol: symbolVal,
-          call_put: (row.Direction || '').trim().toUpperCase(),
-          pnl: pnlVal,
-          status: pnlVal > 0 ? 'Win' : pnlVal < 0 ? 'Loss' : 'Breakeven',
-          quantity: row.Quantity ? parseFloat(row.Quantity) : null,
-          entry_price: row.EntryPrice ? parseFloat(row.EntryPrice) : null,
-          exit_price: row.ExitPrice ? parseFloat(row.ExitPrice) : null,
-          entry_time: row.EntryTime ? row.EntryTime.trim() : null,
-          exit_time: row.ExitTime ? row.ExitTime.trim() : null,
-          fees: row.Commission ? parseFloat(row.Commission) : 0,
-          notes: row.Notes ? row.Notes.trim() : null,
-          month: monthAbbr,
+          user_id: currentUserId,
+          date: dateStr,
+          symbol: String(row.Symbol || '').trim().toUpperCase(),
+          call_put: String(row.Direction || '').trim().toUpperCase(),
+          pnl: pnlNum,
+          status: pnlNum > 0 ? 'Win' : pnlNum < 0 ? 'Loss' : 'Breakeven',
+          quantity: row.Quantity && row.Quantity !== '' ? parseFloat(row.Quantity) : null,
+          entry_time: row.EntryTime && row.EntryTime !== '' ? String(row.EntryTime).trim() : null,
+          exit_time: row.ExitTime && row.ExitTime !== '' ? String(row.ExitTime).trim() : null,
+          fees: row.Commission && row.Commission !== '' ? parseFloat(row.Commission) : 0,
+          notes: row.Notes && row.Notes !== '' ? String(row.Notes).trim() : null,
+          month: monthStr,
           year: yearNum,
           sync_source: 'csv',
           needs_review: true,
           broker_name: 'CSV Import',
-          broker_ticket: broker_ticket
+          broker_ticket: brokerTicket
         };
-        
-        toInsert.push(tradeObj);
-      }
-      
-      const batchSize = 50;
-      for (let j = 0; j < toInsert.length; j += batchSize) {
-        const batch = toInsert.slice(j, j + batchSize);
-        setCsvImportProgress(`Importing... (${j} / ${toInsert.length})`);
-        
+
+        const { data: existingTrade } = await supabase
+          .from('trades')
+          .select('id')
+          .eq('broker_ticket', brokerTicket)
+          .eq('user_id', currentUserId)
+          .maybeSingle();
+
+        if (existingTrade) {
+          duplicateCount++;
+          continue;
+        }
+
         const { error: insertError } = await supabase
           .from('trades')
-          .insert(batch);
-          
-        if (insertError) {
-          console.error('Insert batch error:', insertError);
-          errorCount += batch.length;
+          .insert(tradeObj);
+
+        if (insertError !== null) {
+          console.error('Insert error for row:', row, insertError);
+          errorCount++;
+          continue;
         } else {
-          successCount += batch.length;
+          importedCount++;
         }
       }
-      
+
       setCsvImportResults({
-        successCount,
+        successCount: importedCount,
         duplicateCount,
         errorCount,
         completed: true
       });
-      
-      if (successCount > 0) {
-        showSuccess(`✓ Successfully imported ${successCount} trades`);
+
+      if (importedCount > 0) {
+        showSuccess(`✓ Successfully imported ${importedCount} trades`);
       }
     } catch (err: any) {
       console.error('CSV import general error:', err);
