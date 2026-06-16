@@ -26,6 +26,23 @@ function sanitizeJSON(text) {
   })
 }
 
+function parseBody(text) {
+  try {
+    return JSON.parse(text)
+  } catch (e) {
+    try {
+      console.log('first parse failed at position', text.length, '— trying with appended }')
+      return JSON.parse(text + '}')
+    } catch (e2) {
+      try {
+        return JSON.parse(text + ']}')
+      } catch (e3) {
+        throw e
+      }
+    }
+  }
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
@@ -42,20 +59,12 @@ export default async function handler(req, res) {
 
     if (rb && typeof rb === 'object' && !Buffer.isBuffer(rb)) {
       body = rb
-      console.log('used req.body object path')
     } else {
       const raw = await readRawBody(req)
       let text = raw.length > 0 ? raw.toString('utf8') : String(rb || '')
       text = text.replace(/^\uFEFF/, '').trim()
-      console.log('text length:', text.length)
       text = sanitizeJSON(text)
-      if (text.length > 53950) {
-        const snippet = text.substring(53950, 53985)
-        const codes = [...snippet].map(c => c.charCodeAt(0))
-        console.log('snippet at 53950-53985:', JSON.stringify(snippet))
-        console.log('char codes at 53950-53985:', JSON.stringify(codes))
-      }
-      if (text) body = JSON.parse(text)
+      if (text) body = parseBody(text)
     }
   } catch (e) {
     console.error('body error:', e.message)
