@@ -79,28 +79,58 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: 'Unauthorized: User authentication failed' });
     }
 
-    // 4. Upsert broker_connections
-    const { error: upsertError } = await supabase
+    // 4. Check if a Dhan connection already exists for this user
+    const { data: existingConnections, error: findError } = await supabase
       .from('broker_connections')
-      .upsert({
-        user_id: user.id,
-        broker_type: 'dhan',
-        connection_type: 'dhan',
-        broker_name: 'Dhan',
-        access_token_encrypted: encryptedToken,
-        account_login: profile.dhanClientId,
-        is_active: true,
-        sync_status: 'connected',
-        last_sync_at: null,
-        total_synced: 0,
-        trades_pending_review: 0
-      }, {
-        onConflict: 'user_id,broker_type'
-      });
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('broker_type', 'dhan')
+      .limit(1);
 
-    if (upsertError) {
-      console.error('broker_connections upsert error:', upsertError);
-      return res.status(500).json({ error: 'Failed to save broker connection in database', detail: upsertError.message });
+    if (findError) {
+      console.error('broker_connections find error:', findError);
+      throw new Error('Failed to save broker connection in database');
+    }
+
+    if (existingConnections && existingConnections.length > 0) {
+      // Update existing connection
+      const existingId = existingConnections[0].id;
+      const { error: updateError } = await supabase
+        .from('broker_connections')
+        .update({
+          access_token_encrypted: encryptedToken,
+          account_login: profile.dhanClientId,
+          is_active: true,
+          sync_status: 'connected'
+        })
+        .eq('id', existingId);
+
+      if (updateError) {
+        console.error('broker_connections update error:', updateError);
+        throw new Error('Failed to save broker connection in database');
+      }
+    } else {
+      // Insert new connection
+      const { error: insertError } = await supabase
+        .from('broker_connections')
+        .insert({
+          user_id: user.id,
+          broker_type: 'dhan',
+          connection_type: 'dhan',
+          broker_name: 'Dhan',
+          access_token_encrypted: encryptedToken,
+          account_login: profile.dhanClientId,
+          is_active: true,
+          sync_status: 'connected',
+          last_sync_at: null,
+          total_synced: 0,
+          trades_pending_review: 0
+        });
+
+      if (insertError) {
+        console.error('broker_connections insert error:', insertError);
+        throw new Error('Failed to save broker connection in database');
+      }
     }
 
     return res.status(200).json({
@@ -111,6 +141,9 @@ export default async function handler(req, res) {
 
   } catch (err) {
     console.error('Unexpected error in dhan-connect:', err);
+    if (err.message === 'Failed to save broker connection in database') {
+      return res.status(500).json({ error: 'Failed to save broker connection in database' });
+    }
     return res.status(500).json({ error: 'Unexpected server error: ' + err.message });
   }
 }
