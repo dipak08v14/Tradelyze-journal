@@ -1,5 +1,18 @@
 import { createClient } from '@supabase/supabase-js'
 
+function readRawBody(req) {
+  return new Promise((resolve) => {
+    try {
+      let chunks = []
+      req.on('data', (chunk) => chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)))
+      req.on('end', () => resolve(Buffer.concat(chunks)))
+      req.on('error', () => resolve(Buffer.alloc(0)))
+    } catch (e) {
+      resolve(Buffer.alloc(0))
+    }
+  })
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
@@ -9,17 +22,30 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   let body = {}
-  if (typeof req.body === 'string') {
-    try {
-      const clean = req.body.replace(/^\uFEFF/, '').replace(/^\xEF\xBB\xBF/, '').trim()
-      console.log('body string preview:', clean.substring(0, 80))
-      body = JSON.parse(clean)
-    } catch (e) {
-      console.error('body parse failed, raw preview:', String(req.body).substring(0, 80))
-      return res.status(400).json({ error: 'Invalid JSON body' })
+
+  try {
+    let rb = null
+    try { rb = req.body } catch (e) { rb = null }
+
+    if (rb && typeof rb === 'object' && !Buffer.isBuffer(rb)) {
+      body = rb
+      console.log('body from req.body object')
+    } else {
+      const raw = await readRawBody(req)
+      let text = ''
+      if (raw.length > 0) {
+        text = raw.toString('utf8')
+      } else if (rb !== null && rb !== undefined) {
+        text = String(rb)
+      }
+      text = text.replace(/^\uFEFF/, '').replace(/^[\xEF][\xBB][\xBF]/, '').trim()
+      console.log('raw body preview:', text.substring(0, 100))
+      console.log('first char codes:', [...text.substring(0, 5)].map(c => c.charCodeAt(0)))
+      if (text) body = JSON.parse(text)
     }
-  } else if (req.body) {
-    body = req.body
+  } catch (e) {
+    console.error('body error:', e.message)
+    return res.status(400).json({ error: 'Body parse failed', detail: e.message })
   }
 
   const { api_key, broker_name, account_login, sync_type, trades } = body
@@ -106,7 +132,7 @@ export default async function handler(req, res) {
     console.log('sync complete', { imported, skipped, errors })
     return res.status(200).json({ success: true, imported, skipped, errors, total: trades ? trades.length : 0 })
   } catch (err) {
-    console.error('sync-trades error:', err.message)
+    console.error('sync error:', err.message)
     return res.status(500).json({ error: 'Sync failed', message: err.message })
   }
 }
