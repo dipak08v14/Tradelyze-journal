@@ -1,18 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
 
-async function getRawBody(req) {
-  return new Promise((resolve, reject) => {
-    let body = ''
-    req.on('data', chunk => { body += chunk.toString('utf8') })
-    req.on('end', () => resolve(body))
-    req.on('error', reject)
-  })
-}
-
-export const config = {
-  api: { bodyParser: false }
-}
-
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
@@ -21,25 +8,26 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end()
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
+  let body = {}
+  if (typeof req.body === 'string') {
+    try {
+      body = JSON.parse(req.body)
+    } catch (e) {
+      return res.status(400).json({ error: 'Invalid JSON body' })
+    }
+  } else if (req.body) {
+    body = req.body
+  }
+
+  const { api_key, broker_name, account_login, sync_type, trades } = body
+
+  if (!api_key) return res.status(401).json({ error: 'API key required' })
+
   try {
     const supabase = createClient(
       process.env.SUPABASE_URL,
       process.env.SUPABASE_SERVICE_ROLE_KEY
     )
-
-    let parsedBody
-    if (req.body && typeof req.body === 'object') {
-      parsedBody = req.body
-    } else {
-      const rawText = await getRawBody(req)
-      const clean = rawText.replace(/^\uFEFF/, '').replace(/^\xEF\xBB\xBF/, '').trim()
-      console.log('raw body preview:', clean.substring(0, 120))
-      parsedBody = JSON.parse(clean)
-    }
-
-    const { api_key, broker_name, account_login, sync_type, trades } = parsedBody
-
-    if (!api_key) return res.status(401).json({ error: 'API key required' })
 
     const { data: connection, error: connError } = await supabase
       .from('broker_connections')
