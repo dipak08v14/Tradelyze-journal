@@ -815,9 +815,10 @@ export const TradeEntryPage: React.FC = () => {
       }
 
       // Update URLs back into trade table
-      const updates: Record<string, string | null> = {};
+      const updates: Record<string, string | boolean | null> = {};
       updates.chart_image_url = updatedChartUrl;
       updates.trade_plan_url = updatedPlanUrl;
+      updates.needs_review = false;
 
       await supabase
         .from('trades')

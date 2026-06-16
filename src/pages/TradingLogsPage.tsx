@@ -63,10 +63,16 @@ export const TradingLogsPage: React.FC = () => {
     if (!userId) return;
     try {
       setLoading(true);
-      const { data, error } = await supabase
+      let query = supabase
         .from('trades')
         .select('*, strategies(name, type_of_strategy)')
-        .eq('user_id', userId)
+        .eq('user_id', userId);
+
+      if (filterNeedsReview) {
+        query = query.eq('needs_review', true);
+      }
+
+      const { data, error } = await query
         .order('date', { ascending: false })
         .order('created_at', { ascending: false });
 
@@ -84,7 +90,7 @@ export const TradingLogsPage: React.FC = () => {
 
   useEffect(() => {
     fetchAllTradesData();
-  }, [userId]);
+  }, [userId, filterNeedsReview]);
 
   // Dynamic values helper list from DB data (Unique setup names, years)
   const uniqueYears = useMemo(() => {
@@ -526,8 +532,8 @@ export const TradingLogsPage: React.FC = () => {
                     type="button"
                     onClick={() => setFilterNeedsReview(prev => !prev)}
                     style={{
-                      backgroundColor: filterNeedsReview ? 'rgba(249,115,22,0.15)' : 'transparent',
-                      border: filterNeedsReview ? '0.5px solid #f97316' : '0.5px solid var(--border)',
+                      backgroundColor: filterNeedsReview ? 'rgba(249,115,22,0.12)' : 'transparent',
+                      border: filterNeedsReview ? '1px solid #f97316' : '0.5px solid var(--border)',
                       color: filterNeedsReview ? '#f97316' : 'var(--text-sub)',
                       padding: '5px 14px',
                       borderRadius: '999px',

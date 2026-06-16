@@ -1127,6 +1127,36 @@ export default function SettingsPage() {
                 {/* INSTRUCTIONS */}
                 <div style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--border)' }} className="rounded-xl p-4 text-xs text-[var(--text-sub)] space-y-3 leading-relaxed">
                   <h5 className="font-bold text-[var(--text)] font-mono uppercase tracking-widest text-[10px]">MT5 Setup Guide</h5>
+                  
+                  {/* Download Button Block */}
+                  <div className="py-1 flex flex-col items-start gap-1.5 border-b border-[var(--border)] pb-3 mb-2">
+                    <a
+                      href="https://bcpwbxqlmvnyhhsonzbo.supabase.co/storage/v1/object/public/downloads/TradelyzeSync.mq5"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        backgroundColor: 'var(--accent-muted)',
+                        color: 'var(--accent)',
+                        border: '1px solid var(--accent)',
+                        borderRadius: '8px',
+                        padding: '10px 16px',
+                        fontSize: '13px',
+                        fontWeight: 500,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        cursor: 'pointer'
+                      }}
+                      className="hover:opacity-90 transition-all font-sans"
+                    >
+                      <span className="text-base leading-none">↓</span>
+                      <span>Download TradelyzeSync for MT5</span>
+                    </a>
+                    <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                      MT5 Service file (.mq5) — place in MQL5/Services folder and add via Navigator → Services
+                    </span>
+                  </div>
+
                   <div className="space-y-2">
                     <div>
                       <p className="font-semibold text-[var(--text)]">1. Allow WebRequest</p>
