@@ -1,5 +1,18 @@
 import { createClient } from '@supabase/supabase-js'
 
+async function getRawBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = ''
+    req.on('data', chunk => { body += chunk.toString('utf8') })
+    req.on('end', () => resolve(body))
+    req.on('error', reject)
+  })
+}
+
+export const config = {
+  api: { bodyParser: false }
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
@@ -8,18 +21,23 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end()
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  console.log('sync-trades called', {
-    hasUrl: !!process.env.SUPABASE_URL,
-    hasKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY
-  })
-
   try {
     const supabase = createClient(
       process.env.SUPABASE_URL,
       process.env.SUPABASE_SERVICE_ROLE_KEY
     )
 
-    const { api_key, broker_name, account_login, sync_type, trades } = req.body
+    let parsedBody
+    if (req.body && typeof req.body === 'object') {
+      parsedBody = req.body
+    } else {
+      const rawText = await getRawBody(req)
+      const clean = rawText.replace(/^\uFEFF/, '').replace(/^\xEF\xBB\xBF/, '').trim()
+      console.log('raw body preview:', clean.substring(0, 120))
+      parsedBody = JSON.parse(clean)
+    }
+
+    const { api_key, broker_name, account_login, sync_type, trades } = parsedBody
 
     if (!api_key) return res.status(401).json({ error: 'API key required' })
 
@@ -94,6 +112,7 @@ export default async function handler(req, res) {
       synced_at: new Date().toISOString()
     })
 
+    console.log('sync complete', { imported, skipped, errors })
     return res.status(200).json({ success: true, imported, skipped, errors, total: trades ? trades.length : 0 })
   } catch (err) {
     console.error('sync-trades error:', err.message)
