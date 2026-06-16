@@ -12,7 +12,7 @@ function getOptionType(leg) {
   if (raw.drvOptionType === 'CALL') return 'CALL';
   if (raw.drvOptionType === 'PUT') return 'PUT';
 
-  // Method 2: Parse from tradingSymbol (NSE format ends with CE or PE)
+  // Method-2: Parse from tradingSymbol (NSE format ends with CE or PE)
   // Example: 'NIFTY2407225050CE' or 'BANKNIFTY2406456000PE'
   const tradingSymbol = (raw.tradingSymbol || leg.symbol || '').toUpperCase().trim();
   if (tradingSymbol.endsWith('CE')) return 'CALL';
@@ -26,6 +26,15 @@ function getOptionType(leg) {
 
   // Not an options trade (equity, futures, currency)
   return null;
+}
+
+function getMarketDirection(transactionType, optionType) {
+  if (optionType === 'PUT') {
+    // PUT options: buying is bearish (SHORT), selling is bullish (LONG)
+    return transactionType === 'BUY' ? 'SHORT' : 'LONG';
+  }
+  // CALL options, equity, futures: BUY = LONG, SELL = SHORT
+  return transactionType === 'BUY' ? 'LONG' : 'SHORT';
 }
 
 export default async function handler(req, res) {
@@ -335,13 +344,16 @@ export default async function handler(req, res) {
             ? openPosition.opening_leg_ids[0]
             : 'UNKNOWN';
 
+          const openingTransactionType = openPosition.opening_direction === 'LONG' ? 'BUY' : 'SELL';
+          const marketDirection = getMarketDirection(openingTransactionType, openPosition.option_type);
+
           const { data: newTrade, error: insertTradeErr } = await supabaseUser
             .from('trades')
             .insert({
               user_id: task.userId,
               date: openingDate,
               symbol: closingLeg.symbol.toUpperCase().trim(),
-              direction: openPosition.opening_direction,
+              direction: marketDirection,
               option_type: openPosition.option_type || null,
               pnl: pnl,
               quantity: qty,

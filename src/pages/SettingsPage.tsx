@@ -317,7 +317,7 @@ export default function SettingsPage() {
         return;
       }
 
-      showSuccess(`Option Types Repaired! Updated ${data.updated_count} trades.`);
+      showSuccess(`Fixed ${data.trades_option_type_fixed || 0} option types and ${data.trades_direction_fixed || 0} directions`);
       await fetchConnections();
     } catch (err: any) {
       showError('Repair failed: ' + err.message);

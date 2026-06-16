@@ -65,7 +65,7 @@ export default async function handler(req, res) {
     // Query all trades where user_id = user.id AND sync_source = 'dhan' AND option_type IS NULL
     const { data: trades, error: tradesError } = await supabase
       .from('trades')
-      .select('id, user_id, broker_ticket, option_type')
+      .select('id, user_id, broker_ticket, option_type, direction')
       .eq('user_id', user.id)
       .eq('sync_source', 'dhan')
       .is('option_type', null);
@@ -74,7 +74,9 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Failed to query trades', detail: tradesError.message });
     }
 
-    let updatedCount = 0;
+    let tradesOptionTypeFixed = 0;
+    let tradesDirectionFixed = 0;
+
     if (trades && trades.length > 0) {
       for (const trade of trades) {
         const brokerTicket = trade.broker_ticket || '';
@@ -91,20 +93,42 @@ export default async function handler(req, res) {
         if (legsError || !legs || legs.length === 0) continue;
         const leg = legs[0];
         const optionType = getOptionType(leg);
+        
         if (optionType) {
+          // Determine the opening transactionType from raw_response (or fallback to leg parameter)
+          const rawResponse = leg.raw_response || {};
+          const rawLegTxType = (rawResponse.transactionType || leg.transaction_type || '').toUpperCase().trim();
+          
+          let newDirection = trade.direction;
+          if (optionType === 'PUT') {
+            newDirection = (rawLegTxType === 'BUY') ? 'SHORT' : 'LONG';
+          } else if (optionType === 'CALL') {
+            newDirection = (rawLegTxType === 'BUY') ? 'LONG' : 'SHORT';
+          }
+
           const { error: updateError } = await supabase
             .from('trades')
-            .update({ option_type: optionType })
+            .update({ 
+              option_type: optionType,
+              direction: newDirection
+            })
             .eq('id', trade.id);
 
           if (!updateError) {
-            updatedCount++;
+            tradesOptionTypeFixed++;
+            if (newDirection !== trade.direction) {
+              tradesDirectionFixed++;
+            }
           }
         }
       }
     }
 
-    return res.status(200).json({ success: true, updated_count: updatedCount });
+    return res.status(200).json({ 
+      success: true, 
+      trades_option_type_fixed: tradesOptionTypeFixed, 
+      trades_direction_fixed: tradesDirectionFixed 
+    });
 
   } catch (err) {
     console.error('Unexpected error in dhan-repair-options API:', err);
