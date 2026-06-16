@@ -15,9 +15,13 @@ import {
   ShieldCheck,
   AlertOctagon,
   Download,
+  Upload,
   Trash2,
-  Lock
+  Lock,
+  CheckCircle,
+  ArrowLeft
 } from 'lucide-react';
+import Papa from 'papaparse';
 
 export default function SettingsPage() {
   const navigate = useNavigate();
@@ -62,6 +66,25 @@ export default function SettingsPage() {
   const [verifying, setVerifying] = useState(false);
   const [generatingKey, setGeneratingKey] = useState(false);
 
+  // CSV Import states
+  const [isCsvModalOpen, setIsCsvModalOpen] = useState(false);
+  const [csvStep, setCsvStep] = useState<1 | 2>(1);
+  const [csvFile, setCsvFile] = useState<File | null>(null);
+  const [csvRows, setCsvRows] = useState<any[]>([]);
+  const [csvParsed, setCsvParsed] = useState<boolean>(false);
+  const [csvValidationError, setCsvValidationError] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [importingCsv, setImportingCsv] = useState<boolean>(false);
+  const [csvImportProgress, setCsvImportProgress] = useState<string>('');
+  const [csvImportResults, setCsvImportResults] = useState<{
+    successCount: number;
+    duplicateCount: number;
+    errorCount: number;
+    completed: boolean;
+  } | null>(null);
+
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
   // Fetch connections function
   const fetchConnections = async () => {
     if (!userId) return;
@@ -101,6 +124,210 @@ export default function SettingsPage() {
     } catch (err: any) {
       console.error('Error toggling active status:', err);
       showError(err.message || 'Failed to update active status.');
+    }
+  };
+
+  // CSV Import helper functions
+  const handleDownloadTemplate = () => {
+    const headers = 'Date,Symbol,Direction,PnL,Quantity,EntryPrice,ExitPrice,EntryTime,ExitTime,Commission,Notes';
+    const rows = [
+      '2026-06-10,XAUUSD,LONG,145.50,0.10,2374.50,2389.00,19:07,21:23,2.50,Strong OB setup',
+      '2026-06-11,BANKNIFTY,SHORT,-380.00,25,44250.00,44098.00,09:20,10:15,18.00,False breakout',
+      '2026-06-12,BTCUSDT,LONG,220.00,0.05,67200.00,67640.00,14:30,16:45,1.20,'
+    ];
+    const csvContent = [headers, ...rows].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'TradelyzeTemplate.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleParseCsv = (file: File) => {
+    setCsvFile(file);
+    setCsvValidationError(null);
+    setCsvImportResults(null);
+    
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: 'greedy',
+      complete: (results) => {
+        try {
+          const headers = results.meta.fields || [];
+          const rows = results.data;
+          
+          // 4 required headers: Date, Symbol, Direction, PnL
+          const requiredFields = ['Date', 'Symbol', 'Direction', 'PnL'];
+          const missing = requiredFields.filter(f => !headers.includes(f));
+          if (missing.length > 0) {
+            throw new Error(`CSV file is missing required headers: ${missing.join(', ')}`);
+          }
+          
+          if (!rows || rows.length === 0) {
+            throw new Error('CSV file has no data rows to import.');
+          }
+          
+          // Validate each row
+          for (let i = 0; i < rows.length; i++) {
+            const row: any = rows[i];
+            const rowNum = i + 1; // Row number for user feedback
+            
+            const dateVal = (row['Date'] || '').trim();
+            const symVal = (row['Symbol'] || '').trim();
+            const dirVal = (row['Direction'] || '').trim();
+            const pnlVal = (row['PnL'] || '').trim();
+            
+            if (!dateVal) {
+              throw new Error(`Row ${rowNum}: Date is required.`);
+            }
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(dateVal)) {
+              throw new Error(`Row ${rowNum}: Date must be YYYY-MM-DD format. Found: ${dateVal}`);
+            }
+            
+            if (!dirVal) {
+              throw new Error(`Row ${rowNum}: Direction is required.`);
+            }
+            if (dirVal !== 'LONG' && dirVal !== 'SHORT') {
+              throw new Error(`Row ${rowNum}: Direction must be LONG or SHORT. Found: ${dirVal}`);
+            }
+            
+            if (!pnlVal) {
+              throw new Error(`Row ${rowNum}: PnL is required.`);
+            }
+            if (isNaN(Number(pnlVal))) {
+              throw new Error(`Row ${rowNum}: PnL must be a number. Found: ${pnlVal}`);
+            }
+          }
+          
+          setCsvRows(rows);
+          setCsvParsed(true);
+        } catch (err: any) {
+          console.error('CSV validation error:', err);
+          setCsvValidationError(err.message || 'Validation failed.');
+          setCsvRows([]);
+          setCsvParsed(false);
+        }
+      },
+      error: (err) => {
+        console.error('Papa Parse error:', err);
+        setCsvValidationError(`Failed to parse CSV: ${err.message}`);
+        setCsvRows([]);
+        setCsvParsed(false);
+      }
+    });
+  };
+
+  const handleImportCsvTrades = async () => {
+    if (!userId || csvRows.length === 0) return;
+    
+    setImportingCsv(true);
+    setCsvImportProgress(`Importing... (0 / ${csvRows.length})`);
+    
+    let successCount = 0;
+    let duplicateCount = 0;
+    let errorCount = 0;
+    
+    try {
+      const toInsert: any[] = [];
+      
+      for (let i = 0; i < csvRows.length; i++) {
+        const row = csvRows[i];
+        const symbolVal = (row.Symbol || '').trim().toUpperCase();
+        const dateVal = (row.Date || '').trim();
+        const pnlStr = (row.PnL || '').trim();
+        const pnlVal = parseFloat(pnlStr || '0');
+        
+        // Simple hash formula from user instructions:
+        const hashKey = String(symbolVal + dateVal + String(pnlStr));
+        const hash = hashKey.split('').reduce((a,c) => Math.imul(31,a)+c.charCodeAt(0)|0, 0).toString(36);
+        const broker_ticket = 'csv_' + hash;
+        
+        // Before inserting each row, check if broker_ticket already exists in trades table for this user
+        const { data: existing, error: existError } = await supabase
+          .from('trades')
+          .select('id')
+          .eq('broker_ticket', broker_ticket)
+          .eq('user_id', userId)
+          .maybeSingle();
+          
+        if (existError) {
+          console.error('Check duplicate error:', existError);
+          errorCount++;
+          continue;
+        }
+        
+        if (existing) {
+          duplicateCount++;
+          continue;
+        }
+        
+        const parts = dateVal.split('-');
+        const yearNum = parseInt(parts[0], 10);
+        const monthNum = parseInt(parts[1], 10);
+        const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const monthAbbr = MONTH_NAMES[monthNum - 1] || 'Jan';
+        
+        const tradeObj = {
+          user_id: userId,
+          date: dateVal,
+          symbol: symbolVal,
+          call_put: (row.Direction || '').trim().toUpperCase(),
+          pnl: pnlVal,
+          status: pnlVal > 0 ? 'Win' : pnlVal < 0 ? 'Loss' : 'Breakeven',
+          quantity: row.Quantity ? parseFloat(row.Quantity) : null,
+          entry_price: row.EntryPrice ? parseFloat(row.EntryPrice) : null,
+          exit_price: row.ExitPrice ? parseFloat(row.ExitPrice) : null,
+          entry_time: row.EntryTime ? row.EntryTime.trim() : null,
+          exit_time: row.ExitTime ? row.ExitTime.trim() : null,
+          fees: row.Commission ? parseFloat(row.Commission) : 0,
+          notes: row.Notes ? row.Notes.trim() : null,
+          month: monthAbbr,
+          year: yearNum,
+          sync_source: 'csv',
+          needs_review: true,
+          broker_name: 'CSV Import',
+          broker_ticket: broker_ticket
+        };
+        
+        toInsert.push(tradeObj);
+      }
+      
+      const batchSize = 50;
+      for (let j = 0; j < toInsert.length; j += batchSize) {
+        const batch = toInsert.slice(j, j + batchSize);
+        setCsvImportProgress(`Importing... (${j} / ${toInsert.length})`);
+        
+        const { error: insertError } = await supabase
+          .from('trades')
+          .insert(batch);
+          
+        if (insertError) {
+          console.error('Insert batch error:', insertError);
+          errorCount += batch.length;
+        } else {
+          successCount += batch.length;
+        }
+      }
+      
+      setCsvImportResults({
+        successCount,
+        duplicateCount,
+        errorCount,
+        completed: true
+      });
+      
+      if (successCount > 0) {
+        showSuccess(`✓ Successfully imported ${successCount} trades`);
+      }
+    } catch (err: any) {
+      console.error('CSV import general error:', err);
+      showError(err.message || 'Import process encountered an error.');
+    } finally {
+      setImportingCsv(false);
     }
   };
 
@@ -743,13 +970,38 @@ export default function SettingsPage() {
                       </div>
                     )}
 
-                    <div className="flex">
+                    <div className="flex flex-wrap gap-3 items-center">
                       <button
                         onClick={() => setIsConnectModalOpen(true)}
                         style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
-                        className="hover:opacity-90 font-bold px-4 py-2.5 rounded-xl cursor-pointer text-xs"
+                        className="hover:opacity-90 font-bold px-4 py-2.5 rounded-xl cursor-pointer text-xs h-[42px]"
                       >
                         + Connect MT5 Broker
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setIsCsvModalOpen(true);
+                          setCsvStep(1);
+                          setCsvFile(null);
+                          setCsvRows([]);
+                          setCsvParsed(false);
+                          setCsvValidationError(null);
+                          setCsvImportResults(null);
+                        }}
+                        style={{
+                          border: '1px solid var(--border-md)',
+                          backgroundColor: 'transparent',
+                          color: 'var(--text)',
+                          borderRadius: '8px',
+                          padding: '10px 16px',
+                          fontSize: '13px',
+                          fontWeight: 500,
+                        }}
+                        className="flex items-center gap-2 hover:bg-[var(--row)] transition-all cursor-pointer h-[42px]"
+                      >
+                        <Upload className="w-4 h-4" />
+                        <span>Import from CSV</span>
                       </button>
                     </div>
                   </div>
@@ -1031,6 +1283,377 @@ export default function SettingsPage() {
                 {saving ? 'Purging...' : 'Delete Account Forever'}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* CSV IMPORT MODAL */}
+      {isCsvModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl max-w-2xl w-full p-6 space-y-4 shadow-2xl relative animate-fade-in max-h-[90vh] overflow-y-auto">
+            {/* Modal close */}
+            <button
+              onClick={() => {
+                setIsCsvModalOpen(false);
+              }}
+              className="absolute top-4 right-4 text-[var(--text-sub)] hover:text-[var(--text)] cursor-pointer"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            {/* STEP INDICATOR */}
+            {!csvImportResults?.completed && (
+              <div className="flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-wider pb-2 border-b border-[var(--border)] mb-2 select-none">
+                <span style={{ color: csvStep === 1 ? 'var(--accent)' : 'var(--text-sub)' }}>
+                  1 — Download Template
+                </span>
+                <span className="text-[var(--text-muted)]">→</span>
+                <span style={{ color: csvStep === 2 ? 'var(--accent)' : 'var(--text-sub)' }}>
+                  2 — Upload & Import
+                </span>
+              </div>
+            )}
+
+            {/* STEP 1: DOWNLOAD TEMPLATE */}
+            {csvStep === 1 && (
+              <div className="space-y-5">
+                <div>
+                  <h3 className="text-xl font-bold text-[var(--text)]">Import Trades from CSV</h3>
+                  <p className="text-xs text-[var(--text-sub)] mt-1">
+                    Use the Tradelyze template to prepare your trades for import.
+                  </p>
+                </div>
+
+                {/* SECTION A */}
+                <div className="space-y-2">
+                  <h4 className="text-[13px] font-semibold text-[var(--text)]">Step 1: Download the template</h4>
+                  <p className="text-xs text-[var(--text-sub)] animate-fade-in">
+                    Fill in your trades using this exact format. The template includes sample rows to guide you.
+                  </p>
+                  
+                  <button
+                    onClick={handleDownloadTemplate}
+                    style={{
+                      backgroundColor: 'var(--accent-muted)',
+                      borderColor: 'var(--accent)',
+                    }}
+                    className="w-full text-[13px] font-semibold text-[var(--accent)] border rounded-lg py-3 px-5 hover:opacity-95 transition-all text-center flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>↓ Download Tradelyze CSV Template</span>
+                  </button>
+                </div>
+
+                {/* SECTION B */}
+                <div className="space-y-3">
+                  <h4 className="text-[13px] font-semibold text-[var(--text)]">Required format for each column</h4>
+                  
+                  <div className="overflow-x-auto border border-[var(--border)] rounded-lg">
+                    <table className="w-full text-left text-xs border-collapse">
+                      <thead>
+                        <tr style={{ backgroundColor: 'var(--bg)', borderBottom: '1px solid var(--border)' }} className="text-[10px] uppercase font-mono text-[var(--text-muted)] font-bold">
+                          <th className="p-2 pl-3">Column Name</th>
+                          <th className="p-2 text-center">Required</th>
+                          <th className="p-2 pr-3">Format & Rules</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-[var(--border)] text-[11px] text-[var(--text-sub)]">
+                        <tr>
+                          <td className="p-2 pl-3 font-mono font-bold text-[var(--text)]">Date</td>
+                          <td className="p-2 text-center text-red-500 font-semibold text-xs">YES</td>
+                          <td className="p-2 pr-3">YYYY-MM-DD (example: 2026-06-16)</td>
+                        </tr>
+                        <tr>
+                          <td className="p-2 pl-3 font-mono font-bold text-[var(--text)]">Symbol</td>
+                          <td className="p-2 text-center text-red-500 font-semibold text-xs">YES</td>
+                          <td className="p-2 pr-3">Any text, uppercase preferred (XAUUSD, BANKNIFTY, BTCUSDT)</td>
+                        </tr>
+                        <tr>
+                          <td className="p-2 pl-3 font-mono font-bold text-[var(--text)]">Direction</td>
+                          <td className="p-2 text-center text-red-500 font-semibold text-xs">YES</td>
+                          <td className="p-2 pr-3">Must be exactly LONG or SHORT — no other values accepted</td>
+                        </tr>
+                        <tr>
+                          <td className="p-2 pl-3 font-mono font-bold text-[var(--text)]">PnL</td>
+                          <td className="p-2 text-center text-red-500 font-semibold text-xs">YES</td>
+                          <td className="p-2 pr-3">Number only, no currency symbols or commas (145.50 or -380.00)</td>
+                        </tr>
+                        <tr>
+                          <td className="p-2 pl-3 font-mono font-semibold">Quantity</td>
+                          <td className="p-2 text-center">No</td>
+                          <td className="p-2 pr-3">Number (lots, shares, contracts)</td>
+                        </tr>
+                        <tr>
+                          <td className="p-2 pl-3 font-mono font-semibold">EntryPrice</td>
+                          <td className="p-2 text-center">No</td>
+                          <td className="p-2 pr-3">Number with decimals</td>
+                        </tr>
+                        <tr>
+                          <td className="p-2 pl-3 font-mono font-semibold">ExitPrice</td>
+                          <td className="p-2 text-center">No</td>
+                          <td className="p-2 pr-3">Number with decimals</td>
+                        </tr>
+                        <tr>
+                          <td className="p-2 pl-3 font-mono font-semibold">EntryTime</td>
+                          <td className="p-2 text-center">No</td>
+                          <td className="p-2 pr-3">HH:MM in 24-hour format (19:07)</td>
+                        </tr>
+                        <tr>
+                          <td className="p-2 pl-3 font-mono font-semibold">ExitTime</td>
+                          <td className="p-2 text-center">No</td>
+                          <td className="p-2 pr-3">HH:MM in 24-hour format (21:23)</td>
+                        </tr>
+                        <tr>
+                          <td className="p-2 pl-3 font-mono font-semibold">Commission</td>
+                          <td className="p-2 text-center">No</td>
+                          <td className="p-2 pr-3">Positive number (2.50)</td>
+                        </tr>
+                        <tr>
+                          <td className="p-2 pl-3 font-mono font-semibold">Notes</td>
+                          <td className="p-2 text-center">No</td>
+                          <td className="p-2 pr-3">Any text</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  
+                  <p className="text-[11px] text-[var(--text-muted)] mt-1.5">
+                    Leave optional columns blank if not available. Do not add or rename columns. Do not change the header row.
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => setCsvStep(2)}
+                  style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
+                  className="w-full text-xs font-bold rounded-lg py-3 hover:opacity-90 transition-all text-center cursor-pointer mt-2"
+                >
+                  I have filled the template — Upload Now →
+                </button>
+              </div>
+            )}
+
+            {/* STEP 2: UPLOAD & IMPORT */}
+            {csvStep === 2 && (
+              <div className="space-y-5">
+                {/* Header & Back button */}
+                <div className="flex items-center gap-2">
+                  {!csvImportResults?.completed && (
+                    <button
+                      onClick={() => {
+                        setCsvStep(1);
+                        setCsvFile(null);
+                        setCsvRows([]);
+                        setCsvParsed(false);
+                        setCsvValidationError(null);
+                      }}
+                      className="p-1.5 hover:bg-[var(--row)] rounded-lg text-[var(--text-sub)] hover:text-[var(--text)] transition-all cursor-pointer"
+                    >
+                      <ArrowLeft className="w-4 h-4" />
+                    </button>
+                  )}
+                  <div>
+                    <h3 className="text-xl font-bold text-[var(--text)]">Upload Your CSV File</h3>
+                  </div>
+                </div>
+
+                {/* Drag and drop upload area */}
+                {!csvParsed && !csvValidationError && !importingCsv && (
+                  <div
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setIsDragging(true);
+                    }}
+                    onDragLeave={() => setIsDragging(false)}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setIsDragging(false);
+                      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                        handleParseCsv(e.dataTransfer.files[0]);
+                      }
+                    }}
+                    onClick={() => {
+                      fileInputRef.current?.click();
+                    }}
+                    style={{
+                      border: isDragging ? '2px dashed var(--accent)' : '2px dashed var(--border-md)',
+                      borderRadius: '12px',
+                      borderColor: isDragging ? 'var(--accent)' : 'var(--border-md)',
+                      backgroundColor: isDragging ? 'var(--accent-muted)' : 'transparent',
+                      padding: '40px'
+                    }}
+                    className="text-center cursor-pointer hover:border-[var(--accent)] transition-all flex flex-col items-center justify-center space-y-2"
+                  >
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      style={{ display: 'none' }}
+                      accept=".csv"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          handleParseCsv(e.target.files[0]);
+                        }
+                      }}
+                    />
+                    <Upload className="w-8 h-8 text-[var(--accent)] mb-2 animate-bounce" />
+                    <span className="text-sm font-semibold text-[var(--text)]">
+                      Drag your filled CSV here or click to browse
+                    </span>
+                    <span className="text-xs text-[var(--text-muted)]">
+                      Only Tradelyze format CSV files are accepted
+                    </span>
+                  </div>
+                )}
+
+                {/* RED Validation Error Block */}
+                {csvValidationError && (
+                  <div className="space-y-4">
+                    <div className="bg-red-500/10 border border-red-500 text-red-500 rounded-xl p-4 text-xs font-mono space-y-2 animate-fade-in">
+                      <div className="font-bold flex items-center gap-1">
+                        <AlertOctagon className="w-4 h-4" /> Validation Error
+                      </div>
+                      <div>{csvValidationError}</div>
+                    </div>
+                    
+                    <button
+                      onClick={() => {
+                        setCsvValidationError(null);
+                        setCsvFile(null);
+                        setCsvRows([]);
+                        setCsvParsed(false);
+                      }}
+                      style={{ border: '1px solid var(--border)', color: 'var(--text)' }}
+                      className="w-full text-xs font-semibold py-2.5 rounded-xl cursor-pointer hover:bg-[var(--row)] transition-all"
+                    >
+                      Try Again
+                    </button>
+                  </div>
+                )}
+
+                {/* Preview section if parsed & valid */}
+                {csvParsed && !csvValidationError && !csvImportResults?.completed && (
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="text-[13px] font-semibold text-[var(--text)] mb-2">
+                        Ready to import — Preview (first 5 rows)
+                      </h4>
+                      
+                      <div className="overflow-x-auto border border-[var(--border)] rounded-lg">
+                        <table className="w-full text-left text-xs border-collapse">
+                          <thead>
+                            <tr style={{ backgroundColor: 'var(--bg)', borderBottom: '1px solid var(--border)' }} className="text-[10px] uppercase font-mono text-[var(--text-muted)] font-bold">
+                              <th className="p-2 pl-3">Date</th>
+                              <th className="p-2">Symbol</th>
+                              <th className="p-2">Direction</th>
+                              <th className="p-2">P&L</th>
+                              <th className="p-2 pr-3 text-right">Status</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-[var(--border)] text-[11px] text-[var(--text-sub)]">
+                            {csvRows.slice(0, 5).map((row, idx) => {
+                              const pnl = parseFloat(row.PnL || '0');
+                              const status = pnl > 0 ? 'Win' : pnl < 0 ? 'Loss' : 'Breakeven';
+                              const statusColor = status === 'Win' ? 'text-green-500 font-bold' : status === 'Loss' ? 'text-red-500 font-bold' : 'text-gray-400';
+                              return (
+                                <tr key={idx}>
+                                  <td className="p-2 pl-3 font-mono">{row.Date}</td>
+                                  <td className="p-2 font-mono font-bold text-[var(--text)]">{row.Symbol}</td>
+                                  <td className="p-2">
+                                    <span className={`px-1.5 py-0.5 rounded text-[10px] font-extrabold ${row.Direction === 'LONG' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500'}`}>
+                                      {row.Direction}
+                                    </span>
+                                  </td>
+                                  <td className="p-2 font-mono font-semibold">{row.PnL}</td>
+                                  <td className="p-2 pr-3 text-right font-semibold font-mono">
+                                    <span className={statusColor}>{status}</span>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5 text-xs text-[var(--text-sub)]">
+                      <div>• Total rows in file: <span className="font-mono font-bold text-[var(--text)]">{csvRows.length}</span></div>
+                      <div>• Valid rows to import: <span className="font-mono font-bold text-[var(--text)]">{csvRows.length}</span></div>
+                      <div>• Duplicate check: Trades already in your journal will be automatically skipped</div>
+                    </div>
+
+                    <button
+                      onClick={handleImportCsvTrades}
+                      disabled={importingCsv}
+                      style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
+                      className="w-full text-xs font-semibold rounded-lg py-3 hover:opacity-90 disabled:opacity-50 transition-all text-center flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      {importingCsv ? (
+                        <>
+                          <span className="animate-spin text-xs">⏳</span>
+                          <span>{csvImportProgress}</span>
+                        </>
+                      ) : (
+                        <span>Import {csvRows.length} Trades</span>
+                      )}
+                    </button>
+                  </div>
+                )}
+
+                {/* IMPORT RESULTS */}
+                {csvImportResults?.completed && (
+                  <div className="space-y-6 py-4 flex flex-col items-center text-center">
+                    <CheckCircle className="w-16 h-16 text-[#22c55e] animate-pulse" />
+                    
+                    <div className="space-y-2">
+                      <h2 className="text-lg font-bold text-[#22c55e]">
+                        ✓ Successfully imported {csvImportResults.successCount} trades
+                      </h2>
+                      
+                      {csvImportResults.duplicateCount > 0 && (
+                        <p className="text-[13px] text-[var(--text-sub)]">
+                          {csvImportResults.duplicateCount} duplicate trades were skipped (already in your journal)
+                        </p>
+                      )}
+                      
+                      {csvImportResults.errorCount > 0 && (
+                        <p className="text-[13px] text-red-400">
+                          {csvImportResults.errorCount} rows had errors and were skipped
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="flex gap-3 w-full pt-2">
+                      <button
+                        onClick={() => {
+                          setIsCsvModalOpen(false);
+                          navigate('/trading-logs');
+                        }}
+                        style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
+                        className="w-1/2 text-xs font-semibold py-2.5 rounded-lg cursor-pointer hover:opacity-95 transition-all text-center"
+                      >
+                        View in Trading Logs
+                      </button>
+                      
+                      <button
+                        onClick={() => {
+                          setCsvStep(1);
+                          setCsvFile(null);
+                          setCsvRows([]);
+                          setCsvParsed(false);
+                          setCsvValidationError(null);
+                          setCsvImportResults(null);
+                        }}
+                        style={{ border: '1px solid var(--border)', color: 'var(--text)' }}
+                        className="w-1/2 text-xs font-semibold py-2.5 rounded-lg cursor-pointer hover:bg-[var(--row)] transition-all text-center"
+                      >
+                        Import Another File
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}
