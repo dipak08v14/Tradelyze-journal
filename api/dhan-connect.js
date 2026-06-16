@@ -34,21 +34,27 @@ export default async function handler(req, res) {
 
   try {
     // 1. Call Dhan API to validate the token
-    const dhanRes = await fetch('https://api.dhan.co/v2/userinfo', {
-      method: 'GET',
-      headers: {
-        'access-token': access_token,
-        'Content-Type': 'application/json'
+    let profile;
+    try {
+      const dhanRes = await fetch('https://api.dhan.co/v2/profile', {
+        method: 'GET',
+        headers: {
+          'access-token': access_token,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (dhanRes.status !== 200) {
+        return res.status(401).json({ error: 'Invalid Dhan access token. Please check and try again.' });
       }
-    });
 
-    if (!dhanRes.ok) {
-      return res.status(401).json({ error: 'Invalid Dhan access token. Please check and try again.' });
-    }
-
-    const dhanUser = await dhanRes.json();
-    if (dhanUser.status !== 'success' || !dhanUser.data) {
-      return res.status(401).json({ error: 'Invalid Dhan token response. Please check and try again.' });
+      profile = await dhanRes.json();
+      if (!profile || !profile.dhanClientId) {
+        return res.status(401).json({ error: 'Invalid Dhan access token. Please check and try again.' });
+      }
+    } catch (fetchErr) {
+      console.error('Dhan validation API error:', fetchErr);
+      return res.status(500).json({ error: 'Failed to communicate with Dhan API or parse its response. Please try again later.' });
     }
 
     // 2. Encrypt token
@@ -82,7 +88,7 @@ export default async function handler(req, res) {
         connection_type: 'dhan',
         broker_name: 'Dhan',
         access_token_encrypted: encryptedToken,
-        account_login: dhanUser.data.dhanClientId,
+        account_login: profile.dhanClientId,
         is_active: true,
         sync_status: 'connected',
         last_sync_at: null,
@@ -99,8 +105,8 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       success: true,
-      account_name: dhanUser.data.name,
-      account_id: dhanUser.data.dhanClientId
+      account_name: profile.dhanClientName,
+      account_id: profile.dhanClientId
     });
 
   } catch (err) {
