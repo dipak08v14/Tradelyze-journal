@@ -19,12 +19,81 @@ import { Trade } from '../types';
 
 export const TradingLogsPage: React.FC = () => {
   const { user, userId, loading: authLoading } = useAuth();
-  const { showError } = useToast();
+  const { showError, showSuccess } = useToast();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Filter Needs Review State
   const [filterNeedsReview, setFilterNeedsReview] = useState<boolean>(false);
+
+  // Bulk Trade Review States
+  const [selectedTradeIds, setSelectedTradeIds] = useState<string[]>([]);
+  const [strategiesList, setStrategiesList] = useState<{ id: string; name: string }[]>([]);
+  const [selectedStrategyId, setSelectedStrategyId] = useState<string>('');
+  const [bulkLoading, setBulkLoading] = useState<boolean>(false);
+  const [isTableHovered, setIsTableHovered] = useState<boolean>(false);
+
+  // Fetch Strategies for bulk assign list
+  const fetchStrategiesList = async () => {
+    if (!userId) return;
+    try {
+      const { data, error } = await supabase
+        .from('strategies')
+        .select('id, name')
+        .eq('user_id', userId)
+        .order('name');
+      if (error) throw error;
+      setStrategiesList(data || []);
+    } catch (err) {
+      console.error('Error fetching strategies for bulk layout:', err);
+    }
+  };
+
+  useEffect(() => {
+    if (userId) {
+      fetchStrategiesList();
+    }
+  }, [userId]);
+
+  // Bulk Apply Setup Logic
+  const handleBulkApplySetup = async () => {
+    if (!userId || selectedTradeIds.length === 0 || !selectedStrategyId) return;
+    try {
+      setBulkLoading(true);
+      
+      const { error } = await supabase
+        .from('trades')
+        .update({ strategy_id: selectedStrategyId })
+        .in('id', selectedTradeIds)
+        .eq('user_id', userId);
+
+      if (error) throw error;
+
+      const strategyName = strategiesList.find(s => s.id === selectedStrategyId)?.name || 'selected setup';
+      showSuccess(`Updated ${selectedTradeIds.length} trades with ${strategyName}`);
+      setSelectedTradeIds([]);
+      setSelectedStrategyId('');
+      await fetchAllTradesData();
+    } catch (err: any) {
+      console.error('Failed to bulk update trades:', err);
+      showError('Failed to update trades. Please try again.');
+    } finally {
+      setBulkLoading(false);
+    }
+  };
+
+  // Keyboard shortcut to clear selection on Escape press
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && selectedTradeIds.length > 0) {
+        setSelectedTradeIds([]);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedTradeIds]);
 
   useEffect(() => {
     const filterParam = searchParams.get('filter');
@@ -651,6 +720,9 @@ export const TradingLogsPage: React.FC = () => {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b text-[10px] font-mono font-extrabold uppercase tracking-widest" style={{ backgroundColor: 'var(--row)', borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
+                      <th className="px-4 py-4 w-12 text-center">
+                        <div className="h-4 rounded w-4 mx-auto" style={{ backgroundColor: 'var(--row)' }} />
+                      </th>
                       <th className="px-4 py-4">#</th>
                       <th className="px-4 py-4">Date</th>
                       <th className="px-4 py-4">Symbol</th>
@@ -669,6 +741,9 @@ export const TradingLogsPage: React.FC = () => {
                   <tbody>
                     {[1, 2, 3, 4, 5, 6].map((idx) => (
                       <tr key={idx} className="border-t animate-pulse opacity-60" style={{ borderColor: 'var(--border)' }}>
+                        <td className="px-4 py-4.5 w-12 text-center">
+                          <div className="h-4 rounded w-4 mx-auto" style={{ backgroundColor: 'var(--row)' }} />
+                        </td>
                         <td className="px-4 py-4.5"><div className="h-4 rounded w-4" style={{ backgroundColor: 'var(--row)' }} /></td>
                         <td className="px-4 py-4.5"><div className="h-4 rounded w-12" style={{ backgroundColor: 'var(--row)' }} /></td>
                         <td className="px-4 py-4.5"><div className="h-4 rounded w-16" style={{ backgroundColor: 'var(--row)' }} /></td>
@@ -727,11 +802,160 @@ export const TradingLogsPage: React.FC = () => {
               </div>
             ) : (
               /* MAIN INTERACTIVE SORTABLE DATATABLE */
-              <div className="rounded-xl shadow-sm overflow-hidden" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
+              <div id="trading-logs-datatable-container" className="rounded-xl shadow-sm overflow-hidden" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
+                {/* BULK ACTION BAR */}
+                {selectedTradeIds.length > 0 && (
+                  <div 
+                    style={{ 
+                      backgroundColor: 'var(--card)', 
+                      border: '0.5px solid var(--accent)',
+                      borderRadius: '10px'
+                    }} 
+                    className="m-3 p-[12px] px-[16px] flex flex-wrap items-center gap-[12px] transition-all duration-200 animate-in slide-in-from-top-2"
+                  >
+                    <span className="text-[13px] font-medium" style={{ color: 'var(--text)' }}>
+                      <span className="font-extrabold text-[#f97316] font-mono">{selectedTradeIds.length}</span> trades selected
+                    </span>
+                    
+                    <div className="h-5 w-[1px]" style={{ backgroundColor: 'var(--border)' }} />
+                    
+                    <span className="text-[12px]" style={{ color: 'var(--text-sub)' }}>
+                      Assign Setup:
+                    </span>
+                    
+                    <select
+                      value={selectedStrategyId}
+                      onChange={(e) => setSelectedStrategyId(e.target.value)}
+                      style={{ 
+                        backgroundColor: 'var(--card)', 
+                        border: '0.5px solid var(--border)', 
+                        color: 'var(--text)',
+                        borderRadius: '6px',
+                        padding: '6px 12px',
+                        fontSize: '12px'
+                      }}
+                      className="focus:border-indigo-500 focus:outline-none cursor-pointer w-48 font-mono"
+                    >
+                      <option value="" disabled>Select a setup...</option>
+                      {strategiesList.map((st) => (
+                        <option key={st.id} value={st.id}>
+                          {st.name}
+                        </option>
+                      ))}
+                    </select>
+
+                    <button
+                      type="button"
+                      disabled={bulkLoading || !selectedStrategyId}
+                      onClick={handleBulkApplySetup}
+                      style={{
+                        backgroundColor: !selectedStrategyId ? 'var(--border)' : 'var(--accent)',
+                        color: '#ffffff',
+                        borderRadius: '7px',
+                        padding: '8px 16px',
+                        fontSize: '13px',
+                        fontWeight: 500,
+                        cursor: (!selectedStrategyId || bulkLoading) ? 'not-allowed' : 'pointer',
+                        opacity: (!selectedStrategyId) ? 0.6 : 1
+                      }}
+                      className="transition-all hover:opacity-90 flex items-center gap-2"
+                    >
+                      {bulkLoading ? (
+                        <>
+                          <span className="animate-spin text-xs">⏳</span>
+                          <span>Applying...</span>
+                        </>
+                      ) : (
+                        <span>Apply to {selectedTradeIds.length} trades</span>
+                      )}
+                    </button>
+
+                    <div className="flex-grow" />
+
+                    <span 
+                      onClick={() => setSelectedTradeIds([])}
+                      className="text-[12px] cursor-pointer hover:underline font-semibold"
+                      style={{ color: 'var(--text-sub)' }}
+                    >
+                      Clear selection
+                    </span>
+                  </div>
+                )}
+                
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse">
+                  <table 
+                    onMouseEnter={() => setIsTableHovered(true)}
+                    onMouseLeave={() => setIsTableHovered(false)}
+                    className="w-full text-left border-collapse"
+                  >
                     <thead>
                       <tr className="border-b text-[10px] font-sans font-semibold uppercase tracking-widest select-none" style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
+                        {/* SELECT ALL CHECKBOX */}
+                        <th className="px-4 py-4 w-12 text-center">
+                          <div 
+                            className={`transition-all duration-200 flex items-center justify-center ${
+                              (isTableHovered || selectedTradeIds.length > 0) ? 'opacity-100 scale-100' : 'opacity-100 md:opacity-0 md:scale-95 md:pointer-events-none'
+                            }`}
+                          >
+                            <div 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const visibleIds = filteredTrades.map(t => t.id).filter((id): id is string => typeof id === 'string');
+                                const allVisibleSelected = visibleIds.length > 0 && visibleIds.every(id => selectedTradeIds.includes(id));
+                                if (allVisibleSelected) {
+                                  setSelectedTradeIds(prev => prev.filter(id => !visibleIds.includes(id)));
+                                } else {
+                                  setSelectedTradeIds(prev => {
+                                    const newSel = [...prev];
+                                    visibleIds.forEach(id => {
+                                      if (!newSel.includes(id)) newSel.push(id);
+                                    });
+                                    return newSel;
+                                  });
+                                }
+                              }}
+                              style={{
+                                width: '16px',
+                                height: '16px',
+                                border: (filteredTrades.length > 0 && filteredTrades.every(t => t.id && selectedTradeIds.includes(t.id))) || (filteredTrades.some(t => t.id && selectedTradeIds.includes(t.id)) && !filteredTrades.every(t => t.id && selectedTradeIds.includes(t.id)))
+                                  ? '1.5px solid var(--accent)'
+                                  : '1.5px solid var(--border-md)',
+                                borderRadius: '4px',
+                                backgroundColor: (filteredTrades.length > 0 && filteredTrades.some(t => t.id && selectedTradeIds.includes(t.id)))
+                                  ? 'var(--accent)'
+                                  : 'transparent',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                cursor: 'pointer',
+                              }}
+                              className="transition-all shrink-0"
+                            >
+                              {filteredTrades.length > 0 && filteredTrades.every(t => t.id && selectedTradeIds.includes(t.id)) && (
+                                <svg 
+                                  className="w-3 h-3 text-white" 
+                                  fill="none" 
+                                  stroke="currentColor" 
+                                  viewBox="0 0 24 24" 
+                                  strokeWidth="3.5"
+                                >
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                </svg>
+                              )}
+                              {filteredTrades.length > 0 && filteredTrades.some(t => t.id && selectedTradeIds.includes(t.id)) && !filteredTrades.every(t => t.id && selectedTradeIds.includes(t.id)) && (
+                                <div 
+                                  style={{
+                                    width: '8px',
+                                    height: '2px',
+                                    backgroundColor: '#ffffff',
+                                    borderRadius: '1px'
+                                  }}
+                                />
+                              )}
+                            </div>
+                          </div>
+                        </th>
+                        
                         <th className="px-4 py-4 w-10 text-center">#</th>
                         
                         {/* Sortable headers */}
@@ -821,6 +1045,54 @@ export const TradingLogsPage: React.FC = () => {
                             className="hover:bg-[var(--row)] cursor-pointer transition-colors text-sm"
                             style={{ borderBottom: '0.5px solid var(--border)', color: 'var(--text)' }}
                           >
+                            {/* Row Checkbox Column */}
+                            <td 
+                              style={{ padding: '10px 16px' }} 
+                              className="text-center w-12 shrink-0"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (item.id) {
+                                  const id = item.id;
+                                  setSelectedTradeIds(prev => 
+                                    prev.includes(id) ? prev.filter(t => t !== id) : [...prev, id]
+                                  );
+                                }
+                              }}
+                            >
+                              <div 
+                                className={`transition-all duration-200 flex items-center justify-center ${
+                                  (isTableHovered || selectedTradeIds.length > 0) ? 'opacity-100 scale-100' : 'opacity-100 md:opacity-0 md:scale-95 md:pointer-events-none'
+                                }`}
+                              >
+                                <div
+                                  style={{
+                                    width: '16px',
+                                    height: '16px',
+                                    border: (item.id && selectedTradeIds.includes(item.id)) ? '1.5px solid var(--accent)' : '1.5px solid var(--border-md)',
+                                    borderRadius: '4px',
+                                    backgroundColor: (item.id && selectedTradeIds.includes(item.id)) ? 'var(--accent)' : 'transparent',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    cursor: 'pointer',
+                                  }}
+                                  className="transition-all shrink-0"
+                                >
+                                  {item.id && selectedTradeIds.includes(item.id) && (
+                                    <svg 
+                                      className="w-3 h-3 text-white" 
+                                      fill="none" 
+                                      stroke="currentColor" 
+                                      viewBox="0 0 24 24" 
+                                      strokeWidth="3.5"
+                                    >
+                                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                    </svg>
+                                  )}
+                                </div>
+                              </div>
+                            </td>
+
                             {/* Counter Index */}
                             <td style={{ padding: '10px 16px', color: 'var(--text-muted)' }} className="text-center text-xs font-mono font-bold w-10">
                               {index + 1}
