@@ -1363,17 +1363,115 @@ export default function SettingsPage() {
                           );
                         } else {
                           // STATE B - CONNECTED & ACTIVE
+                          if (dhanConnecting) {
+                            return (
+                              <div style={{ background: 'var(--bar)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="p-5 space-y-4">
+                                <div className="flex items-center justify-between">
+                                  <h4 className="text-[15px] font-semibold text-[var(--text)]">Reconnect Dhan Account</h4>
+                                  <button
+                                    onClick={() => {
+                                      setDhanConnecting(false);
+                                      setDhanToken('');
+                                      setDhanError('');
+                                    }}
+                                    className="text-xs text-[var(--text-sub)] hover:text-[var(--text)] cursor-pointer"
+                                  >
+                                    Cancel
+                                  </button>
+                                </div>
+                                <p className="text-xs text-[var(--text-sub)] leading-relaxed">
+                                  1. Open <a href="https://dhan.co" target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] hover:underline">dhan.co</a> &rarr; Profile &rarr; Access Token <br />
+                                  2. Generate an access token for your account <br />
+                                  3. Copy and paste it below
+                                </p>
+
+                                <div className="space-y-2">
+                                  <div className="relative">
+                                    <input
+                                      type={showToken ? 'text' : 'password'}
+                                      value={dhanToken}
+                                      onChange={(e) => setDhanToken(e.target.value)}
+                                      placeholder="Paste your Dhan access token"
+                                      style={{ border: '1px solid var(--border-md)', background: 'var(--bg)', color: 'var(--text)' }}
+                                      className="w-full px-4 py-2.5 rounded-xl text-xs pr-10 focus:outline-[var(--accent)]"
+                                    />
+                                    <button
+                                      type="button"
+                                      onClick={() => setShowToken(!showToken)}
+                                      style={{ color: 'var(--text-sub)' }}
+                                      className="absolute right-3 top-1/2 -translate-y-1/2 hover:text-[var(--text)]"
+                                    >
+                                      {showToken ? (
+                                        <EyeOff className="w-4 h-4 cursor-pointer" />
+                                      ) : (
+                                        <Eye className="w-4 h-4 cursor-pointer" />
+                                      )}
+                                    </button>
+                                  </div>
+                                  {dhanError && (
+                                    <p className="text-xs font-semibold text-[#ef4444]">{dhanError}</p>
+                                  )}
+                                </div>
+
+                                <div className="flex items-center gap-3">
+                                  <button
+                                    disabled={verifyingDhan || !dhanToken.trim()}
+                                    onClick={handleConnectDhan}
+                                    style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
+                                    className="hover:opacity-90 font-bold px-4 py-2.5 rounded-xl cursor-pointer text-xs h-9 inline-flex items-center justify-center disabled:opacity-50"
+                                  >
+                                    {verifyingDhan ? (
+                                      <span className="flex items-center gap-1.5">
+                                        <span className="animate-spin w-3 h-3 rounded-full border border-white border-t-transparent"></span>
+                                        Connecting...
+                                      </span>
+                                    ) : (
+                                      'Connect & Verify'
+                                    )}
+                                  </button>
+                                  <button
+                                    onClick={() => {
+                                      setDhanConnecting(false);
+                                      setDhanToken('');
+                                      setDhanError('');
+                                    }}
+                                    style={{ border: '1px solid var(--border-md)', background: 'transparent', color: 'var(--text)' }}
+                                    className="hover:bg-[var(--row)] font-bold px-4 py-2.5 rounded-xl cursor-pointer text-xs h-9 inline-flex items-center justify-center opacity-70"
+                                  >
+                                    Cancel
+                                  </button>
+                                </div>
+                              </div>
+                            );
+                          }
+
                           return (
                             <div style={{ background: 'var(--bar)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="p-5 space-y-4">
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                  <span className="w-2 h-2 rounded-full bg-[#22c55e] inline-block animate-pulse"></span>
+                                  {dhanConnComp.sync_status === 'token_expired' ? (
+                                    <span className="w-2 h-2 rounded-full bg-[#f59e0b] inline-block animate-pulse"></span>
+                                  ) : (
+                                    <span className="w-2 h-2 rounded-full bg-[#22c55e] inline-block animate-pulse"></span>
+                                  )}
                                   <span className="text-[15px] font-semibold text-[var(--text)]">Dhan</span>
-                                  <span className="bg-emerald-500/12 text-emerald-400 border border-emerald-800/30 text-[10px] font-extrabold uppercase rounded-full px-2 py-0.5 font-mono">
-                                    Connected
-                                  </span>
+                                  {dhanConnComp.sync_status === 'token_expired' ? (
+                                    <span className="bg-amber-500/12 text-amber-500 border border-amber-800/30 text-[10px] font-extrabold uppercase rounded-full px-2 py-0.5 font-mono">
+                                      Token Expired
+                                    </span>
+                                  ) : (
+                                    <span className="bg-emerald-500/12 text-emerald-400 border border-emerald-800/30 text-[10px] font-extrabold uppercase rounded-full px-2 py-0.5 font-mono">
+                                      Connected
+                                    </span>
+                                  )}
                                 </div>
                               </div>
+
+                              {dhanConnComp.sync_status === 'token_expired' && (
+                                <div className="bg-amber-500/10 border border-amber-500/20 text-amber-200 text-xs px-4 py-3 rounded-xl">
+                                  Token expired — please reconnect your Dhan account
+                                </div>
+                              )}
 
                               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-[var(--border)] pt-4">
                                 <div>
@@ -1412,29 +1510,41 @@ export default function SettingsPage() {
                               </div>
 
                               <div className="flex flex-wrap gap-2.5 border-t border-[var(--border)] pt-4">
-                                <button
-                                  disabled={syncingDhan}
-                                  onClick={handleSyncDhan}
-                                  style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
-                                  className="hover:opacity-90 font-bold px-3 py-1.5 rounded-lg cursor-pointer text-xs h-8 flex items-center justify-center gap-1.5"
-                                >
-                                  {syncingDhan ? (
-                                    <>
-                                      <span className="animate-spin w-3 h-3 rounded-full border border-white border-t-transparent"></span>
-                                      Syncing...
-                                    </>
-                                  ) : (
-                                    'Sync Now'
-                                  )}
-                                </button>
-                                <button
-                                  disabled={importingDhanHistory}
-                                  onClick={() => setShowImportConfirm(true)}
-                                  style={{ border: '1px solid var(--border-md)', background: 'transparent', color: 'var(--text)' }}
-                                  className="hover:bg-[var(--row)] font-bold px-3 py-1.5 rounded-lg cursor-pointer text-xs h-8 flex items-center justify-center"
-                                >
-                                  Import History
-                                </button>
+                                {dhanConnComp.sync_status === 'token_expired' ? (
+                                  <button
+                                    onClick={() => setDhanConnecting(true)}
+                                    style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
+                                    className="hover:opacity-90 font-bold px-4 py-1.5 rounded-lg cursor-pointer text-xs h-8 flex items-center justify-center animate-pulse"
+                                  >
+                                    Reconnect
+                                  </button>
+                                ) : (
+                                  <>
+                                    <button
+                                      disabled={syncingDhan}
+                                      onClick={handleSyncDhan}
+                                      style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
+                                      className="hover:opacity-90 font-bold px-3 py-1.5 rounded-lg cursor-pointer text-xs h-8 flex items-center justify-center gap-1.5"
+                                    >
+                                      {syncingDhan ? (
+                                        <>
+                                          <span className="animate-spin w-3 h-3 rounded-full border border-white border-t-transparent"></span>
+                                          Syncing...
+                                        </>
+                                      ) : (
+                                        'Sync Now'
+                                      )}
+                                    </button>
+                                    <button
+                                      disabled={importingDhanHistory}
+                                      onClick={() => setShowImportConfirm(true)}
+                                      style={{ border: '1px solid var(--border-md)', background: 'transparent', color: 'var(--text)' }}
+                                      className="hover:bg-[var(--row)] font-bold px-3 py-1.5 rounded-lg cursor-pointer text-xs h-8 flex items-center justify-center"
+                                    >
+                                      Import History
+                                    </button>
+                                  </>
+                                )}
                                 <button
                                   disabled={disconnectingDhan}
                                   onClick={() => setShowDisconnectConfirm(true)}
