@@ -57,27 +57,46 @@ export const TradingLogsPage: React.FC = () => {
 
   // Bulk Apply Setup Logic
   const handleBulkApplySetup = async () => {
-    if (!userId || selectedTradeIds.length === 0 || !selectedStrategyId) return;
+    // Step 1 — Validate inputs before any database call
+    if (!selectedTradeIds || selectedTradeIds.length === 0) {
+      showError("No trades selected");
+      return;
+    }
+    if (!selectedStrategyId) {
+      showError("Please select a setup first");
+      return;
+    }
+
     try {
       setBulkLoading(true);
-      
-      const { error } = await supabase
+
+      // Step 2 — Get the strategy name for the success message
+      const strategyObj = strategiesList.find(s => s.id === selectedStrategyId);
+      const strategyName = strategyObj ? strategyObj.name : 'selected setup';
+
+      // Step 3 — Run the Supabase update using this exact syntax
+      const { data, error } = await supabase
         .from('trades')
         .update({ strategy_id: selectedStrategyId })
-        .in('id', selectedTradeIds)
-        .eq('user_id', userId);
+        .in('id', selectedTradeIds);
 
-      if (error) throw error;
+      // Step 4 — Handle the result
+      if (error !== null) {
+        console.error('Bulk update error:', error);
+        showError("Failed to update trades: " + error.message);
+        return;
+      }
 
-      const strategyName = strategiesList.find(s => s.id === selectedStrategyId)?.name || 'selected setup';
-      showSuccess(`Updated ${selectedTradeIds.length} trades with ${strategyName}`);
+      // If error is null
+      showSuccess("Updated " + selectedTradeIds.length + " trades with " + strategyName);
       setSelectedTradeIds([]);
       setSelectedStrategyId('');
       await fetchAllTradesData();
     } catch (err: any) {
-      console.error('Failed to bulk update trades:', err);
-      showError('Failed to update trades. Please try again.');
+      console.error('Bulk update error:', err);
+      showError("Failed to update trades: " + (err.message || err));
     } finally {
+      // Step 5 — Always reset button state in a finally block
       setBulkLoading(false);
     }
   };
