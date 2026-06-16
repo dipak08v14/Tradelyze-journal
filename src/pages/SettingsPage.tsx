@@ -130,10 +130,10 @@ export default function SettingsPage() {
 
   // CSV Import helper functions
   const handleDownloadTemplate = () => {
-    const csvContent = `Date,Symbol,Direction,PnL,Quantity,EntryPrice,ExitPrice,EntryTime,ExitTime,Commission,Notes
-2026-06-10,XAUUSD,LONG,145.50,0.10,2374.50,2389.00,19:07,21:23,2.50,Strong OB setup
-2026-06-11,BANKNIFTY,SHORT,-380.00,25,44250.00,44098.00,09:20,10:15,18.00,False breakout
-2026-06-12,BTCUSDT,LONG,220.00,0.05,67200.00,67640.00,14:30,16:45,1.20,`;
+    const csvContent = `Date,Symbol,Direction,PnL,Quantity,EntryPrice,ExitPrice,EntryTime,Commission,Notes
+2026-06-10,XAUUSD,LONG,145.50,0.10,2374.50,2389.00,19:07,2.50,Strong OB setup
+2026-06-11,BANKNIFTY,SHORT,-380.00,25,44250.00,44098.00,09:20,18.00,False breakout
+2026-06-12,BTCUSDT,LONG,220.00,0.05,67200.00,67640.00,14:30,1.20,`;
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -143,6 +143,23 @@ export default function SettingsPage() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const parseDateToISO = (rawDate: any): string | null => {
+    const str = String(rawDate || '').trim();
+    if (!str) return null;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+      return str;
+    }
+    if (/^\d{2}-\d{2}-\d{4}$/.test(str)) {
+      const parts = str.split('-');
+      return parts[2] + '-' + parts[1] + '-' + parts[0];
+    }
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(str)) {
+      const parts = str.split('/');
+      return parts[2] + '-' + parts[1] + '-' + parts[0];
+    }
+    return null;
   };
 
   const handleParseCsv = (file: File) => {
@@ -182,8 +199,9 @@ export default function SettingsPage() {
             if (!dateVal) {
               throw new Error(`Row ${rowNum}: Date is required.`);
             }
-            if (!/^\d{4}-\d{2}-\d{2}$/.test(dateVal)) {
-              throw new Error(`Row ${rowNum}: Date must be YYYY-MM-DD format. Found: ${dateVal}`);
+            const parsedIsoDate = parseDateToISO(dateVal);
+            if (!parsedIsoDate) {
+              throw new Error(`Row ${rowNum}: Date must be in YYYY-MM-DD or DD-MM-YYYY format. Found: ${dateVal}`);
             }
             
             if (!dirVal) {
@@ -240,7 +258,11 @@ export default function SettingsPage() {
 
       for (const row of validRows) {
         try {
-          const dateStr = String(row.Date || '').trim()
+          const dateStr = parseDateToISO(row.Date)
+          if (!dateStr) {
+            errorMessages.push('Row ' + String(row.Symbol || '') + ' Date error: Invalid date format ' + String(row.Date))
+            continue
+          }
           const pnlNum = parseFloat(String(row.PnL || '0').replace(/[^0-9.-]/g, ''))
           const symbolStr = String(row.Symbol || '').trim().toUpperCase()
           const directionStr = String(row.Direction || '').trim().toUpperCase()
@@ -281,7 +303,6 @@ export default function SettingsPage() {
             fees: row.Commission && row.Commission !== '' ? parseFloat(String(row.Commission).replace(/[^0-9.-]/g, '')) : 0,
             quantity: row.Quantity && row.Quantity !== '' ? parseFloat(row.Quantity) : null,
             entry_time: row.EntryTime && row.EntryTime !== '' ? String(row.EntryTime).trim() : null,
-            exit_time: row.ExitTime && row.ExitTime !== '' ? String(row.ExitTime).trim() : null,
             notes: row.Notes && row.Notes !== '' ? String(row.Notes).trim() : null
           }
 
@@ -1348,7 +1369,7 @@ export default function SettingsPage() {
                         <tr>
                           <td className="p-2 pl-3 font-mono font-bold text-[var(--text)]">Date</td>
                           <td className="p-2 text-center text-red-500 font-semibold text-xs">YES</td>
-                          <td className="p-2 pr-3">YYYY-MM-DD (example: 2026-06-16)</td>
+                          <td className="p-2 pr-3">YYYY-MM-DD or DD-MM-YYYY (both accepted) (example: 2026-06-16 or 16-06-2026)</td>
                         </tr>
                         <tr>
                           <td className="p-2 pl-3 font-mono font-bold text-[var(--text)]">Symbol</td>
@@ -1384,11 +1405,6 @@ export default function SettingsPage() {
                           <td className="p-2 pl-3 font-mono font-semibold">EntryTime</td>
                           <td className="p-2 text-center">No</td>
                           <td className="p-2 pr-3">HH:MM in 24-hour format (19:07)</td>
-                        </tr>
-                        <tr>
-                          <td className="p-2 pl-3 font-mono font-semibold">ExitTime</td>
-                          <td className="p-2 text-center">No</td>
-                          <td className="p-2 pr-3">HH:MM in 24-hour format (21:23)</td>
                         </tr>
                         <tr>
                           <td className="p-2 pl-3 font-mono font-semibold">Commission</td>
