@@ -8,12 +8,17 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end()
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY
-  )
+  console.log('sync-trades called', {
+    hasUrl: !!process.env.SUPABASE_URL,
+    hasKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY
+  })
 
   try {
+    const supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    )
+
     const { api_key, broker_name, account_login, sync_type, trades } = req.body
 
     if (!api_key) return res.status(401).json({ error: 'API key required' })
@@ -91,6 +96,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ success: true, imported, skipped, errors, total: trades ? trades.length : 0 })
   } catch (err) {
+    console.error('sync-trades error:', err.message)
     return res.status(500).json({ error: 'Sync failed', message: err.message })
   }
 }
