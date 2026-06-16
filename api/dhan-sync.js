@@ -130,7 +130,7 @@ export default async function handler(req, res) {
         // STEP C — FETCH LEGS FROM DHAN
         for (const dateRange of dateRanges) {
           try {
-            let page = 1;
+            let page = 0;
             let hasMore = true;
             const maxPages = 1000; // Safety limit to avoid infinite loop
 
@@ -139,6 +139,7 @@ export default async function handler(req, res) {
                 method: 'GET',
                 headers: {
                   'access-token': decryptedToken,
+                  'Accept': 'application/json',
                   'Content-Type': 'application/json'
                 }
               });
@@ -148,9 +149,8 @@ export default async function handler(req, res) {
                 break;
               }
 
-              const resJson = await dhanRes.json();
-              if (resJson && resJson.status === 'success' && Array.isArray(resJson.data) && resJson.data.length > 0) {
-                const legs = resJson.data;
+              const legs = await dhanRes.json();
+              if (Array.isArray(legs) && legs.length > 0) {
                 for (const leg of legs) {
                   totalLegsReceived++;
                   const dhanOrderId = String(leg.orderId);
@@ -168,12 +168,15 @@ export default async function handler(req, res) {
                     continue;
                   }
 
-                  let tradeTime = leg.createTime;
-                  if (!tradeTime) {
+                  let tradeTime;
+                  if (!leg.exchangeTime || leg.exchangeTime === 'NA') {
                     tradeTime = new Date().toISOString();
-                  } else if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(tradeTime)) {
-                    tradeTime = tradeTime.replace(' ', 'T') + '+05:30'; // Administer Dhan's Indian Market Timezone
+                  } else {
+                    const parsedDate = new Date(leg.exchangeTime);
+                    tradeTime = isNaN(parsedDate.getTime()) ? new Date().toISOString() : parsedDate.toISOString();
                   }
+
+                  const symbolFallback = leg.tradingSymbol || leg.customSymbol || leg.securityId || '';
 
                   await supabaseUser
                     .from('dhan_raw_legs')
@@ -181,7 +184,7 @@ export default async function handler(req, res) {
                       user_id: task.userId,
                       connection_id: connectionId,
                       dhan_order_id: dhanOrderId,
-                      symbol: leg.tradingSymbol || '',
+                      symbol: symbolFallback,
                       exchange: leg.exchange || '',
                       segment: leg.exchangeSegment || '',
                       transaction_type: (leg.transactionType || '').toUpperCase(),
@@ -367,14 +370,15 @@ export default async function handler(req, res) {
         // Run through each unmatched leg
         for (const leg of unmatchedLegs || []) {
           let optionType = null;
-          const rawLegSymbol = String(leg.symbol || '').trim().toUpperCase();
           const rawLegResponse = leg.raw_response || {};
           const drvOptionType = String(rawLegResponse.drvOptionType || '').trim().toUpperCase();
 
-          if (drvOptionType === 'CE' || rawLegSymbol.endsWith('CE')) {
+          if (drvOptionType === 'CE') {
             optionType = 'CALL';
-          } else if (drvOptionType === 'PE' || rawLegSymbol.endsWith('PE')) {
+          } else if (drvOptionType === 'PE') {
             optionType = 'PUT';
+          } else {
+            optionType = null;
           }
 
           const transactionType = String(leg.transaction_type || '').toUpperCase();
@@ -518,6 +522,6 @@ export default async function handler(req, res) {
 
   } catch (err) {
     console.error('Unexpected error in dhan-sync route:', err);
-    return res.status(500).json({ error: 'Unexpected server error: ' + err.message });
+    return res.status(500).json({ error: err.message });
   }
 }
