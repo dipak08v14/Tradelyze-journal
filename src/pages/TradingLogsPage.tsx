@@ -57,7 +57,7 @@ export const TradingLogsPage: React.FC = () => {
 
   // Bulk Apply Setup Logic
   const handleBulkApplySetup = async () => {
-    // Step 1 — Validate inputs before any database call
+    // 1. Validate: if no trades selected or no setup chosen, show error toast and return early.
     if (!selectedTradeIds || selectedTradeIds.length === 0) {
       showError("No trades selected");
       return;
@@ -68,35 +68,45 @@ export const TradingLogsPage: React.FC = () => {
     }
 
     try {
+      // 2. Set button to loading: disable button, change text to "Applying..."
       setBulkLoading(true);
 
-      // Step 2 — Get the strategy name for the success message
       const strategyObj = strategiesList.find(s => s.id === selectedStrategyId);
       const strategyName = strategyObj ? strategyObj.name : 'selected setup';
 
-      // Step 3 — Run the Supabase update using this exact syntax
-      const { data, error } = await supabase
+      // 3. Single Supabase update that sets BOTH fields at the same time:
+      const { error } = await supabase
         .from('trades')
-        .update({ strategy_id: selectedStrategyId })
+        .update({
+          strategy_id: selectedStrategyId,
+          needs_review: false
+        })
         .in('id', selectedTradeIds);
 
-      // Step 4 — Handle the result
-      if (error !== null) {
+      // 4. If error: show error toast with error.message, reset button, return.
+      if (error) {
         console.error('Bulk update error:', error);
         showError("Failed to update trades: " + error.message);
         return;
       }
 
-      // If error is null
-      showSuccess("Updated " + selectedTradeIds.length + " trades with " + strategyName);
+      // 5. If success — do ALL of these immediately, in this order:
+      // a. Show success toast: "X trades assigned to [strategy name] and marked as reviewed"
+      showSuccess(selectedTradeIds.length + " trades assigned to " + strategyName + " and marked as reviewed");
+      
+      // b. Clear selectedTradeIds state to empty array
       setSelectedTradeIds([]);
+      
+      // c. Reset strategy dropdown selection back to default
       setSelectedStrategyId('');
+      
+      // d. Re-fetch the full trades list from Supabase and update the table state
       await fetchAllTradesData();
     } catch (err: any) {
       console.error('Bulk update error:', err);
       showError("Failed to update trades: " + (err.message || err));
     } finally {
-      // Step 5 — Always reset button state in a finally block
+      // 6. Always reset button in finally block
       setBulkLoading(false);
     }
   };
