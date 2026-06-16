@@ -19,7 +19,9 @@ import {
   Trash2,
   Lock,
   CheckCircle,
-  ArrowLeft
+  ArrowLeft,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import Papa from 'papaparse';
 
@@ -66,6 +68,19 @@ export default function SettingsPage() {
   const [verifying, setVerifying] = useState(false);
   const [generatingKey, setGeneratingKey] = useState(false);
 
+  // Dhan broker integration states
+  const [dhanConnecting, setDhanConnecting] = useState(false);
+  const [dhanToken, setDhanToken] = useState('');
+  const [dhanError, setDhanError] = useState('');
+  const [verifyingDhan, setVerifyingDhan] = useState(false);
+  const [showToken, setShowToken] = useState(false);
+  const [syncingDhan, setSyncingDhan] = useState(false);
+  const [importingDhanHistory, setImportingDhanHistory] = useState(false);
+  const [disconnectingDhan, setDisconnectingDhan] = useState(false);
+  const [showImportConfirm, setShowImportConfirm] = useState(false);
+  const [showDisconnectConfirm, setShowDisconnectConfirm] = useState(false);
+  const [dhanOpenPositionsCount, setDhanOpenPositionsCount] = useState(0);
+
   // CSV Import states
   const [isCsvModalOpen, setIsCsvModalOpen] = useState(false);
   const [csvStep, setCsvStep] = useState<1 | 2>(1);
@@ -86,6 +101,23 @@ export default function SettingsPage() {
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
+  // Fetch Dhan open positions count
+  const fetchDhanOpenPositions = async (tok: string) => {
+    try {
+      const res = await fetch('/api/dhan-open-positions', {
+        headers: {
+          'Authorization': `Bearer ${tok}`
+        }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setDhanOpenPositionsCount(data.positions?.length || 0);
+      }
+    } catch (err) {
+      console.error('Failed to fetch Dhan open positions count:', err);
+    }
+  };
+
   // Fetch connections function
   const fetchConnections = async () => {
     if (!userId) return;
@@ -98,10 +130,165 @@ export default function SettingsPage() {
         .order('broker_name', { ascending: true });
       if (error) throw error;
       setConnections(data || []);
+
+      const dhanConn = (data || []).find(c => c.broker_type === 'dhan' && c.is_active);
+      if (dhanConn) {
+        const { data: sessionData } = await supabase.auth.getSession();
+        const tok = sessionData?.session?.access_token;
+        if (tok) {
+          fetchDhanOpenPositions(tok);
+        }
+      }
     } catch (err: any) {
       console.error('Error fetching broker connections:', err);
     } finally {
       setFetchingConnections(false);
+    }
+  };
+
+  const handleConnectDhan = async () => {
+    if (!dhanToken.trim()) return;
+    try {
+      setVerifyingDhan(true);
+      setDhanError('');
+      const { data: sessionData } = await supabase.auth.getSession();
+      const tok = sessionData?.session?.access_token;
+      if (!tok) {
+        setDhanError('Authentication token is missing. Please re-login.');
+        return;
+      }
+
+      const res = await fetch('/api/dhan-connect', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tok}`
+        },
+        body: JSON.stringify({ access_token: dhanToken.trim() })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setDhanError(data.error || 'Connection failed.');
+        return;
+      }
+
+      showSuccess('Dhan connected successfully');
+      setDhanConnecting(false);
+      setDhanToken('');
+      await fetchConnections();
+    } catch (err: any) {
+      setDhanError('Unexpected failure connecting to Dhan: ' + err.message);
+    } finally {
+      setVerifyingDhan(false);
+    }
+  };
+
+  const handleSyncDhan = async () => {
+    try {
+      setSyncingDhan(true);
+      const { data: sessionData } = await supabase.auth.getSession();
+      const tok = sessionData?.session?.access_token;
+      if (!tok) {
+        showError('Authentication token missing.');
+        return;
+      }
+
+      const res = await fetch('/api/dhan-sync', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tok}`
+        },
+        body: JSON.stringify({ sync_type: 'manual' })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        showError(data.error || 'Dhan synchronization failed.');
+        return;
+      }
+
+      showSuccess(`Sync Complete: Synced ${data.trades_created} trades, skipped ${data.legs_skipped} legs.`);
+      await fetchConnections();
+    } catch (err: any) {
+      showError('Sync failed: ' + err.message);
+    } finally {
+      setSyncingDhan(false);
+    }
+  };
+
+  const handleImportHistoryDhan = async () => {
+    try {
+      setImportingDhanHistory(true);
+      setShowImportConfirm(false);
+      
+      showSuccess('Importing trade history from Dhan. This may take a few seconds...');
+
+      const { data: sessionData } = await supabase.auth.getSession();
+      const tok = sessionData?.session?.access_token;
+      if (!tok) {
+        showError('Authentication token missing.');
+        return;
+      }
+
+      const res = await fetch('/api/dhan-sync', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tok}`
+        },
+        body: JSON.stringify({ sync_type: 'historical' })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        showError(data.error || 'Dhan history import failed.');
+        return;
+      }
+
+      showSuccess(`Historical Import Complete! Created ${data.trades_created} trades, skipped ${data.legs_skipped} legs.`);
+      await fetchConnections();
+    } catch (err: any) {
+      showError('History import failed: ' + err.message);
+    } finally {
+      setImportingDhanHistory(false);
+    }
+  };
+
+  const handleDisconnectDhan = async () => {
+    try {
+      setDisconnectingDhan(true);
+      setShowDisconnectConfirm(false);
+
+      const { data: sessionData } = await supabase.auth.getSession();
+      const tok = sessionData?.session?.access_token;
+      if (!tok) {
+        showError('Authentication token missing.');
+        return;
+      }
+
+      const res = await fetch('/api/dhan-disconnect', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tok}`
+        }
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        showError(data.error || 'Failed to disconnect Dhan.');
+        return;
+      }
+
+      showSuccess('Dhan disconnected successfully');
+      setDhanOpenPositionsCount(0);
+      await fetchConnections();
+    } catch (err: any) {
+      showError('Disconnection failed: ' + err.message);
+    } finally {
+      setDisconnectingDhan(false);
     }
   };
 
@@ -929,14 +1116,14 @@ export default function SettingsPage() {
                       <div className="flex justify-center items-center py-6">
                         <div className="animate-spin w-6 h-6 rounded-full border-2 border-[var(--border)] border-t-[var(--accent)]" />
                       </div>
-                    ) : connections.length === 0 ? (
+                    ) : connections.filter(conn => conn.broker_type !== 'dhan').length === 0 ? (
                       <div className="border border-dashed border-[var(--border)] rounded-xl p-8 text-center bg-[var(--bar)] mb-6">
                         <p className="text-sm font-semibold text-[var(--text)] mb-1">No broker accounts connected</p>
                         <p className="text-xs text-[var(--text-sub)]">Connect Metatrader 5 to sync automatic live trade logs</p>
                       </div>
                     ) : (
                       <div className="space-y-4 mb-6">
-                        {connections.map((conn) => {
+                        {connections.filter(conn => conn.broker_type !== 'dhan').map((conn) => {
                           return (
                             <div 
                               key={conn.id} 
@@ -992,7 +1179,7 @@ export default function SettingsPage() {
                       </div>
                     )}
 
-                    <div className="flex flex-wrap gap-3 items-center">
+                    <div className="flex flex-wrap gap-3 items-center mb-6">
                       <button
                         onClick={() => setIsConnectModalOpen(true)}
                         style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
@@ -1025,6 +1212,250 @@ export default function SettingsPage() {
                         <Upload className="w-4 h-4" />
                         <span>Import from CSV</span>
                       </button>
+                    </div>
+
+                    {/* DHAN INTEGRATION SUBSECTION */}
+                    <div className="border-t border-[var(--border)] pt-6 mt-6">
+                      <h4 className="text-md font-bold mb-4 uppercase tracking-wide font-display">Dhan Broker Connection</h4>
+                      
+                      {(() => {
+                        const dhanConnComp = connections.find(c => c.broker_type === 'dhan' && c.is_active);
+                        
+                        if (!dhanConnComp) {
+                          // STATE A - NOT CONNECTED / INACTIVE
+                          return (
+                            <div style={{ background: 'var(--bar)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="p-5">
+                              {!dhanConnecting ? (
+                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                  <div className="flex items-center gap-4">
+                                    <div style={{ backgroundColor: 'rgba(6,182,212,0.13)', color: '#06b6d4' }} className="w-11 h-11 rounded-full flex items-center justify-center font-bold text-lg font-display">
+                                      D
+                                    </div>
+                                    <div>
+                                      <h4 className="text-[15px] font-semibold text-[var(--text)]">Dhan</h4>
+                                      <p className="text-xs text-[var(--text-sub)]">Auto-sync your Dhan F&O and equity trades</p>
+                                    </div>
+                                  </div>
+                                  <div>
+                                    <button
+                                      onClick={() => setDhanConnecting(true)}
+                                      style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
+                                      className="hover:opacity-90 font-bold px-4 py-2 rounded-xl cursor-pointer text-xs h-9 inline-flex items-center justify-center"
+                                    >
+                                      + Connect Dhan
+                                    </button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="space-y-4">
+                                  <div className="flex items-center justify-between">
+                                    <h4 className="text-[15px] font-semibold text-[var(--text)]">Connect Dhan Account</h4>
+                                    <button
+                                      onClick={() => {
+                                        setDhanConnecting(false);
+                                        setDhanToken('');
+                                        setDhanError('');
+                                      }}
+                                      className="text-xs text-[var(--text-sub)] hover:text-[var(--text)] cursor-pointer"
+                                    >
+                                      Cancel
+                                    </button>
+                                  </div>
+                                  <p className="text-xs text-[var(--text-sub)] leading-relaxed">
+                                    1. Open <a href="https://dhan.co" target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] hover:underline">dhan.co</a> &rarr; Profile &rarr; Access Token <br />
+                                    2. Generate an access token for your account <br />
+                                    3. Copy and paste it below
+                                  </p>
+
+                                  <div className="space-y-2">
+                                    <div className="relative">
+                                      <input
+                                        type={showToken ? 'text' : 'password'}
+                                        value={dhanToken}
+                                        onChange={(e) => setDhanToken(e.target.value)}
+                                        placeholder="Paste your Dhan access token"
+                                        style={{ border: '1px solid var(--border-md)', background: 'var(--bg)', color: 'var(--text)' }}
+                                        className="w-full px-4 py-2.5 rounded-xl text-xs pr-10 focus:outline-[var(--accent)]"
+                                      />
+                                      <button
+                                        type="button"
+                                        onClick={() => setShowToken(!showToken)}
+                                        style={{ color: 'var(--text-sub)' }}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 hover:text-[var(--text)]"
+                                      >
+                                        {showToken ? (
+                                          <EyeOff className="w-4 h-4 cursor-pointer" />
+                                        ) : (
+                                          <Eye className="w-4 h-4 cursor-pointer" />
+                                        )}
+                                      </button>
+                                    </div>
+                                    {dhanError && (
+                                      <p className="text-xs font-semibold text-[#ef4444]">{dhanError}</p>
+                                    )}
+                                  </div>
+
+                                  <div className="flex items-center gap-3">
+                                    <button
+                                      disabled={verifyingDhan || !dhanToken.trim()}
+                                      onClick={handleConnectDhan}
+                                      style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
+                                      className="hover:opacity-90 font-bold px-4 py-2.5 rounded-xl cursor-pointer text-xs h-9 inline-flex items-center justify-center disabled:opacity-50"
+                                    >
+                                      {verifyingDhan ? (
+                                        <span className="flex items-center gap-1.5">
+                                          <span className="animate-spin w-3 h-3 rounded-full border border-white border-t-transparent"></span>
+                                          Connecting...
+                                        </span>
+                                      ) : (
+                                        'Connect & Verify'
+                                      )}
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        setDhanConnecting(false);
+                                        setDhanToken('');
+                                        setDhanError('');
+                                      }}
+                                      style={{ border: '1px solid var(--border-md)', background: 'transparent', color: 'var(--text)' }}
+                                      className="hover:bg-[var(--row)] font-bold px-4 py-2.5 rounded-xl cursor-pointer text-xs h-9 inline-flex items-center justify-center opacity-70"
+                                    >
+                                      Cancel
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        } else {
+                          // STATE B - CONNECTED & ACTIVE
+                          return (
+                            <div style={{ background: 'var(--bar)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="p-5 space-y-4">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <span className="w-2 h-2 rounded-full bg-[#22c55e] inline-block animate-pulse"></span>
+                                  <span className="text-[15px] font-semibold text-[var(--text)]">Dhan</span>
+                                  <span className="bg-emerald-500/12 text-emerald-400 border border-emerald-800/30 text-[10px] font-extrabold uppercase rounded-full px-2 py-0.5 font-mono">
+                                    Connected
+                                  </span>
+                                </div>
+                              </div>
+
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-[var(--border)] pt-4">
+                                <div>
+                                  <span className="block text-[11px] font-medium text-[var(--text-sub)] uppercase tracking-wider font-mono">ACCOUNT</span>
+                                  <span className="text-sm font-semibold text-[var(--text)] font-mono">{dhanConnComp.account_login || '—'}</span>
+                                </div>
+                                <div>
+                                  <span className="block text-[11px] font-medium text-[var(--text-sub)] uppercase tracking-wider font-mono">LAST SYNC</span>
+                                  <span className="text-sm font-semibold text-[var(--text)]">{formatLastSynced(dhanConnComp.last_sync_at)}</span>
+                                </div>
+                                <div>
+                                  <span className="block text-[11px] font-medium text-[var(--text-sub)] uppercase tracking-wider font-mono">TRADES SYNCED</span>
+                                  <span className="text-sm font-semibold text-[var(--text)] font-mono">{dhanConnComp.total_synced ?? 0}</span>
+                                </div>
+                              </div>
+
+                              <div className="flex flex-wrap items-center gap-6 border-t border-[var(--border)] pt-4">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs font-medium text-[var(--text-sub)]">Needs Review:</span>
+                                  {dhanConnComp.trades_pending_review > 0 ? (
+                                    <span className="bg-amber-500/20 text-amber-500 border border-amber-500/30 text-[11px] font-bold rounded px-1.5 py-0.5">
+                                      {dhanConnComp.trades_pending_review} trades
+                                    </span>
+                                  ) : (
+                                    <span className="bg-zinc-700/20 text-[var(--text-sub)] border border-zinc-750 text-[11px] font-medium rounded px-1.5 py-0.5">
+                                      0 trades
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs font-medium text-[var(--text-sub)]">Open Positions:</span>
+                                  <span className="bg-[var(--accent-muted)] text-[var(--accent)] border border-[var(--border)] text-[11px] font-bold rounded px-1.5 py-0.5">
+                                    {dhanOpenPositionsCount} positions
+                                  </span>
+                                </div>
+                              </div>
+
+                              <div className="flex flex-wrap gap-2.5 border-t border-[var(--border)] pt-4">
+                                <button
+                                  disabled={syncingDhan}
+                                  onClick={handleSyncDhan}
+                                  style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
+                                  className="hover:opacity-90 font-bold px-3 py-1.5 rounded-lg cursor-pointer text-xs h-8 flex items-center justify-center gap-1.5"
+                                >
+                                  {syncingDhan ? (
+                                    <>
+                                      <span className="animate-spin w-3 h-3 rounded-full border border-white border-t-transparent"></span>
+                                      Syncing...
+                                    </>
+                                  ) : (
+                                    'Sync Now'
+                                  )}
+                                </button>
+                                <button
+                                  disabled={importingDhanHistory}
+                                  onClick={() => setShowImportConfirm(true)}
+                                  style={{ border: '1px solid var(--border-md)', background: 'transparent', color: 'var(--text)' }}
+                                  className="hover:bg-[var(--row)] font-bold px-3 py-1.5 rounded-lg cursor-pointer text-xs h-8 flex items-center justify-center"
+                                >
+                                  Import History
+                                </button>
+                                <button
+                                  disabled={disconnectingDhan}
+                                  onClick={() => setShowDisconnectConfirm(true)}
+                                  style={{ border: '1px solid var(--border-md)', background: 'transparent', color: '#ef4444' }}
+                                  className="hover:bg-red-950/20 font-bold px-3 py-1.5 rounded-lg cursor-pointer text-xs h-8 flex items-center justify-center"
+                                >
+                                  Disconnect
+                                </button>
+                              </div>
+
+                              {showImportConfirm && (
+                                <div className="bg-[var(--bg)] border border-[var(--border)] p-4 rounded-xl space-y-3 mt-2">
+                                  <p className="text-xs text-[var(--text)]">Import up to 1 year of trade history from Dhan? Existing trades will not be duplicated.</p>
+                                  <div className="flex items-center gap-2">
+                                    <button
+                                      disabled={importingDhanHistory}
+                                      onClick={handleImportHistoryDhan}
+                                      className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs cursor-pointer"
+                                    >
+                                      Yes, Import
+                                    </button>
+                                    <button
+                                      onClick={() => setShowImportConfirm(false)}
+                                      className="bg-zinc-750 hover:bg-zinc-700 text-[var(--text-sub)] font-bold px-3 py-1.5 rounded-lg text-xs cursor-pointer"
+                                    >
+                                      Cancel
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
+
+                              {showDisconnectConfirm && (
+                                <div className="bg-[var(--bg)] border border-[var(--border)] p-4 rounded-xl space-y-3 mt-2">
+                                  <p className="text-xs text-[var(--text)]">Remove Dhan connection? Your synced trades will remain in your journal.</p>
+                                  <div className="flex items-center gap-2">
+                                    <button
+                                      disabled={disconnectingDhan}
+                                      onClick={handleDisconnectDhan}
+                                      className="bg-[#ef4444] hover:bg-red-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs cursor-pointer"
+                                    >
+                                      Yes, Disconnect
+                                    </button>
+                                    <button
+                                      onClick={() => setShowDisconnectConfirm(false)}
+                                      className="bg-zinc-750 hover:bg-zinc-700 text-[var(--text-sub)] font-bold px-3 py-1.5 rounded-lg text-xs cursor-pointer"
+                                    >
+                                      Cancel
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        }
+                      })()}
                     </div>
                   </div>
 

@@ -1,0 +1,56 @@
+import { createClient } from '@supabase/supabase-js';
+
+export default async function handler(req, res) {
+  // CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Unauthorized: Missing token' });
+  }
+  const token = authHeader.replace('Bearer ', '');
+
+  try {
+    const supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY,
+      {
+        global: {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      }
+    );
+
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      return res.status(401).json({ error: 'Unauthorized: User lookup failed' });
+    }
+
+    const { error } = await supabase
+      .from('broker_connections')
+      .update({
+        is_active: false,
+        sync_status: 'disconnected',
+        access_token_encrypted: null
+      })
+      .eq('user_id', user.id)
+      .eq('broker_type', 'dhan');
+
+    if (error) {
+      return res.status(500).json({ error: 'Failed to update connection state', detail: error.message });
+    }
+
+    return res.status(200).json({ success: true });
+
+  } catch (err) {
+    console.error('Unexpected error in dhan-disconnect API:', err);
+    return res.status(500).json({ error: 'Unexpected server error: ' + err.message });
+  }
+}

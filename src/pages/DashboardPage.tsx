@@ -65,6 +65,11 @@ export const DashboardPage: React.FC = () => {
   const [needsReviewCount, setNeedsReviewCount] = useState<number>(0);
   const [syncLoading, setSyncLoading] = useState<boolean>(true);
 
+  // Dhan broker dashboard states
+  const [dhanPositions, setDhanPositions] = useState<any[]>([]);
+  const [hasDhanConnection, setHasDhanConnection] = useState<boolean>(false);
+  const [fetchingPositions, setFetchingPositions] = useState<boolean>(false);
+
   // Fetch Broker Sync Widget Data
   const fetchBrokerSyncData = async () => {
     if (!userId) return;
@@ -72,18 +77,48 @@ export const DashboardPage: React.FC = () => {
       // 1. Fetch connected brokers
       const { data: connections, error: connError } = await supabase
         .from('broker_connections')
-        .select('is_active, total_synced')
+        .select('*')
         .eq('user_id', userId);
 
       if (connError) throw connError;
 
       let status: 'idle' | 'active' | 'inactive' = 'idle';
       let totalSynced = 0;
+      let hasDhan = false;
 
       if (connections && connections.length > 0) {
         const anyActive = connections.some((c: any) => c.is_active);
         status = anyActive ? 'active' : 'inactive';
         totalSynced = connections.reduce((sum: number, c: any) => sum + (c.total_synced || 0), 0);
+        hasDhan = connections.some((c: any) => c.broker_type === 'dhan' && c.is_active);
+      }
+
+      setHasDhanConnection(hasDhan);
+
+      // Fetch open positions if user has Dhan connection
+      if (hasDhan) {
+        try {
+          setFetchingPositions(true);
+          const { data: sessionData } = await supabase.auth.getSession();
+          const tok = sessionData?.session?.access_token;
+          if (tok) {
+            const res = await fetch('/api/dhan-open-positions', {
+              headers: {
+                'Authorization': `Bearer ${tok}`
+              }
+            });
+            if (res.ok) {
+              const data = await res.json();
+              setDhanPositions(data.positions || []);
+            }
+          }
+        } catch (err) {
+          console.error('Failed to fetch Dhan positions on dashboard:', err);
+        } finally {
+          setFetchingPositions(false);
+        }
+      } else {
+        setDhanPositions([]);
       }
 
       // 2. Fetch needs review count from trades table
@@ -1375,6 +1410,81 @@ export const DashboardPage: React.FC = () => {
                     </p>
                   </div>
                 </div>
+
+                {/* SECTION: DHAN AUTO-SYNCED OPEN POSITIONS */}
+                {hasDhanConnection && (
+                  <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                      <h2 className="text-lg font-semibold tracking-tight flex items-center gap-2 font-display" style={{ color: 'var(--text)' }}>
+                        <span className="w-2.5 h-2.5 rounded-full bg-[#06b6d4] inline-block animate-pulse"></span>
+                        Dhan Live Open Positions
+                      </h2>
+                      <span className="bg-cyan-500/12 text-cyan-400 border border-cyan-800/30 text-[10px] font-extrabold uppercase rounded-full px-2 py-0.5">
+                        Synced Block
+                      </span>
+                    </div>
+
+                    {fetchingPositions ? (
+                      <div className="flex justify-center items-center py-6">
+                        <div className="animate-spin w-5 h-5 rounded-full border-2 border-[var(--border)] border-t-[var(--accent)]" />
+                      </div>
+                    ) : dhanPositions.length === 0 ? (
+                      <div className="text-center py-8 border border-dashed border-[var(--border)] rounded-xl bg-[var(--bar)]">
+                        <p className="text-xs text-[var(--text-sub)]">No active open positions in Dhan.</p>
+                        <p className="text-[10px] text-[var(--text-muted)] mt-0.5">Real-time background position tracker is running.</p>
+                      </div>
+                    ) : (
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse text-xs">
+                          <thead>
+                            <tr className="border-b" style={{ borderColor: 'var(--border)' }}>
+                              <th className="pb-3 font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Symbol</th>
+                              <th className="pb-3 font-semibold uppercase tracking-wider text-center" style={{ color: 'var(--text-muted)' }}>Direction</th>
+                              <th className="pb-3 font-semibold uppercase tracking-wider text-center" style={{ color: 'var(--text-muted)' }}>Product</th>
+                              <th className="pb-3 font-semibold uppercase tracking-wider text-right" style={{ color: 'var(--text-muted)' }}>Qty</th>
+                              <th className="pb-3 font-semibold uppercase tracking-wider text-right" style={{ color: 'var(--text-muted)' }}>Avg. Price</th>
+                              <th className="pb-3 font-semibold uppercase tracking-wider text-right" style={{ color: 'var(--text-muted)' }}>Total Cost</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y" style={{ borderColor: 'var(--border)' }}>
+                            {dhanPositions.map((pos: any) => (
+                              <tr
+                                key={pos.id}
+                                className="transition-colors hover:bg-[var(--row)]"
+                              >
+                                <td className="py-3 font-bold" style={{ color: 'var(--text)' }}>
+                                  <div className="flex flex-col">
+                                    <span>{pos.symbol}</span>
+                                    <span style={{ color: 'var(--text-muted)' }} className="text-[10px] font-mono font-medium">
+                                      {pos.exchange || 'NSE'} • {pos.instrument_type || 'EQUITY'}
+                                    </span>
+                                  </div>
+                                </td>
+                                <td className="py-3 text-center">
+                                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${pos.opening_direction === 'LONG' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
+                                    {pos.opening_direction}
+                                  </span>
+                                </td>
+                                <td className="py-3 text-center font-semibold text-[var(--text-sub)] uppercase text-[10px]">
+                                  {pos.product_type}
+                                </td>
+                                <td className="py-3 text-right font-mono font-bold text-[var(--text)]">
+                                  {pos.total_quantity}
+                                </td>
+                                <td className="py-3 text-right font-mono text-[var(--text)]">
+                                  {formatINR(pos.avg_entry_price)}
+                                </td>
+                                <td className="py-3 text-right font-mono font-bold text-[var(--text)]">
+                                  {formatINR(pos.total_investment)}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* SECTION 8: RECENT TRADES */}
                 <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
