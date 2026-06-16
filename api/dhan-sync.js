@@ -3,38 +3,35 @@ import { decrypt } from './_encryption.js';
 
 function getOptionType(leg) {
   if (!leg) return null;
-  const raw = leg.raw_response || leg;
-  
-  // Method 1: Check drvOptionType field directly
-  // Dhan may return 'CE', 'PE', 'CALL', 'PUT', null, or the string 'NA'
-  if (raw.drvOptionType === 'CE') return 'CALL';
-  if (raw.drvOptionType === 'PE') return 'PUT';
-  if (raw.drvOptionType === 'CALL') return 'CALL';
-  if (raw.drvOptionType === 'PUT') return 'PUT';
+  const target = leg.raw_response || leg;
 
-  // Method-2: Parse from tradingSymbol (NSE format ends with CE or PE)
-  // Example: 'NIFTY2407225050CE' or 'BANKNIFTY2406456000PE'
-  const tradingSymbol = (raw.tradingSymbol || leg.symbol || '').toUpperCase().trim();
-  if (tradingSymbol.endsWith('CE')) return 'CALL';
-  if (tradingSymbol.endsWith('PE')) return 'PUT';
+  // Method 1: drvOptionType field (may be CE, PE, CALL, PUT, null, or string NA)
+  if (target.drvOptionType === 'CE') return 'CALL';
+  if (target.drvOptionType === 'PE') return 'PUT';
+  if (target.drvOptionType === 'CALL') return 'CALL';
+  if (target.drvOptionType === 'PUT') return 'PUT';
 
-  // Method 3: Parse from customSymbol (human-readable, contains the word CALL or PUT)
-  // Example: 'NIFTY 24 JUL 25050 CALL' or 'BANKNIFTY 17 JUL 56000 PUT'
-  const customSymbol = (raw.customSymbol || '').toUpperCase().trim();
-  if (customSymbol.includes(' CALL') || customSymbol.endsWith('CALL')) return 'CALL';
-  if (customSymbol.includes(' PUT') || customSymbol.endsWith('PUT')) return 'PUT';
+  // Method 2: tradingSymbol ends with CE or PE (NSE standard format)
+  const sym = (target.tradingSymbol || target.symbol || '').toUpperCase().trim();
+  if (sym.endsWith('CE')) return 'CALL';
+  if (sym.endsWith('PE')) return 'PUT';
 
-  // Not an options trade (equity, futures, currency)
+  // Method 3: customSymbol contains the word CALL or PUT
+  const custom = (target.customSymbol || '').toUpperCase().trim();
+  if (custom.includes(' CALL') || custom.endsWith('CALL')) return 'CALL';
+  if (custom.includes(' PUT') || custom.endsWith('PUT')) return 'PUT';
+
   return null;
 }
 
-function getMarketDirection(transactionType, optionType) {
+function getMarketDirection(positionDirection, optionType) {
   if (optionType === 'PUT') {
-    // PUT options: buying is bearish (SHORT), selling is bullish (LONG)
-    return transactionType === 'BUY' ? 'SHORT' : 'LONG';
+    // PUT options: BUY put = bearish = SHORT market view
+    //              SELL put = bullish = LONG market view
+    return positionDirection === 'LONG' ? 'SHORT' : 'LONG';
   }
-  // CALL options, equity, futures: BUY = LONG, SELL = SHORT
-  return transactionType === 'BUY' ? 'LONG' : 'SHORT';
+  // CALL options, equity, futures: position direction = market direction
+  return positionDirection;
 }
 
 export default async function handler(req, res) {
@@ -344,8 +341,7 @@ export default async function handler(req, res) {
             ? openPosition.opening_leg_ids[0]
             : 'UNKNOWN';
 
-          const openingTransactionType = openPosition.opening_direction === 'LONG' ? 'BUY' : 'SELL';
-          const marketDirection = getMarketDirection(openingTransactionType, openPosition.option_type);
+          const marketDirection = getMarketDirection(openPosition.opening_direction, openPosition.option_type);
 
           const { data: newTrade, error: insertTradeErr } = await supabaseUser
             .from('trades')
