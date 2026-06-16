@@ -58,6 +58,64 @@ export const DashboardPage: React.FC = () => {
 
   const [loading, setLoading] = useState<boolean>(true);
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
+
+  // Broker Sync States
+  const [syncStatus, setSyncStatus] = useState<'idle' | 'active' | 'inactive'>('idle');
+  const [totalSyncedCount, setTotalSyncedCount] = useState<number>(0);
+  const [needsReviewCount, setNeedsReviewCount] = useState<number>(0);
+  const [syncLoading, setSyncLoading] = useState<boolean>(true);
+
+  // Fetch Broker Sync Widget Data
+  const fetchBrokerSyncData = async () => {
+    if (!userId) return;
+    try {
+      // 1. Fetch connected brokers
+      const { data: connections, error: connError } = await supabase
+        .from('broker_connections')
+        .select('is_active, total_synced')
+        .eq('user_id', userId);
+
+      if (connError) throw connError;
+
+      let status: 'idle' | 'active' | 'inactive' = 'idle';
+      let totalSynced = 0;
+
+      if (connections && connections.length > 0) {
+        const anyActive = connections.some((c: any) => c.is_active);
+        status = anyActive ? 'active' : 'inactive';
+        totalSynced = connections.reduce((sum: number, c: any) => sum + (c.total_synced || 0), 0);
+      }
+
+      // 2. Fetch needs review count from trades table
+      const { count: needsReview, error: countError } = await supabase
+        .from('trades')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId)
+        .eq('needs_review', true);
+
+      if (countError) throw countError;
+
+      setSyncStatus(status);
+      setTotalSyncedCount(totalSynced);
+      setNeedsReviewCount(needsReview || 0);
+    } catch (err) {
+      console.error('Error fetching broker sync dashboard info:', err);
+    } finally {
+      setSyncLoading(false);
+    }
+  };
+
+  // Poll broker sync data every 30 seconds
+  useEffect(() => {
+    if (!userId) return;
+    fetchBrokerSyncData();
+
+    const interval = setInterval(() => {
+      fetchBrokerSyncData();
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [userId]);
   
   // Database States
   const [trades, setTrades] = useState<any[]>([]);
@@ -622,7 +680,7 @@ export const DashboardPage: React.FC = () => {
               /* ACTIVE DASHBOARD RENDER OUT */
               <div className="space-y-5">
                 {/* SECTION 2: KEY STATS ROW */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
                   {/* Card 1 — NET P&L */}
                   <div className="p-[14px] px-[18px] rounded-[10px]" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                     <div className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
@@ -672,6 +730,44 @@ export const DashboardPage: React.FC = () => {
                     </div>
                     <div className="text-[11px] mt-1 font-medium" style={{ color: 'var(--text-sub)' }}>
                       Target: &gt;1.5
+                    </div>
+                  </div>
+
+                  {/* Card 5 — BROKER SYNC */}
+                  <div 
+                    onClick={() => navigate('/trading-logs?filter=needs_review')}
+                    className="p-[14px] px-[18px] rounded-[10px] cursor-pointer hover:border-orange-500/20 active:scale-[0.98] transition-all group relative overflow-hidden" 
+                    style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+                  >
+                    <div className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 flex items-center justify-between" style={{ color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
+                      <span>BROKER SYNC</span>
+                      {syncStatus === 'active' && (
+                        <span className="flex h-2 w-2 relative">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-[26px] font-bold tracking-tight font-sans leading-none flex items-baseline gap-2" style={{ color: 'var(--text)', letterSpacing: '-0.5px' }}>
+                      {syncStatus === 'idle' ? (
+                        <span className="text-zinc-500 text-xl font-semibold uppercase">Disconnected</span>
+                      ) : syncStatus === 'active' ? (
+                        <span className="text-[#22c55e] text-xl font-bold uppercase flex items-center gap-1.5">
+                          ● Live
+                        </span>
+                      ) : (
+                        <span className="text-amber-500 text-xl font-semibold uppercase">Inactive</span>
+                      )}
+                    </div>
+                    <div className="text-[11px] mt-1.5 font-medium flex items-center justify-between" style={{ color: 'var(--text-sub)' }}>
+                      <span>Synced: <b className="font-mono text-xs">{totalSyncedCount}</b></span>
+                      {needsReviewCount > 0 ? (
+                        <span style={{ color: '#f97316' }} className="font-bold flex items-center gap-0.5 animate-pulse">
+                          ⚠️ {needsReviewCount} review
+                        </span>
+                      ) : (
+                        <span className="text-[#22c55e] font-semibold">✓ Current</span>
+                      )}
                     </div>
                   </div>
                 </div>

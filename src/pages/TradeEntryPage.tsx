@@ -611,6 +611,7 @@ export const TradeEntryPage: React.FC = () => {
             fees: fees !== '' ? parseFloat(fees) : 0,
             month: parsedMonth,
             year: parsedYear,
+            needs_review: false,
             updated_at: new Date().toISOString()
           })
           .eq('id', id)

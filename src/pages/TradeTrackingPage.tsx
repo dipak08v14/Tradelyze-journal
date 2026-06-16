@@ -512,6 +512,32 @@ const TradeTrackingPageContent: React.FC = () => {
               </Link>
             </div>
 
+            {/* NEEDS REVIEW WARNING BANNER */}
+            {trade.needs_review && (
+              <div 
+                style={{ 
+                  backgroundColor: 'rgba(249, 115, 22, 0.08)',
+                  borderColor: 'rgba(249, 115, 22, 0.3)',
+                  borderWidth: '1px',
+                  borderRadius: '12px'
+                }} 
+                className="p-4.5 mb-6 flex items-start gap-3.5 text-sm"
+              >
+                <div style={{ backgroundColor: 'rgba(249, 115, 22, 0.15)', color: '#f97316' }} className="p-2 rounded-xl flex items-center justify-center shrink-0">
+                  <AlertTriangle className="w-5 h-5" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-bold tracking-tight text-white mb-1">
+                    Unverified Synced Trade
+                  </h4>
+                  <p style={{ color: 'var(--text-sub)' }} className="text-xs leading-relaxed max-w-3xl">
+                    This trade was synchronized automatically from your MetaTrader 5 terminal but has not been human-audited yet.
+                    Please click <strong>Edit Trade</strong> to complete risk parameters, check rule adherence checklists, and rate psychological metrics to finalize your journaling database statistics.
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* ACTIONABLE ROW */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mt-1">
               <div>

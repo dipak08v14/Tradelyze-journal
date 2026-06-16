@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
@@ -21,6 +21,17 @@ export const TradingLogsPage: React.FC = () => {
   const { user, userId, loading: authLoading } = useAuth();
   const { showError } = useToast();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Filter Needs Review State
+  const [filterNeedsReview, setFilterNeedsReview] = useState<boolean>(false);
+
+  useEffect(() => {
+    const filterParam = searchParams.get('filter');
+    if (filterParam === 'needs_review') {
+      setFilterNeedsReview(true);
+    }
+  }, [searchParams]);
 
   // General App & Navigation
   const [allTrades, setAllTrades] = useState<Trade[]>([]);
@@ -100,7 +111,8 @@ export const TradingLogsPage: React.FC = () => {
       filterSetup !== 'All' ||
       filterStatus !== 'All' ||
       filterExecution !== 'All' ||
-      filterMistakeType !== 'All'
+      filterMistakeType !== 'All' ||
+      filterNeedsReview
     );
   }, [
     filterMonth,
@@ -109,7 +121,8 @@ export const TradingLogsPage: React.FC = () => {
     filterSetup,
     filterStatus,
     filterExecution,
-    filterMistakeType
+    filterMistakeType,
+    filterNeedsReview
   ]);
 
   // Reset Filters Function
@@ -121,6 +134,8 @@ export const TradingLogsPage: React.FC = () => {
     setFilterStatus('All');
     setFilterExecution('All');
     setFilterMistakeType('All');
+    setFilterNeedsReview(false);
+    setSearchParams({});
   };
 
   // Perform filtering client-side
@@ -140,6 +155,8 @@ export const TradingLogsPage: React.FC = () => {
       if (filterExecution !== 'All' && trade.execution_status !== filterExecution) return false;
       // Mistake Type
       if (filterMistakeType !== 'All' && trade.mistake_type !== filterMistakeType) return false;
+      // Needs Review
+      if (filterNeedsReview && !trade.needs_review) return false;
 
       return true;
     });
@@ -151,7 +168,8 @@ export const TradingLogsPage: React.FC = () => {
     filterSetup,
     filterStatus,
     filterExecution,
-    filterMistakeType
+    filterMistakeType,
+    filterNeedsReview
   ]);
 
   // Real-time Aggregated Stats based on FILTERED trades only
@@ -502,6 +520,26 @@ export const TradingLogsPage: React.FC = () => {
                       </button>
                     );
                   })}
+
+                  {/* Needs Review Filter Toggle Pill */}
+                  <button
+                    type="button"
+                    onClick={() => setFilterNeedsReview(prev => !prev)}
+                    style={{
+                      backgroundColor: filterNeedsReview ? 'rgba(249,115,22,0.15)' : 'transparent',
+                      border: filterNeedsReview ? '0.5px solid #f97316' : '0.5px solid var(--border)',
+                      color: filterNeedsReview ? '#f97316' : 'var(--text-sub)',
+                      padding: '5px 14px',
+                      borderRadius: '999px',
+                      fontSize: '12px',
+                      fontWeight: filterNeedsReview ? 600 : 500,
+                      cursor: 'pointer',
+                      marginLeft: '8px'
+                    }}
+                    className={filterNeedsReview ? 'transition-all font-semibold' : 'hover:bg-[var(--bar)] transition-all'}
+                  >
+                    ⚠️ Needs Review
+                  </button>
                 </div>
 
                 {/* Executions & Mistakes selectors */}
@@ -808,10 +846,20 @@ export const TradingLogsPage: React.FC = () => {
                             </td>
 
                             {/* Symbol text-white */}
-                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap">
-                              <span className="font-bold font-mono tracking-wide" style={{ color: 'var(--text)' }}>
-                                {item.symbol}
-                              </span>
+                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap font-sans">
+                              <div className="flex items-center gap-2">
+                                <span className="font-bold font-mono tracking-wide" style={{ color: 'var(--text)' }}>
+                                  {item.symbol}
+                                </span>
+                                {item.needs_review && (
+                                  <span 
+                                    style={{ backgroundColor: 'rgba(249,115,22,0.15)', color: '#f97316', border: '0.5px solid #f97316' }}
+                                    className="px-1.5 py-0.5 text-[9px] font-black uppercase rounded tracking-wider whitespace-nowrap"
+                                  >
+                                    Needs Review
+                                  </span>
+                                )}
+                              </div>
                             </td>
 
                             {/* Direction CALL/PUT/LONG/SHORT */}

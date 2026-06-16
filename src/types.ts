@@ -52,6 +52,9 @@ export interface Trade {
   fees: number;
   month: string;
   year: number;
+  needs_review?: boolean;
+  sync_source?: string | null;
+  broker_ticket?: string | null;
   created_at?: string;
   updated_at?: string;
   strategies?: {

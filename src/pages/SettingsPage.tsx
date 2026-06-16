@@ -51,6 +51,160 @@ export default function SettingsPage() {
   // Tab 4: Notification fields
   const [alertThreshold, setAlertThreshold] = useState<number>(65);
 
+  // Broker Connections states
+  const [connections, setConnections] = useState<any[]>([]);
+  const [fetchingConnections, setFetchingConnections] = useState(false);
+  const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
+  const [connectStep, setConnectStep] = useState<1 | 2>(1);
+  const [newBrokerName, setNewBrokerName] = useState('');
+  const [generatedKey, setGeneratedKey] = useState('');
+  const [newConnectionId, setNewConnectionId] = useState('');
+  const [verifying, setVerifying] = useState(false);
+  const [generatingKey, setGeneratingKey] = useState(false);
+
+  // Fetch connections function
+  const fetchConnections = async () => {
+    if (!userId) return;
+    try {
+      setFetchingConnections(true);
+      const { data, error } = await supabase
+        .from('broker_connections')
+        .select('*')
+        .eq('user_id', userId)
+        .order('broker_name', { ascending: true });
+      if (error) throw error;
+      setConnections(data || []);
+    } catch (err: any) {
+      console.error('Error fetching broker connections:', err);
+    } finally {
+      setFetchingConnections(false);
+    }
+  };
+
+  // Trigger connections fetch
+  useEffect(() => {
+    if (userId && activeTab === 'account') {
+      fetchConnections();
+    }
+  }, [userId, activeTab]);
+
+  const handleToggleActive = async (connectionId: string, currentVal: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('broker_connections')
+        .update({ is_active: !currentVal })
+        .eq('id', connectionId)
+        .eq('user_id', userId);
+      if (error) throw error;
+      showSuccess(`Connection ${!currentVal ? 'activated' : 'deactivated'} successfully!`);
+      await fetchConnections();
+    } catch (err: any) {
+      console.error('Error toggling active status:', err);
+      showError(err.message || 'Failed to update active status.');
+    }
+  };
+
+  const handleGenerateKey = async () => {
+    if (!newBrokerName.trim()) {
+      showError('Please enter a Broker Name first.');
+      return;
+    }
+    try {
+      setGeneratingKey(true);
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
+      
+      if (!token) {
+        throw new Error('Authentication session token is missing. Please re-login.');
+      }
+
+      const res = await fetch('/api/generate-sync-key', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          broker_name: newBrokerName.trim(),
+          connection_type: 'MT5'
+        })
+      });
+
+      if (!res.ok) {
+        const errRes = await res.json().catch(() => ({}));
+        throw new Error(errRes.error || `Server returned status ${res.status}`);
+      }
+
+      const data = await res.json();
+      if (!data.api_key || !data.connection_id) {
+        throw new Error('Invalid response structure from API server.');
+      }
+
+      setGeneratedKey(data.api_key);
+      setNewConnectionId(data.connection_id);
+      setConnectStep(2);
+      showSuccess('API key generated successfully!');
+    } catch (err: any) {
+      console.error('Error generating sync key:', err);
+      showError(err.message || 'Failed to generate sync key.');
+    } finally {
+      setGeneratingKey(false);
+    }
+  };
+
+  const handleVerifyConnection = async () => {
+    if (!newConnectionId) return;
+    try {
+      setVerifying(true);
+      const { data, error } = await supabase
+        .from('broker_connections')
+        .select('last_sync_at')
+        .eq('id', newConnectionId)
+        .eq('user_id', userId)
+        .single();
+
+      if (error) throw error;
+      if (data && data.last_sync_at) {
+        showSuccess('Your MetaTrader 5 service connected successfully! First trade sync complete.');
+        await fetchConnections();
+        setIsConnectModalOpen(false);
+        setNewBrokerName('');
+        setGeneratedKey('');
+        setNewConnectionId('');
+        setConnectStep(1);
+      } else {
+        showError('No sync signal received yet. Ensure your MT5 service is running and starting up correctly.');
+      }
+    } catch (err: any) {
+      console.error('Error verifying broker connection:', err);
+      showError(err.message || 'Failed to verify connection.');
+    } finally {
+      setVerifying(false);
+    }
+  };
+
+  const formatLastSynced = (lastSyncAt: string | null) => {
+    if (!lastSyncAt) return 'Never synced';
+    try {
+      const diffMs = Date.now() - new Date(lastSyncAt).getTime();
+      const diffMins = Math.floor(diffMs / 60000);
+      if (diffMins < 1) return 'Synced just now';
+      if (diffMins < 60) return `Last synced: ${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+      const diffHours = Math.floor(diffMins / 60);
+      if (diffHours < 24) return `Last synced: ${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+      const diffDays = Math.floor(diffHours / 24);
+      return `Last synced: ${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+    } catch (err) {
+      return 'Never synced';
+    }
+  };
+
+  const handleCopyKey = () => {
+    if (!generatedKey) return;
+    navigator.clipboard.writeText(generatedKey);
+    showSuccess('API sync key copied to clipboard! ✓');
+  };
+
   // Sync state with userData when loaded
   useEffect(() => {
     if (userData) {
@@ -509,7 +663,94 @@ export default function SettingsPage() {
                         >
                           <Trash2 className="w-3.5 h-3.5" /> Purge Account
                         </button>
+                     </div>
+                  </div>
+               </div>
+
+                  {/* BROKER CONNECTIONS SECTION */}
+                  <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
+                    <h3 className="text-lg font-bold mb-1 flex items-center gap-2 uppercase tracking-wide font-display">
+                       Broker Connections
+                    </h3>
+                    <p className="text-xs text-[var(--text-sub)] mb-6">
+                      Sync MetaTrader 5 background service to keep your trade journal updated automatically.
+                    </p>
+
+                    {fetchingConnections ? (
+                      <div className="flex justify-center items-center py-6">
+                        <div className="animate-spin w-6 h-6 rounded-full border-2 border-[var(--border)] border-t-[var(--accent)]" />
                       </div>
+                    ) : connections.length === 0 ? (
+                      <div className="border border-dashed border-[var(--border)] rounded-xl p-8 text-center bg-[var(--bar)] mb-6">
+                        <p className="text-sm font-semibold text-[var(--text)] mb-1">No broker accounts connected</p>
+                        <p className="text-xs text-[var(--text-sub)]">Connect Metatrader 5 to sync automatic live trade logs</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4 mb-6">
+                        {connections.map((conn) => {
+                          return (
+                            <div 
+                              key={conn.id} 
+                              className="border border-[var(--border)] rounded-xl p-4 bg-[var(--bar)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+                            >
+                              <div className="space-y-1">
+                                <div className="flex items-center gap-2">
+                                  <h4 className="font-bold text-sm text-[var(--text)]">{conn.broker_name || 'Generic Broker'}</h4>
+                                  <span className="bg-cyan-500/12 text-cyan-400 border border-cyan-800 text-[10px] font-extrabold uppercase rounded px-1.5 py-0.5">
+                                    {conn.connection_type || 'MT5'}
+                                  </span>
+                                  {conn.is_active ? (
+                                    <span style={{ color: '#22c55e' }} className="flex items-center gap-1 text-[10px] font-bold">
+                                      <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] inline-block font-sans animate-pulse"></span>
+                                      ACTIVE
+                                    </span>
+                                  ) : (
+                                    <span style={{ color: 'var(--text-muted)' }} className="flex items-center gap-1 text-[10px] font-bold">
+                                      <span className="w-1.5 h-1.5 rounded-full bg-zinc-650 inline-block font-sans"></span>
+                                      PAUSED
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[var(--text-sub)]">
+                                  <span>Account: <span className="font-mono font-bold text-[var(--text)]">{conn.account_login || '—'}</span></span>
+                                  <span className="text-[var(--text-muted)]">•</span>
+                                  <span>Synced Trades: <span className="font-mono font-bold text-[var(--text)]">{conn.total_synced ?? 0}</span></span>
+                                  <span className="text-[var(--text-muted)]">•</span>
+                                  <span className="font-medium text-amber-500">{formatLastSynced(conn.last_sync_at)}</span>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs text-[var(--text-muted)]">Live Sync</span>
+                                  <button
+                                    onClick={() => handleToggleActive(conn.id, conn.is_active)}
+                                    className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors ${
+                                      conn.is_active ? 'bg-[#22c55e]' : 'bg-zinc-700'
+                                    }`}
+                                  >
+                                    <span
+                                      className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                                        conn.is_active ? 'translate-x-5.5' : 'translate-x-1'
+                                      }`}
+                                    />
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    <div className="flex">
+                      <button
+                        onClick={() => setIsConnectModalOpen(true)}
+                        style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
+                        className="hover:opacity-90 font-bold px-4 py-2.5 rounded-xl cursor-pointer text-xs"
+                      >
+                        + Connect MT5 Broker
+                      </button>
                     </div>
                   </div>
 
@@ -790,6 +1031,142 @@ export default function SettingsPage() {
                 {saving ? 'Purging...' : 'Delete Account Forever'}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* CONNECT MT5 BROKER SETUP MODAL */}
+      {isConnectModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm">
+          <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl relative animate-fade-in">
+            {/* Modal close */}
+            <button
+              onClick={() => {
+                setIsConnectModalOpen(false);
+                setConnectStep(1);
+                setNewBrokerName('');
+                setGeneratedKey('');
+                setNewConnectionId('');
+              }}
+              className="absolute top-4 right-4 text-[var(--text-sub)] hover:text-[var(--text)] cursor-pointer"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            {connectStep === 1 ? (
+              <div className="space-y-4">
+                <div>
+                  <h4 className="text-lg font-bold text-[var(--text)]">Connect MetaTrader 5 Broker</h4>
+                  <p className="text-xs text-[var(--text-sub)] mt-1">
+                    Connect your MT5 account to enable seamless automatic synchronization of your trades.
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-xs font-bold uppercase tracking-wider font-mono text-[var(--text-muted)]">
+                    Broker Name (e.g. IC Markets, FTMO, Pepperstone)
+                  </label>
+                  <input
+                    type="text"
+                    value={newBrokerName}
+                    onChange={(e) => setNewBrokerName(e.target.value)}
+                    placeholder="Enter broker name"
+                    style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
+                    className="rounded-xl px-4 py-2.5 w-full text-sm focus:ring-1 focus:ring-[var(--accent)] focus:outline-none"
+                  />
+                </div>
+
+                <div className="flex justify-end pt-2">
+                  <button
+                    onClick={handleGenerateKey}
+                    disabled={generatingKey || !newBrokerName.trim()}
+                    style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
+                    className="hover:opacity-95 font-bold px-5 py-2.5 rounded-xl cursor-pointer text-xs disabled:opacity-50 transition-all flex items-center gap-1"
+                  >
+                    {generatingKey ? 'Generating Key...' : 'Generate API Key & View Instructions'}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div>
+                  <h4 className="text-lg font-bold text-[#22c55e] flex items-center gap-1.5 font-display">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#22c55e] animate-pulse"></span>
+                    Broker Sync Key Generated!
+                  </h4>
+                  <p className="text-xs text-[var(--text-sub)] mt-1">
+                    Copy the security key and follow instructions to activate auto-sync in MT5.
+                  </p>
+                </div>
+
+                {/* API KEY FIELD */}
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider font-mono text-[var(--text-muted)]">
+                    Your Broker Sync Key (Keep Secret)
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      readOnly
+                      value={generatedKey}
+                      style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
+                      className="rounded-xl px-4 py-2.5 w-full text-xs font-mono select-all focus:outline-none"
+                    />
+                    <button
+                      onClick={handleCopyKey}
+                      style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
+                      className="hover:opacity-95 cursor-pointer rounded-xl px-4 py-2.5 text-xs font-bold whitespace-nowrap"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                </div>
+
+                {/* INSTRUCTIONS */}
+                <div style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--border)' }} className="rounded-xl p-4 text-xs text-[var(--text-sub)] space-y-3 leading-relaxed">
+                  <h5 className="font-bold text-[var(--text)] font-mono uppercase tracking-widest text-[10px]">MT5 Setup Guide</h5>
+                  <div className="space-y-2">
+                    <div>
+                      <p className="font-semibold text-[var(--text)]">1. Allow WebRequest</p>
+                      <p>Open MT5, go to <span className="font-semibold">Tools &rarr; Options &rarr; Expert Advisors</span>. Check the box <span className="font-semibold font-sans">"Allow WebRequest for listed URL"</span> and add: <span className="font-mono text-[var(--accent)]">https://tradelyze.app</span></p>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-[var(--text)]">2. Prepare Service</p>
+                      <p>Download the <span className="font-semibold text-[var(--accent)] text-xs">TradelyzeSync.mq5</span> service file. Paste it into MetaTrader's <span className="font-mono bg-[var(--bar)] px-1 rounded">MQL5/Services</span> directory, open in MetaEditor, and click <span className="font-semibold">Compile</span>.</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-[var(--text)]">3. Set Security Key</p>
+                      <p>In your MT5 Navigator bar on the left, expand <span className="font-semibold">Services</span>, right-click <span className="font-semibold">TradelyzeSync</span>, and select <span className="font-semibold">Properties</span>. Double-click the parameter name <span className="font-mono font-sans">Sync Key</span> and paste your generated Broker Sync Key. Click <span className="font-semibold font-sans">OK</span> then right-click and select <span className="font-semibold">Start</span>.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-end pt-2 gap-3">
+                  <button
+                    onClick={() => {
+                      setIsConnectModalOpen(false);
+                      setConnectStep(1);
+                      setNewBrokerName('');
+                      setGeneratedKey('');
+                      setNewConnectionId('');
+                    }}
+                    className="border border-[var(--border)] hover:bg-[var(--row)] text-[var(--text-sub)] hover:text-[var(--text)] text-xs font-semibold px-4 py-2.5 rounded-xl cursor-pointer"
+                  >
+                    Do this later
+                  </button>
+                  <button
+                    onClick={handleVerifyConnection}
+                    disabled={verifying}
+                    style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
+                    className="hover:opacity-95 font-bold px-5 py-2.5 rounded-xl cursor-pointer text-xs disabled:opacity-50 transition-all flex items-center gap-1.5"
+                  >
+                    {verifying ? 'Verifying...' : 'Verify Connection'}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
