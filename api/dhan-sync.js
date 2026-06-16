@@ -22,6 +22,8 @@ export default async function handler(req, res) {
   }
 
   const syncType = body.sync_type || 'manual';
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
   const authHeader = req.headers.authorization;
   const cronSecretHeader = req.headers['x-cron-secret'];
 
@@ -31,14 +33,14 @@ export default async function handler(req, res) {
     // Determine calling mode
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.replace('Bearer ', '');
-      const supabaseObj = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+      const supabaseObj = createClient(supabaseUrl, supabaseKey);
       const { data: { user }, error: authError } = await supabaseObj.auth.getUser(token);
       if (authError || !user) {
         return res.status(401).json({ error: 'Unauthorized: User lookup failed' });
       }
       usersToSync = [{ userId: user.id, token: token, useUserAuth: true }];
     } else if (cronSecretHeader && cronSecretHeader === process.env.CRON_SECRET) {
-      const supabaseAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+      const supabaseAdmin = createClient(supabaseUrl, supabaseKey);
       const { data: activeConnections, error: connError } = await supabaseAdmin
         .from('broker_connections')
         .select('user_id')
@@ -62,7 +64,7 @@ export default async function handler(req, res) {
     for (const task of usersToSync) {
       let supabaseUser;
       if (task.useUserAuth) {
-        supabaseUser = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
+        supabaseUser = createClient(supabaseUrl, supabaseKey, {
           global: {
             headers: {
               Authorization: `Bearer ${task.token}`
@@ -70,7 +72,7 @@ export default async function handler(req, res) {
           }
         });
       } else {
-        supabaseUser = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+        supabaseUser = createClient(supabaseUrl, supabaseKey);
       }
 
       let connectionId = null;
@@ -128,67 +130,74 @@ export default async function handler(req, res) {
         // STEP C — FETCH LEGS FROM DHAN
         for (const dateRange of dateRanges) {
           try {
-            const dhanRes = await fetch(`https://api.dhan.co/v2/trades/${dateRange.from_date}/${dateRange.to_date}`, {
-              method: 'GET',
-              headers: {
-                'access-token': decryptedToken,
-                'Content-Type': 'application/json'
-              }
-            });
+            let page = 1;
+            let hasMore = true;
+            const maxPages = 1000; // Safety limit to avoid infinite loop
 
-            if (!dhanRes.ok) {
-              console.error(`Dhan API fetch error for range ${dateRange.from_date} to ${dateRange.to_date}:`, dhanRes.status);
-              continue;
-            }
+            while (hasMore && page <= maxPages) {
+              const dhanRes = await fetch(`https://api.dhan.co/v2/trades/${dateRange.from_date}/${dateRange.to_date}/${page}`, {
+                method: 'GET',
+                headers: {
+                  'access-token': decryptedToken,
+                  'Content-Type': 'application/json'
+                }
+              });
 
-            const resJson = await dhanRes.json();
-            if (resJson.status !== 'success' || !Array.isArray(resJson.data)) {
-              continue;
-            }
-
-            const legs = resJson.data;
-            for (const leg of legs) {
-              totalLegsReceived++;
-              const dhanOrderId = String(leg.orderId);
-
-              // Check if already exists
-              const { data: existingLegs } = await supabaseUser
-                .from('dhan_raw_legs')
-                .select('id')
-                .eq('dhan_order_id', dhanOrderId)
-                .eq('user_id', task.userId)
-                .limit(1);
-
-              if (existingLegs && existingLegs.length > 0) {
-                totalLegsSkipped++;
-                continue;
+              if (!dhanRes.ok) {
+                console.error(`Dhan API fetch error for range ${dateRange.from_date} to ${dateRange.to_date} page ${page}:`, dhanRes.status);
+                break;
               }
 
-              let tradeTime = leg.createTime;
-              if (!tradeTime) {
-                tradeTime = new Date().toISOString();
-              } else if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(tradeTime)) {
-                tradeTime = tradeTime.replace(' ', 'T') + '+05:30'; // Administer Dhan's Indian Market Timezone
-              }
+              const resJson = await dhanRes.json();
+              if (resJson && resJson.status === 'success' && Array.isArray(resJson.data) && resJson.data.length > 0) {
+                const legs = resJson.data;
+                for (const leg of legs) {
+                  totalLegsReceived++;
+                  const dhanOrderId = String(leg.orderId);
 
-              await supabaseUser
-                .from('dhan_raw_legs')
-                .insert({
-                  user_id: task.userId,
-                  connection_id: connectionId,
-                  dhan_order_id: dhanOrderId,
-                  symbol: leg.tradingSymbol || '',
-                  exchange: leg.exchange || '',
-                  segment: leg.exchangeSegment || '',
-                  transaction_type: (leg.transactionType || '').toUpperCase(),
-                  quantity: parseInt(String(leg.tradedQuantity || 0), 10),
-                  price: parseFloat(String(leg.tradedPrice || 0)),
-                  trade_time: tradeTime,
-                  product_type: leg.productType || '',
-                  order_type: leg.orderType || '',
-                  is_matched: false,
-                  raw_response: leg
-                });
+                  // Check if already exists
+                  const { data: existingLegs } = await supabaseUser
+                    .from('dhan_raw_legs')
+                    .select('id')
+                    .eq('dhan_order_id', dhanOrderId)
+                    .eq('user_id', task.userId)
+                    .limit(1);
+
+                  if (existingLegs && existingLegs.length > 0) {
+                    totalLegsSkipped++;
+                    continue;
+                  }
+
+                  let tradeTime = leg.createTime;
+                  if (!tradeTime) {
+                    tradeTime = new Date().toISOString();
+                  } else if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(tradeTime)) {
+                    tradeTime = tradeTime.replace(' ', 'T') + '+05:30'; // Administer Dhan's Indian Market Timezone
+                  }
+
+                  await supabaseUser
+                    .from('dhan_raw_legs')
+                    .insert({
+                      user_id: task.userId,
+                      connection_id: connectionId,
+                      dhan_order_id: dhanOrderId,
+                      symbol: leg.tradingSymbol || '',
+                      exchange: leg.exchange || '',
+                      segment: leg.exchangeSegment || '',
+                      transaction_type: (leg.transactionType || '').toUpperCase(),
+                      quantity: parseInt(String(leg.tradedQuantity || 0), 10),
+                      price: parseFloat(String(leg.tradedPrice || 0)),
+                      trade_time: tradeTime,
+                      product_type: leg.productType || '',
+                      order_type: leg.orderType || '',
+                      is_matched: false,
+                      raw_response: leg
+                    });
+                }
+                page++;
+              } else {
+                hasMore = false;
+              }
             }
           } catch (err) {
             console.error('Error syncing individual dateRange:', dateRange, err);
@@ -484,7 +493,7 @@ export default async function handler(req, res) {
       }
     }
 
-    if (task.useUserAuth) {
+    if (authHeader && authHeader.startsWith('Bearer ')) {
       // Single user trigger gets detailed single response matching spec
       const singleRes = overallResults[0];
       if (singleRes && singleRes.success) {

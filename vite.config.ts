@@ -16,7 +16,18 @@ export default defineConfig(() => {
             if (req.url && req.url.startsWith('/api/')) {
               const urlPath = req.url.split('?')[0];
               const endpoint = urlPath.replace('/api/', '');
-              const allowedEndpoints = ['ask-ai', 'create-razorpay-order', 'verify-payment', 'scan-chart'];
+              const allowedEndpoints = [
+                'ask-ai',
+                'create-razorpay-order',
+                'verify-payment',
+                'scan-chart',
+                'dhan-connect',
+                'dhan-disconnect',
+                'dhan-open-positions',
+                'dhan-sync',
+                'generate-sync-key',
+                'sync-trades'
+              ];
 
               if (allowedEndpoints.includes(endpoint)) {
                 let bodyBuffer = '';
