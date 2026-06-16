@@ -13,6 +13,19 @@ function readRawBody(req) {
   })
 }
 
+function sanitizeJSON(text) {
+  return text.replace(/[\x00-\x1F\x7F]/g, (char) => {
+    switch (char.charCodeAt(0)) {
+      case 0x08: return '\\b'
+      case 0x09: return '\\t'
+      case 0x0A: return '\\n'
+      case 0x0C: return '\\f'
+      case 0x0D: return '\\r'
+      default:   return '\\u' + char.charCodeAt(0).toString(16).padStart(4, '0')
+    }
+  })
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
@@ -29,18 +42,11 @@ export default async function handler(req, res) {
 
     if (rb && typeof rb === 'object' && !Buffer.isBuffer(rb)) {
       body = rb
-      console.log('body from req.body object')
     } else {
       const raw = await readRawBody(req)
-      let text = ''
-      if (raw.length > 0) {
-        text = raw.toString('utf8')
-      } else if (rb !== null && rb !== undefined) {
-        text = String(rb)
-      }
-      text = text.replace(/^\uFEFF/, '').replace(/^[\xEF][\xBB][\xBF]/, '').trim()
-      console.log('raw body preview:', text.substring(0, 100))
-      console.log('first char codes:', [...text.substring(0, 5)].map(c => c.charCodeAt(0)))
+      let text = raw.length > 0 ? raw.toString('utf8') : String(rb || '')
+      text = text.replace(/^\uFEFF/, '').trim()
+      text = sanitizeJSON(text)
       if (text) body = JSON.parse(text)
     }
   } catch (e) {
@@ -49,7 +55,6 @@ export default async function handler(req, res) {
   }
 
   const { api_key, broker_name, account_login, sync_type, trades } = body
-
   if (!api_key) return res.status(401).json({ error: 'API key required' })
 
   try {
