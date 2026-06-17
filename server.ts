@@ -26,7 +26,8 @@ async function startServer() {
     'dhan-sync',
     'generate-sync-key',
     'sync-trades',
-    'dhan-repair-options'
+    'dhan-repair-options',
+    'chart-data'
   ];
 
   // API Route Handler
