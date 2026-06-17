@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { getTVSymbol, getTVTheme, buildTVWidgetURL } from '../lib/symbolMap';
 import { supabase } from '../lib/supabase';
-import { createChart, ColorType, CandlestickSeries, HistogramSeries } from 'lightweight-charts';
+import { createChart, ColorType, CandlestickSeries, HistogramSeries, createSeriesMarkers } from 'lightweight-charts';
 import { getYahooSymbol, getYahooInterval, canFetchIntraday } from '../lib/yahooSymbolMap';
 
 const TIMEFRAMES = [
@@ -58,6 +58,7 @@ export default function TradeChart({ trade, userTheme }) {
   const lwChartRef = useRef(null);
   const lwSeriesRef = useRef(null);
   const lwVolumeRef = useRef(null);
+  const markersRef = useRef(null);
   const [ohlcLegend, setOhlcLegend] = useState(null);
 
   function getTradeTimeRange(date, entryTime) {
@@ -156,71 +157,76 @@ export default function TradeChart({ trade, userTheme }) {
   useEffect(() => {
     if (!isIndianMarket || !indianChartContainerRef.current || !chartData || chartData.length === 0) return;
 
-    const isDark = ['charcoal', 'navy', 'midnight'].includes(userTheme);
+    const chartIsDark = isMaximized || ['charcoal', 'navy', 'midnight'].includes(userTheme);
 
     const chart = createChart(indianChartContainerRef.current, {
       width: indianChartContainerRef.current.clientWidth,
       height: indianChartContainerRef.current.clientHeight || 400,
       layout: {
-        background: { type: ColorType.Solid, color: isDark ? '#0e0f16' : '#ffffff' },
-        textColor: isDark ? '#94a3b8' : '#64748b',
-        fontSize: 11,
+        background: { type: ColorType.Solid, color: chartIsDark ? '#131722' : '#ffffff' },
+        textColor: chartIsDark ? '#b2b5be' : '#787b86',
+        fontSize: 12,
+        fontFamily: "-apple-system, BlinkMacSystemFont, 'Trebuchet MS', Roboto, Ubuntu, sans-serif",
       },
       grid: {
-        vertLines: { color: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)', style: 1 },
-        horzLines: { color: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)', style: 1 },
+        vertLines: { color: chartIsDark ? '#1e222d' : '#e1e3eb' },
+        horzLines: { color: chartIsDark ? '#1e222d' : '#e1e3eb' },
       },
       rightPriceScale: {
-        borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
-        scaleMargins: { top: 0.08, bottom: 0.25 },
+        borderColor: chartIsDark ? '#2a2e39' : '#e1e3eb',
+        scaleMargins: { top: 0.08, bottom: 0.22 },
+        textColor: chartIsDark ? '#b2b5be' : '#787b86',
       },
       timeScale: {
-        borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+        borderColor: chartIsDark ? '#2a2e39' : '#e1e3eb',
         timeVisible: true,
         secondsVisible: false,
-        rightOffset: 8,
+        rightOffset: 10,
         barSpacing: 6,
         fixLeftEdge: false,
         fixRightEdge: false,
+        textColor: chartIsDark ? '#b2b5be' : '#787b86',
       },
       crosshair: {
         mode: 0,
         vertLine: {
-          color: isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)',
+          color: chartIsDark ? '#758696' : '#9598a1',
           width: 1,
           style: 1,
-          labelBackgroundColor: isDark ? '#334155' : '#475569',
+          labelBackgroundColor: chartIsDark ? '#363a45' : '#9598a1',
         },
         horzLine: {
-          color: isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)',
+          color: chartIsDark ? '#758696' : '#9598a1',
           width: 1,
           style: 1,
-          labelBackgroundColor: isDark ? '#334155' : '#475569',
+          labelBackgroundColor: chartIsDark ? '#363a45' : '#9598a1',
         },
       },
-      handleScroll: { mouseWheel: true, pressedMouseMove: true },
+      handleScroll: { mouseWheel: true, pressedMouseMove: true, horzTouchDrag: true },
       handleScale: { mouseWheel: true, pinch: true },
     });
 
     const candleSeries = chart.addSeries(CandlestickSeries, {
-      upColor: '#22c55e',
-      downColor: '#ef4444',
-      borderUpColor: '#22c55e',
-      borderDownColor: '#ef4444',
-      wickUpColor: '#22c55e',
-      wickDownColor: '#ef4444',
+      upColor: '#26a69a',
+      downColor: '#ef5350',
+      borderUpColor: '#26a69a',
+      borderDownColor: '#ef5350',
+      wickUpColor: '#26a69a',
+      wickDownColor: '#ef5350',
       priceLineVisible: false,
       lastValueVisible: true,
     });
 
     const volumeSeries = chart.addSeries(HistogramSeries, {
       priceFormat: { type: 'volume' },
-      priceScaleId: 'volume',
+      priceScaleId: 'vol_scale',
       lastValueVisible: false,
       priceLineVisible: false,
     });
-    volumeSeries.priceScale().applyOptions({
-      scaleMargins: { top: 0.82, bottom: 0 },
+
+    chart.priceScale('vol_scale').applyOptions({
+      scaleMargins: { top: 0.8, bottom: 0 },
+      visible: false,
     });
 
     candleSeries.setData(chartData);
@@ -230,60 +236,58 @@ export default function TradeChart({ trade, userTheme }) {
       .map(c => ({
         time: c.time,
         value: c.volume,
-        color: c.close >= c.open ? 'rgba(34,197,94,0.35)' : 'rgba(239,68,68,0.35)'
+        color: c.close >= c.open ? 'rgba(38,166,154,0.5)' : 'rgba(239,83,80,0.5)'
       }));
-    volumeSeries.setData(volumeData);
+    if (volumeData.length > 0) {
+      volumeSeries.setData(volumeData);
+    }
 
+    const IST_OFFSET = 19800;
     const isLong = (trade?.direction || 'LONG').toUpperCase() === 'LONG';
     const isProfit = (trade?.pnl || 0) >= 0;
-    const IST_OFFSET = 19800;
-
-    const markers = [];
+    const markersList = [];
 
     if (trade?.date && trade?.entry_time) {
       try {
-        const tStr = trade.entry_time.length === 5
-          ? trade.entry_time + ':00'
-          : trade.entry_time.substring(0, 8);
+        const tRaw = String(trade.entry_time).trim();
+        const tStr = tRaw.length === 5 ? tRaw + ':00' : tRaw.substring(0, 8);
         const entryDT = new Date(trade.date + 'T' + tStr + '+05:30');
-        const entryIst = Math.round(entryDT.getTime() / 1000) + IST_OFFSET;
-
-        const nearestEntry = chartData.reduce((best, c) =>
-          Math.abs(c.time - entryIst) < Math.abs(best.time - entryIst) ? c : best,
-          chartData[0]
-        );
-
-        markers.push({
-          time: nearestEntry.time,
-          position: isLong ? 'belowBar' : 'aboveBar',
-          color: '#06b6d4',
-          shape: isLong ? 'arrowUp' : 'arrowDown',
-          text: 'Entry',
-          size: 1,
-        });
-
-        if (trade.holding_time_mins && Number(trade.holding_time_mins) > 0) {
-          const exitIst = entryIst + Number(trade.holding_time_mins) * 60;
-
-          const nearestExit = chartData.reduce((best, c) =>
-            Math.abs(c.time - exitIst) < Math.abs(best.time - exitIst) ? c : best,
+        if (!isNaN(entryDT.getTime())) {
+          const entryIst = Math.round(entryDT.getTime() / 1000) + IST_OFFSET;
+          const nearestEntry = chartData.reduce((best, c) =>
+            Math.abs(c.time - entryIst) < Math.abs(best.time - entryIst) ? c : best,
             chartData[0]
           );
-
-          markers.push({
-            time: nearestExit.time,
-            position: isLong ? 'aboveBar' : 'belowBar',
-            color: isProfit ? '#22c55e' : '#ef4444',
-            shape: isLong ? 'arrowDown' : 'arrowUp',
-            text: 'Exit',
+          markersList.push({
+            time: nearestEntry.time,
+            position: isLong ? 'belowBar' : 'aboveBar',
+            color: '#2196f3',
+            shape: isLong ? 'arrowUp' : 'arrowDown',
+            text: 'E',
             size: 1,
           });
-        }
 
-        markers.sort((a, b) => a.time - b.time);
-        candleSeries.setMarkers(markers);
+          if (trade.holding_time_mins && Number(trade.holding_time_mins) > 0) {
+            const exitIst = entryIst + Number(trade.holding_time_mins) * 60;
+            const nearestExit = chartData.reduce((best, c) =>
+              Math.abs(c.time - exitIst) < Math.abs(best.time - exitIst) ? c : best,
+              chartData[0]
+            );
+            markersList.push({
+              time: nearestExit.time,
+              position: isLong ? 'aboveBar' : 'belowBar',
+              color: isProfit ? '#26a69a' : '#ef5350',
+              shape: isLong ? 'arrowDown' : 'arrowUp',
+              text: 'X',
+              size: 1,
+            });
+          }
+
+          markersList.sort((a, b) => a.time - b.time);
+          markersRef.current = createSeriesMarkers(candleSeries, markersList);
+        }
       } catch (e) {
-        console.log('Marker calculation error:', e.message);
+        console.warn('Chart marker error:', e.message);
       }
     }
 
@@ -300,13 +304,17 @@ export default function TradeChart({ trade, userTheme }) {
         return;
       }
       const d = param.seriesData.get(candleSeries);
+      const v = param.seriesData.get(volumeSeries);
       if (d && d.open != null) {
         setOhlcLegend({
-          open:  Number(d.open).toFixed(2),
-          high:  Number(d.high).toFixed(2),
-          low:   Number(d.low).toFixed(2),
-          close: Number(d.close).toFixed(2),
-          isUp:  d.close >= d.open
+          open:   Number(d.open).toFixed(2),
+          high:   Number(d.high).toFixed(2),
+          low:    Number(d.low).toFixed(2),
+          close:  Number(d.close).toFixed(2),
+          change: (Number(d.close) - Number(d.open)).toFixed(2),
+          changePct: ((Number(d.close) - Number(d.open)) / Number(d.open) * 100).toFixed(2),
+          isUp:   Number(d.close) >= Number(d.open),
+          volume: v ? v.value : null,
         });
       } else {
         setOhlcLegend(null);
@@ -329,13 +337,29 @@ export default function TradeChart({ trade, userTheme }) {
 
     return () => {
       resizeObserver.disconnect();
+      markersRef.current = null;
       chart.remove();
       lwChartRef.current = null;
       lwSeriesRef.current = null;
       lwVolumeRef.current = null;
       setOhlcLegend(null);
     };
-  }, [chartData, userTheme, isIndianMarket, chartFrom, chartTo, trade]);
+  }, [chartData, userTheme, isIndianMarket, isMaximized, chartFrom, chartTo, trade]);
+
+  useEffect(() => {
+    if (!lwChartRef.current) return;
+    const chartIsDark = isMaximized || ['charcoal', 'navy', 'midnight'].includes(userTheme);
+    lwChartRef.current.applyOptions({
+      layout: {
+        background: { type: ColorType.Solid, color: chartIsDark ? '#131722' : '#ffffff' },
+        textColor: chartIsDark ? '#b2b5be' : '#787b86',
+      },
+      grid: {
+        vertLines: { color: chartIsDark ? '#1e222d' : '#e1e3eb' },
+        horzLines: { color: chartIsDark ? '#1e222d' : '#e1e3eb' },
+      },
+    });
+  }, [isMaximized, userTheme]);
 
   const handleCapturedImage = (blob) => {
     if (!blob) return;
@@ -757,9 +781,16 @@ export default function TradeChart({ trade, userTheme }) {
               <button
                 type="button"
                 onClick={() => {
-                  if (!iframeRef.current || !chartFrom || !chartTo) return;
-                  const newUrl = buildTVWidgetURL(tvSymbol, interval, tvTheme, chartFrom, chartTo);
-                  iframeRef.current.src = newUrl;
+                  if (isIndianMarket && lwChartRef.current && chartFrom && chartTo) {
+                    lwChartRef.current.timeScale().setVisibleRange({
+                      from: chartFrom + 19800,
+                      to: chartTo + 19800,
+                    });
+                  } else {
+                    if (!iframeRef.current || !chartFrom || !chartTo) return;
+                    const newUrl = buildTVWidgetURL(tvSymbol, interval, tvTheme, chartFrom, chartTo);
+                    iframeRef.current.src = newUrl;
+                  }
                 }}
                 disabled={!chartFrom || !chartTo}
                 title={"Jump chart to " + formatTradeDate(trade?.date) + " at " + formatTradeTime(trade?.entry_time)}
@@ -904,32 +935,88 @@ export default function TradeChart({ trade, userTheme }) {
               </div>
             ) : chartData ? (
               <div style={{ position: 'relative', width: '100%', flex: 1, minHeight: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ position: 'absolute', top: 8, left: 8, zIndex: 5, pointerEvents: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: ['charcoal', 'navy', 'midnight'].includes(userTheme) ? '#e2e8f0' : '#1c1917' }}>
-                    {tvSymbol.split(':')[1] || tvSymbol}
-                  </span>
-                  <span style={{ color: ['charcoal', 'navy', 'midnight'].includes(userTheme) ? '#475569' : '#94a3b8' }}>·</span>
-                  <span style={{ fontSize: 11, color: ['charcoal', 'navy', 'midnight'].includes(userTheme) ? '#64748b' : '#94a3b8', fontWeight: 600 }}>
-                    {interval === 'D' ? '1D' : interval + 'M'}
-                  </span>
-                </div>
-
-                {ohlcLegend && (
-                  <div style={{ position: 'absolute', top: 28, left: 8, zIndex: 5, pointerEvents: 'none', display: 'flex', gap: 10, fontSize: 11, fontFamily: 'monospace' }}>
-                    <span style={{ color: ['charcoal', 'navy', 'midnight'].includes(userTheme) ? '#94a3b8' : '#64748b', fontWeight: 600 }}>
-                      <span style={{ opacity: 0.6 }}>O</span> {ohlcLegend.open}
+                {!ohlcLegend && (
+                  <div style={{ position: 'absolute', top: 8, left: 8, zIndex: 5, pointerEvents: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: ['charcoal', 'navy', 'midnight'].includes(userTheme) ? '#e2e8f0' : '#1c1917' }}>
+                      {tvSymbol.split(':')[1] || tvSymbol}
                     </span>
-                    <span style={{ color: '#22c55e', fontWeight: 600 }}>
-                      <span style={{ color: ['charcoal', 'navy', 'midnight'].includes(userTheme) ? '#94a3b8' : '#64748b', opacity: 0.6 }}>H</span> {ohlcLegend.high}
-                    </span>
-                    <span style={{ color: '#ef4444', fontWeight: 600 }}>
-                      <span style={{ color: ['charcoal', 'navy', 'midnight'].includes(userTheme) ? '#94a3b8' : '#64748b', opacity: 0.6 }}>L</span> {ohlcLegend.low}
-                    </span>
-                    <span style={{ color: ohlcLegend.isUp ? '#22c55e' : '#ef4444', fontWeight: 600 }}>
-                      <span style={{ color: ['charcoal', 'navy', 'midnight'].includes(userTheme) ? '#94a3b8' : '#64748b', opacity: 0.6 }}>C</span> {ohlcLegend.close}
+                    <span style={{ color: ['charcoal', 'navy', 'midnight'].includes(userTheme) ? '#475569' : '#94a3b8' }}>·</span>
+                    <span style={{ fontSize: 11, color: ['charcoal', 'navy', 'midnight'].includes(userTheme) ? '#64748b' : '#94a3b8', fontWeight: 600 }}>
+                      {interval === 'D' ? '1D' : interval + 'M'}
                     </span>
                   </div>
                 )}
+
+                {ohlcLegend && (() => {
+                  const chartIsDark = isMaximized || ['charcoal', 'navy', 'midnight'].includes(userTheme);
+                  const labelColor = '#787b86';
+                  const valueColor = chartIsDark ? '#d1d4dc' : '#131722';
+                  
+                  const formatVol = (v) => {
+                    if (v >= 1e9) return (v / 1e9).toFixed(2) + 'B';
+                    if (v >= 1e6) return (v / 1e6).toFixed(2) + 'M';
+                    if (v >= 1e3) return (v / 1e3).toFixed(1) + 'K';
+                    return String(Math.round(v));
+                  };
+
+                  return (
+                    <div style={{ position: 'absolute', top: 4, left: 6, zIndex: 5, pointerEvents: 'none' }}>
+                      {/* ROW 1 — OHLC values + change */}
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 10,
+                        fontSize: 12,
+                        lineHeight: 1.4,
+                        fontFamily: "-apple-system, BlinkMacSystemFont, 'Trebuchet MS', Roboto, Ubuntu, sans-serif"
+                      }}>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                          <span style={{ fontSize: 12, fontWeight: 700, color: chartIsDark ? '#e2e8f0' : '#1c1917', marginRight: 4 }}>
+                            {tvSymbol.split(':')[1] || tvSymbol}
+                          </span>
+                          <span style={{ fontSize: 11, color: chartIsDark ? '#64748b' : '#94a3b8', fontWeight: 600, marginRight: 8 }}>
+                            {interval === 'D' ? '1D' : interval + 'M'}
+                          </span>
+                        </span>
+
+                        <span>
+                          <span style={{ color: labelColor, fontWeight: 400 }}>O</span>{' '}
+                          <span style={{ color: valueColor, fontWeight: 400 }}>{ohlcLegend.open}</span>
+                        </span>
+                        <span>
+                          <span style={{ color: labelColor, fontWeight: 400 }}>H</span>{' '}
+                          <span style={{ color: '#26a69a', fontWeight: 400 }}>{ohlcLegend.high}</span>
+                        </span>
+                        <span>
+                          <span style={{ color: labelColor, fontWeight: 400 }}>L</span>{' '}
+                          <span style={{ color: '#ef5350', fontWeight: 400 }}>{ohlcLegend.low}</span>
+                        </span>
+                        <span>
+                          <span style={{ color: labelColor, fontWeight: 400 }}>C</span>{' '}
+                          <span style={{ color: ohlcLegend.isUp ? '#26a69a' : '#ef5350', fontWeight: 400 }}>{ohlcLegend.close}</span>
+                        </span>
+                        <span style={{ color: ohlcLegend.isUp ? '#26a69a' : '#ef5350', fontWeight: 400, fontSize: 12 }}>
+                          {' ' + (ohlcLegend.isUp ? '+' : '') + ohlcLegend.change + " (" + (ohlcLegend.isUp ? '+' : '') + ohlcLegend.changePct + "%)"}
+                        </span>
+                      </div>
+
+                      {/* ROW 2 — Volume */}
+                      {ohlcLegend.volume != null && ohlcLegend.volume > 0 && (
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 4,
+                          fontSize: 11,
+                          marginTop: 1,
+                          fontFamily: "-apple-system, BlinkMacSystemFont, 'Trebuchet MS', Roboto, Ubuntu, sans-serif"
+                        }}>
+                          <span style={{ color: '#787b86' }}>Vol · </span>
+                          <span style={{ color: valueColor }}>{formatVol(ohlcLegend.volume)}</span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 {dataLimitedToDaily && (
                   <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 5, pointerEvents: 'none', background: 'rgba(245,158,11,0.12)', padding: '4px 8px', fontSize: 10, textAlign: 'center', color: '#92400e' }}>
