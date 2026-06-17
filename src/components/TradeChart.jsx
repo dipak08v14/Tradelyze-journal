@@ -57,14 +57,8 @@ export default function TradeChart({ trade, userTheme }) {
   const exitPrice = trade?.exit_price ?? null;
   const pnl = trade?.pnl ?? 0;
 
-  let hintText = '💡 Press Ctrl+G on chart to go to ' + formatTradeDate(trade?.date);
-  if (entryPrice !== null) {
-    hintText += ' · Entry at ' + Number(entryPrice).toFixed(2);
-  }
-  if (exitPrice !== null) {
-    hintText += ' · Exit at ' + Number(exitPrice).toFixed(2);
-  }
-  hintText += ' · Use TradingView horizontal line drawing tool';
+  const directionStr = trade?.direction ? trade.direction + ' ' : '';
+  const hintText = '💡 Press Ctrl+G on chart to go to ' + formatTradeDate(trade?.date) + ' · Look for a ' + directionStr + 'trade around ' + formatTradeTime(trade?.entry_time);
 
   const handleCapturedImage = (blob) => {
     if (!blob) return;
@@ -589,40 +583,66 @@ export default function TradeChart({ trade, userTheme }) {
             {/* Box 3 */}
             <div style={{ background: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '8px 10px' }}>
               <span style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
-                ENTRY PRICE
+                DIRECTION
               </span>
               <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text)' }}>
-                {entryPrice !== null ? Number(entryPrice).toFixed(2) : '-'}
+                {trade?.direction ? (
+                  <span style={{
+                    display: 'inline-block',
+                    padding: '2px 8px',
+                    borderRadius: '999px',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    color: trade.direction === 'LONG' ? '#22c55e' : trade.direction === 'SHORT' ? '#ef4444' : 'var(--text)',
+                    background: trade.direction === 'LONG' ? 'rgba(34,197,94,0.12)' : trade.direction === 'SHORT' ? 'rgba(239,68,68,0.12)' : 'transparent'
+                  }}>
+                    {trade.direction}
+                  </span>
+                ) : (
+                  '-'
+                )}
               </div>
             </div>
 
             {/* Box 4 */}
             <div style={{ background: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '8px 10px' }}>
               <span style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
-                EXIT TIME
+                P&L
               </span>
-              <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text)' }}>
-                {formatTradeTime(trade?.exit_time ?? null)}
+              <div style={{ fontSize: '13px', fontWeight: 700, color: getPnlColor(trade?.pnl ?? 0) }}>
+                {formatPnl(trade?.pnl ?? 0)}
               </div>
             </div>
 
             {/* Box 5 */}
             <div style={{ background: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '8px 10px' }}>
               <span style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
-                EXIT PRICE
+                HOLDING TIME
               </span>
               <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text)' }}>
-                {exitPrice !== null ? Number(exitPrice).toFixed(2) : '-'}
+                {trade?.holding_time_mins && trade.holding_time_mins > 0 ? (
+                  trade.holding_time_mins < 60 ? (
+                    trade.holding_time_mins + ' mins'
+                  ) : (
+                    Math.floor(trade.holding_time_mins / 60) + 'h ' + (trade.holding_time_mins % 60) + 'm'
+                  )
+                ) : (
+                  '-'
+                )}
               </div>
             </div>
 
             {/* Box 6 */}
             <div style={{ background: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '8px 10px' }}>
               <span style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
-                P&L
+                POINTS / PIPS
               </span>
-              <div style={{ fontSize: '13px', fontWeight: 700, color: getPnlColor(pnl) }}>
-                {formatPnl(pnl)}
+              <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text)' }}>
+                {trade?.points && Number(trade.points) !== 0 ? (
+                  Number(trade.points).toFixed(2) + ' pts'
+                ) : (
+                  '-'
+                )}
               </div>
             </div>
           </div>
