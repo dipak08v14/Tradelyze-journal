@@ -950,8 +950,8 @@ export default function TradeChart({ trade, userTheme }) {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              minHeight: isMaximized ? '100%' : '400px',
-              height: isMaximized ? '100%' : '400px',
+              minHeight: isMaximized ? 0 : '400px',
+              height: isMaximized ? undefined : '400px',
               width: '100%',
               flex: isMaximized ? 1 : undefined
             }}
@@ -1209,7 +1209,118 @@ export default function TradeChart({ trade, userTheme }) {
         )}
 
         {/* Maximize Paste Zone */}
-        {isMaximized && renderPasteZone(true)}
+        {isMaximized && (
+          isIndianMarket ? (() => {
+            const handleDrop = (e) => {
+              e.preventDefault();
+              const files = e.dataTransfer?.files;
+              if (files && files.length > 0) {
+                const file = files[0];
+                if (file && file.type.startsWith('image/')) {
+                  handleCapturedImage(file);
+                }
+              }
+            };
+            const handleDragOver = (e) => {
+              e.preventDefault();
+            };
+
+            return (
+              <div
+                style={{
+                  flexShrink: 0,
+                  paddingTop: 8,
+                  borderTop: '0.5px solid rgba(255,255,255,0.1)',
+                  marginTop: 8
+                }}
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+              >
+                {uploadSuccess ? (
+                  <div style={{ textAlign: 'center', padding: '10px 0' }}>
+                    <div style={{ fontSize: '22px', color: '#22c55e', fontWeight: 'bold' }}>✓</div>
+                    <div style={{ fontSize: '12px', fontWeight: 600, color: '#22c55e' }}>Screenshot attached to this trade</div>
+                    <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', marginTop: '4px' }}>Refreshing page...</div>
+                  </div>
+                ) : showReplaceConfirm ? (
+                  <div style={{ textAlign: 'center' }}>
+                    <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.8)', marginBottom: '10px' }}>
+                      A screenshot already exists. Replace it?
+                    </p>
+                    <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                      <button
+                        onClick={() => {
+                          setShowReplaceConfirm(false);
+                          uploadScreenshot();
+                        }}
+                        style={{ background: '#ef4444', color: '#fff', border: 'none', borderRadius: '6px', padding: '6px 14px', fontSize: '12px', cursor: 'pointer' }}
+                      >
+                        Replace
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowReplaceConfirm(false);
+                          setCapturedFile(null);
+                          setPreviewUrl(null);
+                        }}
+                        style={{ background: 'transparent', border: '0.5px solid rgba(255,255,255,0.2)', borderRadius: '6px', padding: '6px 14px', fontSize: '12px', color: 'rgba(255,255,255,0.8)', cursor: 'pointer' }}
+                      >
+                        Keep existing
+                      </button>
+                    </div>
+                  </div>
+                ) : capturedFile ? (
+                  <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', justifyContent: 'center' }}>
+                    <img
+                      src={previewUrl}
+                      alt="Preview"
+                      style={{ width: '90px', height: '64px', objectFit: 'cover', borderRadius: '4px', border: '0.5px solid rgba(255,255,255,0.2)' }}
+                    />
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-start' }}>
+                      <div style={{ fontSize: '12px', fontWeight: 600, color: '#ffffff' }}>Chart screenshot ready</div>
+                      <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.8)' }}>Click Attach to save to this trade</div>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button
+                          onClick={handleAttachClick}
+                          disabled={uploading}
+                          style={{
+                            background: 'var(--accent)',
+                            color: '#fff',
+                            border: 'none',
+                            borderRadius: '6px',
+                            padding: '7px 16px',
+                            fontSize: '12px',
+                            fontWeight: 600,
+                            opacity: uploading ? 0.6 : 1,
+                            cursor: uploading ? 'not-allowed' : 'pointer'
+                          }}
+                        >
+                          {uploading ? 'Uploading...' : 'Attach to trade'}
+                        </button>
+                        <button
+                          onClick={() => {
+                            setCapturedFile(null);
+                            setPreviewUrl(null);
+                            setUploadSuccess(false);
+                          }}
+                          style={{ background: 'transparent', border: '0.5px solid rgba(255,255,255,0.2)', borderRadius: '6px', padding: '7px 12px', fontSize: '12px', color: 'rgba(255,255,255,0.8)', cursor: 'pointer' }}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ textAlign: 'center', userSelect: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'default' }}>
+                    <div style={{ fontSize: '12px' }}>
+                      📋 Drag downloaded chart here or Ctrl+V
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })() : renderPasteZone(true)
+        )}
       </div>
 
       {/* Normal View Paste Zone */}
