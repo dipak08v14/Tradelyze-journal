@@ -15,9 +15,14 @@ export default async function handler(req, res) {
   const nowSeconds = Math.floor(Date.now() / 1000)
 
   const rangeMap = {
-    '1m': '5d', '2m': '5d', '5m': '5d',
-    '15m': '5d', '30m': '1mo',
-    '60m': '3mo', '1h': '3mo', '1d': '1y'
+    '1m':  '7d',
+    '2m':  '60d',
+    '5m':  '60d',
+    '15m': '60d',
+    '30m': '60d',
+    '60m': '730d',
+    '1h':  '730d',
+    '1d':  '5y'
   }
   const defaultRange = rangeMap[yahooInterval] || '5d'
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { getTVSymbol, getTVTheme, buildTVWidgetURL } from '../lib/symbolMap';
 import { supabase } from '../lib/supabase';
-import { createChart, ColorType, CandlestickSeries } from 'lightweight-charts';
+import { createChart, ColorType, CandlestickSeries, HistogramSeries } from 'lightweight-charts';
 import { getYahooSymbol, getYahooInterval, canFetchIntraday } from '../lib/yahooSymbolMap';
 
 const TIMEFRAMES = [
@@ -57,6 +57,8 @@ export default function TradeChart({ trade, userTheme }) {
   const indianChartContainerRef = useRef(null);
   const lwChartRef = useRef(null);
   const lwSeriesRef = useRef(null);
+  const lwVolumeRef = useRef(null);
+  const [ohlcLegend, setOhlcLegend] = useState(null);
 
   function getTradeTimeRange(date, entryTime) {
     if (!date || typeof date !== 'string') return { from: null, to: null }
@@ -161,27 +163,43 @@ export default function TradeChart({ trade, userTheme }) {
       height: indianChartContainerRef.current.clientHeight || 400,
       layout: {
         background: { type: ColorType.Solid, color: isDark ? '#0e0f16' : '#ffffff' },
-        textColor: isDark ? '#e2e8f0' : '#1c1917',
+        textColor: isDark ? '#94a3b8' : '#64748b',
+        fontSize: 11,
       },
       grid: {
-        vertLines: { color: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' },
-        horzLines: { color: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' },
+        vertLines: { color: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)', style: 1 },
+        horzLines: { color: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)', style: 1 },
       },
       rightPriceScale: {
-        borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+        borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+        scaleMargins: { top: 0.08, bottom: 0.25 },
       },
       timeScale: {
-        borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+        borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
         timeVisible: true,
         secondsVisible: false,
-        rightOffset: 5,
+        rightOffset: 8,
         barSpacing: 6,
         fixLeftEdge: false,
         fixRightEdge: false,
       },
       crosshair: {
-        mode: 1,
+        mode: 0,
+        vertLine: {
+          color: isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)',
+          width: 1,
+          style: 1,
+          labelBackgroundColor: isDark ? '#334155' : '#475569',
+        },
+        horzLine: {
+          color: isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)',
+          width: 1,
+          style: 1,
+          labelBackgroundColor: isDark ? '#334155' : '#475569',
+        },
       },
+      handleScroll: { mouseWheel: true, pressedMouseMove: true },
+      handleScale: { mouseWheel: true, pinch: true },
     });
 
     const candleSeries = chart.addSeries(CandlestickSeries, {
@@ -191,20 +209,113 @@ export default function TradeChart({ trade, userTheme }) {
       borderDownColor: '#ef4444',
       wickUpColor: '#22c55e',
       wickDownColor: '#ef4444',
+      priceLineVisible: false,
+      lastValueVisible: true,
+    });
+
+    const volumeSeries = chart.addSeries(HistogramSeries, {
+      priceFormat: { type: 'volume' },
+      priceScaleId: 'volume',
+      lastValueVisible: false,
+      priceLineVisible: false,
+    });
+    volumeSeries.priceScale().applyOptions({
+      scaleMargins: { top: 0.82, bottom: 0 },
     });
 
     candleSeries.setData(chartData);
 
+    const volumeData = chartData
+      .filter(c => c.volume != null && c.volume > 0)
+      .map(c => ({
+        time: c.time,
+        value: c.volume,
+        color: c.close >= c.open ? 'rgba(34,197,94,0.35)' : 'rgba(239,68,68,0.35)'
+      }));
+    volumeSeries.setData(volumeData);
+
+    const isLong = (trade?.direction || 'LONG').toUpperCase() === 'LONG';
+    const isProfit = (trade?.pnl || 0) >= 0;
+    const IST_OFFSET = 19800;
+
+    const markers = [];
+
+    if (trade?.date && trade?.entry_time) {
+      try {
+        const tStr = trade.entry_time.length === 5
+          ? trade.entry_time + ':00'
+          : trade.entry_time.substring(0, 8);
+        const entryDT = new Date(trade.date + 'T' + tStr + '+05:30');
+        const entryIst = Math.round(entryDT.getTime() / 1000) + IST_OFFSET;
+
+        const nearestEntry = chartData.reduce((best, c) =>
+          Math.abs(c.time - entryIst) < Math.abs(best.time - entryIst) ? c : best,
+          chartData[0]
+        );
+
+        markers.push({
+          time: nearestEntry.time,
+          position: isLong ? 'belowBar' : 'aboveBar',
+          color: '#06b6d4',
+          shape: isLong ? 'arrowUp' : 'arrowDown',
+          text: 'Entry',
+          size: 1,
+        });
+
+        if (trade.holding_time_mins && Number(trade.holding_time_mins) > 0) {
+          const exitIst = entryIst + Number(trade.holding_time_mins) * 60;
+
+          const nearestExit = chartData.reduce((best, c) =>
+            Math.abs(c.time - exitIst) < Math.abs(best.time - exitIst) ? c : best,
+            chartData[0]
+          );
+
+          markers.push({
+            time: nearestExit.time,
+            position: isLong ? 'aboveBar' : 'belowBar',
+            color: isProfit ? '#22c55e' : '#ef4444',
+            shape: isLong ? 'arrowDown' : 'arrowUp',
+            text: 'Exit',
+            size: 1,
+          });
+        }
+
+        markers.sort((a, b) => a.time - b.time);
+        candleSeries.setMarkers(markers);
+      } catch (e) {
+        console.log('Marker calculation error:', e.message);
+      }
+    }
+
     if (chartFrom && chartTo) {
-      const istOffset = 19800;
       chart.timeScale().setVisibleRange({
-        from: chartFrom + istOffset,
-        to: chartTo + istOffset
+        from: chartFrom + IST_OFFSET,
+        to: chartTo + IST_OFFSET,
       });
     }
 
+    chart.subscribeCrosshairMove((param) => {
+      if (!param || !param.time || !param.seriesData) {
+        setOhlcLegend(null);
+        return;
+      }
+      const d = param.seriesData.get(candleSeries);
+      if (d && d.open != null) {
+        setOhlcLegend({
+          open:  Number(d.open).toFixed(2),
+          high:  Number(d.high).toFixed(2),
+          low:   Number(d.low).toFixed(2),
+          close: Number(d.close).toFixed(2),
+          isUp:  d.close >= d.open
+        });
+      } else {
+        setOhlcLegend(null);
+      }
+    });
+
     lwChartRef.current = chart;
     lwSeriesRef.current = candleSeries;
+    lwVolumeRef.current = volumeSeries;
 
     const resizeObserver = new ResizeObserver(() => {
       if (indianChartContainerRef.current && lwChartRef.current) {
@@ -221,8 +332,10 @@ export default function TradeChart({ trade, userTheme }) {
       chart.remove();
       lwChartRef.current = null;
       lwSeriesRef.current = null;
+      lwVolumeRef.current = null;
+      setOhlcLegend(null);
     };
-  }, [chartData, userTheme, isIndianMarket, chartFrom, chartTo]);
+  }, [chartData, userTheme, isIndianMarket, chartFrom, chartTo, trade]);
 
   const handleCapturedImage = (blob) => {
     if (!blob) return;
@@ -790,12 +903,40 @@ export default function TradeChart({ trade, userTheme }) {
                 </a>
               </div>
             ) : chartData ? (
-              <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', flex: 1 }}>
+              <div style={{ position: 'relative', width: '100%', flex: 1, minHeight: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ position: 'absolute', top: 8, left: 8, zIndex: 5, pointerEvents: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: ['charcoal', 'navy', 'midnight'].includes(userTheme) ? '#e2e8f0' : '#1c1917' }}>
+                    {tvSymbol.split(':')[1] || tvSymbol}
+                  </span>
+                  <span style={{ color: ['charcoal', 'navy', 'midnight'].includes(userTheme) ? '#475569' : '#94a3b8' }}>·</span>
+                  <span style={{ fontSize: 11, color: ['charcoal', 'navy', 'midnight'].includes(userTheme) ? '#64748b' : '#94a3b8', fontWeight: 600 }}>
+                    {interval === 'D' ? '1D' : interval + 'M'}
+                  </span>
+                </div>
+
+                {ohlcLegend && (
+                  <div style={{ position: 'absolute', top: 28, left: 8, zIndex: 5, pointerEvents: 'none', display: 'flex', gap: 10, fontSize: 11, fontFamily: 'monospace' }}>
+                    <span style={{ color: ['charcoal', 'navy', 'midnight'].includes(userTheme) ? '#94a3b8' : '#64748b', fontWeight: 600 }}>
+                      <span style={{ opacity: 0.6 }}>O</span> {ohlcLegend.open}
+                    </span>
+                    <span style={{ color: '#22c55e', fontWeight: 600 }}>
+                      <span style={{ color: ['charcoal', 'navy', 'midnight'].includes(userTheme) ? '#94a3b8' : '#64748b', opacity: 0.6 }}>H</span> {ohlcLegend.high}
+                    </span>
+                    <span style={{ color: '#ef4444', fontWeight: 600 }}>
+                      <span style={{ color: ['charcoal', 'navy', 'midnight'].includes(userTheme) ? '#94a3b8' : '#64748b', opacity: 0.6 }}>L</span> {ohlcLegend.low}
+                    </span>
+                    <span style={{ color: ohlcLegend.isUp ? '#22c55e' : '#ef4444', fontWeight: 600 }}>
+                      <span style={{ color: ['charcoal', 'navy', 'midnight'].includes(userTheme) ? '#94a3b8' : '#64748b', opacity: 0.6 }}>C</span> {ohlcLegend.close}
+                    </span>
+                  </div>
+                )}
+
                 {dataLimitedToDaily && (
-                  <div style={{ background: 'rgba(245,158,11,0.1)', borderBottom: '0.5px solid rgba(245,158,11,0.2)', padding: '6px 12px', fontSize: '11px', color: '#92400e', textAlign: 'center', width: '100%', flexShrink: 0 }}>
+                  <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 5, pointerEvents: 'none', background: 'rgba(245,158,11,0.12)', padding: '4px 8px', fontSize: 10, textAlign: 'center', color: '#92400e' }}>
                     Showing daily candles — intraday data not available for trades older than 60 days
                   </div>
                 )}
+
                 <div
                   ref={indianChartContainerRef}
                   style={{ width: '100%', flex: 1, minHeight: 0 }}
