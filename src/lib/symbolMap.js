@@ -225,7 +225,7 @@ export function getTVTheme(userThemeId) {
 }
 
 export function buildTVWidgetURL(symbol, interval, tvTheme, fromTimestamp, toTimestamp) {
-  const base = 'https://in.tradingview.com/widgetembed/'
+  const base = 'https://s.tradingview.com/widgetembed/'
 
   const entries = [
     ['symbol', symbol],

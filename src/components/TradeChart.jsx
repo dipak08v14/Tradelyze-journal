@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { getTVSymbol, getTVTheme, buildTVWidgetURL } from '../lib/symbolMap';
 import { supabase } from '../lib/supabase';
 
@@ -47,6 +47,7 @@ export default function TradeChart({ trade, userTheme }) {
   const [uploading, setUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [showReplaceConfirm, setShowReplaceConfirm] = useState(false);
+  const iframeRef = useRef(null);
 
   function getTradeTimeRange(date, entryTime) {
     if (!date || typeof date !== 'string') return { from: null, to: null }
@@ -494,6 +495,35 @@ export default function TradeChart({ trade, userTheme }) {
             >
               ⛶ Expand
             </button>
+            {trade?.date && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (!iframeRef.current || !chartFrom || !chartTo) return;
+                  const newUrl = buildTVWidgetURL(tvSymbol, interval, tvTheme, chartFrom, chartTo);
+                  iframeRef.current.src = newUrl;
+                }}
+                disabled={!chartFrom || !chartTo}
+                title={"Jump chart to " + formatTradeDate(trade?.date) + " at " + formatTradeTime(trade?.entry_time)}
+                style={{
+                  background: 'var(--accent-muted)',
+                  color: 'var(--accent)',
+                  border: '1px solid var(--accent)',
+                  borderRadius: '7px',
+                  padding: '4px 10px',
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  cursor: (!chartFrom || !chartTo) ? 'not-allowed' : 'pointer',
+                  whiteSpace: 'nowrap',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  opacity: (!chartFrom || !chartTo) ? 0.4 : 1
+                }}
+              >
+                📅 {formatTradeDate(trade?.date)}
+              </button>
+            )}
             {renderTimeframeButtons(false)}
           </div>
         </div>
@@ -556,6 +586,7 @@ export default function TradeChart({ trade, userTheme }) {
           renderIndianNotice(isMaximized)
         ) : (
           <iframe
+            ref={iframeRef}
             key={tvSymbol + '-' + interval}
             className={isMaximized ? undefined : 'tl-chart-iframe'}
             style={isMaximized ? { flex: 1, width: '100%', border: 'none', borderRadius: 8, minHeight: 0 } : { display: 'block', width: '100%', borderRadius: 8, border: '0.5px solid var(--border)' }}
