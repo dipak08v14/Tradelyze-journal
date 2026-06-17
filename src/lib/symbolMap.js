@@ -224,30 +224,32 @@ export function getTVTheme(userThemeId) {
   return 'light';
 }
 
-export function buildTVWidgetURL(symbol, interval, tvTheme, fromTimestamp = null, toTimestamp = null) {
-  const baseURL = 'https://in.tradingview.com/widgetembed/';
-  const params = new URLSearchParams({
-    symbol: symbol,
-    interval: interval,
-    timezone: 'Asia/Kolkata',
-    theme: tvTheme,
-    style: '1',
-    locale: 'en',
-    enable_publishing: 'false',
-    hide_top_toolbar: 'false',
-    hide_legend: 'false',
-    save_image: 'true',
-    hide_volume: 'false',
-    hide_side_toolbar: 'false',
-    support_host: 'https://www.tradingview.com'
-  });
+export function buildTVWidgetURL(symbol, interval, tvTheme, fromTimestamp, toTimestamp) {
+  const base = 'https://in.tradingview.com/widgetembed/'
 
-  if (fromTimestamp !== null && !isNaN(fromTimestamp) && fromTimestamp !== 0) {
-    params.set('from', String(fromTimestamp));
+  const entries = [
+    ['symbol', symbol],
+    ['interval', String(interval)],
+    ['timezone', 'Asia/Kolkata'],
+    ['theme', tvTheme],
+    ['style', '1'],
+    ['locale', 'en'],
+    ['enable_publishing', 'false'],
+    ['hide_top_toolbar', 'false'],
+    ['hide_side_toolbar', 'false'],
+    ['hide_legend', 'false'],
+    ['save_image', 'true'],
+    ['hide_volume', 'false'],
+    ['support_host', 'https://www.tradingview.com']
+  ]
+
+  if (fromTimestamp && typeof fromTimestamp === 'number' && fromTimestamp > 0 && !isNaN(fromTimestamp)) {
+    entries.push(['from', String(Math.round(fromTimestamp))])
   }
-  if (toTimestamp !== null && !isNaN(toTimestamp) && toTimestamp !== 0) {
-    params.set('to', String(toTimestamp));
+  if (toTimestamp && typeof toTimestamp === 'number' && toTimestamp > 0 && !isNaN(toTimestamp)) {
+    entries.push(['to', String(Math.round(toTimestamp))])
   }
 
-  return baseURL + '?' + params.toString();
+  const qs = entries.map(([k, v]) => k + '=' + encodeURIComponent(v)).join('&')
+  return base + '?' + qs
 }

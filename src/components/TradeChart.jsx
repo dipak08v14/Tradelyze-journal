@@ -49,35 +49,38 @@ export default function TradeChart({ trade, userTheme }) {
   const [showReplaceConfirm, setShowReplaceConfirm] = useState(false);
 
   function getTradeTimeRange(date, entryTime) {
-    if (!date) return { from: null, to: null };
+    if (!date || typeof date !== 'string') return { from: null, to: null }
 
-    let timeStr = entryTime || '09:00:00';
-    if (timeStr.length === 5) {
-      timeStr += ':00';
+    let timeStr = '09:00:00'
+    if (entryTime && typeof entryTime === 'string' && entryTime.length >= 4) {
+      if (entryTime.length === 5) {
+        timeStr = entryTime + ':00'
+      } else {
+        timeStr = entryTime.substring(0, 8)
+      }
     }
-    const fullDateTimeStr = date + 'T' + timeStr + '+05:30';
-    const dt = new Date(fullDateTimeStr);
 
-    if (isNaN(dt.getTime())) return { from: null, to: null };
+    const isoString = date + 'T' + timeStr + '+05:30'
+    const dt = new Date(isoString)
 
-    const from = Math.floor((dt.getTime() - 3 * 60 * 60 * 1000) / 1000);   // 3 hours before entry
-    const to   = Math.floor((dt.getTime() + 6 * 60 * 60 * 1000) / 1000);   // 6 hours after entry
+    if (isNaN(dt.getTime())) return { from: null, to: null }
 
-    return { from, to };
+    const epochMs = dt.getTime()
+    return {
+      from: Math.round((epochMs - 3 * 60 * 60 * 1000) / 1000),
+      to:   Math.round((epochMs + 6 * 60 * 60 * 1000) / 1000)
+    }
   }
 
-  const { from: chartFrom, to: chartTo } = getTradeTimeRange(trade?.date, trade?.entry_time);
-
+  const { from: chartFrom, to: chartTo } = getTradeTimeRange(trade?.date, trade?.entry_time)
   const tvSymbol = getTVSymbol(trade?.symbol || '');
   const tvTheme = getTVTheme(userTheme);
-  const widgetUrl = buildTVWidgetURL(tvSymbol, interval, tvTheme, chartFrom, chartTo);
+  const widgetUrl = buildTVWidgetURL(tvSymbol, interval, tvTheme, chartFrom, chartTo)
   const isIndianMarket = tvSymbol.startsWith('NSE:') || tvSymbol.startsWith('BSE:');
   const tvWebUrl = 'https://www.tradingview.com/chart/?symbol=' + encodeURIComponent(tvSymbol);
   const entryPrice = trade?.entry_price ?? null;
   const exitPrice = trade?.exit_price ?? null;
   const pnl = trade?.pnl ?? 0;
-
-  const hintText = "The chart above has been automatically set to show " + formatTradeDate(trade?.date) + " around " + formatTradeTime(trade?.entry_time) + ". Use TradingView's drawing tools to mark your entry and exit.";
 
   const handleCapturedImage = (blob) => {
     if (!blob) return;
@@ -571,6 +574,32 @@ export default function TradeChart({ trade, userTheme }) {
       {/* Normal View Paste Zone */}
       {!isMaximized && renderPasteZone(false)}
 
+      {!isMaximized && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8, marginBottom: 8 }}>
+          <a
+            href={'https://in.tradingview.com/chart/?symbol=' + tvSymbol + '&interval=' + interval + (chartFrom ? '&from=' + chartFrom : '') + (chartTo ? '&to=' + chartTo : '')}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              textDecoration: 'none',
+              background: 'var(--card)',
+              border: '0.5px solid var(--border)',
+              borderRadius: 7,
+              padding: '5px 12px',
+              fontSize: 11,
+              fontWeight: 600,
+              color: 'var(--text-sub)',
+              cursor: 'pointer'
+            }}
+          >
+            {"📅 Open " + formatTradeDate(trade?.date) + " chart on TradingView ↗"}
+          </a>
+        </div>
+      )}
+
       {/* Navigation Panel */}
       {!isMaximized && (
         <div style={{ marginTop: '12px', background: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px', padding: '12px 14px' }}>
@@ -666,8 +695,10 @@ export default function TradeChart({ trade, userTheme }) {
             </div>
           </div>
 
-          <p style={{ fontSize: '11px', color: 'var(--text-muted)', fontStyle: 'italic', lineHeight: 1.5, marginTop: '10px', margin: '10px 0 0 0' }}>
-            {hintText}
+          <p style={{ fontSize: 11, color: 'var(--text-muted)', fontStyle: 'italic', lineHeight: 1.6, marginTop: '10px', margin: '10px 0 0 0' }}>
+            {"The chart above tries to load at " + formatTradeDate(trade?.date) + " · " + formatTradeTime(trade?.entry_time)}
+            <br />
+            {"If not at the right date, use the button above to open the full chart ↑"}
           </p>
         </div>
       )}
