@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { getTVSymbol, getTVTheme, buildTVWidgetURL } from '../lib/symbolMap';
 import { supabase } from '../lib/supabase';
+import { createChart, ColorType } from 'lightweight-charts';
+import { getYahooSymbol, getYahooInterval, canFetchIntraday } from '../lib/yahooSymbolMap';
 
 const TIMEFRAMES = [
   { label: '1M', value: '1' },
@@ -48,6 +50,13 @@ export default function TradeChart({ trade, userTheme }) {
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [showReplaceConfirm, setShowReplaceConfirm] = useState(false);
   const iframeRef = useRef(null);
+  const [chartData, setChartData] = useState(null);
+  const [chartLoading, setChartLoading] = useState(false);
+  const [chartError, setChartError] = useState(null);
+  const [dataLimitedToDaily, setDataLimitedToDaily] = useState(false);
+  const indianChartContainerRef = useRef(null);
+  const lwChartRef = useRef(null);
+  const lwSeriesRef = useRef(null);
 
   function getTradeTimeRange(date, entryTime) {
     if (!date || typeof date !== 'string') return { from: null, to: null }
@@ -82,6 +91,139 @@ export default function TradeChart({ trade, userTheme }) {
   const entryPrice = trade?.entry_price ?? null;
   const exitPrice = trade?.exit_price ?? null;
   const pnl = trade?.pnl ?? 0;
+
+  const fetchIndianChartData = async (yahooSymbol, yahooInterval, from, to) => {
+    setChartLoading(true);
+    setChartError(null);
+    setDataLimitedToDaily(false);
+
+    try {
+      let url = '/api/chart-data?symbol=' + encodeURIComponent(yahooSymbol) +
+                '&interval=' + yahooInterval;
+
+      if (from && to) {
+        url += '&from=' + from + '&to=' + to;
+      }
+
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.note && data.note.includes('60 days')) {
+          setDataLimitedToDaily(true);
+          const dailyUrl = '/api/chart-data?symbol=' + encodeURIComponent(yahooSymbol) + '&interval=1d';
+          const dailyResponse = await fetch(dailyUrl);
+          const dailyData = await dailyResponse.json();
+          if (dailyResponse.ok && dailyData.candles?.length > 0) {
+            setChartData(dailyData.candles);
+          } else {
+            setChartError('Chart data not available for this trade date.');
+          }
+        } else {
+          setChartError(data.error || 'Failed to load chart data.');
+        }
+      } else {
+        setChartData(data.candles || []);
+      }
+    } catch (err) {
+      setChartError('Network error loading chart: ' + err.message);
+    } finally {
+      setChartLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!isIndianMarket) return;
+
+    const yahooSymbol = getYahooSymbol(tvSymbol);
+    if (!yahooSymbol) {
+      setChartError('No Yahoo Finance symbol mapping found for ' + tvSymbol);
+      return;
+    }
+
+    const canIntraday = canFetchIntraday(trade?.date, interval);
+    const effectiveInterval = canIntraday ? getYahooInterval(interval) : '1d';
+
+    if (!canIntraday) {
+      setDataLimitedToDaily(true);
+    }
+
+    if (chartFrom && chartTo && canIntraday) {
+      const extendedFrom = chartFrom - (2 * 60 * 60);
+      const extendedTo = chartTo + (2 * 60 * 60);
+      fetchIndianChartData(yahooSymbol, effectiveInterval, extendedFrom, extendedTo);
+    } else {
+      fetchIndianChartData(yahooSymbol, effectiveInterval, null, null);
+    }
+  }, [isIndianMarket, tvSymbol, interval, chartFrom, chartTo]);
+
+  useEffect(() => {
+    if (!isIndianMarket || !indianChartContainerRef.current || !chartData || chartData.length === 0) return;
+
+    const isDark = ['charcoal', 'navy', 'midnight'].includes(userTheme);
+
+    const chart = createChart(indianChartContainerRef.current, {
+      width: indianChartContainerRef.current.clientWidth,
+      height: indianChartContainerRef.current.clientHeight || 400,
+      layout: {
+        background: { type: ColorType.Solid, color: isDark ? '#0e0f16' : '#ffffff' },
+        textColor: isDark ? '#e2e8f0' : '#1c1917',
+      },
+      grid: {
+        vertLines: { color: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' },
+        horzLines: { color: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' },
+      },
+      rightPriceScale: {
+        borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+      },
+      timeScale: {
+        borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+        timeVisible: true,
+        secondsVisible: false,
+      },
+      crosshair: {
+        mode: 1,
+      },
+    });
+
+    const candleSeries = chart.addCandlestickSeries({
+      upColor: '#22c55e',
+      downColor: '#ef4444',
+      borderUpColor: '#22c55e',
+      borderDownColor: '#ef4444',
+      wickUpColor: '#22c55e',
+      wickDownColor: '#ef4444',
+    });
+
+    candleSeries.setData(chartData);
+
+    if (chartFrom && chartTo) {
+      chart.timeScale().setVisibleRange({
+        from: chartFrom - (1 * 60 * 60),
+        to: chartTo + (3 * 60 * 60)
+      });
+    }
+
+    lwChartRef.current = chart;
+    lwSeriesRef.current = candleSeries;
+
+    const resizeObserver = new ResizeObserver(() => {
+      if (indianChartContainerRef.current && lwChartRef.current) {
+        lwChartRef.current.applyOptions({
+          width: indianChartContainerRef.current.clientWidth,
+          height: indianChartContainerRef.current.clientHeight || 400,
+        });
+      }
+    });
+    resizeObserver.observe(indianChartContainerRef.current);
+
+    return () => {
+      resizeObserver.disconnect();
+      chart.remove();
+      lwChartRef.current = null;
+      lwSeriesRef.current = null;
+    };
+  }, [chartData, userTheme, isIndianMarket]);
 
   const handleCapturedImage = (blob) => {
     if (!blob) return;
@@ -462,6 +604,10 @@ export default function TradeChart({ trade, userTheme }) {
       <style dangerouslySetInnerHTML={{ __html: `
         .tl-chart-iframe { height: 400px; width: 100%; display: block; border-radius: 8px; border: 0.5px solid var(--border); }
         .tl-chart-navgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
         @media (max-width: 768px) {
           .tl-chart-iframe { height: 280px !important; }
           .tl-chart-navgrid { grid-template-columns: repeat(2, 1fr) !important; }
@@ -583,7 +729,86 @@ export default function TradeChart({ trade, userTheme }) {
 
         {/* Chart Content */}
         {isIndianMarket ? (
-          renderIndianNotice(isMaximized)
+          <div
+            className="tl-chart-iframe"
+            style={{
+              border: '0.5px solid var(--border)',
+              borderRadius: 8,
+              overflow: 'hidden',
+              position: 'relative',
+              background: 'var(--card)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: isMaximized ? '100%' : '400px',
+              height: isMaximized ? '100%' : '400px',
+              width: '100%',
+              flex: isMaximized ? 1 : undefined
+            }}
+          >
+            {chartLoading ? (
+              <div style={{ textAlign: 'center', padding: '40px' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-sub)', marginBottom: '8px' }}>
+                  {"Loading " + (tvSymbol.split(':')[1] || tvSymbol) + " chart..."}
+                </div>
+                <div
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                    border: '3px solid var(--bar)',
+                    borderTop: '3px solid var(--accent)',
+                    borderRadius: '50%',
+                    animation: 'spin 0.8s linear infinite',
+                    margin: '0 auto'
+                  }}
+                />
+                <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '8px' }}>
+                  Fetching from Yahoo Finance...
+                </div>
+              </div>
+            ) : chartError ? (
+              <div style={{ textAlign: 'center', padding: '32px' }}>
+                <div style={{ fontSize: '12px', color: '#f59e0b', marginBottom: '12px' }}>
+                  {"⚠ " + chartError}
+                </div>
+                <a
+                  href={'https://in.tradingview.com/chart/?symbol=' + tvSymbol}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-block',
+                    background: 'var(--accent)',
+                    color: '#fff',
+                    borderRadius: '7px',
+                    padding: '7px 16px',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                    textDecoration: 'none'
+                  }}
+                >
+                  {"Open " + tvSymbol + " on TradingView ↗"}
+                </a>
+              </div>
+            ) : chartData ? (
+              <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', flex: 1 }}>
+                {dataLimitedToDaily && (
+                  <div style={{ background: 'rgba(245,158,11,0.1)', borderBottom: '0.5px solid rgba(245,158,11,0.2)', padding: '6px 12px', fontSize: '11px', color: '#92400e', textAlign: 'center', width: '100%', flexShrink: 0 }}>
+                    Showing daily candles — intraday data not available for trades older than 60 days
+                  </div>
+                )}
+                <div
+                  ref={indianChartContainerRef}
+                  style={{ width: '100%', flex: 1, minHeight: 0 }}
+                />
+              </div>
+            ) : (
+              <div
+                ref={indianChartContainerRef}
+                style={{ width: '100%', height: '100%' }}
+              />
+            )}
+          </div>
         ) : (
           <iframe
             ref={iframeRef}
