@@ -141,8 +141,9 @@ export function buildTVWidgetURL(symbol, interval, tvTheme) {
     enable_publishing: 'false',
     hide_top_toolbar: 'false',
     hide_legend: 'false',
-    save_image: 'false',
+    save_image: 'true',
     hide_volume: 'false',
+    hide_side_toolbar: 'false',
     support_host: 'https://www.tradingview.com'
   });
   return baseURL + '?' + params.toString();
