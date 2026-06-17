@@ -44,6 +44,8 @@ export default function TradeChart({ trade, userTheme }) {
   const tvSymbol = getTVSymbol(trade?.symbol || '');
   const tvTheme = getTVTheme(userTheme);
   const widgetUrl = buildTVWidgetURL(tvSymbol, interval, tvTheme);
+  const isIndianMarket = tvSymbol.startsWith('NSE:') || tvSymbol.startsWith('BSE:');
+  const tvWebUrl = 'https://www.tradingview.com/chart/?symbol=' + encodeURIComponent(tvSymbol);
   const entryPrice = trade?.entry_price ?? null;
   const exitPrice = trade?.exit_price ?? null;
   const pnl = trade?.pnl ?? 0;
@@ -113,16 +115,52 @@ export default function TradeChart({ trade, userTheme }) {
         </div>
       </div>
 
-      {/* TradingView Chart Frame */}
-      <iframe
-        key={tvSymbol + '-' + interval}
-        className="tl-chart-iframe"
-        src={widgetUrl}
-        frameBorder={0}
-        allowTransparency={true}
-        scrolling="no"
-        title={tvSymbol + ' Chart'}
-      />
+      {/* TradingView Chart Frame or Indian Market Notice */}
+      {isIndianMarket ? (
+        <div style={{ background: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '8px', overflow: 'hidden' }}>
+          {/* ROW 1 — Notice bar at the top */}
+          <div style={{ background: 'rgba(245,158,11,0.1)', borderBottom: '0.5px solid rgba(245,158,11,0.2)', padding: '10px 14px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#f59e0b', display: 'inline-block', flexShrink: 0 }} />
+            <span style={{ fontSize: '12px', color: 'var(--text-sub)', lineHeight: 1.5 }}>
+              NSE/BSE charts require a TradingView account. The free embedded chart cannot display Indian market data without login.
+            </span>
+          </div>
+
+          {/* ROW 2 — Action area */}
+          <div style={{ padding: '20px 14px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', minHeight: '180px', justifyContent: 'center' }}>
+            <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text)', background: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '4px 12px', marginBottom: '4px' }}>
+              {tvSymbol}
+            </div>
+            
+            <div style={{ fontSize: '12px', color: 'var(--text-sub)', textAlign: 'center' }}>
+              View this chart on TradingView website
+            </div>
+
+            <a
+              href={tvWebUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'var(--accent)', color: '#ffffff', borderRadius: '8px', padding: '10px 20px', fontSize: '13px', fontWeight: 600, textDecoration: 'none', border: 'none', cursor: 'pointer' }}
+            >
+              Open {tvSymbol} on TradingView ↗
+            </a>
+
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)', textAlign: 'center', marginTop: '4px' }}>
+              Opens in a new tab · Free TradingView account required for NSE data
+            </div>
+          </div>
+        </div>
+      ) : (
+        <iframe
+          key={tvSymbol + '-' + interval}
+          className="tl-chart-iframe"
+          src={widgetUrl}
+          frameBorder={0}
+          allowTransparency={true}
+          scrolling="no"
+          title={tvSymbol + ' Chart'}
+        />
+      )}
 
       {/* Navigation Panel */}
       <div style={{ marginTop: '12px', background: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px', padding: '12px 14px' }}>
