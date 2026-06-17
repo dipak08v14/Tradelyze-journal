@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { getTVSymbol, getTVTheme, buildTVWidgetURL } from '../lib/symbolMap';
 import { supabase } from '../lib/supabase';
-import { createChart, ColorType } from 'lightweight-charts';
+import { createChart, ColorType, CandlestickSeries } from 'lightweight-charts';
 import { getYahooSymbol, getYahooInterval, canFetchIntraday } from '../lib/yahooSymbolMap';
 
 const TIMEFRAMES = [
@@ -186,7 +186,7 @@ export default function TradeChart({ trade, userTheme }) {
       },
     });
 
-    const candleSeries = chart.addCandlestickSeries({
+    const candleSeries = chart.addSeries(CandlestickSeries, {
       upColor: '#22c55e',
       downColor: '#ef4444',
       borderUpColor: '#22c55e',
