@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { Trade } from '../types';
 import { generateEmbeddingFromUrl } from '../lib/clipEmbedder';
+import TradeChart from '../components/TradeChart';
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
@@ -98,6 +99,7 @@ const TradeTrackingPageContent: React.FC = () => {
   const { user, userId, loading: authLoading } = useAuth();
   const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
+  const userTheme = localStorage.getItem('tl-theme') || 'warm';
 
   // Primary Data States
   const [trade, setTrade] = useState<any>(null);
@@ -885,6 +887,11 @@ const TradeTrackingPageContent: React.FC = () => {
                   </div>
                   <RuleChecklistDisplay rules={exitRules} ruleType="exit" />
                 </section>
+
+                {/* TRADINGVIEW CHART CARD */}
+                <div style={{ background: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '16px 20px' }}>
+                  <TradeChart trade={trade} userTheme={userTheme} />
+                </div>
 
                 {/* CARD D: GENERAL EXECUTION QUALITY & TRADER NOTES */}
                 <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="rounded-xl p-6 shadow-sm relative">
