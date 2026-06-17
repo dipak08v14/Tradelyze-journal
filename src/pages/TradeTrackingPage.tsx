@@ -26,6 +26,7 @@ import {
 import { Trade } from '../types';
 import { generateEmbeddingFromUrl } from '../lib/clipEmbedder';
 import TradeChart from '../components/TradeChart';
+import ChartImageViewer from '../components/ChartImageViewer';
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
@@ -102,6 +103,7 @@ const TradeTrackingPageContent: React.FC = () => {
   const userTheme = localStorage.getItem('tl-theme') || 'warm';
 
   // Primary Data States
+  const [viewerOpen, setViewerOpen] = useState<boolean>(false);
   const [trade, setTrade] = useState<any>(null);
   const [entryRules, setEntryRules] = useState<any[]>([]);
   const [exitRules, setExitRules] = useState<any[]>([]);
@@ -1207,18 +1209,23 @@ const TradeTrackingPageContent: React.FC = () => {
                         Chart Screenshot
                       </span>
                       {trade.chart_image_url ? (
-                        <div style={{ borderColor: 'var(--border)' }} className="relative group rounded-xl overflow-hidden border bg-zinc-950">
+                        <div
+                          style={{ position: 'relative', cursor: 'pointer' }}
+                          onClick={() => setViewerOpen(true)}
+                          className="group rounded-xl overflow-hidden border border-[var(--border)] bg-zinc-950"
+                        >
                           <img
                             src={trade.chart_image_url}
+                            style={{ width: '100%', borderRadius: '8px', display: 'block', border: '0.5px solid var(--border)' }}
                             alt="Chart execution screenshot"
-                            className="w-full object-contain max-h-48 cursor-pointer hover:scale-[1.01] transition-transform duration-200"
-                            onClick={() => window.open(trade.chart_image_url, '_blank')}
                             referrerPolicy="no-referrer"
                           />
-                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity pointer-events-none">
-                            <span className="text-[10px] font-bold uppercase text-white font-mono flex items-center gap-1.5 bg-zinc-950 px-3 py-1.5 rounded-lg border border-zinc-800">
-                              <ExternalLink className="w-3 h-3" />
-                              <span>View Original</span>
+                          <div
+                            style={{ position: 'absolute', inset: 0, borderRadius: '8px', background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                            className="opacity-70 group-hover:opacity-100 transition-opacity"
+                          >
+                            <span style={{ fontSize: '11px', color: '#fff', background: 'rgba(0,0,0,0.6)', padding: '4px 10px', borderRadius: '20px' }}>
+                              🔍 Click to view & draw
                             </span>
                           </div>
                         </div>
@@ -1487,6 +1494,13 @@ const TradeTrackingPageContent: React.FC = () => {
           </div>
         </div>
       </Modal>
+
+      {viewerOpen && trade?.chart_image_url && (
+        <ChartImageViewer
+          imageUrl={trade.chart_image_url}
+          onClose={() => setViewerOpen(false)}
+        />
+      )}
     </div>
   );
 };
