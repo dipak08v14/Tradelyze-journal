@@ -48,17 +48,36 @@ export default function TradeChart({ trade, userTheme }) {
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [showReplaceConfirm, setShowReplaceConfirm] = useState(false);
 
+  function getTradeTimeRange(date, entryTime) {
+    if (!date) return { from: null, to: null };
+
+    let timeStr = entryTime || '09:00:00';
+    if (timeStr.length === 5) {
+      timeStr += ':00';
+    }
+    const fullDateTimeStr = date + 'T' + timeStr + '+05:30';
+    const dt = new Date(fullDateTimeStr);
+
+    if (isNaN(dt.getTime())) return { from: null, to: null };
+
+    const from = Math.floor((dt.getTime() - 3 * 60 * 60 * 1000) / 1000);   // 3 hours before entry
+    const to   = Math.floor((dt.getTime() + 6 * 60 * 60 * 1000) / 1000);   // 6 hours after entry
+
+    return { from, to };
+  }
+
+  const { from: chartFrom, to: chartTo } = getTradeTimeRange(trade?.date, trade?.entry_time);
+
   const tvSymbol = getTVSymbol(trade?.symbol || '');
   const tvTheme = getTVTheme(userTheme);
-  const widgetUrl = buildTVWidgetURL(tvSymbol, interval, tvTheme);
+  const widgetUrl = buildTVWidgetURL(tvSymbol, interval, tvTheme, chartFrom, chartTo);
   const isIndianMarket = tvSymbol.startsWith('NSE:') || tvSymbol.startsWith('BSE:');
   const tvWebUrl = 'https://www.tradingview.com/chart/?symbol=' + encodeURIComponent(tvSymbol);
   const entryPrice = trade?.entry_price ?? null;
   const exitPrice = trade?.exit_price ?? null;
   const pnl = trade?.pnl ?? 0;
 
-  const directionStr = trade?.direction ? trade.direction + ' ' : '';
-  const hintText = '💡 Press Ctrl+G on chart to go to ' + formatTradeDate(trade?.date) + ' · Look for a ' + directionStr + 'trade around ' + formatTradeTime(trade?.entry_time);
+  const hintText = "The chart above has been automatically set to show " + formatTradeDate(trade?.date) + " around " + formatTradeTime(trade?.entry_time) + ". Use TradingView's drawing tools to mark your entry and exit.";
 
   const handleCapturedImage = (blob) => {
     if (!blob) return;
