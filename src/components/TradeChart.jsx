@@ -76,6 +76,9 @@ export default function TradeChart({ trade, userTheme }) {
   const markersRef = useRef(null);
   const [ohlcLegend, setOhlcLegend] = useState(null);
   const [chartType, setChartType] = useState('candle');
+  const [activeTool, setActiveTool] = useState('cursor');
+  const priceLinesRef = useRef([]);
+  const lastPriceRef = useRef(null);
 
   function getTradeTimeRange(date, entryTime) {
     if (!date || typeof date !== 'string') return { from: null, to: null }
@@ -205,7 +208,7 @@ export default function TradeChart({ trade, userTheme }) {
   useEffect(() => {
     if (!isIndianMarket || !indianChartContainerRef.current || !chartData || chartData.length === 0) return
 
-    const chartIsDark = isMaximized || ['charcoal','navy','midnight'].includes(userTheme)
+    const chartIsDark = ['charcoal','navy','midnight'].includes(userTheme)
     const BG    = chartIsDark ? '#131722' : '#ffffff'
     const GRID  = chartIsDark ? 'rgba(42,46,57,0.5)' : 'rgba(42,46,57,0.06)'
     const BORDER= chartIsDark ? '#2a2e39' : '#e0e3eb'
@@ -338,6 +341,10 @@ export default function TradeChart({ trade, userTheme }) {
     }
 
     chart.subscribeCrosshairMove((param) => {
+      if (param?.point && mainSeries) {
+        const price = mainSeries.coordinateToPrice(param.point.y)
+        if (price !== null) lastPriceRef.current = price
+      }
       if (!param || !param.time) {
         const last = chartData[chartData.length - 1]
         if (last) {
@@ -377,11 +384,11 @@ export default function TradeChart({ trade, userTheme }) {
       lwSeriesRef.current = null
       lwVolumeRef.current = null
     }
-  }, [chartData, userTheme, isIndianMarket, isMaximized, chartFrom, chartTo, trade, chartType])
+  }, [chartData, userTheme, isIndianMarket, chartFrom, chartTo, trade, chartType])
 
   useEffect(() => {
     if (!lwChartRef.current) return
-    const chartIsDark = isMaximized || ['charcoal','navy','midnight'].includes(userTheme)
+    const chartIsDark = ['charcoal','navy','midnight'].includes(userTheme)
     lwChartRef.current.applyOptions({
       layout: {
         background: { type: ColorType.Solid, color: chartIsDark ? '#131722' : '#ffffff' },
@@ -392,7 +399,36 @@ export default function TradeChart({ trade, userTheme }) {
         horzLines: { color: chartIsDark ? 'rgba(42,46,57,0.5)' : 'rgba(42,46,57,0.06)' },
       },
     })
-  }, [isMaximized, userTheme])
+  }, [userTheme])
+
+  const handleChartAreaClick = () => {
+    if (!lwSeriesRef.current || lastPriceRef.current === null) return
+
+    if (activeTool === 'hline') {
+      const chartIsDark = ['charcoal','navy','midnight'].includes(userTheme)
+      try {
+        const line = lwSeriesRef.current.createPriceLine({
+          price: lastPriceRef.current,
+          color: '#f59e0b',
+          lineWidth: 1,
+          lineStyle: 2,
+          axisLabelVisible: true,
+          title: Number(lastPriceRef.current).toFixed(2),
+        })
+        priceLinesRef.current.push(line)
+      } catch (e) {
+        console.warn('Price line error:', e.message)
+      }
+    }
+  }
+
+  const handleClearLines = () => {
+    if (!lwSeriesRef.current) return
+    priceLinesRef.current.forEach(line => {
+      try { lwSeriesRef.current.removePriceLine(line) } catch (e) {}
+    })
+    priceLinesRef.current = []
+  }
 
   const handleCapturedImage = (blob) => {
     if (!blob) return;
@@ -856,12 +892,9 @@ export default function TradeChart({ trade, userTheme }) {
         position: 'relative',
         ...(isMaximized ? {
           position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
+          inset: 0,
           zIndex: 9999,
-          background: 'rgba(0,0,0,0.95)',
+          background: 'rgba(0,0,0,0.92)',
           padding: '12px 16px',
           boxSizing: 'border-box',
           display: 'flex',
@@ -872,7 +905,7 @@ export default function TradeChart({ trade, userTheme }) {
         {isMaximized && (
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', flexShrink: 0 }}>
             <span style={{ color: '#ffffff', fontSize: 13, fontWeight: 700, letterSpacing: '0.3px', fontFamily: '"Inter", sans-serif' }}>
-              {'TRADE CHART · ' + tvSymbol}
+              {"TRADE CHART  ·  " + tvSymbol}
             </span>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               {TIMEFRAMES.map(tf => (
@@ -897,7 +930,7 @@ export default function TradeChart({ trade, userTheme }) {
               <button
                 type="button"
                 onClick={() => setIsMaximized(false)}
-                style={{ background: 'rgba(255,255,255,0.12)', color: '#fff', border: '0.5px solid rgba(255,255,255,0.25)', borderRadius: 6, padding: '5px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer', marginLeft: 4 }}
+                style={{ background: 'rgba(255,255,255,0.12)', color: '#fff', border: '0.5px solid rgba(255,255,255,0.25)', borderRadius: '6px', padding: '5px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer', marginLeft: 4 }}
               >✕ Close</button>
             </div>
           </div>
@@ -967,7 +1000,7 @@ export default function TradeChart({ trade, userTheme }) {
                 </a>
               </div>
             ) : chartData ? ((() => {
-              const chartIsDark = isMaximized || ['charcoal','navy','midnight'].includes(userTheme)
+              const chartIsDark = ['charcoal','navy','midnight'].includes(userTheme)
               const BG     = chartIsDark ? '#131722' : '#ffffff'
               const BORDER = chartIsDark ? '#2a2e39' : '#e0e3eb'
               const TEXT   = chartIsDark ? '#b2b5be' : '#787b86'
@@ -1064,7 +1097,30 @@ export default function TradeChart({ trade, userTheme }) {
                           key={tool.id}
                           type="button"
                           title={tool.label}
-                          style={{ background: 'transparent', border: 'none', cursor: 'pointer', width: 32, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 3, color: TEXT, fontSize: tool.id === 'text' ? 13 : 14, fontWeight: tool.id === 'text' ? 700 : 400 }}
+                          onClick={() => {
+                            if (tool.id === 'cursor') {
+                              setActiveTool('cursor');
+                            } else if (tool.id === 'hline') {
+                              setActiveTool('hline');
+                            } else if (tool.id === 'eraser') {
+                              handleClearLines();
+                              setActiveTool('cursor');
+                            }
+                          }}
+                          style={{
+                            background: activeTool === tool.id ? (chartIsDark ? '#2a2e39' : '#e8ecf0') : 'transparent',
+                            border: 'none',
+                            cursor: 'pointer',
+                            width: 32,
+                            height: 28,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: 3,
+                            color: TEXT,
+                            fontSize: tool.id === 'text' ? 13 : 14,
+                            fontWeight: tool.id === 'text' ? 700 : 400
+                          }}
                         >
                           {tool.icon}
                         </button>
@@ -1109,6 +1165,18 @@ export default function TradeChart({ trade, userTheme }) {
                           )}
                         </div>
                       )}
+
+                      <div
+                        style={{
+                          position: 'absolute',
+                          inset: 0,
+                          zIndex: 3,
+                          cursor: activeTool === 'hline' ? 'crosshair' : 'default',
+                          pointerEvents: activeTool === 'cursor' ? 'none' : 'auto',
+                          background: 'transparent',
+                        }}
+                        onClick={handleChartAreaClick}
+                      />
 
                       <div
                         ref={indianChartContainerRef}
