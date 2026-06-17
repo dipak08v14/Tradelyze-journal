@@ -92,18 +92,14 @@ export default function TradeChart({ trade, userTheme }) {
   const exitPrice = trade?.exit_price ?? null;
   const pnl = trade?.pnl ?? 0;
 
-  const fetchIndianChartData = async (yahooSymbol, yahooInterval, from, to) => {
+  const fetchIndianChartData = async (yahooSymbol, yahooInterval) => {
     setChartLoading(true);
     setChartError(null);
     setDataLimitedToDaily(false);
 
     try {
-      let url = '/api/chart-data?symbol=' + encodeURIComponent(yahooSymbol) +
-                '&interval=' + yahooInterval;
-
-      if (from && to) {
-        url += '&from=' + from + '&to=' + to;
-      }
+      const url = '/api/chart-data?symbol=' + encodeURIComponent(yahooSymbol) +
+                  '&interval=' + yahooInterval;
 
       const response = await fetch(url);
       const data = await response.json();
@@ -115,7 +111,9 @@ export default function TradeChart({ trade, userTheme }) {
           const dailyResponse = await fetch(dailyUrl);
           const dailyData = await dailyResponse.json();
           if (dailyResponse.ok && dailyData.candles?.length > 0) {
-            setChartData(dailyData.candles);
+            const candles = dailyData.candles || [];
+            const istCandles = candles.map(c => ({ ...c, time: c.time + 19800 }));
+            setChartData(istCandles);
           } else {
             setChartError('Chart data not available for this trade date.');
           }
@@ -123,7 +121,9 @@ export default function TradeChart({ trade, userTheme }) {
           setChartError(data.error || 'Failed to load chart data.');
         }
       } else {
-        setChartData(data.candles || []);
+        const candles = data.candles || [];
+        const istCandles = candles.map(c => ({ ...c, time: c.time + 19800 }));
+        setChartData(istCandles);
       }
     } catch (err) {
       setChartError('Network error loading chart: ' + err.message);
@@ -148,13 +148,7 @@ export default function TradeChart({ trade, userTheme }) {
       setDataLimitedToDaily(true);
     }
 
-    if (chartFrom && chartTo && canIntraday) {
-      const extendedFrom = chartFrom - (2 * 60 * 60);
-      const extendedTo = chartTo + (2 * 60 * 60);
-      fetchIndianChartData(yahooSymbol, effectiveInterval, extendedFrom, extendedTo);
-    } else {
-      fetchIndianChartData(yahooSymbol, effectiveInterval, null, null);
-    }
+    fetchIndianChartData(yahooSymbol, effectiveInterval);
   }, [isIndianMarket, tvSymbol, interval, chartFrom, chartTo]);
 
   useEffect(() => {
@@ -180,6 +174,10 @@ export default function TradeChart({ trade, userTheme }) {
         borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
         timeVisible: true,
         secondsVisible: false,
+        rightOffset: 5,
+        barSpacing: 6,
+        fixLeftEdge: false,
+        fixRightEdge: false,
       },
       crosshair: {
         mode: 1,
@@ -198,9 +196,10 @@ export default function TradeChart({ trade, userTheme }) {
     candleSeries.setData(chartData);
 
     if (chartFrom && chartTo) {
+      const istOffset = 19800;
       chart.timeScale().setVisibleRange({
-        from: chartFrom - (1 * 60 * 60),
-        to: chartTo + (3 * 60 * 60)
+        from: chartFrom + istOffset,
+        to: chartTo + istOffset
       });
     }
 
@@ -223,7 +222,7 @@ export default function TradeChart({ trade, userTheme }) {
       lwChartRef.current = null;
       lwSeriesRef.current = null;
     };
-  }, [chartData, userTheme, isIndianMarket]);
+  }, [chartData, userTheme, isIndianMarket, chartFrom, chartTo]);
 
   const handleCapturedImage = (blob) => {
     if (!blob) return;
