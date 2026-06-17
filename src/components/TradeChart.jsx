@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { getTVSymbol, getTVTheme, buildTVWidgetURL } from '../lib/symbolMap';
 import { supabase } from '../lib/supabase';
 
@@ -40,9 +40,6 @@ function getPnlColor(pnl) {
 }
 
 export default function TradeChart({ trade, userTheme }) {
-  const normalChartRef = useRef(null);
-  const maximizeChartRef = useRef(null);
-
   const [interval, setActiveInterval] = useState('5');
   const [isMaximized, setIsMaximized] = useState(false);
   const [capturedFile, setCapturedFile] = useState(null);
@@ -50,7 +47,6 @@ export default function TradeChart({ trade, userTheme }) {
   const [uploading, setUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [showReplaceConfirm, setShowReplaceConfirm] = useState(false);
-  const [captureError, setCaptureError] = useState(null);
 
   const tvSymbol = getTVSymbol(trade?.symbol || '');
   const tvTheme = getTVTheme(userTheme);
@@ -77,76 +73,7 @@ export default function TradeChart({ trade, userTheme }) {
     setCapturedFile(blob);
     setUploadSuccess(false);
     setShowReplaceConfirm(false);
-    setCaptureError(null);
   };
-
-  async function captureScreenshot(containerRef) {
-    setCaptureError(null);
-
-    if (!navigator.mediaDevices?.getDisplayMedia) {
-      setCaptureError('Screen capture not supported in this browser. Use Ctrl+V paste instead.');
-      return;
-    }
-
-    try {
-      const stream = await navigator.mediaDevices.getDisplayMedia({
-        video: { frameRate: 1 },
-        preferCurrentTab: true
-      });
-
-      const video = document.createElement('video');
-      video.srcObject = stream;
-      video.muted = true;
-
-      await new Promise((resolve) => {
-        video.onloadedmetadata = () => {
-          video.play();
-          resolve();
-        };
-      });
-
-      await new Promise(resolve => setTimeout(resolve, 400));
-
-      stream.getTracks().forEach(track => track.stop());
-
-      const container = containerRef?.current;
-      if (!container) {
-        const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        canvas.getContext('2d').drawImage(video, 0, 0);
-        canvas.toBlob(blob => {
-          if (blob) handleCapturedImage(blob);
-        }, 'image/png');
-        return;
-      }
-
-      const rect = container.getBoundingClientRect();
-      const scaleX = video.videoWidth / window.innerWidth;
-      const scaleY = video.videoHeight / window.innerHeight;
-
-      const srcX = Math.round(Math.max(0, rect.left * scaleX));
-      const srcY = Math.round(Math.max(0, rect.top * scaleY));
-      const srcW = Math.round(Math.min(rect.width * scaleX, video.videoWidth - srcX));
-      const srcH = Math.round(Math.min(rect.height * scaleY, video.videoHeight - srcY));
-
-      const cropCanvas = document.createElement('canvas');
-      cropCanvas.width = srcW;
-      cropCanvas.height = srcH;
-      const ctx = cropCanvas.getContext('2d');
-      ctx.drawImage(video, srcX, srcY, srcW, srcH, 0, 0, srcW, srcH);
-
-      cropCanvas.toBlob(blob => {
-        if (blob) handleCapturedImage(blob);
-      }, 'image/png');
-
-    } catch (err) {
-      if (err.name === 'NotAllowedError' || err.name === 'AbortError') {
-        return;
-      }
-      setCaptureError('Capture failed. Use Ctrl+V paste as alternative.');
-    }
-  }
 
   async function uploadScreenshot() {
     if (!capturedFile || !trade?.id) return;
@@ -481,18 +408,15 @@ export default function TradeChart({ trade, userTheme }) {
       );
     } else {
       content = (
-        <div style={{ textAlign: 'center', userSelect: 'none', color: textSubColor }}>
-          {captureError && (
-            <div style={{ color: '#f59e0b', fontSize: '11px', textAlign: 'center', marginBottom: '6px' }}>
-              {captureError}
+        <div style={{ textAlign: 'center', userSelect: 'none', color: isDarkContext ? 'rgba(255,255,255,0.5)' : textSubColor }}>
+          <div style={{ fontSize: '12px', marginBottom: '5px' }}>
+            {isDarkContext ? 'Drag downloaded chart here or Ctrl+V' : '📋 Paste a screenshot (Ctrl+V) or drag and drop a file here'}
+          </div>
+          {!isDarkContext && (
+            <div style={{ fontSize: '11px', color: textMutedColor }}>
+              Drag and drop a file here also works
             </div>
           )}
-          <div style={{ fontSize: '12px', marginBottom: '5px' }}>
-            📷 Click the camera button on the chart or paste a screenshot (Ctrl+V)
-          </div>
-          <div style={{ fontSize: '11px', color: textMutedColor }}>
-            Drag and drop a file here also works
-          </div>
         </div>
       );
     }
@@ -527,251 +451,185 @@ export default function TradeChart({ trade, userTheme }) {
         }
       `}} />
 
-      {/* NORMAL VIEW */}
+      {/* Header Row */}
       {!isMaximized && (
-        <>
-          {/* Header Row */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-            <span style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.5px', textTransform: 'uppercase', color: 'var(--text-muted)' }}>
-              TRADE CHART
-            </span>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              <button
-                type="button"
-                onClick={() => setIsMaximized(true)}
-                title="Expand chart"
-                style={{
-                  background: 'var(--card)',
-                  border: '0.5px solid var(--border)',
-                  borderRadius: '6px',
-                  padding: '4px 9px',
-                  cursor: 'pointer',
-                  color: 'var(--text-sub)',
-                  fontSize: '13px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: 500
-                }}
-              >
-                ⛶ Expand
-              </button>
-              {renderTimeframeButtons(false)}
-            </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+          <span style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.5px', textTransform: 'uppercase', color: 'var(--text-muted)' }}>
+            TRADE CHART
+          </span>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <button
+              type="button"
+              onClick={() => setIsMaximized(true)}
+              title="Expand chart"
+              style={{
+                background: 'var(--card)',
+                border: '0.5px solid var(--border)',
+                borderRadius: '6px',
+                padding: '4px 9px',
+                cursor: 'pointer',
+                color: 'var(--text-sub)',
+                fontSize: '13px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 500
+              }}
+            >
+              ⛶ Expand
+            </button>
+            {renderTimeframeButtons(false)}
           </div>
-
-          {/* Chart Area */}
-          <div ref={normalChartRef} style={{ position: 'relative' }}>
-            {isIndianMarket ? (
-              renderIndianNotice(false)
-            ) : (
-              <iframe
-                key={tvSymbol + '-' + interval}
-                className="tl-chart-iframe"
-                src={widgetUrl}
-                frameBorder={0}
-                allowTransparency={true}
-                scrolling="no"
-                title={tvSymbol + ' Chart'}
-              />
-            )}
-
-            {/* CAMERA BUTTON (Floating) */}
-            {!isIndianMarket && (
-              <button
-                type="button"
-                title="Capture chart screenshot"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  captureScreenshot(normalChartRef);
-                }}
-                style={{
-                  position: 'absolute',
-                  bottom: '14px',
-                  right: '14px',
-                  zIndex: 10,
-                  width: '42px',
-                  height: '42px',
-                  borderRadius: '50%',
-                  background: 'var(--accent)',
-                  border: 'none',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.25)'
-                }}
-              >
-                <span style={{ fontSize: '18px' }}>📷</span>
-              </button>
-            )}
-          </div>
-
-          {/* PASTE ZONE */}
-          {renderPasteZone(false)}
-
-          {/* Navigation Panel */}
-          <div style={{ marginTop: '12px', background: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px', padding: '12px 14px' }}>
-            <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-sub)', display: 'block', marginBottom: '10px' }}>
-              📍 Navigate to your trade
-            </span>
-
-            <div className="tl-chart-navgrid">
-              {/* Box 1 */}
-              <div style={{ background: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '8px 10px' }}>
-                <span style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
-                  DATE
-                </span>
-                <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text)' }}>
-                  {formatTradeDate(trade?.date)}
-                </div>
-              </div>
-
-              {/* Box 2 */}
-              <div style={{ background: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '8px 10px' }}>
-                <span style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
-                  ENTRY TIME
-                </span>
-                <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text)' }}>
-                  {formatTradeTime(trade?.entry_time)}
-                </div>
-              </div>
-
-              {/* Box 3 */}
-              <div style={{ background: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '8px 10px' }}>
-                <span style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
-                  ENTRY PRICE
-                </span>
-                <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text)' }}>
-                  {entryPrice !== null ? Number(entryPrice).toFixed(2) : '-'}
-                </div>
-              </div>
-
-              {/* Box 4 */}
-              <div style={{ background: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '8px 10px' }}>
-                <span style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
-                  EXIT TIME
-                </span>
-                <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text)' }}>
-                  {formatTradeTime(trade?.exit_time ?? null)}
-                </div>
-              </div>
-
-              {/* Box 5 */}
-              <div style={{ background: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '8px 10px' }}>
-                <span style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
-                  EXIT PRICE
-                </span>
-                <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text)' }}>
-                  {exitPrice !== null ? Number(exitPrice).toFixed(2) : '-'}
-                </div>
-              </div>
-
-              {/* Box 6 */}
-              <div style={{ background: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '8px 10px' }}>
-                <span style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
-                  P&L
-                </span>
-                <div style={{ fontSize: '13px', fontWeight: 700, color: getPnlColor(pnl) }}>
-                  {formatPnl(pnl)}
-                </div>
-              </div>
-            </div>
-
-            <p style={{ fontSize: '11px', color: 'var(--text-muted)', fontStyle: 'italic', lineHeight: 1.5, marginTop: '10px', margin: '10px 0 0 0' }}>
-              {hintText}
-            </p>
-          </div>
-        </>
+        </div>
       )}
 
-      {/* MAXIMIZED VIEW MODAL */}
-      {isMaximized && (
-        <div style={{
+      {/* Chart Container Div (Becomes fullscreen when maximized) */}
+      <div style={{
+        position: 'relative',
+        ...(isMaximized ? {
           position: 'fixed',
-          inset: 0,
-          background: 'rgba(0,0,0,0.92)',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
           zIndex: 9999,
+          background: 'rgba(0,0,0,0.95)',
+          padding: '12px 16px',
+          boxSizing: 'border-box',
           display: 'flex',
-          flexDirection: 'column',
-          padding: '16px',
-          boxSizing: 'border-box'
-        }}>
-          {/* Header row */}
+          flexDirection: 'column'
+        } : {})
+      }}>
+        {/* Maximize Header */}
+        {isMaximized && (
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', flexShrink: 0 }}>
-            <span style={{ fontSize: '13px', fontWeight: 700, color: '#ffffff', letterSpacing: '0.3px' }}>
-              TRADE CHART · {tvSymbol}
+            <span style={{ color: '#ffffff', fontSize: 13, fontWeight: 700, letterSpacing: '0.3px', fontFamily: '"Inter", sans-serif' }}>
+              {'TRADE CHART · ' + tvSymbol}
             </span>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              {renderTimeframeButtons(true)}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              {TIMEFRAMES.map(tf => (
+                <button
+                  key={tf.value}
+                  type="button"
+                  onClick={() => setActiveInterval(tf.value)}
+                  style={{
+                    borderRadius: 6,
+                    padding: '3px 9px',
+                    fontSize: 11,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
+                    outline: 'none',
+                    background: interval === tf.value ? 'var(--accent)' : 'rgba(255,255,255,0.1)',
+                    color: interval === tf.value ? '#ffffff' : 'rgba(255,255,255,0.7)',
+                    border: interval === tf.value ? 'none' : '0.5px solid rgba(255,255,255,0.2)'
+                  }}
+                >{tf.label}</button>
+              ))}
               <button
                 type="button"
                 onClick={() => setIsMaximized(false)}
-                style={{
-                  background: 'rgba(255,255,255,0.12)',
-                  color: '#fff',
-                  border: '0.5px solid rgba(255,255,255,0.25)',
-                  borderRadius: '6px',
-                  padding: '5px 14px',
-                  fontSize: '12px',
-                  fontWeight: 600,
-                  cursor: 'pointer'
-                }}
-              >
-                ✕ Close
-              </button>
+                style={{ background: 'rgba(255,255,255,0.12)', color: '#fff', border: '0.5px solid rgba(255,255,255,0.25)', borderRadius: 6, padding: '5px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer', marginLeft: 4 }}
+              >✕ Close</button>
+            </div>
+          </div>
+        )}
+
+        {/* Chart Content */}
+        {isIndianMarket ? (
+          renderIndianNotice(isMaximized)
+        ) : (
+          <iframe
+            key={tvSymbol + '-' + interval}
+            className={isMaximized ? undefined : 'tl-chart-iframe'}
+            style={isMaximized ? { flex: 1, width: '100%', border: 'none', borderRadius: 8, minHeight: 0 } : { display: 'block', width: '100%', borderRadius: 8, border: '0.5px solid var(--border)' }}
+            src={widgetUrl}
+            frameBorder={0}
+            allowTransparency={true}
+            scrolling="no"
+            title={tvSymbol + ' Chart'}
+          />
+        )}
+
+        {/* Maximize Paste Zone */}
+        {isMaximized && renderPasteZone(true)}
+      </div>
+
+      {/* Normal View Paste Zone */}
+      {!isMaximized && renderPasteZone(false)}
+
+      {/* Navigation Panel */}
+      {!isMaximized && (
+        <div style={{ marginTop: '12px', background: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px', padding: '12px 14px' }}>
+          <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-sub)', display: 'block', marginBottom: '10px' }}>
+            📍 Navigate to your trade
+          </span>
+
+          <div className="tl-chart-navgrid">
+            {/* Box 1 */}
+            <div style={{ background: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '8px 10px' }}>
+              <span style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
+                DATE
+              </span>
+              <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text)' }}>
+                {formatTradeDate(trade?.date)}
+              </div>
+            </div>
+
+            {/* Box 2 */}
+            <div style={{ background: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '8px 10px' }}>
+              <span style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
+                ENTRY TIME
+              </span>
+              <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text)' }}>
+                {formatTradeTime(trade?.entry_time)}
+              </div>
+            </div>
+
+            {/* Box 3 */}
+            <div style={{ background: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '8px 10px' }}>
+              <span style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
+                ENTRY PRICE
+              </span>
+              <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text)' }}>
+                {entryPrice !== null ? Number(entryPrice).toFixed(2) : '-'}
+              </div>
+            </div>
+
+            {/* Box 4 */}
+            <div style={{ background: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '8px 10px' }}>
+              <span style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
+                EXIT TIME
+              </span>
+              <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text)' }}>
+                {formatTradeTime(trade?.exit_time ?? null)}
+              </div>
+            </div>
+
+            {/* Box 5 */}
+            <div style={{ background: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '8px 10px' }}>
+              <span style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
+                EXIT PRICE
+              </span>
+              <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text)' }}>
+                {exitPrice !== null ? Number(exitPrice).toFixed(2) : '-'}
+              </div>
+            </div>
+
+            {/* Box 6 */}
+            <div style={{ background: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '8px 10px' }}>
+              <span style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
+                P&L
+              </span>
+              <div style={{ fontSize: '13px', fontWeight: 700, color: getPnlColor(pnl) }}>
+                {formatPnl(pnl)}
+              </div>
             </div>
           </div>
 
-          {/* Chart area */}
-          <div ref={maximizeChartRef} style={{ flex: 1, position: 'relative', minHeight: 0 }}>
-            {isIndianMarket ? (
-              renderIndianNotice(true)
-            ) : (
-              <iframe
-                key={tvSymbol + '-max-' + interval}
-                src={widgetUrl}
-                style={{ width: '100%', height: '100%', display: 'block', borderRadius: '8px', border: 'none' }}
-                frameBorder={0}
-                allowTransparency={true}
-                scrolling="no"
-                title={tvSymbol + ' Chart'}
-              />
-            )}
-
-            {/* CAMERA BUTTON (floating corner) */}
-            {!isIndianMarket && (
-              <button
-                type="button"
-                title="Capture chart screenshot"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  captureScreenshot(maximizeChartRef);
-                }}
-                style={{
-                  position: 'absolute',
-                  bottom: '14px',
-                  right: '14px',
-                  zIndex: 10,
-                  width: '42px',
-                  height: '42px',
-                  borderRadius: '50%',
-                  background: 'var(--accent)',
-                  border: 'none',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.25)'
-                }}
-              >
-                <span style={{ fontSize: '18px' }}>📷</span>
-              </button>
-            )}
-          </div>
-
-          {/* PASTE ZONE */}
-          {renderPasteZone(true)}
+          <p style={{ fontSize: '11px', color: 'var(--text-muted)', fontStyle: 'italic', lineHeight: 1.5, marginTop: '10px', margin: '10px 0 0 0' }}>
+            {hintText}
+          </p>
         </div>
       )}
     </div>
