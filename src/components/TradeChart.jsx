@@ -1202,7 +1202,7 @@ export default function TradeChart({ trade, userTheme }) {
             style={isMaximized ? { flex: 1, width: '100%', border: 'none', borderRadius: 8, minHeight: 0 } : { display: 'block', width: '100%', borderRadius: 8, border: '0.5px solid var(--border)' }}
             src={widgetUrl}
             frameBorder={0}
-            allowTransparency={true}
+            allowtransparency="true"
             scrolling="no"
             title={tvSymbol + ' Chart'}
           />

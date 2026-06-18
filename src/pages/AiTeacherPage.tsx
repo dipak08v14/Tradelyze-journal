@@ -478,13 +478,13 @@ export const AiTeacherPage: React.FC = () => {
       }
 
     } catch (err: any) {
-      console.error('Claude service query failure:', err);
+      console.error('Gemini service query failure:', err);
       // Give very neat, visible error message in chat history as a system message
       setMessages(prev => [
         ...prev,
         {
           role: 'assistant',
-          content: `❌ **Coaching Service Connection Error**\n\n${err.message || 'Unable to connect to the AI model.'}\n\n*Please ensure you have configured your \`ANTHROPIC_API_KEY\` in the AI Studio Secrets panel.*`
+          content: `❌ **Coaching Service Connection Error**\n\n${err.message || 'Unable to connect to the AI model.'}\n\n*Please ensure you have configured your \`GEMINI_API_KEY\` in the AI Studio Secrets panel.*`
         }
       ]);
       showError(err.message || 'AI Teacher service failed to respond.');

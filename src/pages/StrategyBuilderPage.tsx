@@ -535,31 +535,72 @@ export const StrategyBuilderPage: React.FC = () => {
 
         if (updateStratErr) throw updateStratErr;
 
-        // 5. Delete existing rules associated first
-        const { error: rulesDelErr } = await supabase
+        // 5. Query existing rules in DB for clean updates and insertions
+        const { data: dbRules, error: dbRulesFetchErr } = await supabase
           .from('strategy_rules')
-          .delete()
+          .select('id')
           .eq('strategy_id', strategyId)
           .eq('user_id', userId);
 
-        if (rulesDelErr) throw rulesDelErr;
+        if (dbRulesFetchErr) throw dbRulesFetchErr;
 
-        // 6. Re-insert rules with clean, non-gap serial rule_orders
+        const dbRuleIds = (dbRules || []).map((r) => r.id);
+
+        // 6. Update rules that already exist in database
+        const rulesToUpdate = [
+          ...entryToSave
+            .map((r, idx) => ({ r, idx }))
+            .filter(({ r }) => dbRuleIds.includes(r.id))
+            .map(({ r, idx }) => ({
+              id: r.id,
+              rule_order: idx + 1,
+              rule_text: r.rule_text.trim()
+            })),
+          ...exitToSave
+            .map((r, idx) => ({ r, idx }))
+            .filter(({ r }) => dbRuleIds.includes(r.id))
+            .map(({ r, idx }) => ({
+              id: r.id,
+              rule_order: idx + 1,
+              rule_text: r.rule_text.trim()
+            }))
+        ];
+
+        for (const rule of rulesToUpdate) {
+          const { error: updRuleErr } = await supabase
+            .from('strategy_rules')
+            .update({
+              rule_order: rule.rule_order,
+              rule_text: rule.rule_text
+            })
+            .eq('id', rule.id)
+            .eq('user_id', userId);
+
+          if (updRuleErr) throw updRuleErr;
+        }
+
+        // 7. Insert rules that are brand new
         const rulesInsertBatch = [
-          ...entryToSave.map((r, idx) => ({
-            strategy_id: strategyId,
-            user_id: userId,
-            rule_type: 'entry',
-            rule_order: idx + 1,
-            rule_text: r.rule_text.trim()
-          })),
-          ...exitToSave.map((r, idx) => ({
-            strategy_id: strategyId,
-            user_id: userId,
-            rule_type: 'exit',
-            rule_order: idx + 1,
-            rule_text: r.rule_text.trim()
-          }))
+          ...entryToSave
+            .map((r, idx) => ({ r, idx }))
+            .filter(({ r }) => !dbRuleIds.includes(r.id))
+            .map(({ r, idx }) => ({
+              strategy_id: strategyId,
+              user_id: userId,
+              rule_type: 'entry',
+              rule_order: idx + 1,
+              rule_text: r.rule_text.trim()
+            })),
+          ...exitToSave
+            .map((r, idx) => ({ r, idx }))
+            .filter(({ r }) => !dbRuleIds.includes(r.id))
+            .map(({ r, idx }) => ({
+              strategy_id: strategyId,
+              user_id: userId,
+              rule_type: 'exit',
+              rule_order: idx + 1,
+              rule_text: r.rule_text.trim()
+            }))
         ];
 
         if (rulesInsertBatch.length > 0) {
@@ -568,6 +609,36 @@ export const StrategyBuilderPage: React.FC = () => {
             .insert(rulesInsertBatch);
 
           if (rulesErr) throw rulesErr;
+        }
+
+        // 8. Safely delete rules deleted by user, but only if they are not referenced
+        const activeRuleIds = new Set([
+          ...entryToSave.map((r) => r.id),
+          ...exitToSave.map((r) => r.id)
+        ]);
+        const deletedRuleIds = dbRuleIds.filter((id) => !activeRuleIds.has(id));
+
+        if (deletedRuleIds.length > 0) {
+          const { data: referencingAdherences, error: refErr } = await supabase
+            .from('trade_rule_adherence')
+            .select('rule_id')
+            .in('rule_id', deletedRuleIds)
+            .eq('user_id', userId);
+
+          if (refErr) throw refErr;
+
+          const referencedIds = new Set((referencingAdherences || []).map((row) => row.rule_id));
+          const safelyDeletableRuleIds = deletedRuleIds.filter((id) => !referencedIds.has(id));
+
+          if (safelyDeletableRuleIds.length > 0) {
+            const { error: cleanupErr } = await supabase
+              .from('strategy_rules')
+              .delete()
+              .in('id', safelyDeletableRuleIds)
+              .eq('user_id', userId);
+
+            if (cleanupErr) throw cleanupErr;
+          }
         }
 
         showSuccess('Strategy updated!');

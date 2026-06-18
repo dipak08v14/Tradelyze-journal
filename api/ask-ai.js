@@ -1,3 +1,14 @@
+import { GoogleGenAI } from "@google/genai";
+
+const ai = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY,
+  httpOptions: {
+    headers: {
+      'User-Agent': 'aistudio-build',
+    }
+  }
+});
+
 export default async function handler(req, res) {
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*')
@@ -24,36 +35,21 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Question and system prompt are required' })
   }
 
-  if (!process.env.ANTHROPIC_API_KEY) {
-    return res.status(500).json({ error: 'AI service not configured. Please add ANTHROPIC_API_KEY.' })
+  if (!process.env.GEMINI_API_KEY) {
+    return res.status(500).json({ error: 'AI service not configured. Please add GEMINI_API_KEY.' })
   }
 
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1500,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: question }]
-      })
-    })
+    const response = await ai.models.generateContent({
+      model: "gemini-3.5-flash",
+      contents: question,
+      config: {
+        systemInstruction: systemPrompt
+      }
+    });
 
-    const data = await response.json()
-
-    if (!response.ok) {
-      return res.status(response.status).json({
-        error: data.error?.message || 'Claude API error'
-      })
-    }
-
-    const answer = data.content?.[0]?.text || 'No response received.'
-    const tokensUsed = (data.usage?.input_tokens || 0) + (data.usage?.output_tokens || 0)
+    const answer = response.text || 'No response received.';
+    const tokensUsed = response.usageMetadata?.totalTokenCount || 0;
 
     return res.status(200).json({ answer, tokensUsed })
 
@@ -61,3 +57,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Failed to reach AI service: ' + error.message })
   }
 }
+
