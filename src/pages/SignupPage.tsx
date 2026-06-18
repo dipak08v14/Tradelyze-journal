@@ -18,7 +18,7 @@ export function SignupPage() {
 
   useEffect(() => {
     if (!loading && user) {
-      navigate('/onboarding');
+      navigate('/dashboard');
     }
   }, [user, loading, navigate]);
 
@@ -78,7 +78,7 @@ export function SignupPage() {
         }
 
         showSuccess('Account created successfully! Welcome to Tradelyze.');
-        navigate('/onboarding');
+        navigate('/dashboard');
       }
     } catch (err: any) {
       console.error('Signup Error:', err);
@@ -95,7 +95,7 @@ export function SignupPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin + '/onboarding'
+          redirectTo: window.location.origin + '/dashboard'
         }
       });
       if (error) throw error;

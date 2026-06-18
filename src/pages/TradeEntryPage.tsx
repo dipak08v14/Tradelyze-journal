@@ -66,12 +66,12 @@ export const TradeEntryPage: React.FC = () => {
   const [notes, setNotes] = useState<string>('');
 
   // Card 8: Psychology Sliders
-  const [externalStress, setExternalStress] = useState<number>(70);
-  const [priceActionReading, setPriceActionReading] = useState<number>(70);
-  const [confidence, setConfidence] = useState<number>(70);
-  const [entryLevels, setEntryLevels] = useState<number>(70);
-  const [anxiety, setAnxiety] = useState<number>(10);
-  const [fear, setFear] = useState<number>(10);
+  const [externalStress, setExternalStress] = useState<number>(0);
+  const [priceActionReading, setPriceActionReading] = useState<number>(0);
+  const [confidence, setConfidence] = useState<number>(0);
+  const [entryLevels, setEntryLevels] = useState<number>(0);
+  const [anxiety, setAnxiety] = useState<number>(0);
+  const [fear, setFear] = useState<number>(0);
 
   // Card 9: Risk Management
   const [decidedRisk, setDecidedRisk] = useState<string>('');
@@ -231,12 +231,12 @@ export const TradeEntryPage: React.FC = () => {
         setExitRules(exitRulesFromDb);
 
         if (psychRes.data) {
-          setExternalStress(psychRes.data.external_stress_pct ?? 70);
-          setPriceActionReading(psychRes.data.price_action_reading_pct ?? 70);
-          setConfidence(psychRes.data.confidence_pct ?? 70);
-          setEntryLevels(psychRes.data.entry_levels_pct ?? 70);
-          setAnxiety(psychRes.data.anxiety_pct ?? 10);
-          setFear(psychRes.data.fear_pct ?? 10);
+          setExternalStress(psychRes.data.external_stress_pct ?? 0);
+          setPriceActionReading(psychRes.data.price_action_reading_pct ?? 0);
+          setConfidence(psychRes.data.confidence_pct ?? 0);
+          setEntryLevels(psychRes.data.entry_levels_pct ?? 0);
+          setAnxiety(psychRes.data.anxiety_pct ?? 0);
+          setFear(psychRes.data.fear_pct ?? 0);
         }
 
         if (riskRes.data) {
@@ -901,12 +901,12 @@ export const TradeEntryPage: React.FC = () => {
     setTradeRating(0);
     setNotes('');
 
-    setExternalStress(70);
-    setPriceActionReading(70);
-    setConfidence(70);
-    setEntryLevels(70);
-    setAnxiety(10);
-    setFear(10);
+    setExternalStress(0);
+    setPriceActionReading(0);
+    setConfidence(0);
+    setEntryLevels(0);
+    setAnxiety(0);
+    setFear(0);
 
     setDecidedRisk('');
     setFollowedRiskRulesPct(100);

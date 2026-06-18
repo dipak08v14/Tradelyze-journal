@@ -14,10 +14,10 @@ export const LoginPage: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
 
-  // If already authenticated, redirect to /strategies
+  // If already authenticated, redirect to /dashboard
   useEffect(() => {
     if (!loading && user) {
-      navigate('/strategies');
+      navigate('/dashboard');
     }
   }, [user, loading, navigate]);
 
@@ -43,7 +43,7 @@ export const LoginPage: React.FC = () => {
 
       if (data?.user) {
         showSuccess('Logged in successfully!');
-        navigate('/strategies');
+        navigate('/dashboard');
       }
     } catch (err: any) {
       console.error('Authentication Error:', err);

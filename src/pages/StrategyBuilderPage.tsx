@@ -14,7 +14,9 @@ import {
   Loader2,
   AlertTriangle,
   Menu,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Eye,
+  X
 } from 'lucide-react';
 
 interface RuleItem {
@@ -72,6 +74,19 @@ export const StrategyBuilderPage: React.FC = () => {
 
   // Helper generator for client-side matching IDs
   const makeId = () => Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
+
+  // Lightbox Image Preview State
+  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setLightboxImage(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Load Initial Strategy Data (Edit Mode)
   useEffect(() => {
@@ -1216,17 +1231,36 @@ export const StrategyBuilderPage: React.FC = () => {
                         {existingImages
                           .filter((url) => !markedForDeletion.includes(url))
                           .map((url, index) => (
-                            <div key={`exist-${index}`} style={{ borderColor: 'var(--border)' }} className="group relative aspect-square rounded-xl border overflow-hidden bg-zinc-950/55">
+                            <div 
+                              key={`exist-${index}`} 
+                              style={{ borderColor: 'var(--border)', cursor: 'pointer' }} 
+                              className="group relative aspect-square rounded-xl border overflow-hidden bg-zinc-950/55"
+                              onClick={() => setLightboxImage(url)}
+                            >
                               <img
                                 src={url}
                                 alt={`Screenshot reference #${index + 1}`}
                                 className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-200"
                               />
-                              <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                              <div className="absolute inset-0 bg-black/60 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <button
                                   type="button"
-                                  onClick={() => removeExistingImage(url)}
-                                  className="bg-[#ef4444] text-white rounded-xl p-2.5 transition-all shadow-md cursor-pointer"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setLightboxImage(url);
+                                  }}
+                                  className="bg-cyan-600 text-white rounded-xl p-2.5 transition-all shadow-md cursor-pointer hover:scale-105"
+                                  title="Expand image"
+                                >
+                                  <Eye className="w-4 h-4" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    removeExistingImage(url);
+                                  }}
+                                  className="bg-[#ef4444] text-white rounded-xl p-2.5 transition-all shadow-md cursor-pointer hover:scale-105"
                                   title="Delete screenshot"
                                 >
                                   <Trash2 className="w-4 h-4" />
@@ -1237,7 +1271,12 @@ export const StrategyBuilderPage: React.FC = () => {
 
                         {/* STAGED PENDING UPLOADS */}
                         {pendingUploads.map((item) => (
-                          <div key={item.id} style={{ borderColor: 'var(--border)' }} className="group relative aspect-square rounded-xl border overflow-hidden bg-zinc-950/55">
+                          <div 
+                            key={item.id} 
+                            style={{ borderColor: 'var(--border)', cursor: 'pointer' }} 
+                            className="group relative aspect-square rounded-xl border overflow-hidden bg-zinc-950/55"
+                            onClick={() => setLightboxImage(item.preview)}
+                          >
                             <img
                               src={item.preview}
                               alt="Screenshot upload stage preview"
@@ -1247,11 +1286,25 @@ export const StrategyBuilderPage: React.FC = () => {
                             <span style={{ backgroundColor: 'var(--accent)' }} className="absolute top-1 left-1 text-[9px] font-mono font-medium rounded-md px-1.5 py-0.5 text-white tracking-wide border border-cyan-400">
                               Staged
                             </span>
-                            <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div className="absolute inset-0 bg-black/60 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
                               <button
                                 type="button"
-                                onClick={() => removePendingImage(item.id)}
-                                className="bg-[#ef4444] text-white rounded-xl p-2.5 transition-all shadow-md cursor-pointer"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setLightboxImage(item.preview);
+                                }}
+                                className="bg-cyan-600 text-white rounded-xl p-2.5 transition-all shadow-md cursor-pointer hover:scale-105"
+                                title="Expand image"
+                              >
+                                <Eye className="w-4 h-4" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  removePendingImage(item.id);
+                                }}
+                                className="bg-[#ef4444] text-white rounded-xl p-2.5 transition-all shadow-md cursor-pointer hover:scale-105"
                                 title="Remove upload item"
                               >
                                 <Trash2 className="w-4 h-4" />
@@ -1417,6 +1470,32 @@ export const StrategyBuilderPage: React.FC = () => {
           </div>
         </div>
       </Modal>
+
+      {/* LIGHTBOX OVERLAY */}
+      {lightboxImage && (
+        <div 
+          className="fixed inset-0 bg-black/90 z-[99999] flex items-center justify-center p-4 select-none animate-in fade-in duration-200"
+          onClick={() => setLightboxImage(null)}
+        >
+          {/* Close button with circular background */}
+          <button
+            onClick={() => setLightboxImage(null)}
+            className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 text-white rounded-full p-2.5 cursor-pointer border border-white/20 transition-all shadow-lg hover:scale-105"
+            aria-label="Close preview"
+            title="Close preview (Esc)"
+          >
+            <X className="w-6 h-6" />
+          </button>
+
+          <div className="max-w-full max-h-full flex items-center justify-center relative" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={lightboxImage}
+              alt="Reference Full Size"
+              className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl border border-white/10"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
