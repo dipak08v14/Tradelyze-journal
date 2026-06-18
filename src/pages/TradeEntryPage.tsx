@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
@@ -12,6 +12,23 @@ import { ExecutionPicker, ExecutionStatus } from '../components/ExecutionPicker'
 import { Menu, Save, ImagePlus, Target, X, CheckSquare, CheckCircle2 } from 'lucide-react';
 import { Strategy, StagedRuleState } from '../types';
 import { generateEmbeddingFromUrl } from '../lib/clipEmbedder';
+
+const PREDEFINED_SYMBOLS = [
+  // Forex
+  'EURUSD', 'GBPUSD', 'USDJPY', 'AUDUSD', 'USDCAD', 'USDCHF', 'NZDUSD', 'EURGBP', 'EURJPY', 'GBPJPY', 'USDINR', 'EURINR',
+  // Gold/Silver
+  'XAUUSD', 'XAGUSD',
+  // Crypto
+  'BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT', 'ADAUSDT', 'DOGEUSDT',
+  // Indian Indices
+  'NIFTY', 'BANKNIFTY', 'FINNIFTY', 'SENSEX', 'MIDCPNIFTY',
+  // US Indices
+  'US30', 'NAS100', 'SPX500',
+  // MCX
+  'GOLD', 'SILVER', 'CRUDEOIL', 'NATURALGAS',
+  // Stocks
+  'RELIANCE', 'TCS', 'HDFCBANK', 'INFY', 'ICICIBANK', 'SBIN', 'WIPRO', 'ADANIENT', 'BAJFINANCE', 'TATAMOTORS'
+];
 
 export const TradeEntryPage: React.FC = () => {
   const { user, userId, loading: authLoading } = useAuth();
@@ -36,6 +53,53 @@ export const TradeEntryPage: React.FC = () => {
   const [date, setDate] = useState<string>(() => new Date().toISOString().split('T')[0]);
   const [entryTime, setEntryTime] = useState<string>('');
   const [symbol, setSymbol] = useState<string>('');
+  const [showSymbolSuggestions, setShowSymbolSuggestions] = useState(false);
+  const symbolContainerRef = useRef<HTMLDivElement>(null);
+
+  const symbolSuggestions = useMemo(() => {
+    if (!symbol.trim()) return [];
+    return PREDEFINED_SYMBOLS.filter((s) =>
+      s.toLowerCase().includes(symbol.toLowerCase())
+    ).slice(0, 6);
+  }, [symbol]);
+
+  const isSymbolNonStandard = useMemo(() => {
+    const trimmedVal = symbol.toUpperCase().trim();
+    if (!trimmedVal) return false;
+    return !PREDEFINED_SYMBOLS.includes(trimmedVal);
+  }, [symbol]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (symbolContainerRef.current && !symbolContainerRef.current.contains(event.target as Node)) {
+        setShowSymbolSuggestions(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const getHighlightedText = (text: string, highlight: string) => {
+    if (!highlight.trim()) {
+      return <span>{text}</span>;
+    }
+    const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
+    return (
+      <span>
+        {parts.map((part, i) =>
+          part.toLowerCase() === highlight.toLowerCase() ? (
+            <span key={i} style={{ color: 'var(--accent)' }} className="font-bold">
+              {part}
+            </span>
+          ) : (
+            <span key={i}>{part}</span>
+          )
+        )}
+      </span>
+    );
+  };
   const [direction, setDirection] = useState<'LONG' | 'SHORT' | null>(null);
   const [optionType, setOptionType] = useState<'CALL' | 'PUT' | null>(null);
   const [strategyId, setStrategyId] = useState<string>('');
@@ -1099,19 +1163,56 @@ export const TradeEntryPage: React.FC = () => {
 
                     {/* Symbol, Direction, and Option Type row */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div>
+                      <div className="relative" ref={symbolContainerRef}>
                         <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
                           Symbol <span className="text-[var(--accent)]">*</span>
                         </label>
                         <input
                           type="text"
                           value={symbol}
-                          onChange={(e) => setSymbol(e.target.value.toUpperCase())}
+                          onChange={(e) => {
+                            setSymbol(e.target.value.toUpperCase());
+                            setShowSymbolSuggestions(true);
+                          }}
+                          onFocus={() => setShowSymbolSuggestions(true)}
                           placeholder="e.g. XAUUSD, BANKNIFTY"
                           style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
                           className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)] font-mono"
                           required
                         />
+
+                        {/* Autocomplete Dropdown */}
+                        {showSymbolSuggestions && symbolSuggestions.length > 0 && (
+                          <div 
+                            style={{ 
+                              backgroundColor: 'var(--card)', 
+                              borderColor: 'var(--border)',
+                              borderRadius: '8px'
+                            }} 
+                            className="absolute left-0 right-0 mt-1 border shadow-xl z-50 overflow-hidden font-mono text-[13px]"
+                          >
+                            {symbolSuggestions.map((sym) => (
+                              <div
+                                key={sym}
+                                onClick={() => {
+                                  setSymbol(sym);
+                                  setShowSymbolSuggestions(false);
+                                }}
+                                style={{ color: 'var(--text)' }}
+                                className="px-[14px] py-[10px] cursor-pointer hover:bg-[var(--row)] transition-colors"
+                              >
+                                {getHighlightedText(sym, symbol)}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Non-standard symbol warning */}
+                        {isSymbolNonStandard && (
+                          <p className="mt-1.5 text-amber-500 text-[10px] leading-tight font-sans">
+                            This symbol is not in our standard list. Verify spelling before saving.
+                          </p>
+                        )}
                       </div>
                       <div>
                         <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
