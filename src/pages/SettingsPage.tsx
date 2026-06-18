@@ -49,6 +49,7 @@ export default function SettingsPage() {
   // Tab 1: Deletion confirmation
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteEmailConfirm, setDeleteEmailConfirm] = useState('');
+  const [hasLoadedProfile, setHasLoadedProfile] = useState(false);
 
   // Tab 2: Appearance selections
   const [selectedTheme, setSelectedTheme] = useState('charcoal');
@@ -677,12 +678,13 @@ export default function SettingsPage() {
 
   // Sync state with userData when loaded
   useEffect(() => {
-    if (userData) {
+    if (userData && !hasLoadedProfile) {
       setFullName(userData.full_name || '');
       setTimezone(userData.timezone || 'Asia/Kolkata');
       setPreferredCurrency(userData.preferred_currency || 'INR');
       setSelectedTheme(userData.theme_background || 'charcoal');
       setSelectedAccent(userData.theme_accent || 'cyan');
+      setHasLoadedProfile(true);
 
       // Read extension threshold from localStorage if saved
       const savedThreshold = localStorage.getItem('tl-alert-threshold');
@@ -690,7 +692,7 @@ export default function SettingsPage() {
         setAlertThreshold(parseInt(savedThreshold, 10));
       }
     }
-  }, [userData]);
+  }, [userData, hasLoadedProfile]);
 
   // Read initial tab parameter from URL query parameter e.g. ?tab=subscription
   useEffect(() => {
@@ -727,6 +729,15 @@ export default function SettingsPage() {
 
     try {
       setSaving(true);
+      
+      const { data: { session } } = await supabase.auth.getSession();
+      const currentUserId = session?.user?.id || userId;
+
+      if (!currentUserId) {
+        showError('No active authentication session found.');
+        return;
+      }
+
       const { error } = await supabase
         .from('users')
         .update({
@@ -734,7 +745,7 @@ export default function SettingsPage() {
           timezone,
           preferred_currency: preferredCurrency,
         })
-        .eq('id', userId);
+        .eq('id', currentUserId);
 
       if (error) throw error;
       showSuccess('Profile updated successfully! ✓');

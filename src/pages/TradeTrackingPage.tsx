@@ -637,6 +637,7 @@ const TradeTrackingPageContent: React.FC = () => {
                 {/* Ask AI - Placeholder */}
                 <button
                   type="button"
+                  onClick={() => navigate(`/ai-teacher?tradeId=${tradeId || (trade && trade.id)}`)}
                   style={{
                     backgroundColor: 'var(--accent)',
                     color: '#ffffff',
@@ -1423,6 +1424,7 @@ const TradeTrackingPageContent: React.FC = () => {
                 {/* ASK AI BUTTON AT BOTTOM OF RIGHT COLUMN */}
                 <button
                   type="button"
+                  onClick={() => navigate(`/ai-teacher?tradeId=${tradeId || (trade && trade.id)}`)}
                   style={{
                     backgroundColor: 'var(--accent)',
                     color: '#ffffff',

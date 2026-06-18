@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { useNavigate, Navigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
@@ -140,9 +140,17 @@ export const AiTeacherPage: React.FC = () => {
   const { user, userId, loading: authLoading } = useAuth();
   const { showError, showSuccess } = useToast();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const tradeQueryId = searchParams.get('tradeId') || '';
 
   // Selected Specific Trade Focus
-  const [selectedTradeId, setSelectedTradeId] = useState<string>('');
+  const [selectedTradeId, setSelectedTradeId] = useState<string>(tradeQueryId);
+
+  useEffect(() => {
+    if (tradeQueryId) {
+      setSelectedTradeId(tradeQueryId);
+    }
+  }, [tradeQueryId]);
 
   // UI state
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -597,6 +605,11 @@ export const AiTeacherPage: React.FC = () => {
                       {t.date} | {t.symbol} ({t.status}) — ₹{(t.pnl || 0).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                     </option>
                   ))}
+                  {selectedTradeId && specificTrade && !trades.slice(0, 30).some(t => t.id === selectedTradeId) && (
+                    <option key={specificTrade.id} value={specificTrade.id}>
+                      {specificTrade.date} | {specificTrade.symbol} ({specificTrade.status}) — ₹{(specificTrade.pnl || 0).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                    </option>
+                  )}
                 </select>
                 {selectedTradeId && specificTrade && (
                   <div style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)' }} className="p-2.5 rounded-xl border text-[10px] flex flex-col gap-1 space-y-0.5 animate-fadeIn font-medium">

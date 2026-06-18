@@ -26,7 +26,7 @@ export function useAuth(): AuthState {
     try {
       const { data: userData, error } = await supabase
         .from('users')
-        .select('subscription_plan, subscription_status, trial_started_at, theme_background, theme_accent, onboarding_completed, full_name')
+        .select('subscription_plan, subscription_status, trial_started_at, theme_background, theme_accent, onboarding_completed, full_name, timezone, preferred_currency')
         .eq('id', currentUser.id)
         .single();
 
@@ -40,6 +40,8 @@ export function useAuth(): AuthState {
           theme_accent: 'cyan',
           onboarding_completed: false,
           full_name: currentUser.user_metadata?.full_name || '',
+          timezone: 'Asia/Kolkata',
+          preferred_currency: 'INR'
         };
 
         // Try to insert missing user record
