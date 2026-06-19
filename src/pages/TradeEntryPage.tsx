@@ -786,7 +786,7 @@ export const TradeEntryPage: React.FC = () => {
           anxiety_pct: anxiety,
           fear_pct: fear,
           psychological_condition_pct: parseFloat(psychScore.toFixed(2)),
-        }, { onConflict: 'trade_id' });
+        }, { onConflict: 'trade_id,user_id' });
       if (psychError) console.error('Psychology insertion failed:', psychError);
 
       // 5. Upsert Risk Management Row
@@ -804,7 +804,7 @@ export const TradeEntryPage: React.FC = () => {
           user_id: userId,
           decided_risk: finalPlannedRisk,
           followed_risk_rules_pct: followedRiskRulesPct,
-        }, { onConflict: 'trade_id' });
+        }, { onConflict: 'trade_id,user_id' });
       if (riskError) console.error('Risk management record failed:', riskError);
 
       // Storage assets staging paths configs
