@@ -15,6 +15,7 @@ import { TradeEntryPage } from './pages/TradeEntryPage';
 import { TradingLogsPage } from './pages/TradingLogsPage';
 import { TradeTrackingPage } from './pages/TradeTrackingPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { DailyJournal } from './pages/DailyJournal';
 import { TradingReportsPage } from './pages/TradingReportsPage';
 import { AnnualReportsPage } from './pages/AnnualReportsPage';
 import { AiTeacherPage } from './pages/AiTeacherPage';
@@ -99,6 +100,7 @@ export default function App() {
 
             {/* Performance metrics dashboard */}
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/daily-journal" element={<DailyJournal />} />
             <Route path="/trade-entry" element={<TradeEntryPage />} />
             <Route path="/trade-entry/:id" element={<TradeEntryPage />} />
             
@@ -106,6 +108,7 @@ export default function App() {
             <Route path="/trading-logs" element={<TradingLogsPage />} />
             <Route path="/trading-logs/:id" element={<TradeTrackingPage />} />
             <Route path="/trade-tracking/:id" element={<TradeTrackingPage />} />
+            <Route path="/trade/:id" element={<TradeTrackingPage />} />
             <Route path="/logs" element={<Navigate to="/trading-logs" replace />} />
 
             {/* Other Authenticated Pages */}

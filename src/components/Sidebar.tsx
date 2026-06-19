@@ -5,6 +5,7 @@ import { useAuth } from '../hooks/useAuth';
 import { TrialBanner } from './TrialBanner';
 import {
   LayoutDashboard,
+  BookOpen,
   PlusCircle,
   ScrollText,
   Target,
@@ -38,6 +39,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
 
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', route: '/dashboard' },
+    { icon: BookOpen, label: 'Daily Journal', route: '/daily-journal' },
     { icon: PlusCircle, label: 'Trade Entry', route: '/trade-entry' },
     { icon: ScrollText, label: 'Trading Logs', route: '/trading-logs' },
     { icon: Target, label: 'Strategies', route: '/strategies' },
