@@ -26,9 +26,9 @@ export const RadarScoreChart: React.FC<RadarScoreChartProps> = ({
   ];
 
   return (
-    <div className="w-full h-[220px]">
+    <div className="w-full h-[260px] flex items-center justify-center">
       <ResponsiveContainer width="100%" height="100%">
-        <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
+        <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
           <PolarGrid stroke="var(--bar)" />
           <PolarAngleAxis
             dataKey="metric"

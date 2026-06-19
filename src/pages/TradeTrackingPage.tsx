@@ -613,13 +613,13 @@ const TradeTrackingPageContent: React.FC = () => {
           .select('*')
           .eq('trade_id', tradeId)
           .eq('user_id', userId)
-          .maybeSingle(),
+          .limit(1),
         supabase
           .from('trade_risk_management')
           .select('*')
           .eq('trade_id', tradeId)
           .eq('user_id', userId)
-          .maybeSingle(),
+          .limit(1),
       ]);
 
       if (tradeResult.error) {
@@ -632,8 +632,8 @@ const TradeTrackingPageContent: React.FC = () => {
       setEntryRules(allRules.filter((r) => r.rule_type === 'entry'));
       setExitRules(allRules.filter((r) => r.rule_type === 'exit'));
 
-      setPsychology(psychResult.data || null);
-      setRiskMgmt(riskResult.data || null);
+      setPsychology(psychResult.data && psychResult.data.length > 0 ? psychResult.data[0] : null);
+      setRiskMgmt(riskResult.data && riskResult.data.length > 0 ? riskResult.data[0] : null);
 
       // On page load, query Supabase for existing embedding
       const { data: embedCheck } = await supabase
@@ -688,9 +688,9 @@ const TradeTrackingPageContent: React.FC = () => {
 
   // Score styling color code mapper
   const getScoreColor = (score: number) => {
-    if (score >= 70) return 'text-green-400';
-    if (score >= 50) return 'text-amber-400';
-    return 'text-red-400';
+    if (score >= 70) return 'text-green-500';
+    if (score >= 50) return 'text-amber-500';
+    return 'text-red-500';
   };
 
   const getScoreFillColor = (score: number) => {
@@ -1769,6 +1769,96 @@ const TradeTrackingPageContent: React.FC = () => {
                       riskScore={riskScore}
                     />
                   </div>
+
+                  {activeTab === 'stats' && (
+                    <div style={{ borderColor: 'var(--border)' }} className="mt-6 pt-4 border-t space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h3 style={{ color: 'var(--text)' }} className="text-xs font-bold font-mono uppercase tracking-wider">
+                          Psychology Breakdown
+                        </h3>
+                        <span className="text-[10px] text-zinc-400 font-mono uppercase">Subjective States</span>
+                      </div>
+                      {!psychology ? (
+                        <div style={{ color: 'var(--text-muted)' }} className="text-xs italic py-2">
+                          No cognitive feedback logged.
+                        </div>
+                      ) : (
+                        <div className="space-y-3.5">
+                          {/* External Stress */}
+                          <div>
+                            <div className="flex justify-between text-xs font-medium mb-1 font-sans">
+                              <span style={{ color: 'var(--text-sub)' }}>External Factors / Stress</span>
+                              <span style={{ color: 'var(--text)' }} className="font-bold font-mono">{psychology.external_stress_pct ?? 0}%</span>
+                            </div>
+                            <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
+                              <div className="h-full rounded-full transition-all duration-300" style={{ width: `${psychology.external_stress_pct ?? 0}%`, backgroundColor: 'var(--accent)' }} />
+                            </div>
+                          </div>
+
+                          {/* Price Action */}
+                          <div>
+                            <div className="flex justify-between text-xs font-medium mb-1 font-sans">
+                              <span style={{ color: 'var(--text-sub)' }}>Price Action Reading</span>
+                              <span style={{ color: 'var(--text)' }} className="font-bold font-mono">{psychology.price_action_reading_pct ?? 0}%</span>
+                            </div>
+                            <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
+                              <div className="h-full rounded-full transition-all duration-300" style={{ width: `${psychology.price_action_reading_pct ?? 0}%`, backgroundColor: 'var(--accent)' }} />
+                            </div>
+                          </div>
+
+                          {/* Confidence */}
+                          <div>
+                            <div className="flex justify-between text-xs font-medium mb-1 font-sans">
+                              <span style={{ color: 'var(--text-sub)' }}>Self Confidence</span>
+                              <span style={{ color: 'var(--text)' }} className="font-bold font-mono">{psychology.confidence_pct ?? 0}%</span>
+                            </div>
+                            <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
+                              <div className="h-full rounded-full transition-all duration-300" style={{ width: `${psychology.confidence_pct ?? 0}%`, backgroundColor: 'var(--accent)' }} />
+                            </div>
+                          </div>
+
+                          {/* Entry Levels */}
+                          <div>
+                            <div className="flex justify-between text-xs font-medium mb-1 font-sans">
+                              <span style={{ color: 'var(--text-sub)' }}>Entry Levels Confidence</span>
+                              <span style={{ color: 'var(--text)' }} className="font-bold font-mono">{psychology.entry_levels_pct ?? 0}%</span>
+                            </div>
+                            <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
+                              <div className="h-full rounded-full transition-all duration-300" style={{ width: `${psychology.entry_levels_pct ?? 0}%`, backgroundColor: 'var(--accent)' }} />
+                            </div>
+                          </div>
+
+                          {/* Anxiety */}
+                          <div>
+                            <div className="flex justify-between text-xs font-medium mb-1 font-sans">
+                              <div className="flex items-center gap-1">
+                                <span style={{ color: 'var(--text-sub)' }}>Anxiety</span>
+                                <span className="text-[10px] text-amber-500 font-mono font-bold">(lower is better)</span>
+                              </div>
+                              <span className="text-amber-500 font-bold font-mono">{psychology.anxiety_pct ?? 0}%</span>
+                            </div>
+                            <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
+                              <div className="h-full rounded-full transition-all duration-300" style={{ width: `${psychology.anxiety_pct ?? 0}%`, backgroundColor: '#f59e0b' }} />
+                            </div>
+                          </div>
+
+                          {/* Fear */}
+                          <div>
+                            <div className="flex justify-between text-xs font-medium mb-1 font-sans">
+                              <div className="flex items-center gap-1">
+                                <span style={{ color: 'var(--text-sub)' }}>Fear</span>
+                                <span className="text-[10px] text-red-500 font-mono font-bold">(lower is better)</span>
+                              </div>
+                              <span className="text-red-500 font-bold font-mono">{psychology.fear_pct ?? 0}%</span>
+                            </div>
+                            <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
+                              <div className="h-full rounded-full transition-all duration-300" style={{ width: `${psychology.fear_pct ?? 0}%`, backgroundColor: '#ef4444' }} />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </section>
 
                 {/* CHANGE 4 — Running P&L Chart Card */}
