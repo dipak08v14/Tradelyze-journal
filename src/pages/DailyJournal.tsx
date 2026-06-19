@@ -19,7 +19,8 @@ import {
   AreaChart,
   Area,
   ResponsiveContainer,
-  Tooltip
+  Tooltip,
+  YAxis
 } from 'recharts';
 
 interface Trade {
@@ -359,6 +360,34 @@ export const DailyJournal: React.FC = () => {
     return data;
   };
 
+  const getDayChartConfig = (dayChartData: any[]) => {
+    const CUMULATIVE_FIELD = 'pnl';
+
+    const values = dayChartData.map(d => d[CUMULATIVE_FIELD]).filter(v => typeof v === 'number');
+    if (values.length === 0) return { domainMin: -100, domainMax: 100, zeroOffset: '50%', CUMULATIVE_FIELD };
+
+    const dataMax = Math.max(...values, 0);
+    const dataMin = Math.min(...values, 0);
+
+    const padTop    = dataMax > 0 ? dataMax * 0.15 : 0;
+    const padBottom = dataMin < 0 ? Math.abs(dataMin) * 0.15 : 0;
+
+    const domainMax = dataMax + padTop;
+    const domainMin = dataMin - padBottom;
+
+    let zeroOffset;
+    if (dataMin >= 0) {
+      zeroOffset = '100%';
+    } else if (dataMax <= 0) {
+      zeroOffset = '0%';
+    } else {
+      const totalRange = domainMax - domainMin;
+      zeroOffset = `${((domainMax / totalRange) * 100).toFixed(3)}%`;
+    }
+
+    return { domainMin, domainMax, zeroOffset, CUMULATIVE_FIELD };
+  };
+
   const formatHoldTime = (mins: number | null | undefined) => {
     if (mins === null || mins === undefined || isNaN(mins)) return '—';
     if (mins < 60) {
@@ -539,6 +568,11 @@ export const DailyJournal: React.FC = () => {
                       const curvePnlColor = dailyNetPnl >= 0 ? '#22c55e' : '#ef4444';
                       const curveFillColor = dailyNetPnl >= 0 ? 'rgba(34, 197, 94, 0.08)' : 'rgba(239, 68, 68, 0.08)';
 
+                      // Step 1: Calculate zeroOffset for each day's chart
+                      const dayData = getCurveData(dayTrades);
+                      const { domainMin, domainMax, zeroOffset, CUMULATIVE_FIELD } = getDayChartConfig(dayData);
+                      const daySuffix = dateStr.replace(/[^a-zA-Z0-9]/g, '_');
+
                       return (
                         <div
                           key={dateStr}
@@ -602,20 +636,70 @@ export const DailyJournal: React.FC = () => {
                                 </h4>
                                 <div className="h-[120px] w-full rounded-lg" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}>
                                   <ResponsiveContainer width="100%" height="100%">
-                                    <AreaChart data={getCurveData(dayTrades)} margin={{ top: 10, right: 10, left: 10, bottom: 5 }}>
+                                    <AreaChart data={dayData} margin={{ top: 10, right: 10, left: 10, bottom: 5 }}>
+                                      <defs>
+                                        <linearGradient id={`strokeGrad_${daySuffix}`} x1="0" y1="0" x2="0" y2="1">
+                                          <stop offset="0%" stopColor="#22c55e" />
+                                          <stop offset={zeroOffset} stopColor="#22c55e" />
+                                          <stop offset={zeroOffset} stopColor="#ef4444" />
+                                          <stop offset="100%" stopColor="#ef4444" />
+                                        </linearGradient>
+
+                                        <linearGradient id={`fillGrad_${daySuffix}`} x1="0" y1="0" x2="0" y2="1">
+                                          <stop offset="0%" stopColor="#22c55e" stopOpacity={0.16} />
+                                          <stop offset={zeroOffset} stopColor="#22c55e" stopOpacity={0.16} />
+                                          <stop offset={zeroOffset} stopColor="#ef4444" stopOpacity={0.16} />
+                                          <stop offset="100%" stopColor="#ef4444" stopOpacity={0.16} />
+                                        </linearGradient>
+                                      </defs>
+                                      <YAxis hide domain={[domainMin, domainMax]} />
                                       <Tooltip
-                                        formatter={(val: any) => [formatINR(val), 'Cumulative Net P&L']}
+                                        formatter={(value: any) => {
+                                          const color = value >= 0 ? '#22c55e' : '#ef4444';
+                                          return [
+                                            <span style={{ color, fontWeight: 'bold' }}>
+                                              ₹{Number(value).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                            </span>,
+                                            'Cumulative Net P&L'
+                                          ];
+                                        }}
                                         labelFormatter={(label) => `Trade #${label}`}
                                         contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text)', fontFamily: 'monospace', fontSize: '11px' }}
                                       />
                                       <Area
                                         type="monotone"
                                         dataKey="pnl"
-                                        stroke={curvePnlColor}
-                                        fill={curveFillColor}
+                                        stroke={`url(#strokeGrad_${daySuffix})`}
+                                        fill={`url(#fillGrad_${daySuffix})`}
                                         strokeWidth={1.5}
-                                        dot={{ r: 3, fill: curvePnlColor }}
-                                        activeDot={{ r: 5 }}
+                                        dot={(props: any) => {
+                                          const val = props.payload[CUMULATIVE_FIELD] ?? 0;
+                                          const color = val >= 0 ? '#22c55e' : '#ef4444';
+                                          return (
+                                            <circle
+                                              cx={props.cx}
+                                              cy={props.cy}
+                                              r={3}
+                                              fill={color}
+                                              stroke="none"
+                                              key={props.key}
+                                            />
+                                          );
+                                        }}
+                                        activeDot={(props: any) => {
+                                          const val = props.payload[CUMULATIVE_FIELD] ?? 0;
+                                          const isPositive = val >= 0;
+                                          return (
+                                            <circle
+                                              cx={props.cx}
+                                              cy={props.cy}
+                                              r={5}
+                                              fill={isPositive ? '#22c55e' : '#ef4444'}
+                                              stroke="var(--card)"
+                                              strokeWidth={1.5}
+                                            />
+                                          );
+                                        }}
                                       />
                                     </AreaChart>
                                   </ResponsiveContainer>
