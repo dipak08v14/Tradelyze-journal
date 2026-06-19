@@ -27,7 +27,8 @@ import {
   ResponsiveContainer,
   Cell,
   CartesianGrid,
-  ReferenceLine
+  ReferenceLine,
+  Legend
 } from 'recharts';
 import { formatINR, MONTH_NAMES } from '../lib/calculations';
 
@@ -99,6 +100,70 @@ function getDurationBucket(mins: number | null | undefined): string | null {
   return null;
 }
 
+const RMULTIPLE_ORDER = [
+  "-4R or less",
+  "-3R to -3.99R",
+  "-2R to -2.99R",
+  "-1R to -1.99R",
+  "-0.99R to -0.01R",
+  "0R to 0.99R",
+  "+1R to +1.99R",
+  "+2R to +2.99R",
+  "+3R to +3.99R",
+  "+4R and more"
+];
+
+function getRMultipleBucket(r: number | null | undefined): string | null {
+  if (r === null || r === undefined || isNaN(r)) return null;
+  if (r <= -4) return "-4R or less";
+  if (r >= -3.99 && r <= -3) return "-3R to -3.99R";
+  if (r >= -2.99 && r <= -2) return "-2R to -2.99R";
+  if (r >= -1.99 && r <= -1) return "-1R to -1.99R";
+  if (r >= -0.99 && r < 0) return "-0.99R to -0.01R";
+  if (r >= 0 && r <= 0.99) return "0R to 0.99R";
+  if (r >= 1 && r <= 1.99) return "+1R to +1.99R";
+  if (r >= 2 && r <= 2.99) return "+2R to +2.99R";
+  if (r >= 3 && r <= 3.99) return "+3R to +3.99R";
+  if (r >= 4) return "+4R and more";
+  return null;
+}
+
+const FOREX_QUANTITY_ORDER = [
+  "0.01 to 0.09",
+  "0.10 to 0.49",
+  "0.50 to 0.99",
+  "1.00 to 2.99",
+  "3.00 and over"
+];
+
+const FO_QUANTITY_ORDER = [
+  "1 lot or less",
+  "2 to 5 lots",
+  "6 to 10 lots",
+  "11 to 20 lots",
+  "21 to 50 lots",
+  "51 lots and over"
+];
+
+function getPositionSizeBucket(q: number | null | undefined, isForex: boolean): string | null {
+  if (q === null || q === undefined || isNaN(q) || q <= 0) return null;
+  if (isForex) {
+    if (q >= 0.01 && q <= 0.09) return "0.01 to 0.09";
+    if (q >= 0.10 && q <= 0.49) return "0.10 to 0.49";
+    if (q >= 0.50 && q <= 0.99) return "0.50 to 0.99";
+    if (q >= 1.00 && q <= 2.99) return "1.00 to 2.99";
+    if (q >= 3.00) return "3.00 and over";
+  } else {
+    if (q <= 1) return "1 lot or less";
+    if (q > 1 && q <= 5) return "2 to 5 lots";
+    if (q > 5 && q <= 10) return "6 to 10 lots";
+    if (q > 10 && q <= 20) return "11 to 20 lots";
+    if (q > 20 && q <= 50) return "21 to 50 lots";
+    if (q > 50) return "51 lots and over";
+  }
+  return null;
+}
+
 export const AdvancedReports: React.FC = () => {
   const { user, userId, loading: authLoading } = useAuth();
   const { showError } = useToast();
@@ -128,6 +193,9 @@ export const AdvancedReports: React.FC = () => {
   const [detailedSubFilter, setDetailedSubFilter] = useState<'DAYS' | 'MONTHS' | 'TIME' | 'DURATION' | 'SYMBOL' | 'SETUPS' | 'MISTAKES'>('DAYS');
   const [detailedTimeInterval, setDetailedTimeInterval] = useState<'1 Hour' | '30 Minutes' | '15 Minutes'>('1 Hour');
   const [detailedMistakeClass, setDetailedMistakeClass] = useState<'BY TYPE' | 'BY SPECIFIC MISTAKE'>('BY TYPE');
+
+  // Risk tab sub-filters state
+  const [riskSubFilter, setRiskSubFilter] = useState<'R-MULTIPLE' | 'POSITION_SIZE'>('R-MULTIPLE');
 
   // Safety Redirection for Auth
   useEffect(() => {
@@ -746,6 +814,303 @@ export const AdvancedReports: React.FC = () => {
 
     return [];
   }, [trades, detailedSubFilter, detailedTimeInterval, detailedMistakeClass]);
+
+  const riskData: GroupedStat[] = useMemo(() => {
+    if (!trades || trades.length === 0) return [];
+
+    if (riskSubFilter === 'R-MULTIPLE') {
+      const filtered = trades.filter(t => t.r_multiple !== null && t.r_multiple !== undefined);
+      const groups: Record<string, any[]> = {};
+      RMULTIPLE_ORDER.forEach(b => { groups[b] = []; });
+
+      filtered.forEach(t => {
+        const bucket = getRMultipleBucket(t.r_multiple);
+        if (bucket && groups[bucket]) {
+          groups[bucket].push(t);
+        }
+      });
+
+      return RMULTIPLE_ORDER.filter(b => groups[b].length > 0).map(name => {
+        const gTrades = groups[name];
+        const count = gTrades.length;
+        const netPnl = gTrades.reduce((sum, t) => sum + (t.pnl || 0), 0);
+        const totalProfit = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) > 0 ? (t.pnl || 0) : 0), 0);
+        const totalLoss = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) < 0 ? (t.pnl || 0) : 0), 0);
+        const wins = gTrades.filter(t => t.status === 'Win').length;
+        const winPct = count > 0 ? (wins / count) * 100 : 0;
+        return { name, count, netPnl, totalProfit, totalLoss, wins, winPct };
+      });
+    } else {
+      // POSITION SIZE
+      const filtered = trades.filter(t => t.quantity !== null && t.quantity !== undefined);
+      const isForex = filtered.some(t => t.quantity > 0 && t.quantity < 1);
+      const bucketsOrder = isForex ? FOREX_QUANTITY_ORDER : FO_QUANTITY_ORDER;
+
+      const groups: Record<string, any[]> = {};
+      bucketsOrder.forEach(b => { groups[b] = []; });
+
+      filtered.forEach(t => {
+        const bucket = getPositionSizeBucket(t.quantity, isForex);
+        if (bucket && groups[bucket]) {
+          groups[bucket].push(t);
+        }
+      });
+
+      return bucketsOrder.filter(b => groups[b].length > 0).map(name => {
+        const gTrades = groups[name];
+        const count = gTrades.length;
+        const netPnl = gTrades.reduce((sum, t) => sum + (t.pnl || 0), 0);
+        const totalProfit = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) > 0 ? (t.pnl || 0) : 0), 0);
+        const totalLoss = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) < 0 ? (t.pnl || 0) : 0), 0);
+        const wins = gTrades.filter(t => t.status === 'Win').length;
+        const winPct = count > 0 ? (wins / count) * 100 : 0;
+        return { name, count, netPnl, totalProfit, totalLoss, wins, winPct };
+      });
+    }
+  }, [trades, riskSubFilter]);
+
+  const winsLossesStats = useMemo(() => {
+    const winTrades = trades.filter(t => t.status === 'Win');
+    const lossTrades = trades.filter(t => t.status === 'Loss');
+
+    // Total Count
+    const totalCountWins = winTrades.length;
+    const totalCountLosses = lossTrades.length;
+
+    // Total PnL
+    const totalPnlWins = winTrades.reduce((sum, t) => sum + (t.pnl || 0), 0);
+    const totalPnlLosses = lossTrades.reduce((sum, t) => sum + (t.pnl || 0), 0);
+
+    // Average Per Trade
+    const avgPnlWins = totalCountWins > 0 ? totalPnlWins / totalCountWins : 0;
+    const avgPnlLosses = totalCountLosses > 0 ? totalPnlLosses / totalCountLosses : 0;
+
+    // Average R-Multiple
+    const winsWithR = winTrades.filter(t => t.r_multiple !== null && t.r_multiple !== undefined);
+    const avgRMultipleWins = winsWithR.length > 0 ? winsWithR.reduce((sum, t) => sum + t.r_multiple, 0) / winsWithR.length : null;
+
+    const lossesWithR = lossTrades.filter(t => t.r_multiple !== null && t.r_multiple !== undefined);
+    const avgRMultipleLosses = lossesWithR.length > 0 ? lossesWithR.reduce((sum, t) => sum + t.r_multiple, 0) / lossesWithR.length : null;
+
+    // Average Hold Time
+    const winsWithHold = winTrades.filter(t => t.holding_time_mins !== null && t.holding_time_mins !== undefined && !isNaN(t.holding_time_mins) && t.holding_time_mins > 0);
+    const avgHoldWins = winsWithHold.length > 0 ? winsWithHold.reduce((sum, t) => sum + t.holding_time_mins, 0) / winsWithHold.length : null;
+
+    const lossesWithHold = lossTrades.filter(t => t.holding_time_mins !== null && t.holding_time_mins !== undefined && !isNaN(t.holding_time_mins) && t.holding_time_mins > 0);
+    const avgHoldLosses = lossesWithHold.length > 0 ? lossesWithHold.reduce((sum, t) => sum + t.holding_time_mins, 0) / lossesWithHold.length : null;
+
+    // Largest
+    const largestWin = winTrades.length > 0 ? Math.max(...winTrades.map(t => t.pnl || 0)) : 0;
+    const largestLoss = lossTrades.length > 0 ? Math.min(...lossTrades.map(t => t.pnl || 0)) : 0;
+
+    // Most Common Setup
+    const winSetupCounts: Record<string, number> = {};
+    winTrades.forEach(t => {
+      const setupName = t.strategies?.name || 'No Setup';
+      winSetupCounts[setupName] = (winSetupCounts[setupName] || 0) + 1;
+    });
+    let topWinSetup = '—';
+    let maxWinSetupCount = 0;
+    Object.entries(winSetupCounts).forEach(([setup, count]) => {
+      if (count > maxWinSetupCount) {
+        maxWinSetupCount = count;
+        topWinSetup = setup;
+      }
+    });
+
+    const lossSetupCounts: Record<string, number> = {};
+    lossTrades.forEach(t => {
+      const setupName = t.strategies?.name || 'No Setup';
+      lossSetupCounts[setupName] = (lossSetupCounts[setupName] || 0) + 1;
+    });
+    let topLossSetup = '—';
+    let maxLossSetupCount = 0;
+    Object.entries(lossSetupCounts).forEach(([setup, count]) => {
+      if (count > maxLossSetupCount) {
+        maxLossSetupCount = count;
+        topLossSetup = setup;
+      }
+    });
+
+    // Most Common Mistake
+    const winMistakeCounts: Record<string, number> = {};
+    winTrades.forEach(t => {
+      const mistake = t.mistake_text ? t.mistake_text.trim() : (t.mistake_type ? t.mistake_type.trim() : '');
+      if (mistake) {
+        winMistakeCounts[mistake] = (winMistakeCounts[mistake] || 0) + 1;
+      }
+    });
+    let topWinMistake = 'None';
+    let maxWinMistakeCount = 0;
+    Object.entries(winMistakeCounts).forEach(([mistake, count]) => {
+      if (count > maxWinMistakeCount) {
+        maxWinMistakeCount = count;
+        topWinMistake = mistake;
+      }
+    });
+
+    const lossMistakeCounts: Record<string, number> = {};
+    lossTrades.forEach(t => {
+      const mistake = t.mistake_text ? t.mistake_text.trim() : (t.mistake_type ? t.mistake_type.trim() : '');
+      if (mistake) {
+        lossMistakeCounts[mistake] = (lossMistakeCounts[mistake] || 0) + 1;
+      }
+    });
+    let topLossMistake = 'None';
+    let maxLossMistakeCount = 0;
+    Object.entries(lossMistakeCounts).forEach(([mistake, count]) => {
+      if (count > maxLossMistakeCount) {
+        maxLossMistakeCount = count;
+        topLossMistake = mistake;
+      }
+    });
+
+    return {
+      totalCountWins,
+      totalCountLosses,
+      totalPnlWins,
+      totalPnlLosses,
+      avgPnlWins,
+      avgPnlLosses,
+      avgRMultipleWins,
+      avgRMultipleLosses,
+      avgHoldWins,
+      avgHoldLosses,
+      largestWin,
+      largestLoss,
+      topWinSetup,
+      topLossSetup,
+      topWinMistake,
+      topLossMistake
+    };
+  }, [trades]);
+
+  const winsLossesBySetup = useMemo(() => {
+    const setupMap: Record<string, { name: string; wins: number; losses: number }> = {};
+    trades.forEach(t => {
+      const setupName = t.strategies?.name || 'No Setup';
+      if (!setupMap[setupName]) {
+        setupMap[setupName] = { name: setupName, wins: 0, losses: 0 };
+      }
+      if (t.status === 'Win') {
+        setupMap[setupName].wins += 1;
+      } else if (t.status === 'Loss') {
+        setupMap[setupName].losses += 1;
+      }
+    });
+    return Object.values(setupMap).filter(item => item.wins > 0 || item.losses > 0);
+  }, [trades]);
+
+  const winsLossesByDay = useMemo(() => {
+    const DAYS_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const DAY_INDEX_MAP: Record<number, string> = {
+      1: 'Mon',
+      2: 'Tue',
+      3: 'Wed',
+      4: 'Thu',
+      5: 'Fri',
+      6: 'Sat',
+      0: 'Sun'
+    };
+
+    const dayMap: Record<string, { name: string; wins: number; losses: number }> = {};
+    DAYS_SHORT.forEach(d => {
+      dayMap[d] = { name: d, wins: 0, losses: 0 };
+    });
+
+    trades.forEach(t => {
+      if (!t.date) return;
+      const parts = t.date.split('-');
+      if (parts.length < 3) return;
+      const year = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10);
+      const day = parseInt(parts[2], 10);
+      if (isNaN(year) || isNaN(month) || isNaN(day)) return;
+      const d = new Date(year, month - 1, day);
+      const dayName = DAY_INDEX_MAP[d.getDay()];
+      if (dayName && dayMap[dayName]) {
+        if (t.status === 'Win') {
+          dayMap[dayName].wins += 1;
+        } else if (t.status === 'Loss') {
+          dayMap[dayName].losses += 1;
+        }
+      }
+    });
+
+    return DAYS_SHORT.map(d => dayMap[d]);
+  }, [trades]);
+
+  const winsLossesByTime = useMemo(() => {
+    const timeMap: Record<string, { name: string; wins: number; losses: number }> = {};
+    trades.forEach(t => {
+      const bucket = getTimeBucket(t.entry_time, '1 Hour');
+      if (!bucket) return;
+      if (!timeMap[bucket]) {
+        timeMap[bucket] = { name: bucket, wins: 0, losses: 0 };
+      }
+      if (t.status === 'Win') {
+        timeMap[bucket].wins += 1;
+      } else if (t.status === 'Loss') {
+        timeMap[bucket].losses += 1;
+      }
+    });
+    return Object.keys(timeMap).sort().map(key => timeMap[key]);
+  }, [trades]);
+
+  const setupBreakdown = useMemo(() => {
+    const setupMap: Record<string, {
+      name: string;
+      trades: number;
+      wins: number;
+      losses: number;
+      totalWinPnl: number;
+      totalLossPnl: number;
+      netPnl: number;
+    }> = {};
+
+    trades.forEach(t => {
+      const setupName = t.strategies?.name || 'No Setup';
+      if (!setupMap[setupName]) {
+        setupMap[setupName] = {
+          name: setupName,
+          trades: 0,
+          wins: 0,
+          losses: 0,
+          totalWinPnl: 0,
+          totalLossPnl: 0,
+          netPnl: 0
+        };
+      }
+      const item = setupMap[setupName];
+      item.trades += 1;
+      item.netPnl += (t.pnl || 0);
+      if (t.status === 'Win') {
+        item.wins += 1;
+        item.totalWinPnl += (t.pnl || 0);
+      } else if (t.status === 'Loss') {
+        item.losses += 1;
+        item.totalLossPnl += (t.pnl || 0);
+      }
+    });
+
+    const list = Object.values(setupMap).map(item => {
+      const winRate = item.trades > 0 ? (item.wins / item.trades) * 100 : 0;
+      const avgWin = item.wins > 0 ? item.totalWinPnl / item.wins : 0;
+      const avgLoss = item.losses > 0 ? item.totalLossPnl / item.losses : 0;
+      return {
+        name: item.name,
+        trades: item.trades,
+        wins: item.wins,
+        losses: item.losses,
+        winRate,
+        avgWin,
+        avgLoss,
+        netPnl: item.netPnl
+      };
+    });
+
+    return list.sort((a, b) => b.netPnl - a.netPnl);
+  }, [trades]);
 
   // Minute formatter helper
   const formatMins = (totalMins: number | null | undefined) => {
@@ -1662,6 +2027,428 @@ export const AdvancedReports: React.FC = () => {
                     </div>
                   </>
                 )}
+              </div>
+            ) : activeTab === 'RISK' ? (
+              <div className="space-y-6 animate-in fade-in duration-300">
+                {/* SUB-FILTER PILLS ROW */}
+                <div className="flex overflow-x-auto gap-1.5 p-1 rounded-xl font-mono no-scrollbar" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', maxWidth: 'max-content' }}>
+                  {[
+                    { id: 'R-MULTIPLE', label: 'R-MULTIPLE' },
+                    { id: 'POSITION_SIZE', label: 'POSITION SIZE' }
+                  ].map((sf) => {
+                    const isActive = riskSubFilter === sf.id;
+                    return (
+                      <button
+                        key={sf.id}
+                        type="button"
+                        onClick={() => setRiskSubFilter(sf.id as any)}
+                        className="px-3.5 py-1.5 text-[10px] font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap"
+                        style={{
+                          backgroundColor: isActive ? 'var(--card)' : 'transparent',
+                          color: isActive ? 'var(--accent)' : 'var(--text-sub)',
+                          border: isActive ? '0.5px solid var(--border)' : '0.5px solid transparent'
+                        }}
+                      >
+                        {sf.label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* CARDS AND TABLES CONTENT OR EMPTY STATE */}
+                {!(riskData.length > 0) ? (
+                  <div className="p-12 rounded-2xl text-center shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                    <p className="text-sm text-zinc-400 font-mono">No trades found with required values for this sub-filter in the selected date range.</p>
+                  </div>
+                ) : (
+                  <>
+                    {/* CHARTS ROW */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      {/* Left chart: Trade Distribution */}
+                      <div className="rounded-2xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                        <h3 className="text-xs font-bold font-mono tracking-wider mb-4 text-zinc-350 uppercase">
+                          {riskSubFilter === 'R-MULTIPLE' ? 'TRADE DISTRIBUTION BY R-MULTIPLE' : 'TRADE DISTRIBUTION BY POSITION SIZE'}
+                        </h3>
+                        <div className="h-[300px] w-full">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart
+                              data={riskData}
+                              layout="vertical"
+                              margin={{ top: 10, right: 10, left: 10, bottom: 5 }}
+                            >
+                              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
+                              <XAxis type="number" stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" allowDecimals={false} />
+                              <YAxis
+                                dataKey="name"
+                                type="category"
+                                stroke="var(--text-muted)"
+                                fontSize={11}
+                                fontFamily="monospace"
+                                width={110}
+                              />
+                              <RechartsTooltip
+                                cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
+                                contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text)', fontSize: '11px', fontFamily: 'monospace' }}
+                              />
+                              <Bar dataKey="count" fill="#06b6d4" radius={[0, 4, 4, 0]} />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </div>
+
+                      {/* Right chart: Performance */}
+                      <div className="rounded-2xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                        <h3 className="text-xs font-bold font-mono tracking-wider mb-4 text-zinc-350 uppercase">
+                          {riskSubFilter === 'R-MULTIPLE' ? 'PERFORMANCE BY R-MULTIPLE' : 'PERFORMANCE BY POSITION SIZE'}
+                        </h3>
+                        <div className="h-[300px] w-full">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart
+                              data={riskData}
+                              layout="vertical"
+                              margin={{ top: 10, right: 10, left: 10, bottom: 5 }}
+                            >
+                              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
+                              <XAxis type="number" stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" />
+                              <YAxis
+                                dataKey="name"
+                                type="category"
+                                stroke="var(--text-muted)"
+                                fontSize={11}
+                                fontFamily="monospace"
+                                width={110}
+                              />
+                              <RechartsTooltip
+                                cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
+                                formatter={(value: any) => [formatINR(value), 'Net P&L']}
+                                contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text)', fontSize: '11px', fontFamily: 'monospace' }}
+                              />
+                              <Bar dataKey="netPnl" radius={[0, 4, 4, 0]}>
+                                {riskData.map((entry, index) => (
+                                  <Cell key={`cell-${index}`} fill={entry.netPnl >= 0 ? '#22c55e' : '#ef4444'} />
+                                ))}
+                              </Bar>
+                              <ReferenceLine x={0} stroke="var(--border)" strokeDasharray="3 3" />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* SUMMARY TABLE */}
+                    <div className="rounded-2xl overflow-hidden shadow-sm border border-[var(--border)]" style={{ backgroundColor: 'var(--card)' }}>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                          <thead>
+                            <tr style={{ borderBottom: '1px solid var(--border)' }} className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 bg-zinc-800/10 dark:bg-zinc-100/5">
+                              <th className="py-3 px-4 font-bold">
+                                {riskSubFilter === 'R-MULTIPLE' ? 'R-Multiple' : 'Position Size'}
+                              </th>
+                              <th className="py-3 px-4 font-bold text-right font-mono">Net Profits</th>
+                              <th className="py-3 px-4 font-bold text-center font-mono">Win %</th>
+                              <th className="py-3 px-4 font-bold text-right font-mono bg-green-500/5">Total Profits</th>
+                              <th className="py-3 px-4 font-bold text-right font-mono bg-red-500/5">Total Loss</th>
+                              <th className="py-3 px-4 font-bold text-center font-mono">Trades</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-[var(--border)]">
+                            {riskData.map((row, index) => {
+                              return (
+                                <tr
+                                  key={index}
+                                  className={`${
+                                    index % 2 === 1 ? 'bg-zinc-800/5 dark:bg-zinc-100/5' : 'bg-transparent'
+                                  } hover:bg-zinc-800/10 dark:hover:bg-zinc-100/10 transition-colors text-xs font-sans`}
+                                >
+                                  {/* Category */}
+                                  <td className="py-3.5 px-4 font-semibold text-zinc-200">
+                                    {row.name}
+                                  </td>
+
+                                  {/* Net Profits */}
+                                  <td className={`py-3.5 px-4 text-right font-mono font-bold ${row.netPnl > 0 ? 'text-green-500' : row.netPnl < 0 ? 'text-red-500' : 'text-zinc-200'}`}>
+                                    {formatINR(row.netPnl)}
+                                  </td>
+
+                                  {/* Win % with custom split progress bar */}
+                                  <td className="py-3.5 px-4">
+                                    <div className="flex items-center justify-center gap-2 max-w-[150px] mx-auto">
+                                      {row.count > 0 ? (
+                                        <>
+                                          <div className="w-16 h-2 rounded bg-zinc-700/30 flex overflow-hidden">
+                                            <div className="bg-green-500 h-full" style={{ width: `${row.winPct}%` }} />
+                                            <div className="bg-red-500 h-full" style={{ width: `${100 - row.winPct}%` }} />
+                                          </div>
+                                          <span className="font-mono font-bold text-zinc-350 text-xs">{row.winPct.toFixed(1)}%</span>
+                                        </>
+                                      ) : (
+                                        <span className="font-mono text-zinc-500">—</span>
+                                      )}
+                                    </div>
+                                  </td>
+
+                                  {/* Total Profits */}
+                                  <td className="py-3.5 px-4 text-right font-mono font-bold text-green-500 bg-green-500/5">
+                                    {formatINR(row.totalProfit)}
+                                  </td>
+
+                                  {/* Total Loss */}
+                                  <td className="py-3.5 px-4 text-right font-mono font-bold text-red-500 bg-red-500/5">
+                                    {formatINR(row.totalLoss)}
+                                  </td>
+
+                                  {/* Trades */}
+                                  <td className="py-3.5 px-4 text-center font-mono font-bold text-zinc-300">
+                                    {row.count}
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            ) : activeTab === 'WINS_LOSSES' ? (
+              <div className="space-y-6 animate-in fade-in duration-300">
+                {/* HEAD TO HEAD STAT CARDS */}
+                <div className="rounded-2xl p-6 shadow-sm border border-[var(--border)]" style={{ backgroundColor: 'var(--card)' }}>
+                  <div className="grid grid-cols-3 pb-4 mb-4 font-mono font-bold text-xs tracking-wider uppercase border-b border-[var(--border)]">
+                    <div className="text-green-500 font-extrabold text-sm text-left">WINS</div>
+                    <div className="text-center text-zinc-400">HEAD TO HEAD</div>
+                    <div className="text-right text-red-500 font-extrabold text-sm">LOSSES</div>
+                  </div>
+                  
+                  <div className="divide-y divide-zinc-800/40 dark:divide-zinc-100/10 text-sm">
+                    {/* Row 1 - Total Count */}
+                    <div className="grid grid-cols-3 py-3 items-center">
+                      <div className="font-mono font-bold text-green-500 text-lg">{winsLossesStats.totalCountWins}</div>
+                      <div className="text-center text-zinc-400 font-mono text-[11px] uppercase tracking-wider font-semibold">Total Count</div>
+                      <div className="font-mono font-bold text-red-500 text-right text-lg">{winsLossesStats.totalCountLosses}</div>
+                    </div>
+
+                    {/* Row 2 - Total P&L */}
+                    <div className="grid grid-cols-3 py-3 items-center">
+                      <div className="font-mono font-bold text-green-500 text-base">{formatINR(winsLossesStats.totalPnlWins)}</div>
+                      <div className="text-center text-zinc-400 font-mono text-[11px] uppercase tracking-wider font-semibold">Total P&L</div>
+                      <div className="font-mono font-bold text-red-500 text-right text-base">{formatINR(winsLossesStats.totalPnlLosses)}</div>
+                    </div>
+
+                    {/* Row 3 - Average Per Trade */}
+                    <div className="grid grid-cols-3 py-3 items-center">
+                      <div className="font-mono font-bold text-green-500">{formatINR(winsLossesStats.avgPnlWins)}</div>
+                      <div className="text-center text-zinc-400 font-mono text-[11px] uppercase tracking-wider font-semibold">Average Per Trade</div>
+                      <div className="font-mono font-bold text-red-500 text-right">{formatINR(winsLossesStats.avgPnlLosses)}</div>
+                    </div>
+
+                    {/* Row 4 - Average R-Multiple */}
+                    <div className="grid grid-cols-3 py-3 items-center">
+                      <div className="font-mono font-bold text-green-400">
+                        {winsLossesStats.avgRMultipleWins !== null ? `+${winsLossesStats.avgRMultipleWins.toFixed(2)}R` : '—'}
+                      </div>
+                      <div className="text-center text-zinc-400 font-mono text-[11px] uppercase tracking-wider font-semibold">Average R-Multiple</div>
+                      <div className="font-mono font-bold text-red-400 text-right">
+                        {winsLossesStats.avgRMultipleLosses !== null ? `${winsLossesStats.avgRMultipleLosses.toFixed(2)}R` : '—'}
+                      </div>
+                    </div>
+
+                    {/* Row 5 - Average Hold Time */}
+                    <div className="grid grid-cols-3 py-3 items-center">
+                      <div className="font-mono font-bold text-green-400">{formatMins(winsLossesStats.avgHoldWins)}</div>
+                      <div className="text-center text-zinc-400 font-mono text-[11px] uppercase tracking-wider font-semibold">Average Hold Time</div>
+                      <div className="font-mono font-bold text-red-400 text-right">{formatMins(winsLossesStats.avgHoldLosses)}</div>
+                    </div>
+
+                    {/* Row 6 - Largest */}
+                    <div className="grid grid-cols-3 py-3 items-center">
+                      <div className="font-mono font-bold text-green-500">{formatINR(winsLossesStats.largestWin)}</div>
+                      <div className="text-center text-zinc-400 font-mono text-[11px] uppercase tracking-wider font-semibold">Largest</div>
+                      <div className="font-mono font-bold text-red-500 text-right">{formatINR(winsLossesStats.largestLoss)}</div>
+                    </div>
+
+                    {/* Row 7 - Most Common Setup */}
+                    <div className="grid grid-cols-3 py-3 items-center">
+                      <div className="font-sans font-semibold text-zinc-200 truncate pr-2" title={winsLossesStats.topWinSetup}>{winsLossesStats.topWinSetup}</div>
+                      <div className="text-center text-zinc-400 font-mono text-[11px] uppercase tracking-wider font-semibold">Most Common Setup</div>
+                      <div className="font-sans font-semibold text-zinc-200 text-right truncate pl-2" title={winsLossesStats.topLossSetup}>{winsLossesStats.topLossSetup}</div>
+                    </div>
+
+                    {/* Row 8 - Most Common Mistake */}
+                    <div className="grid grid-cols-3 py-3 items-center">
+                      <div className="font-sans font-semibold text-zinc-200 truncate pr-2" title={winsLossesStats.topWinMistake}>{winsLossesStats.topWinMistake}</div>
+                      <div className="text-center text-zinc-400 font-mono text-[11px] uppercase tracking-wider font-semibold">Most Common Mistake</div>
+                      <div className="font-sans font-semibold text-zinc-200 text-right truncate pl-2" title={winsLossesStats.topLossMistake}>{winsLossesStats.topLossMistake}</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* VISUAL CHARTS ROW */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Setup Comparison Chart */}
+                  <div className="rounded-2xl p-5 shadow-sm border border-[var(--border)]" style={{ backgroundColor: 'var(--card)' }}>
+                    <h3 className="text-xs font-bold font-mono tracking-wider mb-4 text-zinc-350 uppercase">
+                      WINS VS LOSSES BY SETUP
+                    </h3>
+                    <div className="h-[300px] w-full">
+                      {winsLossesBySetup.length === 0 ? (
+                        <div className="h-full flex items-center justify-center">
+                          <p className="text-xs text-zinc-500 font-mono">No data available</p>
+                        </div>
+                      ) : (
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart
+                            data={winsLossesBySetup}
+                            margin={{ top: 10, right: 10, left: 10, bottom: 5 }}
+                          >
+                            <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
+                            <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" />
+                            <YAxis stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" allowDecimals={false} />
+                            <RechartsTooltip
+                              cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
+                              contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text)', fontSize: '11px', fontFamily: 'monospace' }}
+                            />
+                            <Legend wrapperStyle={{ fontSize: '11px', fontFamily: 'monospace', paddingTop: '10px' }} />
+                            <Bar dataKey="wins" name="Wins" fill="#22c55e" radius={[4, 4, 0, 0]} />
+                            <Bar dataKey="losses" name="Losses" fill="#ef4444" radius={[4, 4, 0, 0]} />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Day of Week Comparison Chart */}
+                  <div className="rounded-2xl p-5 shadow-sm border border-[var(--border)]" style={{ backgroundColor: 'var(--card)' }}>
+                    <h3 className="text-xs font-bold font-mono tracking-wider mb-4 text-zinc-350 uppercase">
+                      WINS VS LOSSES BY DAY OF WEEK
+                    </h3>
+                    <div className="h-[300px] w-full">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                          data={winsLossesByDay}
+                          margin={{ top: 10, right: 10, left: 10, bottom: 5 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
+                          <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" />
+                          <YAxis stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" allowDecimals={false} />
+                          <RechartsTooltip
+                            cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
+                            contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text)', fontSize: '11px', fontFamily: 'monospace' }}
+                          />
+                          <Legend wrapperStyle={{ fontSize: '11px', fontFamily: 'monospace', paddingTop: '10px' }} />
+                          <Bar dataKey="wins" name="Wins" fill="#22c55e" radius={[4, 4, 0, 0]} />
+                          <Bar dataKey="losses" name="Losses" fill="#ef4444" radius={[4, 4, 0, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Time of Day Comparison Chart */}
+                <div className="rounded-2xl p-5 shadow-sm border border-[var(--border)]" style={{ backgroundColor: 'var(--card)' }}>
+                  <h3 className="text-xs font-bold font-mono tracking-wider mb-4 text-zinc-350 uppercase">
+                    WINS VS LOSSES BY TIME OF DAY
+                  </h3>
+                  <div className="h-[300px] w-full">
+                    {winsLossesByTime.length === 0 ? (
+                      <div className="h-full flex items-center justify-center">
+                        <p className="text-xs text-zinc-500 font-mono">No time-of-day data available</p>
+                      </div>
+                    ) : (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                          data={winsLossesByTime}
+                          margin={{ top: 10, right: 10, left: 10, bottom: 5 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
+                          <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" />
+                          <YAxis stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" allowDecimals={false} />
+                          <RechartsTooltip
+                            cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
+                            contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text)', fontSize: '11px', fontFamily: 'monospace' }}
+                          />
+                          <Legend wrapperStyle={{ fontSize: '11px', fontFamily: 'monospace', paddingTop: '10px' }} />
+                          <Bar dataKey="wins" name="Wins" fill="#22c55e" radius={[4, 4, 0, 0]} />
+                          <Bar dataKey="losses" name="Losses" fill="#ef4444" radius={[4, 4, 0, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    )}
+                  </div>
+                  <div className="text-center text-xs text-zinc-500 font-mono mt-2">
+                    All times shown in IST
+                  </div>
+                </div>
+
+                {/* SETUP BREAKDOWN TABLE */}
+                <div className="rounded-2xl overflow-hidden shadow-sm border border-[var(--border)]" style={{ backgroundColor: 'var(--card)' }}>
+                  <div className="p-4 border-b border-[var(--border)] bg-zinc-800/10 dark:bg-zinc-100/5">
+                    <h3 className="text-xs font-bold font-mono tracking-wider uppercase text-zinc-350">
+                      SETUP BREAKDOWN — WINS VS LOSSES
+                    </h3>
+                  </div>
+                  <div className="overflow-x-auto border-0">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr style={{ borderBottom: '1px solid var(--border)' }} className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 bg-zinc-800/10 dark:bg-zinc-100/5">
+                          <th className="py-3 px-4 font-bold">Setup</th>
+                          <th className="py-3 px-4 font-bold text-center font-mono">Trades</th>
+                          <th className="py-3 px-4 font-bold text-center font-mono">Wins</th>
+                          <th className="py-3 px-4 font-bold text-center font-mono">Losses</th>
+                          <th className="py-3 px-4 font-bold text-center font-mono">Win Rate</th>
+                          <th className="py-3 px-4 font-bold text-right font-mono bg-green-500/5">Avg Win</th>
+                          <th className="py-3 px-4 font-bold text-right font-mono bg-red-500/5">Avg Loss</th>
+                          <th className="py-3 px-4 font-bold text-right font-mono">Net P&L</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-[var(--border)]">
+                        {setupBreakdown.length === 0 ? (
+                          <tr>
+                            <td colSpan={8} className="py-8 text-center text-xs text-zinc-500 font-mono">
+                              No setup data available for the selected range.
+                            </td>
+                          </tr>
+                        ) : (
+                          setupBreakdown.map((row, index) => {
+                            return (
+                              <tr
+                                key={index}
+                                className={`${
+                                  index % 2 === 1 ? 'bg-zinc-800/5 dark:bg-zinc-100/5' : 'bg-transparent'
+                                } hover:bg-zinc-800/10 dark:hover:bg-zinc-100/10 transition-colors text-xs font-sans`}
+                              >
+                                <td className="py-3.5 px-4 font-semibold text-zinc-200">
+                                  {row.name}
+                                </td>
+                                <td className="py-3.5 px-4 text-center font-mono font-bold text-zinc-300">
+                                  {row.trades}
+                                </td>
+                                <td className="py-3.5 px-4 text-center font-mono font-bold text-green-500 bg-green-500/5">
+                                  {row.wins}
+                                </td>
+                                <td className="py-3.5 px-4 text-center font-mono font-bold text-red-500 bg-red-500/5">
+                                  {row.losses}
+                                </td>
+                                <td className={`py-3.5 px-4 text-center font-mono font-bold ${row.winRate >= 50 ? 'text-green-500' : 'text-red-500'}`}>
+                                  {row.winRate.toFixed(1)}%
+                                </td>
+                                <td className="py-3.5 px-4 text-right font-mono font-bold text-green-500 bg-green-500/10">
+                                  {formatINR(row.avgWin)}
+                                </td>
+                                <td className="py-3.5 px-4 text-right font-mono font-bold text-red-500 bg-red-500/10">
+                                  {formatINR(row.avgLoss)}
+                                </td>
+                                <td className={`py-3.5 px-4 text-right font-mono font-bold ${row.netPnl > 0 ? 'text-green-500' : row.netPnl < 0 ? 'text-red-500' : 'text-zinc-200'}`}>
+                                  {formatINR(row.netPnl)}
+                                </td>
+                              </tr>
+                            );
+                          })
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             ) : (
               // PLACEHOLDERS FOR REMAINING TABS
