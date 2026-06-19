@@ -594,32 +594,26 @@ const TradeTrackingPageContent: React.FC = () => {
     try {
       setLoading(true);
 
-      const [tradeResult, rulesResult, psychResult, riskResult] = await Promise.all([
+      const [tradeResult, psychResult, riskResult, rulesResult] = await Promise.all([
         supabase
           .from('trades')
           .select('*, strategies(name, type_of_strategy)')
           .eq('id', tradeId)
-          .eq('user_id', userId)
           .single(),
-        supabase
-          .from('trade_rule_adherence')
-          .select('*')
-          .eq('trade_id', tradeId)
-          .eq('user_id', userId)
-          .order('rule_type')
-          .order('rule_order', { ascending: true }),
         supabase
           .from('trade_psychology')
           .select('*')
           .eq('trade_id', tradeId)
-          .eq('user_id', userId)
           .limit(1),
         supabase
           .from('trade_risk_management')
           .select('*')
           .eq('trade_id', tradeId)
-          .eq('user_id', userId)
           .limit(1),
+        supabase
+          .from('trade_rule_adherence')
+          .select('*')
+          .eq('trade_id', tradeId)
       ]);
 
       if (tradeResult.error) {
@@ -1780,7 +1774,7 @@ const TradeTrackingPageContent: React.FC = () => {
                       </div>
                       {!psychology ? (
                         <div style={{ color: 'var(--text-muted)' }} className="text-xs italic py-2">
-                          No cognitive feedback logged.
+                          No psychology data logged for this trade
                         </div>
                       ) : (
                         <div className="space-y-3.5">
@@ -1953,7 +1947,7 @@ const TradeTrackingPageContent: React.FC = () => {
                   <p style={{ color: 'var(--text-muted)' }} className="text-[11px] font-mono uppercase tracking-wider mb-2">Subjective states</p>
 
                   {!psychology ? (
-                    <div style={{ color: 'var(--text-muted)' }} className="text-xs italic py-4">No cognitive feedback logged.</div>
+                    <div style={{ color: 'var(--text-muted)' }} className="text-xs italic py-4">No psychology data logged for this trade</div>
                   ) : (
                     <div className="space-y-4 mt-3">
                       
@@ -2048,28 +2042,20 @@ const TradeTrackingPageContent: React.FC = () => {
                   <p style={{ color: 'var(--text-muted)' }} className="text-[11px] font-mono uppercase tracking-wider mb-2">Exposure analysis</p>
 
                   {!riskMgmt ? (
-                    <div style={{ color: 'var(--text-muted)' }} className="text-xs italic py-4">No risk logs found.</div>
+                    <div style={{ color: 'var(--text-muted)' }} className="text-xs italic py-4">No risk data logged for this trade</div>
                   ) : (
                     <div className="space-y-4 mt-3">
-                      <div style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)' }} className="grid grid-cols-2 gap-3.5 p-3 rounded-xl border font-sans">
-                        <div>
-                          <span style={{ color: 'var(--text-sub)' }} className="block text-[9px] font-bold uppercase tracking-brand font-mono">Planned Risk</span>
-                          <span style={{ color: 'var(--text)' }} className="text-xs font-semibold block mt-0.5 font-mono">
-                            {formatINR(riskMgmt.decided_risk)}
-                          </span>
-                        </div>
-                        <div>
-                          <span style={{ color: 'var(--text-sub)' }} className="block text-[9px] font-bold uppercase tracking-brand font-mono">Actual Risk Taken</span>
-                          <span style={{ color: 'var(--text)' }} className="text-xs font-semibold block mt-0.5 font-mono">
-                            {formatINR(trade.risk)}
-                          </span>
-                        </div>
+                      <div style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)' }} className="p-3 rounded-xl border font-sans">
+                        <span style={{ color: 'var(--text-sub)' }} className="block text-[9px] font-bold uppercase tracking-brand font-mono">Decided Risk</span>
+                        <span style={{ color: 'var(--text)' }} className="text-sm font-semibold block mt-0.5 font-mono">
+                          {formatINR(riskMgmt.decided_risk)}
+                        </span>
                       </div>
 
                       <div>
                         <div className="flex justify-between text-xs font-bold font-mono mb-1.5 font-sans">
-                          <span style={{ color: 'var(--text-sub)' }}>Risk Rules Adherence</span>
-                          <span className={getScoreColor(riskScore)}>{riskScore}%</span>
+                          <span style={{ color: 'var(--text-sub)' }}>Followed Risk Rules</span>
+                          <span className={getScoreColor(riskScore)}>{riskScore.toFixed(0)}%</span>
                         </div>
                         <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-2 rounded-full overflow-hidden w-full">
                           <div
