@@ -26,7 +26,8 @@ import {
   Tooltip as RechartsTooltip,
   ResponsiveContainer,
   Cell,
-  CartesianGrid
+  CartesianGrid,
+  ReferenceLine
 } from 'recharts';
 import { formatINR, MONTH_NAMES } from '../lib/calculations';
 
@@ -58,6 +59,46 @@ function getDayChartConfig(dayChartData: any[]) {
   return { domainMin, domainMax, zeroOffset, CUMULATIVE_FIELD };
 }
 
+function getTimeBucket(entryTimeStr: string | null | undefined, interval: '1 Hour' | '30 Minutes' | '15 Minutes'): string | null {
+  if (!entryTimeStr) return null;
+  const parts = entryTimeStr.split(':');
+  if (parts.length < 2) return null;
+  const hour = parseInt(parts[0], 10);
+  const minute = parseInt(parts[1], 10);
+  if (isNaN(hour) || isNaN(minute)) return null;
+
+  let bucketHour = hour;
+  let bucketMinute = 0;
+
+  if (interval === '1 Hour') {
+    bucketMinute = 0;
+  } else if (interval === '30 Minutes') {
+    bucketMinute = minute >= 30 ? 30 : 0;
+  } else if (interval === '15 Minutes') {
+    if (minute >= 45) bucketMinute = 45;
+    else if (minute >= 30) bucketMinute = 30;
+    else if (minute >= 15) bucketMinute = 15;
+    else bucketMinute = 0;
+  }
+
+  return `${String(bucketHour).padStart(2, '0')}:${String(bucketMinute).padStart(2, '0')}`;
+}
+
+function getDurationBucket(mins: number | null | undefined): string | null {
+  if (mins === null || mins === undefined || isNaN(mins)) return null;
+  const rounded = Math.floor(mins);
+
+  if (rounded === 0) return "Under 1 min";
+  if (rounded >= 1 && rounded <= 4) return "1 to 4 min";
+  if (rounded >= 5 && rounded <= 14) return "5 to 14 min";
+  if (rounded >= 15 && rounded <= 29) return "15 to 29 min";
+  if (rounded >= 30 && rounded <= 59) return "30 to 59 min";
+  if (rounded >= 60 && rounded <= 119) return "1h to 1h 59m";
+  if (rounded >= 120 && rounded <= 239) return "2h to 3h 59m";
+  if (rounded >= 240) return "4h and over";
+  return null;
+}
+
 export const AdvancedReports: React.FC = () => {
   const { user, userId, loading: authLoading } = useAuth();
   const { showError } = useToast();
@@ -82,6 +123,11 @@ export const AdvancedReports: React.FC = () => {
   const [strategies, setStrategies] = useState<any[]>([]);
   const [calendarTrades, setCalendarTrades] = useState<any[]>([]);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
+  // Detailed tab sub-filters state
+  const [detailedSubFilter, setDetailedSubFilter] = useState<'DAYS' | 'MONTHS' | 'TIME' | 'DURATION' | 'SYMBOL' | 'SETUPS' | 'MISTAKES'>('DAYS');
+  const [detailedTimeInterval, setDetailedTimeInterval] = useState<'1 Hour' | '30 Minutes' | '15 Minutes'>('1 Hour');
+  const [detailedMistakeClass, setDetailedMistakeClass] = useState<'BY TYPE' | 'BY SPECIFIC MISTAKE'>('BY TYPE');
 
   // Safety Redirection for Auth
   useEffect(() => {
@@ -471,6 +517,235 @@ export const AdvancedReports: React.FC = () => {
     });
     return map;
   }, [calendarTrades]);
+
+  interface GroupedStat {
+    name: string;
+    count: number;
+    netPnl: number;
+    totalProfit: number;
+    totalLoss: number;
+    wins: number;
+    winPct: number;
+  }
+
+  const detailedData: GroupedStat[] = useMemo(() => {
+    if (!trades || trades.length === 0) return [];
+
+    if (detailedSubFilter === 'DAYS') {
+      const DAYS_ORDER = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      const DAY_INDEX_MAP: Record<number, string> = {
+        1: 'Monday',
+        2: 'Tuesday',
+        3: 'Wednesday',
+        4: 'Thursday',
+        5: 'Friday',
+        6: 'Saturday',
+        0: 'Sunday'
+      };
+
+      const groups: Record<string, any[]> = {};
+      DAYS_ORDER.forEach(d => { groups[d] = []; });
+
+      trades.forEach(t => {
+        if (!t.date) return;
+        const parts = t.date.split('-');
+        if (parts.length < 3) return;
+        const year = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10);
+        const day = parseInt(parts[2], 10);
+        if (isNaN(year) || isNaN(month) || isNaN(day)) return;
+        const d = new Date(year, month - 1, day);
+        const dayIndex = d.getDay();
+        const dayName = DAY_INDEX_MAP[dayIndex];
+        if (dayName && groups[dayName]) {
+          groups[dayName].push(t);
+        }
+      });
+
+      return DAYS_ORDER.map(name => {
+        const gTrades = groups[name];
+        const count = gTrades.length;
+        const netPnl = gTrades.reduce((sum, t) => sum + (t.pnl || 0), 0);
+        const totalProfit = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) > 0 ? (t.pnl || 0) : 0), 0);
+        const totalLoss = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) < 0 ? (t.pnl || 0) : 0), 0);
+        const wins = gTrades.filter(t => t.status === 'Win').length;
+        const winPct = count > 0 ? (wins / count) * 100 : 0;
+        return { name, count, netPnl, totalProfit, totalLoss, wins, winPct };
+      });
+    }
+
+    if (detailedSubFilter === 'MONTHS') {
+      const groups: Record<string, any[]> = {};
+      MONTH_NAMES.forEach(m => { groups[m] = []; });
+
+      trades.forEach(t => {
+        if (!t.date) return;
+        const parts = t.date.split('-');
+        if (parts.length < 2) return;
+        const mIdx = parseInt(parts[1], 10) - 1;
+        const monthLabel = MONTH_NAMES[mIdx];
+        if (monthLabel && groups[monthLabel]) {
+          groups[monthLabel].push(t);
+        }
+      });
+
+      return MONTH_NAMES.map(name => {
+        const gTrades = groups[name];
+        const count = gTrades.length;
+        const netPnl = gTrades.reduce((sum, t) => sum + (t.pnl || 0), 0);
+        const totalProfit = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) > 0 ? (t.pnl || 0) : 0), 0);
+        const totalLoss = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) < 0 ? (t.pnl || 0) : 0), 0);
+        const wins = gTrades.filter(t => t.status === 'Win').length;
+        const winPct = count > 0 ? (wins / count) * 100 : 0;
+        return { name, count, netPnl, totalProfit, totalLoss, wins, winPct };
+      });
+    }
+
+    if (detailedSubFilter === 'TIME') {
+      const groups: Record<string, any[]> = {};
+      trades.forEach(t => {
+        const bucket = getTimeBucket(t.entry_time, detailedTimeInterval);
+        if (!bucket) return;
+        if (!groups[bucket]) groups[bucket] = [];
+        groups[bucket].push(t);
+      });
+
+      const sortedBuckets = Object.keys(groups).sort();
+      return sortedBuckets.map(name => {
+        const gTrades = groups[name];
+        const count = gTrades.length;
+        const netPnl = gTrades.reduce((sum, t) => sum + (t.pnl || 0), 0);
+        const totalProfit = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) > 0 ? (t.pnl || 0) : 0), 0);
+        const totalLoss = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) < 0 ? (t.pnl || 0) : 0), 0);
+        const wins = gTrades.filter(t => t.status === 'Win').length;
+        const winPct = count > 0 ? (wins / count) * 100 : 0;
+        return { name, count, netPnl, totalProfit, totalLoss, wins, winPct };
+      });
+    }
+
+    if (detailedSubFilter === 'DURATION') {
+      const DURATION_ORDER = [
+        "Under 1 min",
+        "1 to 4 min",
+        "5 to 14 min",
+        "15 to 29 min",
+        "30 to 59 min",
+        "1h to 1h 59m",
+        "2h to 3h 59m",
+        "4h and over"
+      ];
+
+      const groups: Record<string, any[]> = {};
+      DURATION_ORDER.forEach(d => { groups[d] = []; });
+
+      trades.forEach(t => {
+        const bucket = getDurationBucket(t.holding_time_mins);
+        if (!bucket) return;
+        if (groups[bucket]) {
+          groups[bucket].push(t);
+        }
+      });
+
+      return DURATION_ORDER.filter(d => groups[d].length > 0).map(name => {
+        const gTrades = groups[name];
+        const count = gTrades.length;
+        const netPnl = gTrades.reduce((sum, t) => sum + (t.pnl || 0), 0);
+        const totalProfit = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) > 0 ? (t.pnl || 0) : 0), 0);
+        const totalLoss = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) < 0 ? (t.pnl || 0) : 0), 0);
+        const wins = gTrades.filter(t => t.status === 'Win').length;
+        const winPct = count > 0 ? (wins / count) * 100 : 0;
+        return { name, count, netPnl, totalProfit, totalLoss, wins, winPct };
+      });
+    }
+
+    if (detailedSubFilter === 'SYMBOL') {
+      const groups: Record<string, any[]> = {};
+      trades.forEach(t => {
+        if (!t.symbol) return;
+        const name = t.symbol.trim().toUpperCase();
+        if (!groups[name]) groups[name] = [];
+        groups[name].push(t);
+      });
+
+      const result = Object.entries(groups).map(([name, gTrades]) => {
+        const count = gTrades.length;
+        const netPnl = gTrades.reduce((sum, t) => sum + (t.pnl || 0), 0);
+        const totalProfit = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) > 0 ? (t.pnl || 0) : 0), 0);
+        const totalLoss = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) < 0 ? (t.pnl || 0) : 0), 0);
+        const wins = gTrades.filter(t => t.status === 'Win').length;
+        const winPct = count > 0 ? (wins / count) * 100 : 0;
+        return { name, count, netPnl, totalProfit, totalLoss, wins, winPct };
+      });
+
+      result.sort((a, b) => b.count - a.count);
+      return result.slice(0, 15);
+    }
+
+    if (detailedSubFilter === 'SETUPS') {
+      const groups: Record<string, any[]> = {};
+      trades.forEach(t => {
+        const name = t.strategies?.name || 'No Setup';
+        if (!groups[name]) groups[name] = [];
+        groups[name].push(t);
+      });
+
+      const result = Object.entries(groups).map(([name, gTrades]) => {
+        const count = gTrades.length;
+        const netPnl = gTrades.reduce((sum, t) => sum + (t.pnl || 0), 0);
+        const totalProfit = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) > 0 ? (t.pnl || 0) : 0), 0);
+        const totalLoss = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) < 0 ? (t.pnl || 0) : 0), 0);
+        const wins = gTrades.filter(t => t.status === 'Win').length;
+        const winPct = count > 0 ? (wins / count) * 100 : 0;
+        return { name, count, netPnl, totalProfit, totalLoss, wins, winPct };
+      });
+
+      result.sort((a, b) => b.netPnl - a.netPnl);
+      return result;
+    }
+
+    if (detailedSubFilter === 'MISTAKES') {
+      const groups: Record<string, any[]> = {};
+
+      if (detailedMistakeClass === 'BY TYPE') {
+        const types = ['Technical', 'Psychological', 'Risk Management', 'No Mistake'];
+        types.forEach(type => { groups[type] = []; });
+
+        trades.forEach(t => {
+          const type = t.mistake_type || 'No Mistake';
+          if (groups[type]) {
+            groups[type].push(t);
+          } else {
+            groups['No Mistake'].push(t);
+          }
+        });
+      } else {
+        trades.forEach(t => {
+          const text = t.mistake_text ? t.mistake_text.trim() : '';
+          const name = text === '' ? 'No Mistake' : text;
+          if (!groups[name]) groups[name] = [];
+          groups[name].push(t);
+        });
+      }
+
+      const result = Object.entries(groups).map(([name, gTrades]) => {
+        const count = gTrades.length;
+        const netPnl = gTrades.reduce((sum, t) => sum + (t.pnl || 0), 0);
+        const totalProfit = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) > 0 ? (t.pnl || 0) : 0), 0);
+        const totalLoss = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) < 0 ? (t.pnl || 0) : 0), 0);
+        const wins = gTrades.filter(t => t.status === 'Win').length;
+        const winPct = count > 0 ? (wins / count) * 100 : 0;
+        return { name, count, netPnl, totalProfit, totalLoss, wins, winPct };
+      });
+
+      if (detailedMistakeClass === 'BY SPECIFIC MISTAKE') {
+        result.sort((a, b) => b.count - a.count);
+      }
+
+      return result;
+    }
+
+    return [];
+  }, [trades, detailedSubFilter, detailedTimeInterval, detailedMistakeClass]);
 
   // Minute formatter helper
   const formatMins = (totalMins: number | null | undefined) => {
@@ -1131,6 +1406,261 @@ export const AdvancedReports: React.FC = () => {
                       </table>
                     </div>
                   </div>
+                )}
+              </div>
+            ) : activeTab === 'DETAILED' ? (
+              <div className="space-y-6 animate-in fade-in duration-350">
+                {/* SUB-FILTER PILLS ROW */}
+                <div className="flex overflow-x-auto gap-1.5 p-1 rounded-xl font-mono no-scrollbar" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', maxWidth: 'max-content' }}>
+                  {[
+                    { id: 'DAYS', label: 'DAYS' },
+                    { id: 'MONTHS', label: 'MONTHS' },
+                    { id: 'TIME', label: 'TIME' },
+                    { id: 'DURATION', label: 'TRADE DURATION' },
+                    { id: 'SYMBOL', label: 'SYMBOL' },
+                    { id: 'SETUPS', label: 'SETUPS' },
+                    { id: 'MISTAKES', label: 'MISTAKES' }
+                  ].map((sf) => {
+                    const isActive = detailedSubFilter === sf.id;
+                    return (
+                      <button
+                        key={sf.id}
+                        type="button"
+                        onClick={() => setDetailedSubFilter(sf.id as any)}
+                        className="px-3.5 py-1.5 text-[10px] font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap"
+                        style={{
+                          backgroundColor: isActive ? 'var(--card)' : 'transparent',
+                          color: isActive ? 'var(--accent)' : 'var(--text-sub)',
+                          border: isActive ? '0.5px solid var(--border)' : '0.5px solid transparent'
+                        }}
+                      >
+                        {sf.label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* SECOND LEVEL FILTERS */}
+                {detailedSubFilter === 'TIME' && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-zinc-400 font-mono">Interval:</span>
+                    <div className="flex gap-1.5 p-0.5 rounded-lg font-mono" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
+                      {['1 Hour', '30 Minutes', '15 Minutes'].map((opt) => {
+                        const isActive = detailedTimeInterval === opt;
+                        return (
+                          <button
+                            key={opt}
+                            type="button"
+                            onClick={() => setDetailedTimeInterval(opt as any)}
+                            className="px-2.5 py-1 text-[10px] font-bold rounded transition-all cursor-pointer"
+                            style={{
+                              backgroundColor: isActive ? 'var(--card)' : 'transparent',
+                              color: isActive ? 'var(--accent)' : 'var(--text-sub)'
+                            }}
+                          >
+                            {opt}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {detailedSubFilter === 'MISTAKES' && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-zinc-400 font-mono">Group By:</span>
+                    <div className="flex gap-1.5 p-0.5 rounded-lg font-mono" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
+                      {['BY TYPE', 'BY SPECIFIC MISTAKE'].map((opt) => {
+                        const isActive = detailedMistakeClass === opt;
+                        return (
+                          <button
+                            key={opt}
+                            type="button"
+                            onClick={() => setDetailedMistakeClass(opt as any)}
+                            className="px-2.5 py-1 text-[10px] font-bold rounded transition-all cursor-pointer"
+                            style={{
+                              backgroundColor: isActive ? 'var(--card)' : 'transparent',
+                              color: isActive ? 'var(--accent)' : 'var(--text-sub)'
+                            }}
+                          >
+                            {opt}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* CARDS AND TABLES CONTENT OR EMPTY STATE */}
+                {!(detailedData.length > 0 && detailedData.some(item => item.count > 0)) ? (
+                  <div className="p-12 rounded-2xl text-center shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                    <p className="text-sm text-zinc-400 font-mono">No trades found for this category in the selected date range.</p>
+                  </div>
+                ) : (
+                  <>
+                    {/* CHARTS ROW */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      {/* Left card: Trade Distribution */}
+                      <div className="rounded-2xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                        <h3 className="text-xs font-bold font-mono tracking-wider mb-4 text-zinc-350">
+                          {detailedSubFilter === 'DAYS' && 'TRADE DISTRIBUTION BY DAY OF WEEK'}
+                          {detailedSubFilter === 'MONTHS' && 'TRADE DISTRIBUTION BY MONTH'}
+                          {detailedSubFilter === 'TIME' && 'TRADE DISTRIBUTION BY TIME'}
+                          {detailedSubFilter === 'DURATION' && 'TRADE DISTRIBUTION BY DURATION'}
+                          {detailedSubFilter === 'SYMBOL' && 'TRADE DISTRIBUTION BY SYMBOL'}
+                          {detailedSubFilter === 'SETUPS' && 'TRADE DISTRIBUTION BY SETUP'}
+                          {detailedSubFilter === 'MISTAKES' && 'TRADE DISTRIBUTION BY MISTAKE'}
+                        </h3>
+                        <div className="h-[300px] w-full">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart
+                              data={detailedData}
+                              layout="vertical"
+                              margin={{ top: 10, right: 10, left: 0, bottom: 5 }}
+                            >
+                              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
+                              <XAxis type="number" stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" allowDecimals={false} />
+                              <YAxis
+                                dataKey="name"
+                                type="category"
+                                stroke="var(--text-muted)"
+                                fontSize={11}
+                                fontFamily="monospace"
+                                width={detailedSubFilter === 'MISTAKES' || detailedSubFilter === 'SETUPS' || detailedSubFilter === 'SYMBOL' ? 120 : 80}
+                              />
+                              <RechartsTooltip
+                                cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
+                                contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text)', fontSize: '11px', fontFamily: 'monospace' }}
+                              />
+                              <Bar dataKey="count" fill="#06b6d4" radius={[0, 4, 4, 0]} />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </div>
+
+                      {/* Right card: Performance */}
+                      <div className="rounded-2xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                        <h3 className="text-xs font-bold font-mono tracking-wider mb-4 text-zinc-350">
+                          {detailedSubFilter === 'DAYS' && 'PERFORMANCE BY DAY OF WEEK'}
+                          {detailedSubFilter === 'MONTHS' && 'PERFORMANCE BY MONTH'}
+                          {detailedSubFilter === 'TIME' && 'PERFORMANCE BY TIME'}
+                          {detailedSubFilter === 'DURATION' && 'PERFORMANCE BY DURATION'}
+                          {detailedSubFilter === 'SYMBOL' && 'PERFORMANCE BY SYMBOL'}
+                          {detailedSubFilter === 'SETUPS' && 'PERFORMANCE BY SETUP'}
+                          {detailedSubFilter === 'MISTAKES' && 'PERFORMANCE BY MISTAKE'}
+                        </h3>
+                        <div className="h-[300px] w-full">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart
+                              data={detailedData}
+                              layout="vertical"
+                              margin={{ top: 10, right: 10, left: 0, bottom: 5 }}
+                            >
+                              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
+                              <XAxis type="number" stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" />
+                              <YAxis
+                                dataKey="name"
+                                type="category"
+                                stroke="var(--text-muted)"
+                                fontSize={11}
+                                fontFamily="monospace"
+                                width={detailedSubFilter === 'MISTAKES' || detailedSubFilter === 'SETUPS' || detailedSubFilter === 'SYMBOL' ? 120 : 80}
+                              />
+                              <RechartsTooltip
+                                cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
+                                formatter={(value: any) => [formatINR(value), 'Net P&L']}
+                                contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text)', fontSize: '11px', fontFamily: 'monospace' }}
+                              />
+                              <Bar dataKey="netPnl" radius={[0, 4, 4, 0]}>
+                                {detailedData.map((entry, index) => (
+                                  <Cell key={`cell-${index}`} fill={entry.netPnl >= 0 ? '#22c55e' : '#ef4444'} />
+                                ))}
+                              </Bar>
+                              <ReferenceLine x={0} stroke="var(--border)" strokeDasharray="3 3" />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </div>
+                    </div>
+
+                    {detailedSubFilter === 'TIME' && (
+                      <div className="text-center text-xs text-zinc-500 font-mono mt-2">
+                        All times shown in IST
+                      </div>
+                    )}
+
+                    {/* SUMMARY TABLE */}
+                    <div className="rounded-2xl overflow-hidden shadow-sm border border-[var(--border)]" style={{ backgroundColor: 'var(--card)' }}>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                          <thead>
+                            <tr style={{ borderBottom: '1px solid var(--border)' }} className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 bg-zinc-800/10 dark:bg-zinc-100/5">
+                              <th className="py-3 px-4 font-bold">Category</th>
+                              <th className="py-3 px-4 font-bold text-right">Net Profits</th>
+                              <th className="py-3 px-4 font-bold text-center">Win %</th>
+                              <th className="py-3 px-4 font-bold text-right bg-green-500/5">Total Profits</th>
+                              <th className="py-3 px-4 font-bold text-right bg-red-500/5">Total Loss</th>
+                              <th className="py-3 px-4 font-bold text-center">Trades</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-[var(--border)]">
+                            {detailedData.map((row, index) => {
+                              return (
+                                <tr
+                                  key={index}
+                                  className={`${
+                                    index % 2 === 1 ? 'bg-zinc-800/5 dark:bg-zinc-100/5' : 'bg-transparent'
+                                  } hover:bg-zinc-800/10 dark:hover:bg-zinc-100/10 transition-colors text-xs font-sans`}
+                                >
+                                  {/* Category */}
+                                  <td className="py-3.5 px-4 font-semibold text-zinc-200">
+                                    {row.name}
+                                  </td>
+
+                                  {/* Net Profits */}
+                                  <td className={`py-3.5 px-4 text-right font-mono font-bold ${row.netPnl > 0 ? 'text-green-500' : row.netPnl < 0 ? 'text-red-500' : 'text-zinc-255'}`}>
+                                    {formatINR(row.netPnl)}
+                                  </td>
+
+                                  {/* Win % with custom split progress bar */}
+                                  <td className="py-3.5 px-4">
+                                    <div className="flex items-center justify-center gap-2 max-w-[150px] mx-auto">
+                                      {row.count > 0 ? (
+                                        <>
+                                          <div className="w-16 h-2 rounded bg-zinc-700/30 flex overflow-hidden">
+                                            <div className="bg-green-500 h-full" style={{ width: `${row.winPct}%` }} />
+                                            <div className="bg-red-500 h-full" style={{ width: `${100 - row.winPct}%` }} />
+                                          </div>
+                                          <span className="font-mono font-bold text-zinc-350 text-xs">{row.winPct.toFixed(1)}%</span>
+                                        </>
+                                      ) : (
+                                        <span className="font-mono text-zinc-500">—</span>
+                                      )}
+                                    </div>
+                                  </td>
+
+                                  {/* Total Profits */}
+                                  <td className="py-3.5 px-4 text-right font-mono font-bold text-green-500 bg-green-500/5">
+                                    {formatINR(row.totalProfit)}
+                                  </td>
+
+                                  {/* Total Loss */}
+                                  <td className="py-3.5 px-4 text-right font-mono font-bold text-red-500 bg-red-500/5">
+                                    {formatINR(row.totalLoss)}
+                                  </td>
+
+                                  {/* Trades */}
+                                  <td className="py-3.5 px-4 text-center font-mono font-bold text-zinc-300">
+                                    {row.count}
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </>
                 )}
               </div>
             ) : (
