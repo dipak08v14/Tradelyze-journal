@@ -722,7 +722,7 @@ export const DailyJournal: React.FC = () => {
                                             </td>
 
                                             {/* Column 2 - Symbol */}
-                                            <td className="px-4 py-2.5 font-semibold text-xs text-white">
+                                            <td className="px-4 py-2.5 font-semibold text-xs" style={{ color: 'var(--text)' }}>
                                               {t.symbol}
                                             </td>
 
