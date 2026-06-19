@@ -210,41 +210,71 @@ export const TradeEntryPage: React.FC = () => {
     if (!userId || !id) return;
 
     const fetchTradeForEdit = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
-        const [tradeRes, rulesRes, psychRes, riskRes] = await Promise.all([
-          supabase
+        let tradeData: any = null;
+        try {
+          const { data, error } = await supabase
             .from('trades')
             .select('*')
             .eq('id', id)
             .eq('user_id', userId)
-            .single(),
-          supabase
+            .maybeSingle();
+          if (error) {
+            console.warn('Silent error trade fetch:', error);
+          } else {
+            tradeData = data;
+          }
+        } catch (e) {
+          console.warn('Silent exception trade fetch:', e);
+        }
+
+        let allRules: any[] = [];
+        try {
+          const { data, error } = await supabase
             .from('trade_rule_adherence')
             .select('*')
             .eq('trade_id', id)
             .eq('user_id', userId)
             .order('rule_type')
-            .order('rule_order', { ascending: true }),
-          supabase
+            .order('rule_order', { ascending: true });
+          if (!error && data) {
+            allRules = data;
+          }
+        } catch (e) {
+          console.warn('Silent exception rule adherence fetch:', e);
+        }
+
+        let psychData: any = null;
+        try {
+          const { data, error } = await supabase
             .from('trade_psychology')
             .select('*')
             .eq('trade_id', id)
             .eq('user_id', userId)
-            .maybeSingle(),
-          supabase
+            .maybeSingle();
+          if (!error && data) {
+            psychData = data;
+          }
+        } catch (e) {
+          console.warn('Silent exception psychology fetch:', e);
+        }
+
+        let riskData: any = null;
+        try {
+          const { data, error } = await supabase
             .from('trade_risk_management')
             .select('*')
             .eq('trade_id', id)
             .eq('user_id', userId)
-            .maybeSingle(),
-        ]);
-
-        if (tradeRes.error) {
-          throw new Error(tradeRes.error.message || 'Original trade details could not be found.');
+            .maybeSingle();
+          if (!error && data) {
+            riskData = data;
+          }
+        } catch (e) {
+          console.warn('Silent exception risk fetch:', e);
         }
 
-        const tradeData = tradeRes.data;
         if (tradeData) {
           setDate(tradeData.date || '');
           setEntryTime(tradeData.entry_time || '');
@@ -278,9 +308,11 @@ export const TradeEntryPage: React.FC = () => {
 
           setExistingChartImageUrl(tradeData.chart_image_url || null);
           setExistingPlanUrl(tradeData.trade_plan_url || null);
+        } else {
+          // Failure to obtain core trade details
+          showError('Could not load original trade configurations.');
         }
 
-        const allRules = rulesRes.data || [];
         const entryRulesFromDb = allRules
           .filter((r) => r.rule_type === 'entry')
           .map((r) => ({
@@ -306,24 +338,22 @@ export const TradeEntryPage: React.FC = () => {
         setEntryRules(entryRulesFromDb);
         setExitRules(exitRulesFromDb);
 
-        if (psychRes.data) {
-          setExternalStress(psychRes.data.external_stress_pct ?? 0);
-          setPriceActionReading(psychRes.data.price_action_reading_pct ?? 0);
-          setConfidence(psychRes.data.confidence_pct ?? 0);
-          setEntryLevels(psychRes.data.entry_levels_pct ?? 0);
-          setAnxiety(psychRes.data.anxiety_pct ?? 0);
-          setFear(psychRes.data.fear_pct ?? 0);
+        if (psychData) {
+          setExternalStress(psychData.external_stress_pct ?? 0);
+          setPriceActionReading(psychData.price_action_reading_pct ?? 0);
+          setConfidence(psychData.confidence_pct ?? 0);
+          setEntryLevels(psychData.entry_levels_pct ?? 0);
+          setAnxiety(psychData.anxiety_pct ?? 0);
+          setFear(psychData.fear_pct ?? 0);
         }
 
-        if (riskRes.data) {
-          setDecidedRisk(riskRes.data.decided_risk !== null ? riskRes.data.decided_risk.toString() : '');
-          setFollowedRiskRulesPct(riskRes.data.followed_risk_rules_pct ?? 100);
+        if (riskData) {
+          setDecidedRisk(riskData.decided_risk !== null ? riskData.decided_risk.toString() : '');
+          setFollowedRiskRulesPct(riskData.followed_risk_rules_pct ?? 100);
         }
 
       } catch (err: any) {
-        console.error('Error fetching trade details for edit:', err);
         showError('Could not load original trade configurations.');
-        navigate('/trading-logs');
       } finally {
         setLoading(false);
       }
@@ -710,6 +740,7 @@ export const TradeEntryPage: React.FC = () => {
             stop_loss_price: stopLossPrice !== '' ? parseFloat(stopLossPrice) : null,
             mae: mae !== '' ? parseFloat(mae) : null,
             mfe: mfe !== '' ? parseFloat(mfe) : null,
+            planned_r_multiple: calculatedPlannedR,
             month: parsedMonth,
             year: parsedYear,
             needs_review: false,
@@ -769,6 +800,7 @@ export const TradeEntryPage: React.FC = () => {
             stop_loss_price: stopLossPrice !== '' ? parseFloat(stopLossPrice) : null,
             mae: mae !== '' ? parseFloat(mae) : null,
             mfe: mfe !== '' ? parseFloat(mfe) : null,
+            planned_r_multiple: calculatedPlannedR,
             month: parsedMonth,
             year: parsedYear,
           })

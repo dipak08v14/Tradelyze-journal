@@ -20,32 +20,24 @@ export const RadarScoreChart: React.FC<RadarScoreChartProps> = ({
   riskScore
 }) => {
   const radarData = [
-    { metric: 'Technical', score: parseFloat(technicalScore.toFixed(1)) },
-    { metric: 'Risk Mgmt', score: parseFloat(riskScore.toFixed(1)) },
-    { metric: 'Psychology', score: parseFloat(psychScore.toFixed(1)) },
+    { name: 'Technical', value: technicalScore },
+    { name: 'Psychology', value: psychScore },
+    { name: 'Risk Mgmt', value: riskScore },
   ];
 
   return (
     <div className="w-full h-[260px] min-h-[220px] min-w-[220px] flex items-center justify-center">
       <ResponsiveContainer width="100%" height="100%">
-        <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData} startAngle={90} endAngle={450}>
+        <RadarChart data={radarData}>
           <PolarGrid stroke="rgba(0,0,0,0.08)" />
-          <PolarAngleAxis
-            dataKey="metric"
-            tick={{ fill: 'var(--text-sub)', fontSize: 12, fontWeight: 600 }}
-          />
-          <PolarRadiusAxis
-            domain={[0, 100]}
-            tick={false}
-            axisLine={false}
-          />
+          <PolarAngleAxis dataKey="name" />
+          <PolarRadiusAxis domain={[0, 100]} tickCount={4} />
           <Radar
             name="Score"
-            dataKey="score"
+            dataKey="value"
             stroke="var(--accent)"
             fill="var(--accent)"
             fillOpacity={0.15}
-            dot={{ fill: 'var(--accent)', r: 3, strokeWidth: 0 }}
             strokeWidth={2}
           />
         </RadarChart>
