@@ -16,7 +16,8 @@ import {
   Zap,
   Tag,
   AlertTriangle,
-  HelpCircle
+  HelpCircle,
+  Info
 } from 'lucide-react';
 import {
   BarChart,
@@ -196,6 +197,9 @@ export const AdvancedReports: React.FC = () => {
 
   // Risk tab sub-filters state
   const [riskSubFilter, setRiskSubFilter] = useState<'R-MULTIPLE' | 'POSITION_SIZE'>('R-MULTIPLE');
+
+  // Market Behavior sub-filter state
+  const [marketBehaviorSubFilter, setMarketBehaviorSubFilter] = useState<'OPENING_CONDITION' | 'HOURLY_TREND' | 'PHASE_PO3' | 'TREND_POSITION'>('OPENING_CONDITION');
 
   // Safety Redirection for Auth
   useEffect(() => {
@@ -1111,6 +1115,204 @@ export const AdvancedReports: React.FC = () => {
 
     return list.sort((a, b) => b.netPnl - a.netPnl);
   }, [trades]);
+
+  const showMarketBehaviorDataQualityBanner = useMemo(() => {
+    if (!trades || trades.length === 0) return false;
+    const total = trades.length;
+
+    const notRecordedCounts = {
+      opening_condition: trades.filter(t => !t.opening_condition || String(t.opening_condition).trim() === '').length,
+      hourly_trend: trades.filter(t => !t.hourly_trend || String(t.hourly_trend).trim() === '').length,
+      phase: trades.filter(t => !t.phase || String(t.phase).trim() === '').length,
+      trend_position: trades.filter(t => !t.trend_position || String(t.trend_position).trim() === '').length,
+    };
+
+    const threshold = 0.20 * total;
+    return (
+      notRecordedCounts.opening_condition > threshold ||
+      notRecordedCounts.hourly_trend > threshold ||
+      notRecordedCounts.phase > threshold ||
+      notRecordedCounts.trend_position > threshold
+    );
+  }, [trades]);
+
+  const marketBehaviorDataAndInsights = useMemo(() => {
+    if (!trades || trades.length === 0) {
+      return { data: [], insights: { best: '—', mostCommon: '—', extra: '' }, hasNoData: true };
+    }
+
+    let list: any[] = [];
+    let hasNoData = false;
+
+    if (marketBehaviorSubFilter === 'OPENING_CONDITION') {
+      const groups: Record<string, any[]> = {};
+      trades.forEach(t => {
+        const val = t.opening_condition && String(t.opening_condition).trim() !== '' 
+          ? String(t.opening_condition).trim() 
+          : 'Not Recorded';
+        if (!groups[val]) groups[val] = [];
+        groups[val].push(t);
+      });
+
+      list = Object.entries(groups).map(([name, gTrades]) => {
+        const count = gTrades.length;
+        const netPnl = gTrades.reduce((sum, t) => sum + (t.pnl || 0), 0);
+        const totalProfit = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) > 0 ? (t.pnl || 0) : 0), 0);
+        const totalLoss = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) < 0 ? (t.pnl || 0) : 0), 0);
+        const wins = gTrades.filter(t => t.status === 'Win').length;
+        const winPct = count > 0 ? (wins / count) * 100 : 0;
+        return { name, count, netPnl, totalProfit, totalLoss, wins, winPct };
+      });
+
+      list.sort((a, b) => b.count - a.count);
+
+      const nonNotRecordedCount = list.filter(g => g.name !== 'Not Recorded' && g.count > 0).length;
+      hasNoData = nonNotRecordedCount === 0;
+
+      const validForBest = list.filter(g => g.name !== 'Not Recorded' && g.netPnl > 0);
+      const bestItem = validForBest.length > 0 ? [...validForBest].sort((a, b) => b.netPnl - a.netPnl)[0] : null;
+      const best = bestItem ? `${bestItem.name} (${formatINR(bestItem.netPnl)})` : 'None';
+
+      const validForCommon = list.filter(g => g.name !== 'Not Recorded' && g.count > 0);
+      const commonItem = validForCommon.length > 0 ? [...validForCommon].sort((a, b) => b.count - a.count)[0] : null;
+      const mostCommon = commonItem ? `${commonItem.name} (${commonItem.count} trades)` : 'None';
+
+      return {
+        data: list,
+        insights: { best, mostCommon, extra: '' },
+        hasNoData
+      };
+    } else if (marketBehaviorSubFilter === 'HOURLY_TREND') {
+      const groups: Record<string, any[]> = {
+        'Uptrend': [],
+        'Downtrend': [],
+        'Consolidation': [],
+        'Not Recorded': []
+      };
+
+      trades.forEach(t => {
+        const trend = t.hourly_trend ? String(t.hourly_trend).toUpperCase() : '';
+        if (trend === 'UP') {
+          groups['Uptrend'].push(t);
+        } else if (trend === 'DOWN') {
+          groups['Downtrend'].push(t);
+        } else if (trend === 'CONSOLIDATION') {
+          groups['Consolidation'].push(t);
+        } else {
+          groups['Not Recorded'].push(t);
+        }
+      });
+
+      const categories = ['Uptrend', 'Downtrend', 'Consolidation', 'Not Recorded'];
+      list = categories.map(name => {
+        const gTrades = groups[name] || [];
+        const count = gTrades.length;
+        const netPnl = gTrades.reduce((sum, t) => sum + (t.pnl || 0), 0);
+        const totalProfit = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) > 0 ? (t.pnl || 0) : 0), 0);
+        const totalLoss = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) < 0 ? (t.pnl || 0) : 0), 0);
+        const wins = gTrades.filter(t => t.status === 'Win').length;
+        const winPct = count > 0 ? (wins / count) * 100 : 0;
+        return { name, count, netPnl, totalProfit, totalLoss, wins, winPct };
+      });
+
+      const nonNotRecordedCount = list.filter(g => g.name !== 'Not Recorded' && g.count > 0).length;
+      hasNoData = nonNotRecordedCount === 0;
+
+      const validForBest = list.filter(g => g.name !== 'Not Recorded' && g.netPnl > 0);
+      const bestItem = validForBest.length > 0 ? [...validForBest].sort((a, b) => b.netPnl - a.netPnl)[0] : null;
+      const best = bestItem ? `${bestItem.name} (${formatINR(bestItem.netPnl)})` : 'None';
+
+      const upItem = list.find(g => g.name === 'Uptrend');
+      const downItem = list.find(g => g.name === 'Downtrend');
+      const consItem = list.find(g => g.name === 'Consolidation');
+
+      const upPct = upItem && upItem.count > 0 ? `${upItem.winPct.toFixed(1)}%` : '—';
+      const downPct = downItem && downItem.count > 0 ? `${downItem.winPct.toFixed(1)}%` : '—';
+      const consPct = consItem && consItem.count > 0 ? `${consItem.winPct.toFixed(1)}%` : '—';
+
+      const winRatesStr = `UP: ${upPct} | DOWN: ${downPct} | CONSOLIDATION: ${consPct}`;
+
+      return {
+        data: list,
+        insights: { best, mostCommon: '', extra: winRatesStr },
+        hasNoData
+      };
+    } else if (marketBehaviorSubFilter === 'PHASE_PO3') {
+      const groups: Record<string, any[]> = {};
+      trades.forEach(t => {
+        const val = t.phase && String(t.phase).trim() !== '' 
+          ? String(t.phase).trim() 
+          : 'Not Recorded';
+        if (!groups[val]) groups[val] = [];
+        groups[val].push(t);
+      });
+
+      list = Object.entries(groups).map(([name, gTrades]) => {
+        const count = gTrades.length;
+        const netPnl = gTrades.reduce((sum, t) => sum + (t.pnl || 0), 0);
+        const totalProfit = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) > 0 ? (t.pnl || 0) : 0), 0);
+        const totalLoss = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) < 0 ? (t.pnl || 0) : 0), 0);
+        const wins = gTrades.filter(t => t.status === 'Win').length;
+        const winPct = count > 0 ? (wins / count) * 100 : 0;
+        return { name, count, netPnl, totalProfit, totalLoss, wins, winPct };
+      });
+
+      list.sort((a, b) => b.netPnl - a.netPnl);
+
+      const nonNotRecordedCount = list.filter(g => g.name !== 'Not Recorded' && g.count > 0).length;
+      hasNoData = nonNotRecordedCount === 0;
+
+      const validForBest = list.filter(g => g.name !== 'Not Recorded' && g.netPnl > 0);
+      const bestItem = validForBest.length > 0 ? [...validForBest].sort((a, b) => b.netPnl - a.netPnl)[0] : null;
+      const best = bestItem ? `${bestItem.name} (${formatINR(bestItem.netPnl)})` : 'None';
+
+      return {
+        data: list,
+        insights: { best, mostCommon: '', extra: '' },
+        hasNoData
+      };
+    } else if (marketBehaviorSubFilter === 'TREND_POSITION') {
+      const groups: Record<string, any[]> = {};
+      trades.forEach(t => {
+        const val = t.trend_position && String(t.trend_position).trim() !== '' 
+          ? String(t.trend_position).trim() 
+          : 'Not Recorded';
+        if (!groups[val]) groups[val] = [];
+        groups[val].push(t);
+      });
+
+      list = Object.entries(groups).map(([name, gTrades]) => {
+        const count = gTrades.length;
+        const netPnl = gTrades.reduce((sum, t) => sum + (t.pnl || 0), 0);
+        const totalProfit = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) > 0 ? (t.pnl || 0) : 0), 0);
+        const totalLoss = gTrades.reduce((sum, t) => sum + ((t.pnl || 0) < 0 ? (t.pnl || 0) : 0), 0);
+        const wins = gTrades.filter(t => t.status === 'Win').length;
+        const winPct = count > 0 ? (wins / count) * 100 : 0;
+        return { name, count, netPnl, totalProfit, totalLoss, wins, winPct };
+      });
+
+      list.sort((a, b) => b.count - a.count);
+
+      const nonNotRecordedCount = list.filter(g => g.name !== 'Not Recorded' && g.count > 0).length;
+      hasNoData = nonNotRecordedCount === 0;
+
+      const validForBest = list.filter(g => g.name !== 'Not Recorded' && g.netPnl > 0);
+      const bestItem = validForBest.length > 0 ? [...validForBest].sort((a, b) => b.netPnl - a.netPnl)[0] : null;
+      const best = bestItem ? `${bestItem.name} (${formatINR(bestItem.netPnl)})` : 'None';
+
+      const validForCommon = list.filter(g => g.name !== 'Not Recorded' && g.count > 0);
+      const commonItem = validForCommon.length > 0 ? [...validForCommon].sort((a, b) => b.count - a.count)[0] : null;
+      const mostCommon = commonItem ? `${commonItem.name} (${commonItem.count} trades)` : 'None';
+
+      return {
+        data: list,
+        insights: { best, mostCommon, extra: '' },
+        hasNoData
+      };
+    }
+
+    return { data: [], insights: { best: '—', mostCommon: '—', extra: '' }, hasNoData: true };
+  }, [trades, marketBehaviorSubFilter]);
 
   // Minute formatter helper
   const formatMins = (totalMins: number | null | undefined) => {
@@ -2449,6 +2651,240 @@ export const AdvancedReports: React.FC = () => {
                     </table>
                   </div>
                 </div>
+              </div>
+            ) : activeTab === 'MARKET_BEHAVIOR' ? (
+              <div className="space-y-6 animate-in fade-in duration-300">
+                {/* DATA QUALITY NOTE BANNER */}
+                {showMarketBehaviorDataQualityBanner && (
+                  <div className="flex items-start gap-3 p-4 rounded-xl border border-cyan-500/20 text-xs shadow-sm bg-cyan-950/10 text-cyan-200">
+                    <Info className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+                    <p className="font-mono leading-relaxed">
+                      These insights are based on the context you recorded when logging trades. 
+                      Trades without this information are grouped as <span className="font-semibold text-cyan-300">"Not Recorded"</span>. 
+                      Log more context fields in your trades to improve these insights.
+                    </p>
+                  </div>
+                )}
+
+                {/* SUB-FILTER PILLS ROW */}
+                <div className="flex overflow-x-auto gap-1.5 p-1 rounded-xl font-mono no-scrollbar" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', maxWidth: 'max-content' }}>
+                  {[
+                    { id: 'OPENING_CONDITION', label: 'OPENING CONDITION' },
+                    { id: 'HOURLY_TREND', label: 'HOURLY TREND' },
+                    { id: 'PHASE_PO3', label: 'PHASE (PO3)' },
+                    { id: 'TREND_POSITION', label: 'TREND POSITION' }
+                  ].map((sf) => {
+                    const isActive = marketBehaviorSubFilter === sf.id;
+                    return (
+                      <button
+                        key={sf.id}
+                        type="button"
+                        onClick={() => setMarketBehaviorSubFilter(sf.id as any)}
+                        className="px-3.5 py-1.5 text-[10px] font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap"
+                        style={{
+                          backgroundColor: isActive ? 'var(--card)' : 'transparent',
+                          color: isActive ? 'var(--accent)' : 'var(--text-sub)',
+                          border: isActive ? '0.5px solid var(--border)' : '0.5px solid transparent'
+                        }}
+                      >
+                        {sf.label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* CARDS AND TABLES CONTENT OR EMPTY STATE */}
+                {marketBehaviorDataAndInsights.hasNoData ? (
+                  <div className="p-12 rounded-2xl text-center shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                    <HelpCircle className="w-8 h-8 text-zinc-500 mx-auto mb-3" />
+                    <p className="text-sm text-zinc-400 font-mono">
+                      No {marketBehaviorSubFilter === 'OPENING_CONDITION' ? 'opening condition' : marketBehaviorSubFilter === 'HOURLY_TREND' ? 'hourly trend' : marketBehaviorSubFilter === 'PHASE_PO3' ? 'phase (PO3)' : 'trend position'} data recorded yet. Start adding context when logging trades.
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    {/* CHARTS ROW */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      {/* Left: Trade Distribution horizontal bar chart */}
+                      <div className="rounded-2xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                        <h3 className="text-xs font-bold font-mono tracking-wider mb-4 text-zinc-350 uppercase">
+                          {marketBehaviorSubFilter === 'OPENING_CONDITION' && 'TRADE DISTRIBUTION BY OPENING CONDITION'}
+                          {marketBehaviorSubFilter === 'HOURLY_TREND' && 'TRADE DISTRIBUTION BY HOURLY TREND'}
+                          {marketBehaviorSubFilter === 'PHASE_PO3' && 'TRADE DISTRIBUTION BY PHASE (PO3)'}
+                          {marketBehaviorSubFilter === 'TREND_POSITION' && 'TRADE DISTRIBUTION BY TREND POSITION'}
+                        </h3>
+                        <div className="h-[300px] w-full">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart
+                              data={marketBehaviorDataAndInsights.data}
+                              layout="vertical"
+                              margin={{ top: 10, right: 10, left: 10, bottom: 5 }}
+                            >
+                              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
+                              <XAxis type="number" stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" allowDecimals={false} />
+                              <YAxis
+                                dataKey="name"
+                                type="category"
+                                stroke="var(--text-muted)"
+                                fontSize={11}
+                                fontFamily="monospace"
+                                width={110}
+                              />
+                              <RechartsTooltip
+                                cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
+                                contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text)', fontSize: '11px', fontFamily: 'monospace' }}
+                              />
+                              <Bar dataKey="count" fill="#06b6d4" radius={[0, 4, 4, 0]} />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+
+                        {/* Insights (under chart) */}
+                        {marketBehaviorSubFilter === 'OPENING_CONDITION' && (
+                          <div className="mt-4 pt-4 border-t border-[var(--border)] text-[12px] text-zinc-400 font-mono space-y-1">
+                            <div>Your best opening condition: <span className="font-semibold text-zinc-200">{marketBehaviorDataAndInsights.insights.best}</span></div>
+                            <div>Your most traded: <span className="font-semibold text-zinc-200">{marketBehaviorDataAndInsights.insights.mostCommon}</span></div>
+                          </div>
+                        )}
+                        {marketBehaviorSubFilter === 'HOURLY_TREND' && (
+                          <div className="mt-4 pt-4 border-t border-[var(--border)] text-[12px] text-zinc-400 font-mono space-y-1">
+                            <div>Your most profitable trend: <span className="font-semibold text-zinc-200">{marketBehaviorDataAndInsights.insights.best}</span></div>
+                            <div>Your win rate by trend: <span className="font-semibold text-zinc-200">{marketBehaviorDataAndInsights.insights.extra}</span></div>
+                          </div>
+                        )}
+                        {marketBehaviorSubFilter === 'PHASE_PO3' && (
+                          <div className="mt-4 pt-4 border-t border-[var(--border)] text-[12px] font-mono space-y-1.5">
+                            <div className="text-zinc-500 italic">
+                              Phase refers to the Power of Three (PO3) model: Accumulation → Manipulation → Distribution
+                            </div>
+                            <div className="text-zinc-400">
+                              Your most profitable phase: <span className="font-semibold text-zinc-200">{marketBehaviorDataAndInsights.insights.best}</span>
+                            </div>
+                          </div>
+                        )}
+                        {marketBehaviorSubFilter === 'TREND_POSITION' && (
+                          <div className="mt-4 pt-4 border-t border-[var(--border)] text-[12px] text-zinc-400 font-mono space-y-1">
+                            <div>Your best trend position: <span className="font-semibold text-zinc-200">{marketBehaviorDataAndInsights.insights.best}</span></div>
+                            <div>Your most common entry: <span className="font-semibold text-zinc-200">{marketBehaviorDataAndInsights.insights.mostCommon}</span></div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Right: Performance horizontal bar chart */}
+                      <div className="rounded-2xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                        <h3 className="text-xs font-bold font-mono tracking-wider mb-4 text-zinc-350 uppercase">
+                          {marketBehaviorSubFilter === 'OPENING_CONDITION' && 'PERFORMANCE BY OPENING CONDITION'}
+                          {marketBehaviorSubFilter === 'HOURLY_TREND' && 'PERFORMANCE BY HOURLY TREND'}
+                          {marketBehaviorSubFilter === 'PHASE_PO3' && 'PERFORMANCE BY PHASE (PO3)'}
+                          {marketBehaviorSubFilter === 'TREND_POSITION' && 'PERFORMANCE BY TREND POSITION'}
+                        </h3>
+                        <div className="h-[300px] w-full">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart
+                              data={marketBehaviorDataAndInsights.data}
+                              layout="vertical"
+                              margin={{ top: 10, right: 10, left: 10, bottom: 5 }}
+                            >
+                              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
+                              <XAxis type="number" stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" />
+                              <YAxis
+                                dataKey="name"
+                                type="category"
+                                stroke="var(--text-muted)"
+                                fontSize={11}
+                                fontFamily="monospace"
+                                width={110}
+                              />
+                              <RechartsTooltip
+                                cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
+                                formatter={(value: any) => [formatINR(value), 'Net P&L']}
+                                contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text)', fontSize: '11px', fontFamily: 'monospace' }}
+                              />
+                              <Bar dataKey="netPnl" radius={[0, 4, 4, 0]}>
+                                {marketBehaviorDataAndInsights.data.map((entry, index) => (
+                                  <Cell key={`cell-${index}`} fill={entry.netPnl >= 0 ? '#22c55e' : '#ef4444'} />
+                                ))}
+                              </Bar>
+                              <ReferenceLine x={0} stroke="var(--border)" strokeDasharray="3 3" />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* SUMMARY TABLE */}
+                    <div className="rounded-2xl overflow-hidden shadow-sm border border-[var(--border)]" style={{ backgroundColor: 'var(--card)' }}>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                          <thead>
+                            <tr style={{ borderBottom: '1px solid var(--border)' }} className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 bg-zinc-800/10 dark:bg-zinc-100/5">
+                              <th className="py-3 px-4 font-bold">Category</th>
+                              <th className="py-3 px-4 font-bold text-right font-mono">Net Profits</th>
+                              <th className="py-3 px-4 font-bold text-center font-mono">Win %</th>
+                              <th className="py-3 px-4 font-bold text-right font-mono bg-green-500/5">Total Profits</th>
+                              <th className="py-3 px-4 font-bold text-right font-mono bg-red-500/5">Total Loss</th>
+                              <th className="py-3 px-4 font-bold text-center font-mono">Trades</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-[var(--border)]">
+                            {marketBehaviorDataAndInsights.data.map((row, index) => {
+                              return (
+                                <tr
+                                  key={index}
+                                  className={`${
+                                    index % 2 === 1 ? 'bg-zinc-800/5 dark:bg-zinc-100/5' : 'bg-transparent'
+                                  } hover:bg-zinc-800/10 dark:hover:bg-zinc-100/10 transition-colors text-xs font-sans`}
+                                >
+                                  {/* Category */}
+                                  <td className="py-3.5 px-4 font-semibold text-zinc-200">
+                                    {row.name}
+                                  </td>
+
+                                  {/* Net Profits */}
+                                  <td className={`py-3.5 px-4 text-right font-mono font-bold ${row.netPnl > 0 ? 'text-green-500' : row.netPnl < 0 ? 'text-red-500' : 'text-zinc-200'}`}>
+                                    {formatINR(row.netPnl)}
+                                  </td>
+
+                                  {/* Win % with custom split progress bar */}
+                                  <td className="py-3.5 px-4">
+                                    <div className="flex items-center justify-center gap-2 max-w-[150px] mx-auto">
+                                      {row.count > 0 ? (
+                                        <>
+                                          <div className="w-16 h-2 rounded bg-zinc-700/30 flex overflow-hidden">
+                                            <div className="bg-green-500 h-full" style={{ width: `${row.winPct}%` }} />
+                                            <div className="bg-red-500 h-full" style={{ width: `${100 - row.winPct}%` }} />
+                                          </div>
+                                          <span className="font-mono font-bold text-zinc-350 text-xs">{row.winPct.toFixed(1)}%</span>
+                                        </>
+                                      ) : (
+                                        <span className="font-mono text-zinc-500">—</span>
+                                      )}
+                                    </div>
+                                  </td>
+
+                                  {/* Total Profits */}
+                                  <td className="py-3.5 px-4 text-right font-mono font-bold text-green-500 bg-green-500/5">
+                                    {formatINR(row.totalProfit)}
+                                  </td>
+
+                                  {/* Total Loss */}
+                                  <td className="py-3.5 px-4 text-right font-mono font-bold text-red-500 bg-red-500/5">
+                                    {formatINR(row.totalLoss)}
+                                  </td>
+
+                                  {/* Trades */}
+                                  <td className="py-3.5 px-4 text-center font-mono font-bold text-zinc-300">
+                                    {row.count}
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             ) : (
               // PLACEHOLDERS FOR REMAINING TABS
