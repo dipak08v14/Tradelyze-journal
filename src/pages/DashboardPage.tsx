@@ -32,7 +32,10 @@ import {
   PolarGrid,
   PolarAngleAxis,
   PolarRadiusAxis,
-  Radar
+  Radar,
+  BarChart,
+  Bar,
+  Cell
 } from 'recharts';
 
 const MONTH_INDEX = {
@@ -42,19 +45,49 @@ const MONTH_INDEX = {
 
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
+const CALENDAR_MONTH_NAMES = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
+
 export const DashboardPage: React.FC = () => {
   const { user, userId, loading: authLoading } = useAuth();
   const { showError } = useToast();
   const navigate = useNavigate();
 
-  // Selected Month/Year State
-  const [selectedMonth, setSelectedMonth] = useState<string>(() => {
-    const currentMonthIdx = new Date().getMonth();
-    return MONTH_NAMES[currentMonthIdx];
+  // Date range picker state
+  const [startDate, setStartDate] = useState<string>(() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`;
   });
-  const [selectedYear, setSelectedYear] = useState<number>(() => {
-    return new Date().getFullYear();
+  const [endDate, setEndDate] = useState<string>(() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   });
+
+  // Monthly Calendar Navigation State
+  const [calMonth, setCalMonth] = useState<number>(() => new Date().getMonth());
+  const [calYear, setCalYear] = useState<number>(() => new Date().getFullYear());
+
+  const prevMonth = () => {
+    setCalMonth((prev) => {
+      if (prev === 0) {
+        setCalYear((y) => y - 1);
+        return 11;
+      }
+      return prev - 1;
+    });
+  };
+
+  const nextMonth = () => {
+    setCalMonth((prev) => {
+      if (prev === 11) {
+        setCalYear((y) => y + 1);
+        return 0;
+      }
+      return prev + 1;
+    });
+  };
 
   const [loading, setLoading] = useState<boolean>(true);
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
@@ -238,8 +271,8 @@ export const DashboardPage: React.FC = () => {
           .from('trades')
           .select('*, strategies(name)')
           .eq('user_id', userId)
-          .eq('month', selectedMonth)
-          .eq('year', selectedYear)
+          .gte('date', startDate)
+          .lte('date', endDate)
           .order('date', { ascending: true });
 
         if (tradesError) throw tradesError;
@@ -293,7 +326,7 @@ export const DashboardPage: React.FC = () => {
     };
 
     fetchDashboardContext();
-  }, [userId, selectedMonth, selectedYear, showError]);
+  }, [userId, startDate, endDate, showError]);
 
   // Indian Rupee Locale Formatting Helper
   const formatINR = (value: number) => {
@@ -391,12 +424,9 @@ export const DashboardPage: React.FC = () => {
     const tradingDaysCount = sortedDays.length;
 
     // DNT Days calculation
-    const monthIdx = MONTH_INDEX[selectedMonth as keyof typeof MONTH_INDEX];
-    const monthStart = new Date(selectedYear, monthIdx, 1);
-    const monthEndRaw = new Date(selectedYear, monthIdx + 1, 0); // last day of month
-    const todayObj = new Date();
-    const monthEnd = todayObj < monthEndRaw ? (todayObj < monthStart ? monthStart : todayObj) : monthEndRaw;
-    const totalCalDays = Math.max(1, Math.round((monthEnd.getTime() - monthStart.getTime()) / 86400000) + 1);
+    const startObj = new Date(startDate);
+    const endObj = new Date(endDate);
+    const totalCalDays = Math.max(1, Math.round((endObj.getTime() - startObj.getTime()) / 86400000) + 1);
     const dntDays = Math.max(0, totalCalDays - tradingDaysCount);
 
     const largestProfitDay = sortedDays.length > 0 ? Math.max(...sortedDays.map(([_, v]) => v)) : 0;
@@ -516,7 +546,7 @@ export const DashboardPage: React.FC = () => {
       avgOverallScore,
       winDaysPct
     };
-  }, [trades, psychologyData, riskData, rulesData, selectedMonth, selectedYear]);
+  }, [trades, psychologyData, riskData, rulesData, startDate, endDate]);
 
   if (authLoading) {
     return (
@@ -580,38 +610,28 @@ export const DashboardPage: React.FC = () => {
                 </p>
               </div>
 
-              {/* MONTH/YEAR SELECTORS + BADGE */}
+              {/* DATE RANGE PICKER */}
               <div className="flex flex-wrap items-center gap-3">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-zinc-500" />
                   
-                  {/* MONTH SELECT */}
-                  <select
-                    value={selectedMonth}
-                    onChange={(e) => setSelectedMonth(e.target.value)}
-                    style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '8px', color: 'var(--text)', padding: '6px 12px' }}
-                    className="text-sm focus:outline-none cursor-pointer transition-all font-medium"
-                  >
-                    {MONTH_NAMES.map((name) => (
-                      <option key={name} value={name}>
-                        {name}
-                      </option>
-                    ))}
-                  </select>
-
-                  {/* YEAR SELECT */}
-                  <select
-                    value={selectedYear}
-                    onChange={(e) => setSelectedYear(parseInt(e.target.value, 10))}
-                    style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '8px', color: 'var(--text)', padding: '6px 12px' }}
+                  <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500" style={{ color: 'var(--text-muted)' }}>From</span>
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '8px', color: 'var(--text)', padding: '6.5px 12px' }}
                     className="text-sm focus:outline-none cursor-pointer transition-all font-medium font-mono"
-                  >
-                    {availableYears.map((y) => (
-                      <option key={y} value={y}>
-                        {y}
-                      </option>
-                    ))}
-                  </select>
+                  />
+
+                  <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500" style={{ color: 'var(--text-muted)' }}>To</span>
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '8px', color: 'var(--text)', padding: '6.5px 12px' }}
+                    className="text-sm focus:outline-none cursor-pointer transition-all font-medium font-mono"
+                  />
                 </div>
 
                 {/* ASK AI BUTTON */}
@@ -698,7 +718,7 @@ export const DashboardPage: React.FC = () => {
                   <BarChart2 className="w-8 h-8 text-zinc-500" />
                 </div>
                 <h3 className="text-xl font-bold tracking-tight font-display" style={{ color: 'var(--text)' }}>
-                  No trades in {selectedMonth} {selectedYear}
+                  No trades in selected period
                 </h3>
                 <p className="text-xs mt-1.5 max-w-sm" style={{ color: 'var(--text-sub)' }}>
                   Log trades to populate performance graphs, metrics radar, streaks analytics, and execution values.
@@ -715,7 +735,7 @@ export const DashboardPage: React.FC = () => {
               /* ACTIVE DASHBOARD RENDER OUT */
               <div className="space-y-5">
                 {/* SECTION 2: KEY STATS ROW */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
                   {/* Card 1 — NET P&L */}
                   <div className="p-[14px] px-[18px] rounded-[10px]" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                     <div className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
@@ -723,6 +743,9 @@ export const DashboardPage: React.FC = () => {
                     </div>
                     <div className="text-[26px] font-bold tracking-tight font-sans leading-none" style={{ color: stats.totalPnl > 0 ? '#22c55e' : stats.totalPnl < 0 ? '#ef4444' : 'var(--text)', letterSpacing: '-0.5px' }}>
                       {formatPnlNoDecimals(stats.totalPnl)}
+                    </div>
+                    <div style={{ color: 'var(--text-sub)', fontSize: '12px' }} className="mt-1">
+                      {stats.totalTrades} trades
                     </div>
                     <div className="text-[11px] mt-1 font-medium" style={{ color: 'var(--text-sub)' }}>
                       This month
@@ -765,6 +788,19 @@ export const DashboardPage: React.FC = () => {
                     </div>
                     <div className="text-[11px] mt-1 font-medium" style={{ color: 'var(--text-sub)' }}>
                       Target: &gt;1.5
+                    </div>
+                  </div>
+
+                  {/* ADDITION 2 — DAY WIN % STATUS CARD */}
+                  <div className="p-[14px] px-[18px] rounded-[10px]" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                    <div className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
+                      DAY WIN %
+                    </div>
+                    <div className="text-[26px] font-bold tracking-tight font-sans leading-none" style={{ color: 'var(--accent)', letterSpacing: '-0.5px' }}>
+                      {Math.round(stats.winDaysPct)}%
+                    </div>
+                    <div className="text-[11px] mt-1 font-medium" style={{ color: 'var(--text-sub)' }}>
+                      Profitable trading days
                     </div>
                   </div>
 
@@ -812,7 +848,7 @@ export const DashboardPage: React.FC = () => {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
                     <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5" style={{ color: 'var(--text)' }}>
                       <TrendingUp className="w-5 h-5" style={{ color: chartColor }} />
-                      Cumulative P&L — {selectedMonth} {selectedYear}
+                      Cumulative P&L — {startDate} to {endDate}
                     </h2>
                     <span
                       className={`font-mono font-extrabold text-sm ${
@@ -922,6 +958,77 @@ export const DashboardPage: React.FC = () => {
                   </div>
                 </div>
 
+                {/* ADDITION 3 — Daily P&L Bar Chart */}
+                <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', paddingBottom: '16px' }}>
+                  <div className="flex items-center justify-between gap-2 mb-4">
+                    <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
+                      Daily P&L
+                    </h2>
+                  </div>
+
+                  <div style={{ width: '100%', height: 160 }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={stats.equityCurveData.filter(d => d.day !== '0').map(d => ({
+                          day: d.day,
+                          pnl: d.dailyPnl
+                        }))}
+                        margin={{ top: 10, right: 20, left: 10, bottom: 5 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" stroke={gridLineColor} vertical={false} />
+                        <XAxis
+                          dataKey="day"
+                          tick={{ fontSize: 10, fill: tickColor }}
+                          tickLine={false}
+                          axisLine={{ stroke: 'var(--border)' }}
+                        />
+                        <YAxis
+                          tick={{ fontSize: 10, fill: tickColor }}
+                          tickLine={false}
+                          axisLine={false}
+                          tickFormatter={(v) => `₹${v.toLocaleString('en-IN')}`}
+                          width={80}
+                        />
+                        <RechartsTooltip
+                          contentStyle={{
+                            backgroundColor: 'var(--card)',
+                            border: '0.5px solid var(--border)',
+                            borderRadius: '8px',
+                            color: 'var(--text)',
+                          }}
+                          formatter={(value: any) => {
+                            const decimalValue = Number(value) || 0;
+                            const isPositive = decimalValue >= 0;
+                            return [
+                              <span key="val" style={{ color: isPositive ? '#22c55e' : '#ef4444', fontWeight: 'bold' }}>
+                                {'₹' + value.toLocaleString('en-IN')}
+                              </span>,
+                              'Daily P&L'
+                            ];
+                          }}
+                        />
+                        <ReferenceLine
+                          y={0}
+                          stroke="rgba(0,0,0,0.15)"
+                          strokeDasharray="4 4"
+                          strokeWidth={1}
+                        />
+                        <Bar dataKey="pnl">
+                          {stats.equityCurveData.filter(d => d.day !== '0').map((d, index) => {
+                            const isPositive = d.dailyPnl >= 0;
+                            return (
+                              <Cell
+                                key={`cell-${index}`}
+                                fill={isPositive ? '#22c55e' : '#ef4444'}
+                              />
+                            );
+                          })}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
                 {/* SECTION 4: SIX DONUT CHARTS */}
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {/* DONUT 1: TRADING DAYS */}
@@ -1015,13 +1122,137 @@ export const DashboardPage: React.FC = () => {
                   />
                 </div>
 
+                {/* ADDITION 4 — Monthly Calendar section */}
+                <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                    <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
+                      Monthly Calendar
+                    </h2>
+                    
+                    {/* Navigation */}
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={prevMonth}
+                        style={{
+                          backgroundColor: 'var(--bar)',
+                          border: '0.5px solid var(--border)',
+                          borderRadius: '6px',
+                          color: 'var(--text)',
+                          padding: '4px 8px',
+                          cursor: 'pointer'
+                        }}
+                        className="hover:opacity-85 text-xs font-bold"
+                      >
+                        &larr;
+                      </button>
+                      <span className="font-semibold text-sm min-w-[120px] text-center" style={{ color: 'var(--text)' }}>
+                        {CALENDAR_MONTH_NAMES[calMonth]} {calYear}
+                      </span>
+                      <button
+                        onClick={nextMonth}
+                        style={{
+                          backgroundColor: 'var(--bar)',
+                          border: '0.5px solid var(--border)',
+                          borderRadius: '6px',
+                          color: 'var(--text)',
+                          padding: '4px 8px',
+                          cursor: 'pointer'
+                        }}
+                        className="hover:opacity-85 text-xs font-bold"
+                      >
+                        &rarr;
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <div style={{ width: 'max-content' }} className="mx-auto select-none">
+                      {/* Weekday headers */}
+                      <div className="grid grid-cols-7 gap-1 mb-1">
+                        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+                          <div
+                            key={day}
+                            style={{ width: '80px', color: 'var(--text-muted)' }}
+                            className="text-center text-[10px] uppercase font-bold tracking-wider py-1"
+                          >
+                            {day}
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Day cells */}
+                      <div className="grid grid-cols-7 gap-1">
+                        {/* Empty prefix cells */}
+                        {Array.from({ length: new Date(calYear, calMonth, 1).getDay() }).map((_, index) => (
+                          <div
+                            key={`empty-${index}`}
+                            style={{ width: '80px', height: '60px', backgroundColor: 'transparent', borderColor: 'transparent' }}
+                            className="border"
+                          />
+                        ))}
+
+                        {/* Active cells of the month */}
+                        {Array.from({ length: new Date(calYear, calMonth + 1, 0).getDate() }).map((_, index) => {
+                          const d = index + 1;
+                          const cellDateStr = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                          const tradesOnDay = trades.filter((t) => t.date === cellDateStr);
+                          const hasTrades = tradesOnDay.length > 0;
+                          const dayPnl = tradesOnDay.reduce((sum, t) => sum + (t.pnl || 0), 0);
+                          const tradeCount = tradesOnDay.length;
+                          const isProfitable = hasTrades && dayPnl > 0;
+                          const formattedDayPnl = dayPnl >= 0 
+                            ? `₹${Math.round(dayPnl).toLocaleString('en-IN')}` 
+                            : `-₹${Math.round(Math.abs(dayPnl)).toLocaleString('en-IN')}`;
+
+                          return (
+                            <div
+                              key={`day-${d}`}
+                              style={{
+                                width: '80px',
+                                height: '60px',
+                                backgroundColor: hasTrades 
+                                  ? (isProfitable ? 'rgba(34, 197, 94, 0.12)' : 'rgba(239, 68, 68, 0.12)')
+                                  : 'var(--card)',
+                                borderColor: 'var(--border)'
+                              }}
+                              className="border rounded flex flex-col justify-between p-1.5"
+                            >
+                              <div className="flex justify-between items-start">
+                                <span 
+                                  style={{ 
+                                    color: hasTrades ? (isProfitable ? '#22c55e' : '#ef4444') : 'var(--text-muted)',
+                                    fontWeight: '600',
+                                    fontSize: '11px'
+                                  }}
+                                >
+                                  {d}
+                                </span>
+                              </div>
+                              {hasTrades && (
+                                <div className="flex flex-col items-center justify-center flex-1 leading-none mt-1">
+                                  <span style={{ fontSize: '10px', color: isProfitable ? '#22c55e' : '#ef4444', fontWeight: 'bold' }}>
+                                    {formattedDayPnl}
+                                  </span>
+                                  <span style={{ fontSize: '9px', color: 'var(--text-sub)' }} className="mt-0.5">
+                                    {tradeCount} {tradeCount === 1 ? 'trade' : 'trades'}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 {/* SECTION 5: METRICS + STATS GRID */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                   {/* LEFT DETAILED STATS */}
                   <div className="lg:col-span-2 rounded-xl p-5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                     <div>
                       <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
-                        Monthly Statistics — {selectedMonth} {selectedYear}
+                        Statistics — {startDate} to {endDate}
                       </h2>
                       <div className="grid grid-cols-2 gap-x-8 gap-y-3.5 mt-5">
                         {/* NET PNL | TOTAL TRADES */}
@@ -1304,7 +1535,7 @@ export const DashboardPage: React.FC = () => {
                         {stats.avgOverallScore.toFixed(0)}%
                       </div>
                       <div className="text-[10px] font-mono mt-1 uppercase" style={{ color: 'var(--text-muted)' }}>
-                        {selectedMonth} {selectedYear}
+                        {startDate} to {endDate}
                       </div>
                     </div>
                   </div>
@@ -1314,7 +1545,7 @@ export const DashboardPage: React.FC = () => {
                 <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
                   <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5 mb-5" style={{ color: 'var(--text)' }}>
                     <Flame className="w-5 h-5 text-amber-500" />
-                    Streak Analysis — {selectedMonth} {selectedYear}
+                    Streak Analysis — {startDate} to {endDate}
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 divide-y md:divide-y-0 md:divide-x" style={{ borderColor: 'var(--border)' }}>
                     {/* WIN STREAK */}
@@ -1489,7 +1720,7 @@ export const DashboardPage: React.FC = () => {
                 {/* SECTION 8: RECENT TRADES */}
                 <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
                   <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5 mb-4 font-display" style={{ color: 'var(--text)' }}>
-                    Recent Trades — {selectedMonth} {selectedYear}
+                    Recent Trades — {startDate} to {endDate}
                   </h2>
                   {trades.length === 0 ? (
                     <p className="text-xs" style={{ color: 'var(--text-muted)' }}>No logged trades found for this period.</p>
