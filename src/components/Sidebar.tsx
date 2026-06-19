@@ -178,9 +178,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
 
   return (
     <>
-      {/* Desktop fixed sidebar */}
+      {/* Desktop sidebar */}
       <aside 
-        className="hidden md:flex flex-col fixed inset-y-0 left-0 w-[220px] h-screen z-30"
+        className="hidden md:flex flex-col w-[220px] h-screen sticky top-0 overflow-y-auto flex-shrink-0"
         style={{ backgroundColor: 'var(--topbar)', borderRight: '0.5px solid var(--border)' }}
       >
         {sidebarContent}

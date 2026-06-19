@@ -26,12 +26,12 @@ export const PlaceholderPage: React.FC<PlaceholderPageProps> = ({ title, message
   }
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row font-sans" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+    <div className="min-h-screen w-full flex flex-col md:flex-row font-sans" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR */}
       <Sidebar userEmail={user.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* MAIN CONTENT AREA */}
-      <div className="flex-1 md:pl-[220px] flex flex-col min-h-screen">
+      <div className="flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen">
         {/* MOBILE TOPBAR header */}
         <header 
           className="flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20"

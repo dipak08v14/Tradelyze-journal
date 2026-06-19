@@ -110,7 +110,7 @@ export default function RiskCalculatorPage() {
       <Sidebar userEmail={user?.email || ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* MAIN SCREEN AREA */}
-      <main className="flex-1 overflow-y-auto w-full md:pl-[220px]">
+      <main className="flex-1 overflow-y-auto w-full min-w-0 overflow-x-hidden">
         
         {/* HEADER */}
         <div 

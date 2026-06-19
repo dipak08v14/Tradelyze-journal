@@ -13,7 +13,8 @@ import {
   ChevronDown,
   RotateCcw,
   X,
-  TrendingUp
+  TrendingUp,
+  Settings2
 } from 'lucide-react';
 import { Trade } from '../types';
 
@@ -101,7 +102,7 @@ export const TradingLogsPage: React.FC = () => {
       setSelectedStrategyId('');
       
       // d. Re-fetch the full trades list from Supabase and update the table state
-      await fetchAllTradesData();
+      await fetchTradesData();
     } catch (err: any) {
       console.error('Bulk update error:', err);
       showError("Failed to update trades: " + (err.message || err));
@@ -149,6 +150,78 @@ export const TradingLogsPage: React.FC = () => {
   const [sortColumn, setSortColumn] = useState<string>('date');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
+  // Pagination, Columns Config, and Aggregated Stats States
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [tradesPerPage, setTradesPerPage] = useState<number>(50);
+  const [isColumnModalOpen, setIsColumnModalOpen] = useState<boolean>(false);
+  const [tempSelectedColumns, setTempSelectedColumns] = useState<Record<string, boolean>>({});
+
+  const [selectedColumns, setSelectedColumns] = useState<Record<string, boolean>>(() => {
+    const saved = localStorage.getItem('tl-log-columns');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        // Safe fallback
+      }
+    }
+    return {
+      date: true,
+      symbol: true,
+      direction: true,
+      option_type: true,
+      strategies: true,
+      pnl: true,
+      r_multiple: true,
+      status: true,
+      execution_status: true,
+      holding_time_mins: true,
+      mistake_type: false,
+      roi: false,
+      notes: false,
+      month: false,
+      needs_review: false,
+      sync_source: false
+    };
+  });
+
+  const [calculatedStats, setCalculatedStats] = useState({
+    totalCount: 0,
+    totalPnl: 0,
+    profitFactor: 0,
+    winRate: 0,
+    avgWin: 0,
+    avgLoss: 0,
+    avgR: 0,
+    winCount: 0,
+    lossCount: 0,
+    breakEvenCount: 0
+  });
+
+  const [filterOptions, setFilterOptions] = useState<{ years: number[]; setups: string[] }>({
+    years: [],
+    setups: []
+  });
+
+  const ALL_COLUMNS_INFO = [
+    { id: 'date', label: 'Date' },
+    { id: 'symbol', label: 'Symbol' },
+    { id: 'direction', label: 'Direction' },
+    { id: 'option_type', label: 'Option Type' },
+    { id: 'strategies', label: 'Setup' },
+    { id: 'pnl', label: 'Net P&L' },
+    { id: 'r_multiple', label: 'R-Multiple' },
+    { id: 'status', label: 'Status' },
+    { id: 'execution_status', label: 'Execution' },
+    { id: 'holding_time_mins', label: 'Hold Time' },
+    { id: 'mistake_type', label: 'Mistake' },
+    { id: 'roi', label: 'ROI' },
+    { id: 'notes', label: 'Notes' },
+    { id: 'month', label: 'Month' },
+    { id: 'needs_review', label: 'Needs Review' },
+    { id: 'sync_source', label: 'Sync Source' },
+  ];
+
   // Load Session Safety
   useEffect(() => {
     if (!authLoading && !userId) {
@@ -156,30 +229,175 @@ export const TradingLogsPage: React.FC = () => {
     }
   }, [userId, authLoading, navigate]);
 
-  // Fetch Trade Logs
-  const fetchAllTradesData = async () => {
+  // Fetch unique years and setups directly for filters list across whole DB
+  const fetchFilterOptions = async () => {
+    if (!userId) return;
+    try {
+      const { data: strategiesData } = await supabase
+        .from('strategies')
+        .select('name')
+        .eq('user_id', userId);
+        
+      const setupsSet = new Set<string>();
+      strategiesData?.forEach(s => {
+        if (s.name) setupsSet.add(s.name);
+      });
+
+      const { data: tradesData } = await supabase
+        .from('trades')
+        .select('year')
+        .eq('user_id', userId);
+
+      const yearsSet = new Set<number>();
+      tradesData?.forEach(t => {
+        if (t.year) yearsSet.add(t.year);
+      });
+
+      setFilterOptions({
+        setups: Array.from(setupsSet).sort(),
+        years: Array.from(yearsSet).sort((a, b) => b - a)
+      });
+    } catch (err) {
+      console.error('Error fetching filter options:', err);
+    }
+  };
+
+  useEffect(() => {
+    if (userId) {
+      fetchFilterOptions();
+    }
+  }, [userId]);
+
+  // Apply filters helper to standard query
+  const applyFiltersToQuery = (query: any) => {
+    if (filterMonth !== 'All') {
+      query = query.eq('month', filterMonth);
+    }
+    if (filterYear !== 'All') {
+      query = query.eq('year', parseInt(filterYear, 10));
+    }
+    if (filterSymbol.trim() !== '') {
+      query = query.ilike('symbol', `%${filterSymbol.trim()}%`);
+    }
+    if (filterSetup !== 'All') {
+      query = query.eq('strategies.name', filterSetup);
+    }
+    if (filterStatus !== 'All') {
+      query = query.eq('status', filterStatus);
+    }
+    if (filterExecution !== 'All') {
+      query = query.eq('execution_status', filterExecution);
+    }
+    if (filterMistakeType !== 'All') {
+      query = query.eq('mistake_type', filterMistakeType);
+    }
+    if (filterNeedsReview) {
+      query = query.eq('needs_review', true);
+    }
+    return query;
+  };
+
+  // Fetch Trades with pagination, sorting, and aggregations directly in Supabase
+  const fetchTradesData = async () => {
     if (!userId) return;
     try {
       setLoading(true);
-      let query = supabase
-        .from('trades')
-        .select('*, strategies(name, type_of_strategy)')
-        .eq('user_id', userId);
 
-      if (filterNeedsReview) {
-        query = query.eq('needs_review', true);
+      // --- 1. COUNT & STATS AGGREGATION QUERY ---
+      let statsQuery = supabase.from('trades').select(
+        filterSetup !== 'All' 
+          ? 'pnl, status, r_multiple, strategies!inner(name)' 
+          : 'pnl, status, r_multiple'
+      ).eq('user_id', userId);
+
+      statsQuery = applyFiltersToQuery(statsQuery);
+
+      const { data: statsData, error: statsError } = await statsQuery as any;
+      if (statsError) throw statsError;
+
+      const totalCount = statsData ? statsData.length : 0;
+
+      let totalPnl = 0;
+      let winningPnlSum = 0;
+      let losingPnlSum = 0;
+      let winCount = 0;
+      let winTradesCount = 0;
+      let lossTradesCount = 0;
+      let winTradesPnlSum = 0;
+      let lossTradesPnlSum = 0;
+      let rSum = 0;
+      let rCount = 0;
+      let breakEvenCount = 0;
+
+      statsData?.forEach((t) => {
+        const p = t.pnl ? parseFloat(t.pnl as any) : 0;
+        totalPnl += p;
+        if (t.status === 'Win') {
+          winCount++;
+          winTradesCount++;
+          winTradesPnlSum += p;
+          winningPnlSum += p;
+        } else if (t.status === 'Loss') {
+          lossTradesCount++;
+          lossTradesPnlSum += p;
+          losingPnlSum += Math.abs(p);
+        } else if (t.status === 'Breakeven' || t.status === 'Break Even') {
+          breakEvenCount++;
+        }
+
+        if (t.r_multiple !== null && t.r_multiple !== undefined) {
+          rSum += parseFloat(t.r_multiple as any);
+          rCount++;
+        }
+      });
+
+      const profitFactor = losingPnlSum > 0 ? winningPnlSum / losingPnlSum : losingPnlSum === 0 && winningPnlSum > 0 ? Infinity : 0;
+      const winRate = totalCount > 0 ? (winCount / totalCount) * 100 : 0;
+      const avgWin = winTradesCount > 0 ? winTradesPnlSum / winTradesCount : 0;
+      const avgLoss = lossTradesCount > 0 ? lossTradesPnlSum / lossTradesCount : 0;
+      const avgR = rCount > 0 ? rSum / rCount : 0;
+
+      setCalculatedStats({
+        totalCount,
+        totalPnl,
+        profitFactor,
+        winRate,
+        avgWin,
+        avgLoss,
+        avgR,
+        winCount,
+        lossCount: lossTradesCount,
+        breakEvenCount
+      });
+
+      // --- 2. PAGINATED MAIN DATA QUERY ---
+      const fromIndex = (currentPage - 1) * tradesPerPage;
+      const toIndex = fromIndex + tradesPerPage - 1;
+
+      let dataQuery = supabase.from('trades').select(
+        filterSetup !== 'All' 
+          ? '*, strategies!inner(name, type_of_strategy)' 
+          : '*, strategies(name, type_of_strategy)'
+      ).eq('user_id', userId);
+
+      dataQuery = applyFiltersToQuery(dataQuery);
+
+      // Sorting
+      if (sortColumn === 'strategies.name') {
+        dataQuery = dataQuery.order('name', { foreignTable: 'strategies', ascending: sortDirection === 'asc' });
+        dataQuery = dataQuery.order('date', { ascending: false });
+      } else {
+        dataQuery = dataQuery.order(sortColumn, { ascending: sortDirection === 'asc' });
       }
 
-      const { data, error } = await query
-        .order('date', { ascending: false })
-        .order('created_at', { ascending: false });
+      dataQuery = dataQuery.range(fromIndex, toIndex);
 
-      if (error) throw error;
-      if (data) {
-        setAllTrades(data as Trade[]);
-      }
+      const { data: pageData, error: dataError } = await dataQuery;
+      if (dataError) throw dataError;
+
+      setAllTrades(pageData as Trade[]);
     } catch (err: any) {
-      console.error('Error fetching trade history:', err);
+      console.error('Error loading trades history:', err);
       showError(err.message || 'Failed to sync your trades list.');
     } finally {
       setLoading(false);
@@ -187,24 +405,41 @@ export const TradingLogsPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchAllTradesData();
-  }, [userId, filterNeedsReview]);
+    fetchTradesData();
+  }, [
+    userId,
+    filterMonth,
+    filterYear,
+    filterSymbol,
+    filterSetup,
+    filterStatus,
+    filterExecution,
+    filterMistakeType,
+    filterNeedsReview,
+    currentPage,
+    tradesPerPage,
+    sortColumn,
+    sortDirection
+  ]);
 
-  // Dynamic values helper list from DB data (Unique setup names, years)
-  const uniqueYears = useMemo(() => {
-    const years = allTrades
-      .map((t) => t.year)
-      .filter((y): y is number => typeof y === 'number');
-    const unique = Array.from(new Set(years)) as number[];
-    return unique.sort((a, b) => b - a); // descending order
-  }, [allTrades]);
+  // Reset to page 1 on filter or limit adjustments
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [
+    filterMonth,
+    filterYear,
+    filterSymbol,
+    filterSetup,
+    filterStatus,
+    filterExecution,
+    filterMistakeType,
+    filterNeedsReview,
+    tradesPerPage
+  ]);
 
-  const uniqueSetups = useMemo(() => {
-    const setups = allTrades
-      .map((t) => t.strategies?.name)
-      .filter((name): name is string => typeof name === 'string' && name !== '');
-    return Array.from(new Set(setups)).sort();
-  }, [allTrades]);
+  // Map to local variables for filter and layout compatibility
+  const uniqueYears = filterOptions.years;
+  const uniqueSetups = filterOptions.setups;
 
   // Filter Active Check
   const isFilterActive = useMemo(() => {
@@ -240,134 +475,20 @@ export const TradingLogsPage: React.FC = () => {
     setFilterMistakeType('All');
     setFilterNeedsReview(false);
     setSearchParams({});
+    setCurrentPage(1);
   };
 
-  // Perform filtering client-side
-  const filteredTrades = useMemo(() => {
-    return allTrades.filter((trade) => {
-      // Month
-      if (filterMonth !== 'All' && trade.month !== filterMonth) return false;
-      // Year
-      if (filterYear !== 'All' && trade.year?.toString() !== filterYear) return false;
-      // Symbol
-      if (filterSymbol.trim() !== '' && !trade.symbol.toUpperCase().includes(filterSymbol.toUpperCase().trim())) return false;
-      // Setup / Strategy Name
-      if (filterSetup !== 'All' && trade.strategies?.name !== filterSetup) return false;
-      // Status
-      if (filterStatus !== 'All' && trade.status !== filterStatus) return false;
-      // Execution Status
-      if (filterExecution !== 'All' && trade.execution_status !== filterExecution) return false;
-      // Mistake Type
-      if (filterMistakeType !== 'All' && trade.mistake_type !== filterMistakeType) return false;
-      // Needs Review
-      if (filterNeedsReview && !trade.needs_review) return false;
+  // Perform filtering / sorting adaptation layers
+  const filteredTrades = allTrades;
+  const sortedTrades = allTrades;
 
-      return true;
-    });
-  }, [
-    allTrades,
-    filterMonth,
-    filterYear,
-    filterSymbol,
-    filterSetup,
-    filterStatus,
-    filterExecution,
-    filterMistakeType,
-    filterNeedsReview
-  ]);
-
-  // Real-time Aggregated Stats based on FILTERED trades only
-  const stats = useMemo(() => {
-    const count = filteredTrades.length;
-    let totalPnl = 0;
-    let winCount = 0;
-    let rankableCount = 0;
-    let totalRisk = 0;
-    let totalWinPnl = 0;
-    let totalLossPnl = 0;
-
-    filteredTrades.forEach((t) => {
-      const p = t.pnl ? parseFloat(t.pnl as any) : 0;
-      totalPnl += p;
-
-      if (t.status === 'Win') {
-        winCount++;
-        totalWinPnl += p;
-      } else if (t.status === 'Loss') {
-        totalLossPnl += Math.abs(p);
-      }
-
-      if (t.status === 'Win' || t.status === 'Loss') {
-        rankableCount++;
-      }
-
-      const r = t.risk ? parseFloat(t.risk as any) : 0;
-      totalRisk += r;
-    });
-
-    const winRate = rankableCount > 0 ? (winCount / rankableCount) * 100 : 0;
-    const avgR = count > 0 && totalRisk > 0 ? totalPnl / (totalRisk / count) : 0; // Note: simplified average R value or sum of R multiples can be computed
-    
-    // Average R-Multiple straight from storage
-    let rSum = 0;
-    let rCount = 0;
-    filteredTrades.forEach((t) => {
-      if (t.r_multiple !== null && t.r_multiple !== undefined) {
-        rSum += parseFloat(t.r_multiple as any);
-        rCount++;
-      }
-    });
-    const calculatedAvgR = rCount > 0 ? rSum / rCount : 0;
-
-    const profitFactor = totalLossPnl > 0 ? totalWinPnl / totalLossPnl : totalWinPnl > 0 ? Infinity : 0;
-
-    return {
-      count,
-      totalPnl,
-      winRate,
-      avgR: calculatedAvgR,
-      profitFactor
-    };
-  }, [filteredTrades]);
-
-  // Sorting execution
-  const sortedTrades = useMemo(() => {
-    const data = [...filteredTrades];
-    data.sort((a, b) => {
-      let valA: any = a[sortColumn as keyof Trade];
-      let valB: any = b[sortColumn as keyof Trade];
-
-      // Handle null/undef
-      if (valA === null || valA === undefined) {
-        return sortDirection === 'asc' ? 1 : -1;
-      }
-      if (valB === null || valB === undefined) {
-        return sortDirection === 'asc' ? -1 : 1;
-      }
-
-      // Date sorting
-      if (sortColumn === 'date') {
-        const timeA = new Date(valA).getTime();
-        const timeB = new Date(valB).getTime();
-        return sortDirection === 'asc' ? timeA - timeB : timeB - timeA;
-      }
-
-      // Numerical values
-      if (['pnl', 'r_multiple', 'roi', 'ror', 'trade_rating'].includes(sortColumn)) {
-        const numA = parseFloat(valA);
-        const numB = parseFloat(valB);
-        return sortDirection === 'asc' ? numA - numB : numB - numA;
-      }
-
-      // String fallback
-      const strA = String(valA).toLowerCase();
-      const strB = String(valB).toLowerCase();
-      if (strA < strB) return sortDirection === 'asc' ? -1 : 1;
-      if (strA > strB) return sortDirection === 'asc' ? 1 : -1;
-      return 0;
-    });
-    return data;
-  }, [filteredTrades, sortColumn, sortDirection]);
+  const stats = {
+    count: calculatedStats.totalCount,
+    totalPnl: calculatedStats.totalPnl,
+    winRate: calculatedStats.winRate,
+    avgR: calculatedStats.avgR,
+    profitFactor: calculatedStats.profitFactor
+  };
 
   // Handle Sort Toggle
   const toggleSort = (colName: string) => {
@@ -375,7 +496,7 @@ export const TradingLogsPage: React.FC = () => {
       setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'));
     } else {
       setSortColumn(colName);
-      setSortDirection('desc');
+      setSortDirection('asc');
     }
   };
 
@@ -385,6 +506,15 @@ export const TradingLogsPage: React.FC = () => {
     return `${prefix}${Math.abs(val).toLocaleString('en-IN', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
+    })}`;
+  };
+
+  // Indian Rupees Currency Formatter style for summary stats (no decimals: ₹X,XXX)
+  const formatINRStat = (val: number) => {
+    const prefix = val < 0 ? '-₹' : '₹';
+    return `${prefix}${Math.round(Math.abs(val)).toLocaleString('en-IN', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
     })}`;
   };
 
@@ -430,9 +560,294 @@ export const TradingLogsPage: React.FC = () => {
     return '#ef4444';
   };
 
+  // Centralized Column Definitions for Conditionals and Sorting
+  const colDefinitions: Record<string, {
+    label: string;
+    sortField: string;
+    renderCell: (item: Trade) => React.ReactNode;
+  }> = {
+    date: {
+      label: 'Date',
+      sortField: 'date',
+      renderCell: (item) => {
+        const dateTagStr = getDateDisplay(item.date);
+        return (
+          <span className="font-mono text-xs font-semibold flex items-center gap-1" style={{ color: 'var(--text-sub)' }}>
+            {dateTagStr.label === 'Today' || dateTagStr.label === 'Yesterday' ? (
+              <span
+                style={{
+                  backgroundColor: 'var(--accent-muted)',
+                  color: 'var(--accent)',
+                  border: '0.5px solid var(--accent)',
+                  borderRadius: '999px',
+                  padding: '2px 8px',
+                  fontSize: '10px',
+                  fontWeight: 700,
+                  letterSpacing: '0.3px',
+                }}
+                className="uppercase font-sans font-bold"
+              >
+                {dateTagStr.label}
+              </span>
+            ) : (
+              <span>{dateTagStr.label}</span>
+            )}
+          </span>
+        );
+      }
+    },
+    symbol: {
+      label: 'Symbol',
+      sortField: 'symbol',
+      renderCell: (item) => (
+        <div className="flex items-center gap-2">
+          <span className="font-bold font-mono tracking-wide" style={{ color: 'var(--text)' }}>
+            {item.symbol}
+          </span>
+          {item.needs_review && (
+            <span 
+              style={{ backgroundColor: 'rgba(249,115,22,0.15)', color: '#f97316', border: '0.5px solid #f97316' }}
+              className="px-1.5 py-0.5 text-[9px] font-black uppercase rounded tracking-wider whitespace-nowrap"
+            >
+              Needs Review
+            </span>
+          )}
+        </div>
+      )
+    },
+    direction: {
+      label: 'Direction',
+      sortField: 'direction',
+      renderCell: (item) => item.direction ? (
+        <span
+          style={{
+            backgroundColor: item.direction === 'LONG' ? 'rgba(34,197,94,0.12)' : 'rgba(239,68,68,0.12)',
+            color: item.direction === 'LONG' ? '#22c55e' : '#ef4444',
+            borderRadius: '999px',
+            padding: '2px 10px',
+            fontSize: '10px',
+            fontWeight: 700,
+          }}
+          className="inline-block"
+        >
+          {item.direction}
+        </span>
+      ) : (
+        <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
+      )
+    },
+    option_type: {
+      label: 'Option Type',
+      sortField: 'option_type',
+      renderCell: (item) => item.option_type ? (
+        <span
+          style={{
+            backgroundColor: 'var(--row)',
+            color: 'var(--text)',
+            border: '0.5px solid var(--border)',
+            borderRadius: '6px',
+            padding: '2px 8px',
+            fontSize: '10px',
+            fontWeight: 600,
+          }}
+          className="inline-block font-mono"
+        >
+          {item.option_type}
+        </span>
+      ) : (
+        <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
+      )
+    },
+    strategies: {
+      label: 'Setup',
+      sortField: 'strategies.name',
+      renderCell: (item) => item.strategies?.name ? (
+        <span className="font-semibold font-mono text-xs" style={{ color: 'var(--text-sub)' }}>
+          {item.strategies.name}
+        </span>
+      ) : (
+        <span className="italic font-mono text-xs" style={{ color: 'var(--text-muted)' }}>
+          No Setup
+        </span>
+      )
+    },
+    pnl: {
+      label: 'Net P&L',
+      sortField: 'pnl',
+      renderCell: (item) => {
+        const hasProfit = item.pnl !== null && item.pnl > 0;
+        const hasLoss = item.pnl !== null && item.pnl < 0;
+        return (
+          <span
+            style={{
+              color: hasProfit ? '#22c55e' : hasLoss ? '#ef4444' : 'var(--text-muted)',
+              fontWeight: 700
+            }}
+            className="font-mono text-sm"
+          >
+            {item.pnl !== null ? formatINR(item.pnl) : '—'}
+          </span>
+         );
+      }
+    },
+    r_multiple: {
+      label: 'R-Multiple',
+      sortField: 'r_multiple',
+      renderCell: (item) => item.r_multiple !== null ? (
+        <span
+          className={`font-mono font-bold text-xs ${
+            item.r_multiple > 0 ? 'text-green-500' : 'text-red-500'
+          }`}
+        >
+          {item.r_multiple > 0 ? '+' : ''}
+          {item.r_multiple.toFixed(2)}R
+        </span>
+      ) : (
+        <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
+      )
+    },
+    status: {
+      label: 'Status',
+      sortField: 'status',
+      renderCell: (item) => (
+        <>
+          {item.status === 'Win' && (
+            <span style={{ backgroundColor: 'rgba(34,197,94,0.12)', color: '#22c55e' }} className="px-2.5 py-0.5 text-[10px] font-extrabold rounded-lg">
+              WIN
+            </span>
+          )}
+          {item.status === 'Loss' && (
+            <span style={{ backgroundColor: 'rgba(239,68,68,0.12)', color: '#ef4444' }} className="px-2.5 py-0.5 text-[10px] font-extrabold rounded-lg">
+              LOSS
+            </span>
+          )}
+          {item.status === 'Breakeven' && (
+            <span className="px-2.5 py-0.5 text-[10px] font-extrabold bg-zinc-150 border border-zinc-200 text-zinc-650 rounded-lg">
+              BE
+            </span>
+          )}
+          {item.status === null && (
+            <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
+          )}
+        </>
+      )
+    },
+    execution_status: {
+      label: 'Execution',
+      sortField: 'execution_status',
+      renderCell: (item) => item.execution_status ? (
+        <span
+          style={{
+            backgroundColor:
+              item.execution_status === 'BEST TRADE'
+                ? 'rgba(34,197,94,0.12)'
+                : item.execution_status === 'GOOD TRADE'
+                ? 'rgba(20,184,166,0.12)'
+                : item.execution_status === 'AVERAGE TRADE'
+                ? 'rgba(234,179,8,0.12)'
+                : item.execution_status === 'POOR TRADE'
+                ? 'rgba(249,115,22,0.12)'
+                : 'rgba(239,68,68,0.12)',
+            color:
+              item.execution_status === 'BEST TRADE'
+                ? '#22c55e'
+                : item.execution_status === 'GOOD TRADE'
+                ? '#14b8a6'
+                : item.execution_status === 'AVERAGE TRADE'
+                ? '#ca8a04'
+                : item.execution_status === 'POOR TRADE'
+                ? '#f97316'
+                : '#ef4444',
+          }}
+          className="px-1.5 py-0.5 text-[10px] uppercase font-mono tracking-wide font-extrabold rounded-md"
+        >
+          {item.execution_status}
+        </span>
+      ) : (
+        <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
+      )
+    },
+    holding_time_mins: {
+      label: 'Hold Time',
+      sortField: 'holding_time_mins',
+      renderCell: (item) => item.holding_time_mins !== null && item.holding_time_mins !== undefined ? (
+        <span className="font-mono text-xs" style={{ color: 'var(--text-sub)' }}>{item.holding_time_mins} mins</span>
+      ) : (
+        <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
+      )
+    },
+    mistake_type: {
+      label: 'Mistake',
+      sortField: 'mistake_type',
+      renderCell: (item) => item.mistake_type && item.mistake_type !== 'No Mistake' ? (
+        <span className="text-xs" style={{ color: 'var(--text-sub)' }}>
+          {item.mistake_type}
+        </span>
+      ) : (
+        <span className="font-mono text-xs italic" style={{ color: 'var(--text-muted)' }}>
+          None
+        </span>
+      )
+    },
+    roi: {
+      label: 'ROI',
+      sortField: 'roi',
+      renderCell: (item) => item.roi !== null ? (
+        <span
+          className={`font-mono font-bold text-xs ${
+            item.roi > 0 ? 'text-green-500' : 'text-red-500'
+          }`}
+        >
+          {item.roi > 0 ? '+' : ''}
+          {item.roi.toFixed(1)}%
+        </span>
+      ) : (
+        <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
+      )
+    },
+    notes: {
+      label: 'Notes',
+      sortField: 'notes',
+      renderCell: (item) => item.notes ? (
+        <span className="text-xs" style={{ color: 'var(--text-sub)' }}>{item.notes}</span>
+      ) : (
+        <span className="font-mono text-xs italic" style={{ color: 'var(--text-muted)' }}>—</span>
+      )
+    },
+    month: {
+      label: 'Month',
+      sortField: 'month',
+      renderCell: (item) => item.month ? (
+        <span className="font-mono text-xs" style={{ color: 'var(--text-sub)' }}>{item.month}</span>
+      ) : (
+        <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
+      )
+    },
+    needs_review: {
+      label: 'Needs Review',
+      sortField: 'needs_review',
+      renderCell: (item) => item.needs_review ? (
+        <span style={{ backgroundColor: 'rgba(249,115,22,0.15)', color: '#f97316', border: '0.5px solid #f97316' }} className="px-1.5 py-0.5 text-[10px] font-bold uppercase rounded">
+          Yes
+        </span>
+      ) : (
+        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>No</span>
+      )
+    },
+    sync_source: {
+      label: 'Sync Source',
+      sortField: 'sync_source',
+      renderCell: (item) => item.sync_source ? (
+        <span className="font-mono text-xs" style={{ color: 'var(--text-sub)' }}>{item.sync_source}</span>
+      ) : (
+        <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>Manual</span>
+      )
+    }
+  };
+
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+      <div className="min-h-screen flex items-center justify-center animate-pulse" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
         <div className="w-8 h-8 border-4 rounded-full animate-spin" style={{ borderColor: 'var(--border-md)', borderTopColor: 'var(--accent)' }} />
       </div>
     );
@@ -441,12 +856,12 @@ export const TradingLogsPage: React.FC = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+    <div className="min-h-screen w-full flex flex-col md:flex-row md:items-start font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
       <Sidebar userEmail={user.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* RIGHT SIDE MAIN CONTAINER */}
-      <div className="flex-1 md:pl-[220px] flex flex-col min-h-screen">
+      <div className="flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen">
         {/* MOBILE HEADER BAR */}
         <header 
           className="flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20"
@@ -646,7 +1061,7 @@ export const TradingLogsPage: React.FC = () => {
                   </button>
                 </div>
 
-                {/* Executions & Mistakes selectors */}
+                {/* Executions, Mistakes & Columns selectors */}
                 <div className="flex flex-wrap items-center gap-3">
                   {/* Executions */}
                   <select
@@ -677,6 +1092,20 @@ export const TradingLogsPage: React.FC = () => {
                     <option value="No Mistake">No Mistake</option>
                   </select>
 
+                  {/* Columns selector trigger button */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTempSelectedColumns({ ...selectedColumns });
+                      setIsColumnModalOpen(true);
+                    }}
+                    style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text-sub)' }}
+                    className="rounded-xl px-3 py-2 text-xs font-semibold cursor-pointer transition-all flex items-center gap-1.5 hover:opacity-80"
+                  >
+                    <Settings2 className="w-3.5 h-3.5" />
+                    <span>Columns</span>
+                  </button>
+
                   {/* Reset Filters button */}
                   {isFilterActive && (
                     <button
@@ -691,79 +1120,111 @@ export const TradingLogsPage: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="sticky top-0 z-20 p-4 mb-5 shadow-sm" style={{ backgroundColor: 'var(--card)', borderBottom: '0.5px solid var(--border)', position: 'sticky', top: '0', zIndex: 20 }}>
-              <div className="flex flex-wrap items-center justify-between sm:justify-start gap-y-3 gap-x-6 text-sm md:divide-x" style={{ color: 'var(--text-sub)', borderColor: 'var(--border)' }}>
-                <div className="font-medium pr-1">
-                  Showing <span className="font-extrabold text-indigo-400">{stats.count}</span> trades
-                </div>
-                
-                <div className="md:pl-6 flex items-center gap-1.5" style={{ borderColor: 'var(--border)' }}>
-                  <span>Total P&L:</span>
-                  <span
-                    className={`font-mono font-extrabold text-base ${
-                      stats.totalPnl > 0
-                        ? 'text-green-400'
-                        : stats.totalPnl < 0
-                        ? 'text-red-400'
-                        : ''
-                    }`}
-                    style={{ color: stats.totalPnl === 0 ? 'var(--text-sub)' : undefined }}
-                  >
-                    {formatINR(stats.totalPnl)}
-                  </span>
-                </div>
 
-                <div className="md:pl-6 flex items-center gap-1.5" style={{ borderColor: 'var(--border)' }}>
-                  <span>Win Rate:</span>
-                  <span style={{ color: 'var(--accent)', fontWeight: 700 }}>
-                    {stats.winRate.toFixed(0)}%
-                  </span>
+            {/* ADDITION 1 — SUMMARY STATS BAR */}
+            <div className="grid gap-4 mb-5 md:grid" style={{ gridTemplateColumns: 'repeat(5, 1fr)' }}>
+              {/* Card 1: TOTAL TRADES */}
+              <div 
+                style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+                className="rounded-2xl p-4 shadow-sm"
+              >
+                <div className="text-[10px] font-bold uppercase tracking-wider font-mono text-zinc-400" style={{ color: 'var(--text-muted)' }}>
+                  TOTAL TRADES
                 </div>
-
-                <div className="md:pl-6 flex items-center gap-1.5" style={{ borderColor: 'var(--border)' }}>
-                  <span>Avg R:</span>
-                  <span style={{ color: 'var(--accent)', fontWeight: 700 }} className="font-mono">
-                    {stats.avgR > 0 ? '+' : ''}
-                    {stats.avgR.toFixed(2)}R
-                  </span>
+                <div className="text-lg font-bold mt-1 font-mono" style={{ color: 'var(--text)' }}>
+                  {calculatedStats.totalCount}
                 </div>
+                <div className="text-[10px] font-mono mt-1 flex flex-wrap items-center gap-1" style={{ color: 'var(--text-sub)' }}>
+                  <span className="text-green-500 font-bold">W: {calculatedStats.winCount}</span>
+                  <span className="text-zinc-600">·</span>
+                  <span className="text-red-500 font-bold">L: {calculatedStats.lossCount}</span>
+                  <span className="text-zinc-600">·</span>
+                  <span className="text-zinc-500 font-bold">BE: {calculatedStats.breakEvenCount}</span>
+                </div>
+              </div>
 
-                <div className="md:pl-6 flex items-center gap-1.5 pr-2" style={{ borderColor: 'var(--border)' }}>
-                  <span>Profit Factor:</span>
-                  <span
-                    style={{
-                      color: getProfitFactorColor(stats.profitFactor),
-                      fontWeight: 700
-                    }}
-                    className="font-mono"
-                  >
-                    {stats.profitFactor === Infinity ? 'MAX' : stats.profitFactor.toFixed(2)}
-                  </span>
+              {/* Card 2: NET P&L */}
+              <div 
+                style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+                className="rounded-2xl p-4 shadow-sm"
+              >
+                <div className="text-[10px] font-bold uppercase tracking-wider font-mono text-zinc-400" style={{ color: 'var(--text-muted)' }}>
+                  NET P&L
+                </div>
+                <div 
+                  className="text-lg font-bold mt-1 font-mono"
+                  style={{ color: calculatedStats.totalPnl > 0 ? '#22c55e' : calculatedStats.totalPnl < 0 ? '#ef4444' : 'var(--text)' }}
+                >
+                  {formatINRStat(calculatedStats.totalPnl)}
+                </div>
+              </div>
+
+              {/* Card 3: PROFIT FACTOR */}
+              <div 
+                style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+                className="rounded-2xl p-4 shadow-sm"
+              >
+                <div className="text-[10px] font-bold uppercase tracking-wider font-mono text-zinc-400" style={{ color: 'var(--text-muted)' }}>
+                  PROFIT FACTOR
+                </div>
+                <div className="text-lg font-bold mt-1 font-mono" style={{ color: 'var(--text)' }}>
+                  {calculatedStats.profitFactor === Infinity ? 'MAX' : calculatedStats.profitFactor === 0 ? '--' : calculatedStats.profitFactor.toFixed(2)}
+                </div>
+              </div>
+
+              {/* Card 4: WIN RATE */}
+              <div 
+                style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+                className="rounded-2xl p-4 shadow-sm"
+              >
+                <div className="text-[10px] font-bold uppercase tracking-wider font-mono text-zinc-400" style={{ color: 'var(--text-muted)' }}>
+                  WIN RATE
+                </div>
+                <div className="text-lg font-bold mt-1 font-mono" style={{ color: 'var(--text)' }}>
+                  {calculatedStats.winRate.toFixed(1)}%
+                </div>
+              </div>
+
+              {/* Card 5: AVG WIN / AVG LOSS */}
+              <div 
+                style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+                className="rounded-2xl p-4 shadow-sm"
+              >
+                <div className="text-[10px] font-bold uppercase tracking-wider font-mono text-zinc-400" style={{ color: 'var(--text-muted)' }}>
+                  AVG WIN / AVG LOSS
+                </div>
+                <div className="text-lg font-bold mt-1 font-mono">
+                  {calculatedStats.avgWin > 0 || calculatedStats.avgLoss < 0 ? (
+                    <div className="flex items-center gap-1">
+                      <span className="text-green-500">{formatINRStat(calculatedStats.avgWin)}</span>
+                      <span style={{ color: 'var(--border-md)' }}>/</span>
+                      <span className="text-red-500">{formatINRStat(calculatedStats.avgLoss)}</span>
+                    </div>
+                  ) : (
+                    <span style={{ color: 'var(--text-muted)' }}>--</span>
+                  )}
                 </div>
               </div>
             </div>
 
+
+
             {/* ERROR SKELETON OR DYNAMIC TABLES LAYOUT */}
             {loading ? (
-              <div className="rounded-2xl overflow-hidden shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+              <div className="rounded-2xl overflow-hidden shadow-sm animate-pulse" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b text-[10px] font-mono font-extrabold uppercase tracking-widest" style={{ backgroundColor: 'var(--row)', borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
                       <th className="px-4 py-4 w-12 text-center">
                         <div className="h-4 rounded w-4 mx-auto" style={{ backgroundColor: 'var(--row)' }} />
                       </th>
-                      <th className="px-4 py-4">#</th>
-                      <th className="px-4 py-4">Date</th>
-                      <th className="px-4 py-4">Symbol</th>
-                      <th className="px-4 py-4">Dir</th>
-                      <th className="px-4 py-4">Setup</th>
-                      <th className="px-4 py-4">P&L</th>
-                      <th className="px-4 py-4">R</th>
-                      <th className="px-4 py-4">Status</th>
-                      <th className="px-4 py-4">Execution</th>
-                      <th className="px-4 py-4 hidden sm:table-cell">Mistakes</th>
-                      <th className="px-4 py-4 hidden sm:table-cell">Rating</th>
-                      <th className="px-4 py-4 hidden sm:table-cell">ROI</th>
+                      <th className="px-4 py-4 w-10 text-center">#</th>
+                      {ALL_COLUMNS_INFO.map((col) => {
+                        if (!selectedColumns[col.id]) return null;
+                        return (
+                          <th key={col.id} className="px-4 py-4">{col.label}</th>
+                        );
+                      })}
                       <th className="px-4 py-4 w-12 text-center">AI</th>
                     </tr>
                   </thead>
@@ -774,17 +1235,14 @@ export const TradingLogsPage: React.FC = () => {
                           <div className="h-4 rounded w-4 mx-auto" style={{ backgroundColor: 'var(--row)' }} />
                         </td>
                         <td className="px-4 py-4.5"><div className="h-4 rounded w-4" style={{ backgroundColor: 'var(--row)' }} /></td>
-                        <td className="px-4 py-4.5"><div className="h-4 rounded w-12" style={{ backgroundColor: 'var(--row)' }} /></td>
-                        <td className="px-4 py-4.5"><div className="h-4 rounded w-16" style={{ backgroundColor: 'var(--row)' }} /></td>
-                        <td className="px-4 py-4.5"><div className="h-4 rounded w-8" style={{ backgroundColor: 'var(--row)' }} /></td>
-                        <td className="px-4 py-4.5"><div className="h-4 rounded w-24" style={{ backgroundColor: 'var(--row)' }} /></td>
-                        <td className="px-4 py-4.5"><div className="h-4 rounded w-16" style={{ backgroundColor: 'var(--row)' }} /></td>
-                        <td className="px-4 py-4.5"><div className="h-4 rounded w-10" style={{ backgroundColor: 'var(--row)' }} /></td>
-                        <td className="px-4 py-4.5"><div className="h-4 rounded w-12" style={{ backgroundColor: 'var(--row)' }} /></td>
-                        <td className="px-4 py-4.5"><div className="h-4 rounded w-12" style={{ backgroundColor: 'var(--row)' }} /></td>
-                        <td className="px-4 py-4.5 hidden sm:table-cell"><div className="h-4 rounded w-16" style={{ backgroundColor: 'var(--row)' }} /></td>
-                        <td className="px-4 py-4.5 hidden sm:table-cell"><div className="h-4 rounded w-12" style={{ backgroundColor: 'var(--row)' }} /></td>
-                        <td className="px-4 py-4.5 hidden sm:table-cell"><div className="h-4 rounded w-10" style={{ backgroundColor: 'var(--row)' }} /></td>
+                        {ALL_COLUMNS_INFO.map((col) => {
+                          if (!selectedColumns[col.id]) return null;
+                          return (
+                            <td key={col.id} className="px-4 py-4.5">
+                              <div className="h-4 rounded w-12" style={{ backgroundColor: 'var(--row)' }} />
+                            </td>
+                          );
+                        })}
                         <td className="px-4 py-4.5 text-center"><div className="h-4 rounded w-8 mx-auto" style={{ backgroundColor: 'var(--row)' }} /></td>
                       </tr>
                     ))}
@@ -831,92 +1289,93 @@ export const TradingLogsPage: React.FC = () => {
               </div>
             ) : (
               /* MAIN INTERACTIVE SORTABLE DATATABLE */
-              <div id="trading-logs-datatable-container" className="rounded-xl shadow-sm overflow-hidden" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
-                {/* BULK ACTION BAR */}
-                {selectedTradeIds.length > 0 && (
-                  <div 
-                    style={{ 
-                      backgroundColor: 'var(--card)', 
-                      border: '0.5px solid var(--accent)',
-                      borderRadius: '10px'
-                    }} 
-                    className="m-3 p-[12px] px-[16px] flex flex-wrap items-center gap-[12px] transition-all duration-200 animate-in slide-in-from-top-2"
-                  >
-                    <span className="text-[13px] font-medium" style={{ color: 'var(--text)' }}>
-                      <span className="font-extrabold text-[#f97316] font-mono">{selectedTradeIds.length}</span> trades selected
-                    </span>
-                    
-                    <div className="h-5 w-[1px]" style={{ backgroundColor: 'var(--border)' }} />
-                    
-                    <span className="text-[12px]" style={{ color: 'var(--text-sub)' }}>
-                      Assign Setup:
-                    </span>
-                    
-                    <select
-                      value={selectedStrategyId}
-                      onChange={(e) => setSelectedStrategyId(e.target.value)}
+              <div className="flex flex-col animate-in fade-in duration-200">
+                <div id="trading-logs-datatable-container" className="shadow-sm overflow-hidden" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderBottom: 'none', borderTopLeftRadius: '12px', borderTopRightRadius: '12px' }}>
+                  {/* BULK ACTION BAR */}
+                  {selectedTradeIds.length > 0 && (
+                    <div 
                       style={{ 
                         backgroundColor: 'var(--card)', 
-                        border: '0.5px solid var(--border)', 
-                        color: 'var(--text)',
-                        borderRadius: '6px',
-                        padding: '6px 12px',
-                        fontSize: '12px'
-                      }}
-                      className="focus:border-indigo-500 focus:outline-none cursor-pointer w-48 font-mono"
+                        border: '0.5px solid var(--accent)',
+                        borderRadius: '10px'
+                      }} 
+                      className="m-3 p-[12px] px-[16px] flex flex-wrap items-center gap-[12px] transition-all duration-200 animate-in slide-in-from-top-2"
                     >
-                      <option value="" disabled>Select a setup...</option>
-                      {strategiesList.map((st) => (
-                        <option key={st.id} value={st.id}>
-                          {st.name}
-                        </option>
-                      ))}
-                    </select>
+                      <span className="text-[13px] font-medium" style={{ color: 'var(--text)' }}>
+                        <span className="font-extrabold text-[#f97316] font-mono">{selectedTradeIds.length}</span> trades selected
+                      </span>
+                      
+                      <div className="h-5 w-[1px]" style={{ backgroundColor: 'var(--border)' }} />
+                      
+                      <span className="text-[12px]" style={{ color: 'var(--text-sub)' }}>
+                        Assign Setup:
+                      </span>
+                      
+                      <select
+                        value={selectedStrategyId}
+                        onChange={(e) => setSelectedStrategyId(e.target.value)}
+                        style={{ 
+                          backgroundColor: 'var(--card)', 
+                          border: '0.5px solid var(--border)', 
+                          color: 'var(--text)',
+                          borderRadius: '6px',
+                          padding: '6px 12px',
+                          fontSize: '12px'
+                        }}
+                        className="focus:border-indigo-500 focus:outline-none cursor-pointer w-48 font-mono"
+                      >
+                        <option value="" disabled>Select a setup...</option>
+                        {strategiesList.map((st) => (
+                          <option key={st.id} value={st.id}>
+                            {st.name}
+                          </option>
+                        ))}
+                      </select>
 
-                    <button
-                      type="button"
-                      disabled={bulkLoading || !selectedStrategyId}
-                      onClick={handleBulkApplySetup}
-                      style={{
-                        backgroundColor: !selectedStrategyId ? 'var(--border)' : 'var(--accent)',
-                        color: '#ffffff',
-                        borderRadius: '7px',
-                        padding: '8px 16px',
-                        fontSize: '13px',
-                        fontWeight: 500,
-                        cursor: (!selectedStrategyId || bulkLoading) ? 'not-allowed' : 'pointer',
-                        opacity: (!selectedStrategyId) ? 0.6 : 1
-                      }}
-                      className="transition-all hover:opacity-90 flex items-center gap-2"
+                      <button
+                        type="button"
+                        disabled={bulkLoading || !selectedStrategyId}
+                        onClick={handleBulkApplySetup}
+                        style={{
+                          backgroundColor: !selectedStrategyId ? 'var(--border)' : 'var(--accent)',
+                          color: '#ffffff',
+                          borderRadius: '7px',
+                          padding: '8px 16px',
+                          fontSize: '13px',
+                          fontWeight: 500,
+                          cursor: (!selectedStrategyId || bulkLoading) ? 'not-allowed' : 'pointer',
+                          opacity: (!selectedStrategyId) ? 0.6 : 1
+                        }}
+                        className="transition-all hover:opacity-90 flex items-center gap-2"
+                      >
+                        {bulkLoading ? (
+                          <>
+                            <span className="animate-spin text-xs">⏳</span>
+                            <span>Applying...</span>
+                          </>
+                        ) : (
+                          <span>Apply to {selectedTradeIds.length} trades</span>
+                        )}
+                      </button>
+
+                      <div className="flex-grow" />
+
+                      <span 
+                        onClick={() => setSelectedTradeIds([])}
+                        className="text-[12px] cursor-pointer hover:underline font-semibold"
+                        style={{ color: 'var(--text-sub)' }}
+                      >
+                        Clear selection
+                      </span>
+                    </div>
+                  )}
+                  
+                  <div className="overflow-x-auto">
+                    <table 
+                      onMouseEnter={() => setIsTableHovered(true)}
+                      onMouseLeave={() => setIsTableHovered(false)}
+                      className="w-full text-left border-collapse"
                     >
-                      {bulkLoading ? (
-                        <>
-                          <span className="animate-spin text-xs">⏳</span>
-                          <span>Applying...</span>
-                        </>
-                      ) : (
-                        <span>Apply to {selectedTradeIds.length} trades</span>
-                      )}
-                    </button>
-
-                    <div className="flex-grow" />
-
-                    <span 
-                      onClick={() => setSelectedTradeIds([])}
-                      className="text-[12px] cursor-pointer hover:underline font-semibold"
-                      style={{ color: 'var(--text-sub)' }}
-                    >
-                      Clear selection
-                    </span>
-                  </div>
-                )}
-                
-                <div className="overflow-x-auto">
-                  <table 
-                    onMouseEnter={() => setIsTableHovered(true)}
-                    onMouseLeave={() => setIsTableHovered(false)}
-                    className="w-full text-left border-collapse"
-                  >
                     <thead>
                       <tr className="border-b text-[10px] font-sans font-semibold uppercase tracking-widest select-none" style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
                         {/* SELECT ALL CHECKBOX */}
@@ -987,86 +1446,31 @@ export const TradingLogsPage: React.FC = () => {
                         
                         <th className="px-4 py-4 w-10 text-center">#</th>
                         
-                        {/* Sortable headers */}
-                        <th
-                          onClick={() => toggleSort('date')}
-                          className="px-4 py-4 cursor-pointer hover:text-zinc-650 transition-colors whitespace-nowrap"
-                        >
-                          <div className="flex items-center gap-1">
-                            <span>Date</span>
-                            {sortColumn === 'date' ? (
-                              sortDirection === 'asc' ? <ChevronUp className="w-3 h-3 text-indigo-400" /> : <ChevronDown className="w-3 h-3 text-indigo-400" />
-                            ) : null}
-                          </div>
-                        </th>
-
-                        <th className="px-4 py-4">Symbol</th>
-                        
-                        <th className="px-4 py-4 hidden md:table-cell">Dir</th>
-                        <th className="px-4 py-4 hidden md:table-cell">Setup</th>
-
-                        <th
-                          onClick={() => toggleSort('pnl')}
-                          className="px-4 py-4 cursor-pointer hover:text-zinc-650 transition-colors whitespace-nowrap"
-                        >
-                          <div className="flex items-center gap-1">
-                            <span>P&L</span>
-                            {sortColumn === 'pnl' ? (
-                              sortDirection === 'asc' ? <ChevronUp className="w-3 h-3 text-indigo-400" /> : <ChevronDown className="w-3 h-3 text-indigo-400" />
-                            ) : null}
-                          </div>
-                        </th>
-
-                        <th
-                          onClick={() => toggleSort('r_multiple')}
-                          className="px-4 py-4 cursor-pointer hover:text-zinc-650 transition-colors whitespace-nowrap hidden md:table-cell"
-                        >
-                          <div className="flex items-center gap-1">
-                            <span>R</span>
-                            {sortColumn === 'r_multiple' ? (
-                              sortDirection === 'asc' ? <ChevronUp className="w-3 h-3 text-indigo-400" /> : <ChevronDown className="w-3 h-3 text-indigo-400" />
-                            ) : null}
-                          </div>
-                        </th>
-
-                        <th className="px-4 py-4">Status</th>
-                        
-                        <th className="px-4 py-4 hidden md:table-cell">Execution</th>
-                        <th className="px-4 py-4 hidden md:table-cell">Mistakes</th>
-                        
-                        <th
-                          onClick={() => toggleSort('trade_rating')}
-                          className="px-4 py-4 cursor-pointer hover:text-zinc-650 transition-colors whitespace-nowrap hidden md:table-cell w-20"
-                        >
-                          <div className="flex items-center gap-1">
-                            <span>Rating</span>
-                            {sortColumn === 'trade_rating' ? (
-                              sortDirection === 'asc' ? <ChevronUp className="w-3 h-3 text-indigo-400" /> : <ChevronDown className="w-3 h-3 text-indigo-400" />
-                            ) : null}
-                          </div>
-                        </th>
-
-                        <th
-                          onClick={() => toggleSort('roi')}
-                          className="px-4 py-4 cursor-pointer hover:text-zinc-650 transition-colors whitespace-nowrap hidden md:table-cell"
-                        >
-                          <div className="flex items-center gap-1">
-                            <span>ROI</span>
-                            {sortColumn === 'roi' ? (
-                              sortDirection === 'asc' ? <ChevronUp className="w-3 h-3 text-indigo-400" /> : <ChevronDown className="w-3 h-3 text-indigo-400" />
-                            ) : null}
-                          </div>
-                        </th>
+                        {/* Dynamic selectable columns */}
+                        {ALL_COLUMNS_INFO.map((col) => {
+                          if (!selectedColumns[col.id]) return null;
+                          const colDef = colDefinitions[col.id];
+                          const isSortable = ['date', 'symbol', 'pnl', 'r_multiple', 'roi', 'holding_time_mins'].includes(col.id);
+                          return (
+                            <th
+                              key={col.id}
+                              onClick={isSortable ? () => toggleSort(colDef.sortField) : undefined}
+                              className={`px-4 py-4 ${isSortable ? 'cursor-pointer hover:text-indigo-400 transition-colors' : ''} whitespace-nowrap`}
+                            >
+                              <div className="flex items-center gap-1">
+                                <span>{col.label}</span>
+                                {isSortable && sortColumn === colDef.sortField && (
+                                  sortDirection === 'asc' ? <ChevronUp className="w-3 h-3 text-[#818cf8]" /> : <ChevronDown className="w-3 h-3 text-[#818cf8]" />
+                                )}
+                              </div>
+                            </th>
+                          );
+                        })}
                         <th className="px-4 py-4 w-12 text-center">AI</th>
                       </tr>
                     </thead>
                     <tbody>
                       {sortedTrades.map((item, index) => {
-                        const originalPosIndex = sortedTrades.length - index;
-                        const hasProfit = item.pnl !== null && item.pnl > 0;
-                        const hasLoss = item.pnl !== null && item.pnl < 0;
-                        const dateTagStr = getDateDisplay(item.date);
-
                         return (
                           <tr
                             key={item.id}
@@ -1124,216 +1528,21 @@ export const TradingLogsPage: React.FC = () => {
 
                             {/* Counter Index */}
                             <td style={{ padding: '10px 16px', color: 'var(--text-muted)' }} className="text-center text-xs font-mono font-bold w-10">
-                              {index + 1}
+                              {(currentPage - 1) * tradesPerPage + index + 1}
                             </td>
 
-                            {/* Date Column with dynamic Today/Yesterday pill */}
-                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap">
-                              <span className="font-mono text-xs font-semibold flex items-center gap-1" style={{ color: 'var(--text-sub)' }}>
-                                {dateTagStr.label === 'Today' || dateTagStr.label === 'Yesterday' ? (
-                                  <span
-                                    style={{
-                                      backgroundColor: 'var(--accent-muted)',
-                                      color: 'var(--accent)',
-                                      border: '0.5px solid var(--accent)',
-                                      borderRadius: '999px',
-                                      padding: '2px 8px',
-                                      fontSize: '10px',
-                                      fontWeight: 700,
-                                      letterSpacing: '0.3px',
-                                    }}
-                                    className="uppercase font-sans"
-                                  >
-                                    {dateTagStr.label}
-                                  </span>
-                                ) : (
-                                  <span>{dateTagStr.label}</span>
-                                )}
-                              </span>
-                            </td>
-
-                            {/* Symbol text-white */}
-                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap font-sans">
-                              <div className="flex items-center gap-2">
-                                <span className="font-bold font-mono tracking-wide" style={{ color: 'var(--text)' }}>
-                                  {item.symbol}
-                                </span>
-                                {item.needs_review && (
-                                  <span 
-                                    style={{ backgroundColor: 'rgba(249,115,22,0.15)', color: '#f97316', border: '0.5px solid #f97316' }}
-                                    className="px-1.5 py-0.5 text-[9px] font-black uppercase rounded tracking-wider whitespace-nowrap"
-                                  >
-                                    Needs Review
-                                  </span>
-                                )}
-                              </div>
-                            </td>
-
-                            {/* Direction column rendering */}
-                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap hidden md:table-cell">
-                              {item.direction ? (
-                                <span
-                                  style={{
-                                    backgroundColor: item.direction === 'LONG' ? 'rgba(34,197,94,0.12)' : 'rgba(239,68,68,0.12)',
-                                    color: item.direction === 'LONG' ? '#22c55e' : '#ef4444',
-                                    borderRadius: '999px',
-                                    padding: '2px 10px',
-                                    fontSize: '10px',
-                                    fontWeight: 700,
-                                    border: 'none'
-                                  }}
-                                  className="inline-block"
-                                >
-                                  {item.direction}
-                                </span>
-                              ) : (
-                                <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
-                              )}
-                            </td>
-
-                            {/* Setup Selection Strategy Name */}
-                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap hidden md:table-cell max-w-[150px] truncate">
-                              {item.strategies?.name ? (
-                                <span className="font-semibold font-mono text-xs" style={{ color: 'var(--text-sub)' }}>
-                                  {item.strategies.name}
-                                </span>
-                              ) : (
-                                <span className="italic font-mono text-xs" style={{ color: 'var(--text-muted)' }}>
-                                  No Setup
-                                </span>
-                              )}
-                            </td>
-
-                            {/* Pnl Currency Format */}
-                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap">
-                              <span
-                                style={{
-                                  color: hasProfit ? '#22c55e' : hasLoss ? '#ef4444' : 'var(--text-muted)',
-                                  fontWeight: 700
-                                }}
-                                className="font-mono text-sm"
-                              >
-                                {item.pnl !== null ? formatINR(item.pnl) : '—'}
-                              </span>
-                            </td>
-
-                            {/* R Multiple */}
-                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap hidden md:table-cell">
-                              {item.r_multiple !== null ? (
-                                <span
-                                  className={`font-mono font-bold text-xs ${
-                                    item.r_multiple > 0 ? 'text-green-500' : 'text-red-500'
-                                  }`}
-                                >
-                                  {item.r_multiple > 0 ? '+' : ''}
-                                  {item.r_multiple.toFixed(2)}R
-                                </span>
-                              ) : (
-                                <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
-                              )}
-                            </td>
-
-                            {/* Status WIN/LOSS */}
-                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap">
-                              {item.status === 'Win' && (
-                                <span style={{ backgroundColor: 'rgba(34,197,94,0.12)', color: '#22c55e' }} className="px-2.5 py-0.5 text-[10px] font-extrabold rounded-lg">
-                                  WIN
-                                </span>
-                              )}
-                              {item.status === 'Loss' && (
-                                <span style={{ backgroundColor: 'rgba(239,68,68,0.12)', color: '#ef4444' }} className="px-2.5 py-0.5 text-[10px] font-extrabold rounded-lg">
-                                  LOSS
-                                </span>
-                              )}
-                              {item.status === 'Breakeven' && (
-                                <span className="px-2.5 py-0.5 text-[10px] font-extrabold bg-zinc-100 border border-zinc-200 text-zinc-600 rounded-lg">
-                                  BE
-                                </span>
-                              )}
-                              {item.status === null && (
-                                <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
-                              )}
-                            </td>
-
-                            {/* Execution quality */}
-                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap hidden md:table-cell">
-                              {item.execution_status ? (
-                                <span
-                                  style={{
-                                    backgroundColor:
-                                      item.execution_status === 'BEST TRADE'
-                                        ? 'rgba(34,197,94,0.12)'
-                                        : item.execution_status === 'GOOD TRADE'
-                                        ? 'rgba(20,184,166,0.12)'
-                                        : item.execution_status === 'AVERAGE TRADE'
-                                        ? 'rgba(234,179,8,0.12)'
-                                        : item.execution_status === 'POOR TRADE'
-                                        ? 'rgba(249,115,22,0.12)'
-                                        : 'rgba(239,68,68,0.12)',
-                                    color:
-                                      item.execution_status === 'BEST TRADE'
-                                        ? '#22c55e'
-                                        : item.execution_status === 'GOOD TRADE'
-                                        ? '#14b8a6'
-                                        : item.execution_status === 'AVERAGE TRADE'
-                                        ? '#ca8a04'
-                                        : item.execution_status === 'POOR TRADE'
-                                        ? '#f97316'
-                                        : '#ef4444',
-                                  }}
-                                  className="px-1.5 py-0.5 text-[10px] uppercase font-mono tracking-wide font-extrabold rounded-md"
-                                >
-                                  {item.execution_status}
-                                </span>
-                              ) : (
-                                <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
-                              )}
-                            </td>
-
-                            {/* Mistakes list cell */}
-                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap hidden md:table-cell max-w-[125px] truncate">
-                              {item.mistake_type && item.mistake_type !== 'No Mistake' ? (
-                                <span className="text-xs" style={{ color: 'var(--text-sub)' }}>
-                                  {item.mistake_type}
-                                </span>
-                              ) : (
-                                <span className="font-mono text-xs italic" style={{ color: 'var(--text-muted)' }}>
-                                  None
-                                </span>
-                              )}
-                            </td>
-
-                            {/* Stars rating */}
-                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap hidden md:table-cell">
-                              {item.trade_rating && item.trade_rating > 0 ? (
-                                <div className="flex items-center gap-0.5 text-amber-500">
-                                  {Array.from({ length: item.trade_rating }).map((_, i) => (
-                                    <Star key={i} className="w-3 h-3 fill-current" />
-                                  ))}
-                                </div>
-                              ) : (
-                                <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
-                              )}
-                            </td>
-
-                            {/* ROI percent decimal */}
-                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap hidden md:table-cell">
-                              {item.roi !== null ? (
-                                <span
-                                  className={`font-mono font-bold text-xs ${
-                                    item.roi > 0 ? 'text-green-500' : 'text-red-500'
-                                  }`}
-                                >
-                                  {item.roi > 0 ? '+' : ''}
-                                  {item.roi.toFixed(1)}%
-                                </span>
-                              ) : (
-                                <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
-                              )}
-                            </td>
+                            {/* Dynamic selectable trade detail columns cells */}
+                            {ALL_COLUMNS_INFO.map((col) => {
+                              if (!selectedColumns[col.id]) return null;
+                              return (
+                                <td key={col.id} style={{ padding: '10px 16px' }} className="whitespace-nowrap font-sans">
+                                  {colDefinitions[col.id].renderCell(item)}
+                                </td>
+                              );
+                            })}
 
                             {/* AI Action column */}
-                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap text-center">
+                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap text-center font-sans">
                               <button
                                 id={`logs-table-ask-ai-${item.id}`}
                                 onClick={(e) => {
@@ -1350,7 +1559,7 @@ export const TradingLogsPage: React.FC = () => {
                                   border: 'none',
                                   cursor: 'pointer'
                                 }}
-                                className="transition-all hover:opacity-85 font-sans"
+                                className="transition-all hover:opacity-85"
                               >
                                 AI
                               </button>
@@ -1362,9 +1571,160 @@ export const TradingLogsPage: React.FC = () => {
                   </table>
                 </div>
               </div>
-            )}
+
+              {/* ADDITION 2 — PAGINATION CONTROLS */}
+              {calculatedStats.totalCount > 0 && (
+                <div 
+                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderTop: 'none', borderBottomLeftRadius: '12px', borderBottomRightRadius: '12px' }}
+                  className="px-5 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-medium"
+                >
+                  <div className="flex items-center gap-2">
+                    <span style={{ color: 'var(--text-muted)' }}>Trades per page:</span>
+                    <select
+                      value={tradesPerPage}
+                      onChange={(e) => {
+                        setTradesPerPage(parseInt(e.target.value, 10));
+                        setCurrentPage(1);
+                      }}
+                      style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
+                      className="rounded-lg px-2.5 py-1 focus:outline-none cursor-pointer text-xs font-bold"
+                    >
+                      {[10, 25, 50, 100].map((size) => (
+                        <option key={size} value={size}>
+                          {size}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div style={{ color: 'var(--text-sub)', fontSize: '13px' }} className="text-center">
+                    Showing {calculatedStats.totalCount === 0 ? 0 : (currentPage - 1) * tradesPerPage + 1}–{Math.min(currentPage * tradesPerPage, calculatedStats.totalCount)} of {calculatedStats.totalCount} trades
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      disabled={currentPage === 1}
+                      onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                      style={{
+                        backgroundColor: currentPage === 1 ? 'transparent' : 'var(--row)',
+                        borderColor: 'var(--border)',
+                        color: currentPage === 1 ? 'var(--text-muted)' : 'var(--text)',
+                        borderWidth: '1px'
+                      }}
+                      className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer select-none transition-all ${
+                        currentPage === 1 ? 'opacity-40 cursor-not-allowed' : 'hover:opacity-80'
+                      }`}
+                    >
+                      Previous
+                    </button>
+                    <button
+                      type="button"
+                      disabled={currentPage * tradesPerPage >= calculatedStats.totalCount}
+                      onClick={() => setCurrentPage((p) => p + 1)}
+                      style={{
+                        backgroundColor: currentPage * tradesPerPage >= calculatedStats.totalCount ? 'transparent' : 'var(--row)',
+                        borderColor: 'var(--border)',
+                        color: currentPage * tradesPerPage >= calculatedStats.totalCount ? 'var(--text-muted)' : 'var(--text)',
+                        borderWidth: '1px'
+                      }}
+                      className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer select-none transition-all ${
+                        currentPage * tradesPerPage >= calculatedStats.totalCount ? 'opacity-40 cursor-not-allowed' : 'hover:opacity-80'
+                      }`}
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
           </div>
         </main>
+
+        {/* COLUMN SELECTOR MODAL */}
+        {isColumnModalOpen && (
+          <div id="column-selector-modal" className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+            <div 
+              style={{ backgroundColor: 'var(--card)', border: '1.5px solid var(--border)', borderRadius: '16px' }}
+              className="w-full max-w-md overflow-hidden shadow-2xl flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between p-4 border-b border-[var(--border)]">
+                <h3 className="text-sm font-bold tracking-wide uppercase font-mono text-[var(--text)]">
+                  Configure Columns
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setIsColumnModalOpen(false)}
+                  className="text-[var(--text-muted)] hover:text-[var(--text)] transition-colors p-1 rounded-lg hover:bg-[var(--row)]"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* List of Columns */}
+              <div className="p-5 flex-1 overflow-y-auto space-y-3">
+                <p className="text-xs text-[var(--text-sub)] mb-2">
+                  Select which column fields to display in your active trading logs table.
+                </p>
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  {ALL_COLUMNS_INFO.map((col) => {
+                    const isChecked = !!tempSelectedColumns[col.id];
+                    return (
+                      <label
+                        key={col.id}
+                        style={{ 
+                          backgroundColor: isChecked ? 'rgba(129, 140, 248, 0.05)' : 'transparent',
+                          borderColor: isChecked ? 'var(--accent)' : 'var(--border)'
+                        }}
+                        className={`flex items-center gap-2.5 p-3 rounded-lg border cursor-pointer select-none transition-all hover:bg-[var(--row)]`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() => {
+                            setTempSelectedColumns((prev) => ({
+                              ...prev,
+                              [col.id]: !prev[col.id],
+                            }));
+                          }}
+                          className="rounded border-[var(--border)] text-indigo-600 focus:ring-indigo-500 cursor-pointer h-4 w-4"
+                        />
+                        <span className="font-semibold text-[var(--text-sub)]">
+                          {col.label}
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Footer Actions */}
+              <div className="p-4 border-t border-[var(--border)] flex justify-end gap-2.5" style={{ backgroundColor: 'var(--row)' }}>
+                <button
+                  type="button"
+                  onClick={() => setIsColumnModalOpen(false)}
+                  style={{ border: '0.5px solid var(--border)', backgroundColor: 'var(--card)', color: 'var(--text-sub)' }}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold hover:bg-[var(--bar)] cursor-pointer transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedColumns(tempSelectedColumns);
+                    localStorage.setItem('tl-log-columns', JSON.stringify(tempSelectedColumns));
+                    setIsColumnModalOpen(false);
+                  }}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer transition-all shadow-md shadow-indigo-600/10"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
