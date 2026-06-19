@@ -29,6 +29,7 @@ import {
   Area,
   LineChart,
   Line,
+  ComposedChart,
   CartesianGrid,
   XAxis,
   YAxis,
@@ -616,40 +617,28 @@ const TradeTrackingPageContent: React.FC = () => {
     try {
       setLoading(true);
 
-      const [tradeResult, psychResult, riskResult, rulesResult] = await Promise.all([
-        supabase
-          .from('trades')
-          .select('*, strategies(name, type_of_strategy)')
-          .eq('id', tradeId)
-          .single(),
-        supabase
-          .from('trade_psychology')
-          .select('*')
-          .eq('trade_id', tradeId)
-          .limit(1),
-        supabase
-          .from('trade_risk_management')
-          .select('*')
-          .eq('trade_id', tradeId)
-          .limit(1),
-        supabase
-          .from('trade_rule_adherence')
-          .select('*')
-          .eq('trade_id', tradeId)
+      const [tradeRes, psychRes, riskRes, rulesRes] = await Promise.all([
+        supabase.from('trades').select('*, strategies(*)').eq('id', tradeId).single(),
+        supabase.from('trade_psychology').select('*').eq('trade_id', tradeId).eq('user_id', userId),
+        supabase.from('trade_risk_management').select('*').eq('trade_id', tradeId).eq('user_id', userId),
+        supabase.from('trade_rule_adherence').select('*').eq('trade_id', tradeId).eq('user_id', userId)
       ]);
 
-      if (tradeResult.error) {
-        throw new Error(tradeResult.error.message || 'Trade records could not be fetched.');
+      if (tradeRes.error) {
+        throw new Error(tradeRes.error.message || 'Trade records could not be fetched.');
       }
 
-      setTrade(tradeResult.data);
+      setTrade(tradeRes.data);
 
-      const allRules = rulesResult.data || [];
-      setEntryRules(allRules.filter((r) => r.rule_type === 'entry'));
-      setExitRules(allRules.filter((r) => r.rule_type === 'exit'));
+      const rules = rulesRes.data || [];
+      setEntryRules(rules.filter((r) => r.rule_type === 'entry'));
+      setExitRules(rules.filter((r) => r.rule_type === 'exit'));
 
-      setPsychology(psychResult.data && psychResult.data.length > 0 ? psychResult.data[0] : null);
-      setRiskMgmt(riskResult.data && riskResult.data.length > 0 ? riskResult.data[0] : null);
+      const psych = psychRes.data?.[0] || null;
+      const risk = riskRes.data?.[0] || null;
+
+      setPsychology(psych);
+      setRiskMgmt(risk);
 
       // On page load, query Supabase for existing embedding
       const { data: embedCheck } = await supabase
@@ -702,19 +691,12 @@ const TradeTrackingPageContent: React.FC = () => {
     return (technicalScore + psychScore + riskScore) / 3;
   }, [technicalScore, psychScore, riskScore]);
 
-  const gradientOffset = React.useMemo(() => {
-    if (!chartData || chartData.length === 0) return 0;
-    const pnlVals = chartData.map((d: any) => d.pnl || 0);
-    const dataMax = Math.max(...pnlVals, 0);
-    const dataMin = Math.min(...pnlVals, 0);
-    if (dataMax === 0 && dataMin === 0) return 0.5;
-    if (dataMax > dataMin) {
-      return dataMax / (dataMax - dataMin);
-    } else if (dataMax > 0) {
-      return 1;
-    } else {
-      return 0;
-    }
+  const zeroPercent = React.useMemo(() => {
+    if (!chartData || chartData.length === 0) return 100;
+    const maxVal = Math.max(...chartData.map((d: any) => d.pnl), 0);
+    const minVal = Math.min(...chartData.map((d: any) => d.pnl), 0);
+    const totalRange = maxVal - minVal;
+    return totalRange > 0 ? (maxVal / totalRange) * 100 : 100;
   }, [chartData]);
 
   // Score styling color code mapper
@@ -1811,7 +1793,7 @@ const TradeTrackingPageContent: React.FC = () => {
                       </div>
                       {!psychology ? (
                         <div style={{ color: 'var(--text-muted)' }} className="text-xs italic py-2">
-                          No psychology data logged for this trade
+                          No psychology data for this trade
                         </div>
                       ) : (
                         <div className="space-y-3.5">
@@ -1910,7 +1892,7 @@ const TradeTrackingPageContent: React.FC = () => {
                     Intraday P&L trajectory analysis
                   </p>
 
-                  <div className="h-[210px] w-full flex items-center justify-center font-sans">
+                  <div className="h-[180px] w-full flex items-center justify-center font-sans">
                     {chartLoading ? (
                       <div className="flex flex-col items-center gap-2">
                         <div className="w-5 h-5 border-2 rounded-full animate-spin" style={{ borderColor: 'var(--border)', borderTopColor: 'var(--accent)' }} />
@@ -1918,65 +1900,83 @@ const TradeTrackingPageContent: React.FC = () => {
                       </div>
                     ) : (
                       <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart
+                        <ComposedChart
                           data={chartData}
                           margin={{ top: 12, right: 12, bottom: 0, left: -10 }}
                         >
                           <defs>
-                            <linearGradient id="pnlSplitGrad" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset={gradientOffset} stopColor="var(--accent)" stopOpacity={0.08} />
-                              <stop offset={gradientOffset} stopColor="#ef4444" stopOpacity={0.08} />
+                            {/* Gradient for fill area */}
+                            <linearGradient id="pnlAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset={`${zeroPercent}%`} stopColor="#22c55e" stopOpacity={0.3} />
+                              <stop offset={`${zeroPercent}%`} stopColor="#ef4444" stopOpacity={0.3} />
+                              <stop offset="100%" stopColor="#ef4444" stopOpacity={0.0} />
+                            </linearGradient>
+
+                            {/* Gradient for LINE color */}
+                            <linearGradient id="pnlLineGrad" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset={`${zeroPercent}%`} stopColor="#22c55e" stopOpacity={1} />
+                              <stop offset={`${zeroPercent}%`} stopColor="#ef4444" stopOpacity={1} />
                             </linearGradient>
                           </defs>
+
                           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
-                          <XAxis
-                            dataKey="name"
-                            tick={false}
-                            axisLine={false}
-                            height={4}
-                          />
+
                           <YAxis
                             stroke="var(--text-muted)"
-                            fontSize={10}
-                            tickLine={false}
+                            tickFormatter={(v) => v >= 0 ? `₹${v}` : `-₹${Math.abs(v)}`}
+                            tick={{ fontSize: 10, fill: '#94a3b8' }}
                             axisLine={false}
-                            tickFormatter={(val) => {
-                              if (val === 0) return '₹0';
-                              return val > 0 ? `+₹${val.toLocaleString('en-IN')}` : `-₹${Math.abs(val).toLocaleString('en-IN')}`;
-                            }}
+                            tickLine={false}
+                            width={55}
                           />
-                          <Tooltip
-                            contentStyle={{
-                              backgroundColor: 'var(--card)',
-                              borderColor: 'var(--border)',
-                              borderRadius: '8px',
-                              fontSize: '12px',
-                              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)'
-                            }}
-                            labelStyle={{ color: 'var(--text-sub)', fontWeight: 600, marginBottom: 4 }}
-                            formatter={(value: any) => [
-                              <span style={{ color: value >= 0 ? 'var(--accent)' : '#ef4444', fontWeight: 'bold' }}>
-                                ₹{parseFloat(value).toLocaleString('en-IN', { maximumFractionDigits: 1 })}
-                              </span>,
-                              'P&L'
-                            ]}
-                          />
+
                           <ReferenceLine
                             y={0}
-                            stroke="var(--border-md, rgba(255, 255, 255, 0.15))"
-                            strokeDasharray="3 3"
+                            stroke="rgba(255,255,255,0.15)"
+                            strokeDasharray="4 4"
                             strokeWidth={1}
                           />
+
                           <Area
                             type="monotone"
                             dataKey="pnl"
-                            stroke={trade.pnl >= 0 ? 'var(--accent)' : '#ef4444'}
-                            strokeWidth={2.5}
-                            fill="url(#pnlSplitGrad)"
-                            dot={{ stroke: trade.pnl >= 0 ? 'var(--accent)' : '#ef4444', strokeWidth: 1.5, r: 3, fill: 'var(--card)' }}
-                            activeDot={{ r: 5 }}
+                            stroke="none"
+                            fill="url(#pnlAreaGrad)"
+                            baseLine={0}
                           />
-                        </AreaChart>
+
+                          <Line
+                            type="monotone"
+                            dataKey="pnl"
+                            stroke="url(#pnlLineGrad)"
+                            strokeWidth={2.5}
+                            dot={(props: any) => {
+                              const { cx, cy, index } = props;
+                              if (index === 0 || index === chartData.length - 1) {
+                                const color = props.payload.pnl >= 0 ? '#22c55e' : '#ef4444';
+                                return <circle cx={cx} cy={cy} r={4} fill={color} stroke="var(--card)" strokeWidth={1.5} key={`dot-${index}`} />;
+                              }
+                              return <g key={`dot-empty-${index}`} />;
+                            }}
+                            activeDot={{ r: 5, strokeWidth: 2, stroke: 'white' }}
+                          />
+
+                          <Tooltip
+                            content={(props: any) => {
+                              const { active, payload } = props;
+                              if (!active || !payload?.length) return null;
+                              const val = payload[0]?.value;
+                              const isPos = val >= 0;
+                              return (
+                                <div style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '8px 12px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)' }} className="font-sans">
+                                  <span style={{ color: isPos ? '#22c55e' : '#ef4444' }} className="text-xs font-bold font-mono">
+                                    {isPos ? `+₹${val}` : `-₹${Math.abs(val)}`}
+                                  </span>
+                                </div>
+                              );
+                            }}
+                          />
+                        </ComposedChart>
                       </ResponsiveContainer>
                     )}
                   </div>
@@ -1990,7 +1990,7 @@ const TradeTrackingPageContent: React.FC = () => {
                   <p style={{ color: 'var(--text-muted)' }} className="text-[11px] font-mono uppercase tracking-wider mb-2">Subjective states</p>
 
                   {!psychology ? (
-                    <div style={{ color: 'var(--text-muted)' }} className="text-xs italic py-4">No psychology data logged for this trade</div>
+                    <div style={{ color: 'var(--text-muted)' }} className="text-xs italic py-4">No psychology data for this trade</div>
                   ) : (
                     <div className="space-y-4 mt-3">
                       
@@ -2085,7 +2085,7 @@ const TradeTrackingPageContent: React.FC = () => {
                   <p style={{ color: 'var(--text-muted)' }} className="text-[11px] font-mono uppercase tracking-wider mb-2">Exposure analysis</p>
 
                   {!riskMgmt ? (
-                    <div style={{ color: 'var(--text-muted)' }} className="text-xs italic py-4">No risk data logged for this trade</div>
+                    <div style={{ color: 'var(--text-muted)' }} className="text-xs italic py-4">No risk data for this trade</div>
                   ) : (
                     <div className="space-y-4 mt-3">
                       <div style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)' }} className="p-3 rounded-xl border font-sans">

@@ -773,6 +773,42 @@ export const TradeEntryPage: React.FC = () => {
         if (rulesError) console.error('Rules logging failed:', rulesError);
       }
 
+      // Calculate psychScore explicitly to ensure correct values
+      const calculatedPsychScore = (
+        externalStress +
+        priceActionReading +
+        confidence +
+        entryLevels +
+        (100 - anxiety) +
+        (100 - fear)
+      ) / 6;
+
+      const parsedDecidedRisk =
+        decidedRisk !== ''
+          ? parseFloat(decidedRisk)
+          : risk !== ''
+          ? parseFloat(risk)
+          : null;
+
+      console.log('Trade psychology slider values and calculated score being saved:', {
+        tradeId: targetTradeId,
+        userId: userId,
+        externalStress,
+        priceActionReading,
+        confidence,
+        entryLevels,
+        anxiety,
+        fear,
+        calculatedPsychScore
+      });
+
+      console.log('Trade risk management values being saved:', {
+        tradeId: targetTradeId,
+        userId: userId,
+        decidedRiskValue: parsedDecidedRisk,
+        followedRiskRulesPct
+      });
+
       // 4. Upsert Psychology Row
       const { error: psychError } = await supabase
         .from('trade_psychology')
@@ -785,26 +821,25 @@ export const TradeEntryPage: React.FC = () => {
           entry_levels_pct: entryLevels,
           anxiety_pct: anxiety,
           fear_pct: fear,
-          psychological_condition_pct: parseFloat(psychScore.toFixed(2)),
-        }, { onConflict: 'trade_id,user_id' });
+          psychological_condition_pct: calculatedPsychScore
+        }, {
+          onConflict: 'trade_id,user_id',
+          ignoreDuplicates: false
+        });
       if (psychError) console.error('Psychology insertion failed:', psychError);
 
       // 5. Upsert Risk Management Row
-      const finalPlannedRisk =
-        decidedRisk !== ''
-          ? parseFloat(decidedRisk)
-          : risk !== ''
-          ? parseFloat(risk)
-          : null;
-
       const { error: riskError } = await supabase
         .from('trade_risk_management')
         .upsert({
           trade_id: targetTradeId,
           user_id: userId,
-          decided_risk: finalPlannedRisk,
-          followed_risk_rules_pct: followedRiskRulesPct,
-        }, { onConflict: 'trade_id,user_id' });
+          decided_risk: parsedDecidedRisk,
+          followed_risk_rules_pct: followedRiskRulesPct
+        }, {
+          onConflict: 'trade_id,user_id',
+          ignoreDuplicates: false
+        });
       if (riskError) console.error('Risk management record failed:', riskError);
 
       // Storage assets staging paths configs
