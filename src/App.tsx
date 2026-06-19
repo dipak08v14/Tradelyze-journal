@@ -20,6 +20,7 @@ import { TradingReportsPage } from './pages/TradingReportsPage';
 import { AnnualReportsPage } from './pages/AnnualReportsPage';
 import { AdvancedReports } from './pages/AdvancedReports';
 import { AiTeacherPage } from './pages/AiTeacherPage';
+import { Notebook } from './pages/Notebook';
 import { useTheme } from './hooks/useTheme';
 import { useAuth } from './hooks/useAuth';
 
@@ -113,6 +114,7 @@ export default function App() {
             <Route path="/logs" element={<Navigate to="/trading-logs" replace />} />
 
             {/* Other Authenticated Pages */}
+            <Route path="/notebook" element={<Notebook />} />
             <Route path="/advanced-reports" element={<AdvancedReports />} />
             <Route path="/reports" element={<TradingReportsPage />} />
             <Route path="/annual-reports" element={<AnnualReportsPage />} />

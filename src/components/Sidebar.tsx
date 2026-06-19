@@ -15,7 +15,8 @@ import {
   MessageCircle,
   Settings,
   Calculator,
-  X
+  X,
+  Book
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -41,6 +42,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', route: '/dashboard' },
     { icon: BookOpen, label: 'Daily Journal', route: '/daily-journal' },
+    { icon: Book, label: 'Notebook', route: '/notebook' },
     { icon: PlusCircle, label: 'Trade Entry', route: '/trade-entry' },
     { icon: ScrollText, label: 'Trading Logs', route: '/trading-logs' },
     { icon: Target, label: 'Strategies', route: '/strategies' },
