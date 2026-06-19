@@ -21,8 +21,21 @@ import {
   Briefcase,
   Layers,
   Sparkles,
-  CheckCircle2
+  CheckCircle2,
+  Check
 } from 'lucide-react';
+import {
+  AreaChart,
+  Area,
+  LineChart,
+  Line,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  ReferenceLine,
+  Tooltip,
+  ResponsiveContainer
+} from 'recharts';
 import { Trade } from '../types';
 import { generateEmbeddingFromUrl } from '../lib/clipEmbedder';
 import TradeChart from '../components/TradeChart';
@@ -115,6 +128,365 @@ const TradeTrackingPageContent: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
+
+  // CHANGE 1 — Previous Trade / Next Trade navigation state
+  const [orderedTradeIds, setOrderedTradeIds] = useState<string[]>([]);
+
+  // CHANGE 2 — Tabs State
+  const [activeTab, setActiveTab] = useState<'stats' | 'playbooks'>('stats');
+
+  // CHANGE 3 — Form states
+  const [profitTarget, setProfitTarget] = useState<string>('');
+  const [stopLossPrice, setStopLossPrice] = useState<string>('');
+  const [maeValue, setMaeValue] = useState<string>('');
+  const [mfeValue, setMfeValue] = useState<string>('');
+
+  // CHANGE 4 — Running P&L state
+  const [chartData, setChartData] = useState<any[]>([]);
+  const [chartLoading, setChartLoading] = useState<boolean>(false);
+  const [apiError, setApiError] = useState<boolean>(false);
+
+  // Fetch ordered trade IDs for user
+  useEffect(() => {
+    const fetchAllTradeIds = async () => {
+      if (!userId) return;
+      try {
+        const { data, error } = await supabase
+          .from('trades')
+          .select('id')
+          .eq('user_id', userId)
+          .order('date', { ascending: false })
+          .order('created_at', { ascending: false });
+        if (error) throw error;
+        if (data) {
+          setOrderedTradeIds(data.map((t: any) => t.id));
+        }
+      } catch (err) {
+        console.error('Error fetching trade IDs:', err);
+      }
+    };
+    fetchAllTradeIds();
+  }, [userId]);
+
+  const currentIndex = orderedTradeIds.indexOf(tradeId || '');
+  const hasPrevious = currentIndex > 0;
+  const hasNext = currentIndex >= 0 && currentIndex < orderedTradeIds.length - 1;
+
+  const handlePrevTrade = () => {
+    if (hasPrevious) {
+      navigate(`/trading-logs/${orderedTradeIds[currentIndex - 1]}`);
+    }
+  };
+
+  const handleNextTrade = () => {
+    if (hasNext) {
+      navigate(`/trading-logs/${orderedTradeIds[currentIndex + 1]}`);
+    }
+  };
+
+  // Sync inputs on trade edit changes
+  useEffect(() => {
+    if (trade) {
+      setProfitTarget(trade.profit_target !== null && trade.profit_target !== undefined ? String(trade.profit_target) : '');
+      setStopLossPrice(trade.stop_loss_price !== null && trade.stop_loss_price !== undefined ? String(trade.stop_loss_price) : '');
+      setMaeValue(trade.mae !== null && trade.mae !== undefined ? String(trade.mae) : '');
+      setMfeValue(trade.mfe !== null && trade.mfe !== undefined ? String(trade.mfe) : '');
+    }
+  }, [trade]);
+
+  // Save fields on Blur
+  const getPlannedRMultValue = (ptVal: string, slVal: string, ep: number | null | undefined) => {
+    const pt = parseFloat(ptVal);
+    const sl = parseFloat(slVal);
+    if (isNaN(pt) || isNaN(sl) || !ep || ep === sl) return null;
+    return (pt - ep) / (ep - sl);
+  };
+
+  const handleBlurProfitTarget = async () => {
+    if (!userId || !tradeId) return;
+    const numPT = profitTarget === '' ? null : parseFloat(profitTarget);
+    const numSL = stopLossPrice === '' ? null : parseFloat(stopLossPrice);
+    const rMult = getPlannedRMultValue(profitTarget, stopLossPrice, trade?.entry_price);
+    
+    try {
+      const { error } = await supabase
+        .from('trades')
+        .update({ 
+          profit_target: numPT,
+          planned_r_multiple: rMult
+        })
+        .eq('id', tradeId)
+        .eq('user_id', userId);
+      if (error) throw error;
+      
+      setTrade((prev: any) => ({
+        ...prev,
+        profit_target: numPT,
+        planned_r_multiple: rMult
+      }));
+    } catch (err) {
+      console.error('Error saving profit target:', err);
+      showError('Failed to save Profit Target.');
+    }
+  };
+
+  const handleBlurStopLossPrice = async () => {
+    if (!userId || !tradeId) return;
+    const numPT = profitTarget === '' ? null : parseFloat(profitTarget);
+    const numSL = stopLossPrice === '' ? null : parseFloat(stopLossPrice);
+    const rMult = getPlannedRMultValue(profitTarget, stopLossPrice, trade?.entry_price);
+    
+    try {
+      const { error } = await supabase
+        .from('trades')
+        .update({ 
+          stop_loss_price: numSL,
+          planned_r_multiple: rMult
+        })
+        .eq('id', tradeId)
+        .eq('user_id', userId);
+      if (error) throw error;
+      
+      setTrade((prev: any) => ({
+        ...prev,
+        stop_loss_price: numSL,
+        planned_r_multiple: rMult
+      }));
+    } catch (err) {
+      console.error('Error saving stop loss:', err);
+      showError('Failed to save Stop Loss.');
+    }
+  };
+
+  const handleBlurMae = async () => {
+    if (!userId || !tradeId) return;
+    const numMae = maeValue === '' ? null : parseFloat(maeValue);
+    try {
+      const { error } = await supabase
+        .from('trades')
+        .update({ mae: numMae })
+        .eq('id', tradeId)
+        .eq('user_id', userId);
+      if (error) throw error;
+      
+      setTrade((prev: any) => ({
+        ...prev,
+        mae: numMae
+      }));
+    } catch (err) {
+      console.error('Error saving MAE:', err);
+      showError('Failed to save MAE.');
+    }
+  };
+
+  const handleBlurMfe = async () => {
+    if (!userId || !tradeId) return;
+    const numMfe = mfeValue === '' ? null : parseFloat(mfeValue);
+    try {
+      const { error } = await supabase
+        .from('trades')
+        .update({ mfe: numMfe })
+        .eq('id', tradeId)
+        .eq('user_id', userId);
+      if (error) throw error;
+      
+      setTrade((prev: any) => ({
+        ...prev,
+        mfe: numMfe
+      }));
+    } catch (err) {
+      console.error('Error saving MFE:', err);
+      showError('Failed to save MFE.');
+    }
+  };
+
+  // Planned R-Multiple auto-calculated read-only formula
+  const calculatedPlannedR = React.useMemo(() => {
+    const pt = parseFloat(profitTarget);
+    const sl = parseFloat(stopLossPrice);
+    const ep = trade?.entry_price;
+    
+    if (isNaN(pt) || isNaN(sl) || !ep || ep === sl) return '—';
+    const val = (pt - ep) / (ep - sl);
+    return val >= 0 ? `+${val.toFixed(1)}R` : `${val.toFixed(1)}R`;
+  }, [profitTarget, stopLossPrice, trade?.entry_price]);
+
+  // Playbooks rules handlers
+  const handleToggleRule = async (ruleId: string, ruleType: 'entry' | 'exit', currentFollowed: boolean | null) => {
+    const newFollowed = currentFollowed === true ? null : true;
+    
+    if (ruleType === 'entry') {
+      setEntryRules(prev => prev.map(r => r.id === ruleId ? { ...r, followed: newFollowed } : r));
+    } else {
+      setExitRules(prev => prev.map(r => r.id === ruleId ? { ...r, followed: newFollowed } : r));
+    }
+
+    try {
+      const { error } = await supabase
+        .from('trade_rule_adherence')
+        .update({ followed: newFollowed })
+        .eq('id', ruleId)
+        .eq('user_id', userId);
+      
+      if (error) throw error;
+    } catch (err) {
+      console.error('Error updating rule adherence:', err);
+      showError('Failed to update rule adherence.');
+      // Rollback
+      if (ruleType === 'entry') {
+        setEntryRules(prev => prev.map(r => r.id === ruleId ? { ...r, followed: currentFollowed } : r));
+      } else {
+        setExitRules(prev => prev.map(r => r.id === ruleId ? { ...r, followed: currentFollowed } : r));
+      }
+    }
+  };
+
+  const handleUncheckAllRules = async (ruleType: 'entry' | 'exit') => {
+    const targetRules = ruleType === 'entry' ? entryRules : exitRules;
+    const ruleIds = targetRules.map(r => r.id);
+    if (ruleIds.length === 0) return;
+
+    const originalRules = [...targetRules];
+
+    if (ruleType === 'entry') {
+      setEntryRules(prev => prev.map(r => ({ ...r, followed: null })));
+    } else {
+      setExitRules(prev => prev.map(r => ({ ...r, followed: null })));
+    }
+
+    try {
+      const { error } = await supabase
+        .from('trade_rule_adherence')
+        .update({ followed: null })
+        .in('id', ruleIds)
+        .eq('user_id', userId);
+      
+      if (error) throw error;
+      showSuccess(`Unchecked all ${ruleType} rules.`);
+    } catch (err) {
+      console.error('Error unchecking all rules:', err);
+      showError('Failed to uncheck rules.');
+      if (ruleType === 'entry') {
+        setEntryRules(originalRules);
+      } else {
+        setExitRules(originalRules);
+      }
+    }
+  };
+
+  // Running P&L TwelveData fetcher
+  const symbolMap: Record<string, string> = {
+    XAUUSD: "XAU/USD", EURUSD: "EUR/USD", GBPUSD: "GBP/USD",
+    BTCUSDT: "BTC/USDT", ETHUSDT: "ETH/USDT",
+    NIFTY: "NIFTY", BANKNIFTY: "BANKNIFTY"
+  };
+
+  const getFullDatetimeString = (dateStr: string, timeStr: string | null | undefined) => {
+    if (!timeStr) return dateStr;
+    if (timeStr.includes('-') || timeStr.includes('T')) {
+      return timeStr;
+    }
+    return `${dateStr} ${timeStr}`;
+  };
+
+  const getFallbackChartData = () => {
+    if (!trade) return [];
+    try {
+      const entryDate = new Date(getFullDatetimeString(trade.date, trade.entry_time));
+      const exitDate = new Date(getFullDatetimeString(trade.date, trade.exit_time || trade.entry_time));
+      
+      let entryMs = entryDate.getTime();
+      let exitMs = exitDate.getTime();
+      if (isNaN(entryMs)) entryMs = Date.now();
+      if (isNaN(exitMs) || exitMs <= entryMs) exitMs = entryMs + 3600000;
+      
+      const duration = exitMs - entryMs;
+      
+      const time1 = new Date(entryMs).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const time2 = new Date(entryMs + duration * 0.25).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const time3 = new Date(entryMs + duration * 0.60).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const time4 = new Date(exitMs).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      const qty = trade.quantity || 1;
+      const maePnl = trade.mae ? -(trade.mae * qty) : 0;
+      const mfePnl = trade.mfe ? (trade.mfe * qty) : (trade.pnl || 0);
+
+      return [
+        { time: time1, pnl: 0 },
+        { time: time2, pnl: maePnl },
+        { time: time3, pnl: mfePnl },
+        { time: time4, pnl: trade.pnl || 0 }
+      ];
+    } catch {
+      return [];
+    }
+  };
+
+  useEffect(() => {
+    const fetchRunningPnlData = async () => {
+      if (!trade) return;
+      try {
+        setChartLoading(true);
+        setApiError(false);
+        
+        const mappedSymbol = symbolMap[trade.symbol] || trade.symbol;
+        const startSec = getFullDatetimeString(trade.date, trade.entry_time);
+        const endSec = getFullDatetimeString(trade.date, trade.exit_time || trade.entry_time);
+        
+        const url = `https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(mappedSymbol)}&interval=1min&start_date=${encodeURIComponent(startSec)}&end_date=${encodeURIComponent(endSec)}&apikey=demo`;
+        
+        const res = await fetch(url);
+        const resJson = await res.json();
+        
+        if (resJson && Array.isArray(resJson.values) && resJson.values.length > 0) {
+          const sortedValues = [...resJson.values].reverse();
+          
+          const isShort = trade.direction === 'SHORT' || trade.option_type === 'PUT';
+          const qty = trade.quantity || 1;
+          const entryPrice = trade.entry_price || 0;
+          
+          const points = sortedValues.map((val: any) => {
+            const closeVal = parseFloat(val.close);
+            let runningPnl = 0;
+            if (isShort) {
+              runningPnl = (entryPrice - closeVal) * qty;
+            } else {
+              runningPnl = (closeVal - entryPrice) * qty;
+            }
+            const formattedTime = new Date(val.datetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            return {
+              time: formattedTime,
+              pnl: runningPnl
+            };
+          });
+          
+          const entryLabel = new Date(startSec).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          const exitLabel = new Date(endSec).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          
+          const finalPoints = [
+            { time: entryLabel, pnl: 0 },
+            ...points,
+            { time: exitLabel, pnl: trade.pnl || 0 }
+          ];
+          
+          setChartData(finalPoints);
+        } else {
+          setApiError(true);
+          setChartData(getFallbackChartData());
+        }
+      } catch (err) {
+        console.error('Error fetching TwelveData:', err);
+        setApiError(true);
+        setChartData(getFallbackChartData());
+      } finally {
+        setChartLoading(false);
+      }
+    };
+    
+    if (trade) {
+      fetchRunningPnlData();
+    }
+  }, [trade?.symbol, trade?.entry_time, trade?.exit_time, trade?.entry_price, trade?.quantity, trade?.pnl, trade?.mae, trade?.mfe, trade?.direction, trade?.option_type]);
 
   // Visual Embeddings States
   const [hasEmbedding, setHasEmbedding] = useState<boolean | null>(null);
@@ -504,8 +876,8 @@ const TradeTrackingPageContent: React.FC = () => {
         <main className="flex-1 overflow-y-auto px-6 py-8">
           <div className="max-w-6xl mx-auto">
             
-            {/* BREADCRUMB ANCHOR */}
-            <div className="mb-3">
+            {/* BREADCRUMB ROW WITH TRADE NAVIGATION */}
+            <div className="mb-3 flex items-center justify-between">
               <Link
                 to="/trading-logs"
                 style={{ color: 'var(--accent)' }}
@@ -514,6 +886,46 @@ const TradeTrackingPageContent: React.FC = () => {
                 <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
                 <span>Trading Logs</span>
               </Link>
+
+              {/* CHANGE 1 — Previous Trade / Next Trade navigation */}
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handlePrevTrade}
+                  disabled={!hasPrevious}
+                  style={{
+                    backgroundColor: 'var(--card)',
+                    border: '0.5px solid var(--border)',
+                    borderRadius: '8px',
+                    color: 'var(--text-sub)',
+                    fontSize: '12px',
+                    padding: '6px 14px',
+                    opacity: hasPrevious ? 1 : 0.4,
+                    cursor: hasPrevious ? 'pointer' : 'not-allowed'
+                  }}
+                  className="hover:opacity-85 transition-all font-semibold"
+                >
+                  ← Previous Trade
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNextTrade}
+                  disabled={!hasNext}
+                  style={{
+                    backgroundColor: 'var(--card)',
+                    border: '0.5px solid var(--border)',
+                    borderRadius: '8px',
+                    color: 'var(--text-sub)',
+                    fontSize: '12px',
+                    padding: '6px 14px',
+                    opacity: hasNext ? 1 : 0.4,
+                    cursor: hasNext ? 'pointer' : 'not-allowed'
+                  }}
+                  className="hover:opacity-85 transition-all font-semibold"
+                >
+                  Next Trade →
+                </button>
+              </div>
             </div>
 
             {/* NEEDS REVIEW WARNING BANNER */}
@@ -704,285 +1116,584 @@ const TradeTrackingPageContent: React.FC = () => {
               {/* LEFT SPANNING TWO COLUMNS */}
               <div className="lg:col-span-2 space-y-6">
                 
-                {/* CARD A: TRADE DETAILS */}
-                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="rounded-xl p-6 shadow-sm relative">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Briefcase className="w-5 h-5 text-[#06b6d4]" />
-                    <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display">Trade Accountancies</h2>
-                  </div>
+                {/* TABS SELECTOR ROW */}
+                <div style={{ borderColor: 'var(--border)' }} className="flex border-b w-full gap-1">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('stats')}
+                    style={{
+                      backgroundColor: activeTab === 'stats' ? 'var(--accent-muted)' : 'transparent',
+                      color: activeTab === 'stats' ? 'var(--accent)' : 'var(--text-sub)',
+                      borderBottom: activeTab === 'stats' ? '2px solid var(--accent)' : '2px solid transparent',
+                    }}
+                    className="px-5 py-3 text-sm font-bold transition-all cursor-pointer focus:outline-none"
+                  >
+                    Stats
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('playbooks')}
+                    style={{
+                      backgroundColor: activeTab === 'playbooks' ? 'var(--accent-muted)' : 'transparent',
+                      color: activeTab === 'playbooks' ? 'var(--accent)' : 'var(--text-sub)',
+                      borderBottom: activeTab === 'playbooks' ? '2px solid var(--accent)' : '2px solid transparent',
+                    }}
+                    className="px-5 py-3 text-sm font-bold transition-all cursor-pointer focus:outline-none"
+                  >
+                    Playbooks
+                  </button>
+                </div>
 
-                  {/* FINANCIAL GRID */}
-                  <div>
-                    <h3 style={{ color: 'var(--text-muted)', borderColor: 'var(--border)' }} className="text-[10px] font-bold font-mono uppercase tracking-wider mb-3 border-b pb-1">
-                      Financial Calculations
-                    </h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                      {/* P&L */}
-                      <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                        <span style={{ color: 'var(--text-muted)' }} className="block text-[10px] font-bold uppercase tracking-wide font-mono">P&L Gain/Loss</span>
-                        <span
-                          className={`text-lg font-black font-mono block mt-1 ${
-                            trade.pnl > 0 ? 'text-[#22c55e]' : trade.pnl < 0 ? 'text-[#ef4444]' : 'var(--text-sub)'
-                          }`}
+                {/* STATS TAB CONTENT */}
+                {activeTab === 'stats' && (
+                  <div className="space-y-6">
+                    {/* CARD A: TRADE DETAILS */}
+                    <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="rounded-xl p-6 shadow-sm relative">
+                      <div className="flex items-center gap-2 mb-4">
+                        <Briefcase className="w-5 h-5 text-[#06b6d4]" />
+                        <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display">Trade Accountancies</h2>
+                      </div>
+
+                      {/* FINANCIAL GRID */}
+                      <div>
+                        <h3 style={{ color: 'var(--text-muted)', borderColor: 'var(--border)' }} className="text-[10px] font-bold font-mono uppercase tracking-wider mb-3 border-b pb-1">
+                          Financial Calculations
+                        </h3>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                          {/* P&L */}
+                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
+                            <span style={{ color: 'var(--text-muted)' }} className="block text-[10px] font-bold uppercase tracking-wide font-mono">P&L Gain/Loss</span>
+                            <span
+                              className={`text-lg font-black font-mono block mt-1 ${
+                                trade.pnl > 0 ? 'text-[#22c55e]' : trade.pnl < 0 ? 'text-[#ef4444]' : 'var(--text-sub)'
+                              }`}
+                            >
+                              {formatINR(trade.pnl)}
+                            </span>
+                          </div>
+
+                          {/* R-Multiple */}
+                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
+                            <span style={{ color: 'var(--text-muted)' }} className="block text-[10px] font-bold uppercase tracking-wide font-mono">R-Multiple Earned</span>
+                            <span
+                              className={`text-lg font-black font-mono block mt-1 ${
+                                trade.r_multiple > 0 ? 'text-[#22c55e]' : 'text-[#ef4444]'
+                              }`}
+                            >
+                              {trade.r_multiple !== null ? `${trade.r_multiple > 0 ? '+' : ''}${trade.r_multiple.toFixed(2)}R` : '—'}
+                            </span>
+                          </div>
+
+                          {/* ROI */}
+                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
+                            <span style={{ color: 'var(--text-muted)' }} className="block text-[10px] font-bold uppercase tracking-wide font-mono">Return on Investment</span>
+                            <span
+                              className={`text-lg font-black font-mono block mt-1 ${
+                                trade.roi > 0 ? 'text-[#22c55e]' : 'text-[#ef4444]'
+                              }`}
+                            >
+                              {trade.roi !== null ? `${trade.roi > 0 ? '+' : ''}${trade.roi.toFixed(1)}%` : '—'}
+                            </span>
+                          </div>
+
+                          {/* Risk */}
+                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
+                            <span style={{ color: 'var(--text-muted)' }} className="block text-[10px] font-bold uppercase tracking-wide font-mono">Actual Risk Taken</span>
+                            <span style={{ color: 'var(--text)' }} className="text-sm font-bold block mt-1 font-mono">
+                              {formatINR(trade.risk)}
+                            </span>
+                          </div>
+
+                          {/* Investment */}
+                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
+                            <span style={{ color: 'var(--text-muted)' }} className="block text-[10px] font-bold uppercase tracking-wide font-mono">Total Allocation</span>
+                            <span style={{ color: 'var(--text)' }} className="text-sm font-bold block mt-1 font-mono">
+                              {formatINR(trade.investment)}
+                            </span>
+                          </div>
+
+                          {/* Fees */}
+                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
+                            <span style={{ color: 'var(--text-muted)' }} className="block text-[10px] font-bold uppercase tracking-wide font-mono">Brokerage Fees</span>
+                            <span style={{ color: 'var(--text)' }} className="text-sm font-bold block mt-1 font-mono">
+                              {formatINR(trade.fees)}
+                            </span>
+                          </div>
+
+                          {/* Quantity */}
+                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
+                            <span style={{ color: 'var(--text-muted)' }} className="block text-[10px] font-bold uppercase tracking-wide font-mono">Quantity / Lots</span>
+                            <span style={{ color: 'var(--text)' }} className="text-sm font-bold block mt-1 font-mono">
+                              {trade.quantity !== null ? trade.quantity : '—'}
+                            </span>
+                          </div>
+
+                          {/* Points */}
+                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
+                            <span style={{ color: 'var(--text-muted)' }} className="block text-[10px] font-bold uppercase tracking-wide font-mono">Capture Points</span>
+                            <span style={{ color: 'var(--text)' }} className="text-sm font-bold block mt-1 font-mono">
+                              {trade.points !== null ? trade.points : '—'}
+                            </span>
+                          </div>
+
+                          {/* Holding Time */}
+                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
+                            <span style={{ color: 'var(--text-muted)' }} className="block text-[10px] font-bold uppercase tracking-wide font-mono">Holding Duration</span>
+                            <span style={{ color: 'var(--text)' }} className="text-sm font-bold block mt-1 font-mono">
+                              {trade.holding_time_mins !== null ? `${trade.holding_time_mins} mins` : '—'}
+                            </span>
+                          </div>
+
+                          {/* Max Drawdown */}
+                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
+                            <span style={{ color: 'var(--text-muted)' }} className="block text-[10px] font-bold uppercase tracking-wide font-mono">Max Drawdown (DD)</span>
+                            <span className="text-red-500 text-sm font-bold block mt-1 font-mono font-bold">
+                              {formatINR(trade.max_drawdown)}
+                            </span>
+                          </div>
+
+                          {/* MDD % */}
+                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
+                            <span style={{ color: 'var(--text-muted)' }} className="block text-[10px] font-bold uppercase tracking-wide font-mono">Drawdown %</span>
+                            <span className="text-red-500 text-sm font-bold block mt-1 font-mono font-bold">
+                              {trade.mdd_pct !== null ? `${trade.mdd_pct.toFixed(2)}%` : '—'}
+                            </span>
+                          </div>
+
+                          {/* ROR */}
+                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
+                            <span style={{ color: 'var(--text-muted)' }} className="block text-[10px] font-bold uppercase tracking-wide font-mono">Risk of Ruin (ROR)</span>
+                            <span style={{ color: 'var(--text)' }} className="text-sm font-bold block mt-1 font-mono font-bold">
+                              {trade.ror !== null ? `${trade.ror.toFixed(2)}%` : '—'}
+                            </span>
+                          </div>
+
+                          {/* Profit Target */}
+                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
+                            <span style={{ color: 'var(--text-muted)', fontSize: '10px' }} className="block font-bold uppercase tracking-wide font-mono">PROFIT TARGET</span>
+                            <input
+                              type="number"
+                              step="any"
+                              value={profitTarget}
+                              onChange={e => setProfitTarget(e.target.value)}
+                              onBlur={handleBlurProfitTarget}
+                              placeholder="Target price"
+                              style={{
+                                backgroundColor: 'var(--bg)',
+                                border: '0.5px solid var(--border)',
+                                color: 'var(--text)',
+                                outline: 'none',
+                                fontSize: '13px',
+                                borderRadius: '6px',
+                                padding: '4px 8px',
+                                width: '100%',
+                                marginTop: '4px'
+                              }}
+                              className="font-mono"
+                            />
+                          </div>
+
+                          {/* Stop Loss Price */}
+                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
+                            <span style={{ color: 'var(--text-muted)', fontSize: '10px' }} className="block font-bold uppercase tracking-wide font-mono">STOP LOSS PRICE</span>
+                            <input
+                              type="number"
+                              step="any"
+                              value={stopLossPrice}
+                              onChange={e => setStopLossPrice(e.target.value)}
+                              onBlur={handleBlurStopLossPrice}
+                              placeholder="SL price"
+                              style={{
+                                backgroundColor: 'var(--bg)',
+                                border: '0.5px solid var(--border)',
+                                color: 'var(--text)',
+                                outline: 'none',
+                                fontSize: '13px',
+                                borderRadius: '6px',
+                                padding: '4px 8px',
+                                width: '100%',
+                                marginTop: '4px'
+                              }}
+                              className="font-mono"
+                            />
+                          </div>
+
+                          {/* Planned R-Multiple */}
+                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
+                            <span style={{ color: 'var(--text-muted)', fontSize: '10px' }} className="block font-bold uppercase tracking-wide font-mono">PLANNED R-MULTIPLE</span>
+                            <span
+                              style={{ color: 'var(--accent)' }}
+                              className="text-lg font-black font-mono block mt-1"
+                            >
+                              {calculatedPlannedR}
+                            </span>
+                          </div>
+
+                          {/* MAE */}
+                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
+                            <span style={{ color: 'var(--text-muted)', fontSize: '10px' }} className="block font-bold uppercase tracking-wide font-mono">MAE (Max Adverse Excursion)</span>
+                            <input
+                              type="number"
+                              step="any"
+                              value={maeValue}
+                              onChange={e => setMaeValue(e.target.value)}
+                              onBlur={handleBlurMae}
+                              placeholder="Worst price against you"
+                              style={{
+                                backgroundColor: 'var(--bg)',
+                                border: '0.5px solid var(--border)',
+                                color: 'var(--text)',
+                                outline: 'none',
+                                fontSize: '13px',
+                                borderRadius: '6px',
+                                padding: '4px 8px',
+                                width: '100%',
+                                marginTop: '4px'
+                              }}
+                              className="font-mono"
+                            />
+                          </div>
+
+                          {/* MFE */}
+                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
+                            <span style={{ color: 'var(--text-muted)', fontSize: '10px' }} className="block font-bold uppercase tracking-wide font-mono">MFE (Max Favorable Excursion)</span>
+                            <input
+                              type="number"
+                              step="any"
+                              value={mfeValue}
+                              onChange={e => setMfeValue(e.target.value)}
+                              onBlur={handleBlurMfe}
+                              placeholder="Best price in your favor"
+                              style={{
+                                backgroundColor: 'var(--bg)',
+                                border: '0.5px solid var(--border)',
+                                color: 'var(--text)',
+                                outline: 'none',
+                                fontSize: '13px',
+                                borderRadius: '6px',
+                                padding: '4px 8px',
+                                width: '100%',
+                                marginTop: '4px'
+                              }}
+                              className="font-mono"
+                            />
+                          </div>
+
+                          {/* Gross P&L */}
+                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
+                            <span style={{ color: 'var(--text-muted)', fontSize: '10px' }} className="block font-bold uppercase tracking-wide font-mono">GROSS P&L</span>
+                            {(() => {
+                              const grossVal = (trade.pnl || 0) + (trade.fees || 0);
+                              return (
+                                <span
+                                  className="text-lg font-black font-mono block mt-1"
+                                  style={{ color: grossVal > 0 ? '#22c55e' : grossVal < 0 ? '#ef4444' : 'var(--text-sub)' }}
+                                >
+                                  {formatINR(grossVal)}
+                                </span>
+                              );
+                            })()}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* CONTEXT GRID */}
+                      <div style={{ borderColor: 'var(--border)' }} className="mt-6 pt-5 border-t">
+                        <h3 style={{ color: 'var(--text-muted)' }} className="text-xs font-bold font-mono uppercase tracking-wider mb-3 pb-1">
+                          Trading Context Variables
+                        </h3>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                          <div>
+                            <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] uppercase font-mono">Entry Time</span>
+                            <span style={{ color: 'var(--text)' }} className="text-xs font-bold block mt-0.5">{trade.entry_time || '—'}</span>
+                          </div>
+                          <div>
+                            <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] uppercase font-mono">Market Phase</span>
+                            <span style={{ color: 'var(--text)' }} className="text-xs font-bold block mt-0.5">{trade.phase || '—'}</span>
+                          </div>
+                          <div>
+                            <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] uppercase font-mono">Trend Location</span>
+                            <span style={{ color: 'var(--text)' }} className="text-xs font-bold block mt-0.5">{trade.trend_position || '—'}</span>
+                          </div>
+                          <div>
+                            <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] uppercase font-mono">Opening State</span>
+                            <span style={{ color: 'var(--text)' }} className="text-xs font-bold block mt-0.5">{trade.opening_condition || '—'}</span>
+                          </div>
+                          <div>
+                            <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] uppercase font-mono">Hourly Trend</span>
+                            <span style={{ color: 'var(--text)' }} className="text-xs font-bold block mt-0.5">{trade.hourly_trend || '—'}</span>
+                          </div>
+                          <div>
+                            <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] uppercase font-mono">Vantage Month / Yr</span>
+                            <span style={{ color: 'var(--text)' }} className="text-xs font-bold block mt-0.5 font-mono">
+                              {trade.month} {trade.year}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+
+                    {/* TRADINGVIEW CHART CARD */}
+                    <div style={{ background: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '16px 20px' }}>
+                      <TradeChart trade={trade} userTheme={userTheme} />
+                    </div>
+
+                    {/* CARD D: GENERAL EXECUTION QUALITY & TRADER NOTES */}
+                    <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="rounded-xl p-6 shadow-sm relative">
+                      <div className="flex items-center gap-2 mb-4">
+                        <Star className="w-5 h-5 text-amber-500" />
+                        <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display">Execution & Notes</h2>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Execution left side parameters */}
+                        <div className="space-y-4">
+                          <div>
+                            <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] font-bold font-mono uppercase tracking-widest mb-1.5 font-sans">
+                              Execution Match Class
+                            </span>
+                            {trade.execution_status ? (
+                              <span
+                                className={`inline-block px-3 py-1 text-xs font-extrabold uppercase tracking-widest font-mono rounded-lg border ${
+                                  trade.execution_status === 'BEST TRADE'
+                                    ? 'bg-green-950/80 text-green-400 border-green-800'
+                                    : trade.execution_status === 'GOOD TRADE'
+                                    ? 'bg-teal-950/80 text-teal-400 border-teal-800'
+                                    : trade.execution_status === 'AVERAGE TRADE'
+                                    ? 'bg-amber-950/80 text-amber-400 border-amber-800'
+                                    : trade.execution_status === 'POOR TRADE'
+                                    ? 'bg-orange-950/80 text-orange-400 border-orange-800'
+                                    : 'bg-red-950/80 text-red-400 border-red-800'
+                                }`}
+                              >
+                                {trade.execution_status}
+                              </span>
+                            ) : (
+                              <span style={{ color: 'var(--text-muted)' }} className="italic text-xs">Uncategorized execution</span>
+                            )}
+                          </div>
+
+                          <div>
+                            <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] font-bold font-mono uppercase tracking-widest mb-1 font-sans">
+                              Mistake Categorization
+                            </span>
+                            <div className="text-sm font-semibold text-zinc-200 mt-1 flex items-center gap-1.5">
+                              {trade.mistake_type === 'No Mistake' || !trade.mistake_type ? (
+                                <span className="text-green-500 font-bold bg-green-50 border border-green-200 px-2.5 py-0.5 rounded text-xs inline-block">
+                                  No Mistake
+                                </span>
+                              ) : (
+                                <span className="text-red-500 font-bold bg-red-50 border border-red-200 px-2.5 py-0.5 rounded text-xs inline-block">
+                                  {trade.mistake_type}
+                                </span>
+                              )}
+                            </div>
+                            {trade.mistake_text && (
+                              <p style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', color: 'var(--text)' }} className="text-xs mt-2 italic p-2.5 rounded-lg">
+                                {trade.mistake_text}
+                              </p>
+                            )}
+                          </div>
+
+                          <div>
+                            <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] font-bold font-mono uppercase tracking-widest mb-1.5 font-sans">
+                              Synthesized Star Rating
+                            </span>
+                            {renderStars(trade.trade_rating)}
+                            <span style={{ color: 'var(--text-muted)' }} className="text-[11px] font-mono mt-1 block">
+                              {trade.trade_rating || 0} out of 5 stars
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Notes Box view */}
+                        <div className="flex flex-col">
+                          <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] font-bold font-mono uppercase tracking-widest mb-2 font-sans">
+                            Post-Trade Reflections
+                          </span>
+                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="rounded-xl p-4 flex-1 min-h-[140px]">
+                            {trade.notes ? (
+                              <p style={{ color: 'var(--text)' }} className="text-xs leading-relaxed whitespace-pre-wrap">
+                                {trade.notes}
+                              </p>
+                            ) : (
+                              <p style={{ color: 'var(--text-muted)' }} className="text-xs italic">
+                                No diary notes transcribed for this trade.
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                )}
+
+                {/* PLAYBOOKS TAB CONTENT */}
+                {activeTab === 'playbooks' && (
+                  <div className="space-y-6 animate-fadeIn">
+                    
+                    {/* Large P&L and Setup Name */}
+                    <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="p-6 shadow-sm">
+                      <div className="flex flex-col gap-1.5">
+                        <span 
+                          className="text-4xl font-extrabold tracking-tight font-mono"
+                          style={{ color: trade.pnl > 0 ? '#22c55e' : trade.pnl < 0 ? '#ef4444' : 'var(--text-sub)' }}
                         >
                           {formatINR(trade.pnl)}
                         </span>
+                        <span style={{ color: 'var(--text-sub)' }} className="text-sm font-semibold tracking-wide uppercase font-sans mt-0.5">
+                          Setup: {trade.strategies?.name || 'Unnamed Setup'}
+                        </span>
                       </div>
+                    </div>
 
-                      {/* R-Multiple */}
-                      <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                        <span style={{ color: 'var(--text-muted)' }} className="block text-[10px] font-bold uppercase tracking-wide font-mono">R-Multiple Earned</span>
-                        <span
-                          className={`text-lg font-black font-mono block mt-1 ${
-                            trade.r_multiple > 0 ? 'text-[#22c55e]' : 'text-[#ef4444]'
-                          }`}
+                    {/* ENTRY RULES SECTION */}
+                    <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="p-6 shadow-sm">
+                      <div className="flex items-center justify-between mb-4">
+                        <span style={{ color: 'var(--text-muted)', fontSize: '10px' }} className="font-bold font-mono uppercase tracking-wider">
+                          ENTRY RULES
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleUncheckAllRules('entry')}
+                          style={{ color: 'var(--text-muted)', fontSize: '11px' }}
+                          className="hover:underline hover:opacity-85 transition-all cursor-pointer font-sans"
                         >
-                          {trade.r_multiple !== null ? `${trade.r_multiple > 0 ? '+' : ''}${trade.r_multiple.toFixed(2)}R` : '—'}
-                        </span>
+                          UNCHECK ALL
+                        </button>
                       </div>
 
-                      {/* ROI */}
-                      <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                        <span style={{ color: 'var(--text-muted)' }} className="block text-[10px] font-bold uppercase tracking-wide font-mono">Return on Investment</span>
-                        <span
-                          className={`text-lg font-black font-mono block mt-1 ${
-                            trade.roi > 0 ? 'text-[#22c55e]' : 'text-[#ef4444]'
-                          }`}
+                      {/* Progress bar showing rules followed */}
+                      {(() => {
+                        const totalCount = entryRules.length;
+                        const followedCount = entryRules.filter(r => r.followed === true).length;
+                        const percentage = totalCount > 0 ? (followedCount / totalCount) * 100 : 0;
+                        return (
+                          <div className="mb-5">
+                            <div style={{ backgroundColor: 'var(--bar)' }} className="w-full h-1.5 rounded-[3px] overflow-hidden">
+                              <div 
+                                style={{ width: `${percentage}%`, backgroundColor: 'var(--accent)' }}
+                                className="h-full rounded-[3px] transition-all duration-300" 
+                              />
+                            </div>
+                            <span style={{ color: 'var(--text-sub)' }} className="text-xs mt-2 block font-medium">
+                              {followedCount} / {totalCount} rules followed
+                            </span>
+                          </div>
+                        );
+                      })()}
+
+                      {/* Entry Rules list with Checkboxes */}
+                      <div className="space-y-1 mt-4">
+                        {entryRules.length === 0 ? (
+                          <div style={{ color: 'var(--text-muted)' }} className="text-xs italic py-2">
+                            No entry rules defined for this strategy.
+                          </div>
+                        ) : (
+                          entryRules.map((rule) => {
+                            const isChecked = rule.followed === true;
+                            return (
+                              <div
+                                key={rule.id}
+                                onClick={() => handleToggleRule(rule.id, 'entry', rule.followed)}
+                                style={{ borderColor: 'var(--border)' }}
+                                className="flex items-center gap-3 py-3 border-b border-zinc-800/40 last:border-0 hover:bg-[var(--accent-muted)]/10 px-1 rounded-lg transition-colors cursor-pointer group"
+                              >
+                                <div
+                                  style={{
+                                    borderColor: isChecked ? 'var(--accent)' : 'var(--border)',
+                                    backgroundColor: isChecked ? 'var(--accent)' : 'transparent',
+                                  }}
+                                  className="w-[18px] h-[18px] rounded border flex items-center justify-center transition-colors shrink-0"
+                                >
+                                  {isChecked && (
+                                    <Check className="w-3.5 h-3.5 text-white stroke-[3px]" />
+                                  )}
+                                </div>
+                                <span style={{ color: 'var(--text)', fontSize: '13px' }} className="flex-1 leading-snug">
+                                  {rule.rule_text}
+                                </span>
+                              </div>
+                            );
+                          })
+                        )}
+                      </div>
+                    </div>
+
+                    {/* EXIT RULES SECTION */}
+                    <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="p-6 shadow-sm">
+                      <div className="flex items-center justify-between mb-4">
+                        <span style={{ color: 'var(--text-muted)', fontSize: '10px' }} className="font-bold font-mono uppercase tracking-wider">
+                          EXIT RULES
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleUncheckAllRules('exit')}
+                          style={{ color: 'var(--text-muted)', fontSize: '11px' }}
+                          className="hover:underline hover:opacity-85 transition-all cursor-pointer font-sans"
                         >
-                          {trade.roi !== null ? `${trade.roi > 0 ? '+' : ''}${trade.roi.toFixed(1)}%` : '—'}
-                        </span>
+                          UNCHECK ALL
+                        </button>
                       </div>
 
-                      {/* Risk */}
-                      <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                        <span style={{ color: 'var(--text-muted)' }} className="block text-[10px] font-bold uppercase tracking-wide font-mono">Actual Risk Taken</span>
-                        <span style={{ color: 'var(--text)' }} className="text-sm font-bold block mt-1 font-mono">
-                          {formatINR(trade.risk)}
-                        </span>
-                      </div>
-
-                      {/* Investment */}
-                      <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                        <span style={{ color: 'var(--text-muted)' }} className="block text-[10px] font-bold uppercase tracking-wide font-mono">Total Allocation</span>
-                        <span style={{ color: 'var(--text)' }} className="text-sm font-bold block mt-1 font-mono">
-                          {formatINR(trade.investment)}
-                        </span>
-                      </div>
-
-                      {/* Fees */}
-                      <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                        <span style={{ color: 'var(--text-muted)' }} className="block text-[10px] font-bold uppercase tracking-wide font-mono">Brokerage Fees</span>
-                        <span style={{ color: 'var(--text)' }} className="text-sm font-bold block mt-1 font-mono">
-                          {formatINR(trade.fees)}
-                        </span>
-                      </div>
-
-                      {/* Quantity */}
-                      <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                        <span style={{ color: 'var(--text-muted)' }} className="block text-[10px] font-bold uppercase tracking-wide font-mono">Quantity / Lots</span>
-                        <span style={{ color: 'var(--text)' }} className="text-sm font-bold block mt-1 font-mono">
-                          {trade.quantity !== null ? trade.quantity : '—'}
-                        </span>
-                      </div>
-
-                      {/* Points */}
-                      <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                        <span style={{ color: 'var(--text-muted)' }} className="block text-[10px] font-bold uppercase tracking-wide font-mono">Capture Points</span>
-                        <span style={{ color: 'var(--text)' }} className="text-sm font-bold block mt-1 font-mono">
-                          {trade.points !== null ? trade.points : '—'}
-                        </span>
-                      </div>
-
-                      {/* Holding Time */}
-                      <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                        <span style={{ color: 'var(--text-muted)' }} className="block text-[10px] font-bold uppercase tracking-wide font-mono">Holding Duration</span>
-                        <span style={{ color: 'var(--text)' }} className="text-sm font-bold block mt-1 font-mono">
-                          {trade.holding_time_mins !== null ? `${trade.holding_time_mins} mins` : '—'}
-                        </span>
-                      </div>
-
-                      {/* Max Drawdown */}
-                      <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                        <span style={{ color: 'var(--text-muted)' }} className="block text-[10px] font-bold uppercase tracking-wide font-mono">Max Drawdown (DD)</span>
-                        <span className="text-red-500 text-sm font-bold block mt-1 font-mono font-bold">
-                          {formatINR(trade.max_drawdown)}
-                        </span>
-                      </div>
-
-                      {/* MDD % */}
-                      <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                        <span style={{ color: 'var(--text-muted)' }} className="block text-[10px] font-bold uppercase tracking-wide font-mono">Drawdown %</span>
-                        <span className="text-red-500 text-sm font-bold block mt-1 font-mono font-bold">
-                          {trade.mdd_pct !== null ? `${trade.mdd_pct.toFixed(2)}%` : '—'}
-                        </span>
-                      </div>
-
-                      {/* ROR */}
-                      <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                        <span style={{ color: 'var(--text-muted)' }} className="block text-[10px] font-bold uppercase tracking-wide font-mono">Risk of Ruin (ROR)</span>
-                        <span style={{ color: 'var(--text)' }} className="text-sm font-bold block mt-1 font-mono font-bold">
-                          {trade.ror !== null ? `${trade.ror.toFixed(2)}%` : '—'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* CONTEXT GRID */}
-                  <div style={{ borderColor: 'var(--border)' }} className="mt-6 pt-5 border-t">
-                    <h3 style={{ color: 'var(--text-muted)' }} className="text-xs font-bold font-mono uppercase tracking-wider mb-3 pb-1">
-                      Trading Context Variables
-                    </h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                      <div>
-                        <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] uppercase font-mono">Entry Time</span>
-                        <span style={{ color: 'var(--text)' }} className="text-xs font-bold block mt-0.5">{trade.entry_time || '—'}</span>
-                      </div>
-                      <div>
-                        <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] uppercase font-mono">Market Phase</span>
-                        <span style={{ color: 'var(--text)' }} className="text-xs font-bold block mt-0.5">{trade.phase || '—'}</span>
-                      </div>
-                      <div>
-                        <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] uppercase font-mono">Trend Location</span>
-                        <span style={{ color: 'var(--text)' }} className="text-xs font-bold block mt-0.5">{trade.trend_position || '—'}</span>
-                      </div>
-                      <div>
-                        <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] uppercase font-mono">Opening State</span>
-                        <span style={{ color: 'var(--text)' }} className="text-xs font-bold block mt-0.5">{trade.opening_condition || '—'}</span>
-                      </div>
-                      <div>
-                        <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] uppercase font-mono">Hourly Trend</span>
-                        <span style={{ color: 'var(--text)' }} className="text-xs font-bold block mt-0.5">{trade.hourly_trend || '—'}</span>
-                      </div>
-                      <div>
-                        <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] uppercase font-mono">Vantage Month / Yr</span>
-                        <span style={{ color: 'var(--text)' }} className="text-xs font-bold block mt-0.5 font-mono">
-                          {trade.month} {trade.year}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-
-                {/* CARD B: ENTRY RULES SHAPED DISPLAY */}
-                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="rounded-xl p-6 shadow-sm relative">
-                  <div className="flex items-center justify-between mb-2 font-sans">
-                    <div className="flex items-center gap-2">
-                      <Layers className="w-5 h-5 text-green-500" />
-                      <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display">Entry Rules Checklist</h2>
-                    </div>
-                    <span style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', color: 'var(--text-sub)' }} className="text-xs font-bold px-2 py-1 rounded-md font-mono">
-                      {entryRules.length} Rules Setup
-                    </span>
-                  </div>
-                  <RuleChecklistDisplay rules={entryRules} ruleType="entry" />
-                </section>
-
-                {/* CARD C: EXIT RULES SHAPED DISPLAY */}
-                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="rounded-xl p-6 shadow-sm relative">
-                  <div className="flex items-center justify-between mb-2 font-sans">
-                    <div className="flex items-center gap-2">
-                      <Layers className="w-5 h-5 text-red-500" />
-                      <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display">Exit Rules Checklist</h2>
-                    </div>
-                    <span style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', color: 'var(--text-sub)' }} className="text-xs font-bold px-2 py-1 rounded-md font-mono">
-                      {exitRules.length} Rules Setup
-                    </span>
-                  </div>
-                  <RuleChecklistDisplay rules={exitRules} ruleType="exit" />
-                </section>
-
-                {/* TRADINGVIEW CHART CARD */}
-                <div style={{ background: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '16px 20px' }}>
-                  <TradeChart trade={trade} userTheme={userTheme} />
-                </div>
-
-                {/* CARD D: GENERAL EXECUTION QUALITY & TRADER NOTES */}
-                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="rounded-xl p-6 shadow-sm relative">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Star className="w-5 h-5 text-amber-500" />
-                    <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display">Execution & Notes</h2>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Execution left side parameters */}
-                    <div className="space-y-4">
-                      <div>
-                        <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] font-bold font-mono uppercase tracking-widest mb-1.5 font-sans">
-                          Execution Match Class
-                        </span>
-                        {trade.execution_status ? (
-                          <span
-                            className={`inline-block px-3 py-1 text-xs font-extrabold uppercase tracking-widest font-mono rounded-lg border ${
-                              trade.execution_status === 'BEST TRADE'
-                                ? 'bg-green-950/80 text-green-400 border-green-800'
-                                : trade.execution_status === 'GOOD TRADE'
-                                ? 'bg-teal-950/80 text-teal-400 border-teal-800'
-                                : trade.execution_status === 'AVERAGE TRADE'
-                                ? 'bg-amber-950/80 text-amber-400 border-amber-800'
-                                : trade.execution_status === 'POOR TRADE'
-                                ? 'bg-orange-950/80 text-orange-400 border-orange-800'
-                                : 'bg-red-950/80 text-red-400 border-red-800'
-                            }`}
-                          >
-                            {trade.execution_status}
-                          </span>
-                        ) : (
-                          <span style={{ color: 'var(--text-muted)' }} className="italic text-xs">Uncategorized execution</span>
-                        )}
-                      </div>
-
-                      <div>
-                        <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] font-bold font-mono uppercase tracking-widest mb-1 font-sans">
-                          Mistake Categorization
-                        </span>
-                        <div className="text-sm font-semibold text-zinc-200 mt-1 flex items-center gap-1.5">
-                          {trade.mistake_type === 'No Mistake' || !trade.mistake_type ? (
-                            <span className="text-green-500 font-bold bg-green-50 border border-green-200 px-2.5 py-0.5 rounded text-xs inline-block">
-                              No Mistake
+                      {/* Progress bar showing rules followed */}
+                      {(() => {
+                        const totalCount = exitRules.length;
+                        const followedCount = exitRules.filter(r => r.followed === true).length;
+                        const percentage = totalCount > 0 ? (followedCount / totalCount) * 100 : 0;
+                        return (
+                          <div className="mb-5">
+                            <div style={{ backgroundColor: 'var(--bar)' }} className="w-full h-1.5 rounded-[3px] overflow-hidden">
+                              <div 
+                                style={{ width: `${percentage}%`, backgroundColor: 'var(--accent)' }}
+                                className="h-full rounded-[3px] transition-all duration-300" 
+                              />
+                            </div>
+                            <span style={{ color: 'var(--text-sub)' }} className="text-xs mt-2 block font-medium">
+                              {followedCount} / {totalCount} rules followed
                             </span>
-                          ) : (
-                            <span className="text-red-500 font-bold bg-red-50 border border-red-200 px-2.5 py-0.5 rounded text-xs inline-block">
-                              {trade.mistake_type}
-                            </span>
-                          )}
-                        </div>
-                        {trade.mistake_text && (
-                          <p style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', color: 'var(--text)' }} className="text-xs mt-2 italic p-2.5 rounded-lg">
-                            {trade.mistake_text}
-                          </p>
-                        )}
-                      </div>
+                          </div>
+                        );
+                      })()}
 
-                      <div>
-                        <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] font-bold font-mono uppercase tracking-widest mb-1.5 font-sans">
-                          Synthesized Star Rating
-                        </span>
-                        {renderStars(trade.trade_rating)}
-                        <span style={{ color: 'var(--text-muted)' }} className="text-[11px] font-mono mt-1 block">
-                          {trade.trade_rating || 0} out of 5 stars
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Notes Box view */}
-                    <div className="flex flex-col">
-                      <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] font-bold font-mono uppercase tracking-widest mb-2 font-sans">
-                        Post-Trade Reflections
-                      </span>
-                      <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="rounded-xl p-4 flex-1 min-h-[140px]">
-                        {trade.notes ? (
-                          <p style={{ color: 'var(--text)' }} className="text-xs leading-relaxed whitespace-pre-wrap">
-                            {trade.notes}
-                          </p>
+                      {/* Exit Rules list with Checkboxes */}
+                      <div className="space-y-1 mt-4">
+                        {exitRules.length === 0 ? (
+                          <div style={{ color: 'var(--text-muted)' }} className="text-xs italic py-2">
+                            No exit rules defined for this strategy.
+                          </div>
                         ) : (
-                          <p style={{ color: 'var(--text-muted)' }} className="text-xs italic">
-                            No diary notes transcribed for this trade.
-                          </p>
+                          exitRules.map((rule) => {
+                            const isChecked = rule.followed === true;
+                            return (
+                              <div
+                                key={rule.id}
+                                onClick={() => handleToggleRule(rule.id, 'exit', rule.followed)}
+                                style={{ borderColor: 'var(--border)' }}
+                                className="flex items-center gap-3 py-3 border-b border-zinc-800/40 last:border-0 hover:bg-[var(--accent-muted)]/10 px-1 rounded-lg transition-colors cursor-pointer group"
+                              >
+                                <div
+                                  style={{
+                                    borderColor: isChecked ? 'var(--accent)' : 'var(--border)',
+                                    backgroundColor: isChecked ? 'var(--accent)' : 'transparent',
+                                  }}
+                                  className="w-[18px] h-[18px] rounded border flex items-center justify-center transition-colors shrink-0"
+                                >
+                                  {isChecked && (
+                                    <Check className="w-3.5 h-3.5 text-white stroke-[3px]" />
+                                  )}
+                                </div>
+                                <span style={{ color: 'var(--text)', fontSize: '13px' }} className="flex-1 leading-snug">
+                                  {rule.rule_text}
+                                </span>
+                              </div>
+                            );
+                          })
                         )}
                       </div>
                     </div>
                   </div>
-                </section>
+                )}
               </div>
 
               {/* RIGHT SPANNING ONE COLUMN BENTO RAILS */}
@@ -1057,6 +1768,90 @@ const TradeTrackingPageContent: React.FC = () => {
                       psychScore={psychScore}
                       riskScore={riskScore}
                     />
+                  </div>
+                </section>
+
+                {/* CHANGE 4 — Running P&L Chart Card */}
+                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="rounded-xl p-6 shadow-sm overflow-hidden">
+                  <div className="flex items-center justify-between mb-1">
+                    <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display">
+                      Running P&L Chart
+                    </h2>
+                    {chartLoading ? (
+                      <span style={{ color: 'var(--accent)' }} className="text-xs font-mono animate-pulse">Syncing TwelveData...</span>
+                    ) : apiError ? (
+                      <span className="text-xs text-amber-500 font-mono">Using Fallback Model</span>
+                    ) : (
+                      <span className="text-xs text-green-500 font-mono">Live Session Data</span>
+                    )}
+                  </div>
+                  <p style={{ color: 'var(--text-muted)' }} className="text-[11px] font-mono uppercase tracking-wider mb-4">
+                    Intraday P&L trajectory analysis
+                  </p>
+
+                  <div className="h-[210px] w-full flex items-center justify-center font-sans">
+                    {chartLoading ? (
+                      <div className="flex flex-col items-center gap-2">
+                        <div className="w-5 h-5 border-2 rounded-full animate-spin" style={{ borderColor: 'var(--border)', borderTopColor: 'var(--accent)' }} />
+                        <span style={{ color: 'var(--text-muted)' }} className="text-xs font-mono">Loading market bars...</span>
+                      </div>
+                    ) : (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart
+                          data={chartData}
+                          margin={{ top: 12, right: 12, bottom: 0, left: -20 }}
+                        >
+                          <defs>
+                            <linearGradient id="pnlLineGrad" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="var(--accent)" stopOpacity={0.2} />
+                              <stop offset="95%" stopColor="var(--accent)" stopOpacity={0} />
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
+                          <XAxis
+                            dataKey="name"
+                            stroke="var(--text-muted)"
+                            fontSize={10}
+                            tickLine={false}
+                            axisLine={false}
+                          />
+                          <YAxis
+                            stroke="var(--text-muted)"
+                            fontSize={10}
+                            tickLine={false}
+                            axisLine={false}
+                            tickFormatter={(val) => {
+                              if (val === 0) return '0';
+                              return val > 0 ? `+₹${val}` : `-₹${Math.abs(val)}`;
+                            }}
+                          />
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: 'var(--card)',
+                              borderColor: 'var(--border)',
+                              borderRadius: '8px',
+                              fontSize: '12px',
+                              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)'
+                            }}
+                            labelStyle={{ color: 'var(--text-sub)', fontWeight: 600, marginBottom: 4 }}
+                            formatter={(value: any) => [
+                              <span style={{ color: value >= 0 ? '#22c55e' : '#ef4444', fontWeight: 'bold' }}>
+                                ₹{parseFloat(value).toLocaleString('en-IN', { maximumFractionDigits: 1 })}
+                              </span>,
+                              'Running P&L'
+                            ]}
+                          />
+                          <Line
+                            type="monotone"
+                            dataKey="pnl"
+                            stroke={trade.pnl >= 0 ? '#22c55e' : '#ef4444'}
+                            strokeWidth={2.5}
+                            dot={{ stroke: trade.pnl >= 0 ? '#22c55e' : '#ef4444', strokeWidth: 1.5, r: 3, fill: 'var(--card)' }}
+                            activeDot={{ r: 5 }}
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    )}
                   </div>
                 </section>
 
