@@ -23,7 +23,10 @@ import {
   FileText,
   RotateCcw,
   CheckSquare,
-  Square
+  Square,
+  Search,
+  X,
+  Calendar
 } from 'lucide-react';
 
 interface FolderItem {
@@ -44,6 +47,7 @@ interface EntryItem {
   created_at: string;
   updated_at: string;
   user_id: string;
+  log_date?: string | null;
 }
 
 const SWATCHES = [
@@ -62,6 +66,22 @@ export function Notebook() {
   const [selectedFolderId, setSelectedFolderId] = useState<string | 'ALL' | 'TRASH'>('ALL');
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
+
+  // Search feature state
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Log Day feature states
+  const [isLogDayModalOpen, setIsLogDayModalOpen] = useState(false);
+  const [logDateInput, setLogDateInput] = useState(() => {
+    const today = new Date();
+    const offset = today.getTimezoneOffset();
+    const localToday = new Date(today.getTime() - (offset * 60 * 1000));
+    return localToday.toISOString().split('T')[0];
+  });
+  const [isCreatingLog, setIsCreatingLog] = useState(false);
+
+  // Template states
+  const [isAddTemplateModalOpen, setIsAddTemplateModalOpen] = useState(false);
 
   // Note Checkboxes / Bulk selection
   const [selectedNoteIds, setSelectedNoteIds] = useState<string[]>([]);
@@ -171,6 +191,22 @@ export function Notebook() {
   const filteredEntries = useMemo(() => {
     let result = [...allEntries];
 
+    if (searchQuery.trim() !== '') {
+      const query = searchQuery.toLowerCase().trim();
+      const isTrash = selectedFolderId === 'TRASH';
+      result = result.filter((entry) => {
+        const titleMatch = (entry.title || '').toLowerCase().includes(query);
+        const contentMatch = (entry.content || '').toLowerCase().includes(query);
+        return (titleMatch || contentMatch) && (entry.is_deleted === isTrash);
+      });
+      if (isTrash) {
+        result.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
+      } else {
+        result.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      }
+      return result;
+    }
+
     if (selectedFolderId === 'TRASH') {
       result = result.filter((entry) => entry.is_deleted);
       result.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
@@ -187,7 +223,7 @@ export function Notebook() {
     }
 
     return result;
-  }, [allEntries, selectedFolderId, selectedTag]);
+  }, [allEntries, selectedFolderId, selectedTag, searchQuery]);
 
   // Identify active note
   const activeNote = useMemo(() => {
@@ -632,6 +668,146 @@ export function Notebook() {
     }
   };
 
+  // Helper to determine if contentEditable editor is essentially empty
+  const isContentEmpty = (content: string | undefined | null) => {
+    if (!content) return true;
+    const cleanText = content.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, '').trim();
+    return cleanText === '';
+  };
+
+  // Click handler to apply preselected built-in templates
+  const handleApplyTemplate = (templateHtml: string) => {
+    if (!activeNoteId) return;
+
+    const editorHtml = editorRef.current?.innerHTML || '';
+    const isEmpty = isContentEmpty(editorHtml);
+
+    if (isEmpty || window.confirm('Replace current content?')) {
+      if (editorRef.current) {
+        editorRef.current.innerHTML = templateHtml;
+      }
+      triggerContentSave(templateHtml);
+    }
+  };
+
+  // Local helper for formatting INR standard currency output
+  const formatPnl = (val: number | null) => {
+    if (val === null || val === undefined) return '₹0';
+    const isNeg = val < 0;
+    const formatted = Math.round(Math.abs(val)).toLocaleString('en-IN');
+    return isNeg ? `-₹${formatted}` : `₹${formatted}`;
+  };
+
+  // Handler to fetch trade details and create pre-filled Log Day entry
+  const handleCreateLog = async () => {
+    if (!user?.id) return;
+    setIsCreatingLog(true);
+    try {
+      const { data: tradesData, error: tradesError } = await supabase
+        .from('trades')
+        .select('*, strategies(name)')
+        .eq('user_id', user.id)
+        .eq('date', logDateInput);
+
+      if (tradesError) throw tradesError;
+
+      const tradesList: any[] = tradesData || [];
+
+      let netPnl = 0;
+      let totalTrades = tradesList.length;
+      let winners = 0;
+      let losers = 0;
+      let bestPnl = -Infinity;
+      let worstPnl = Infinity;
+      let bestTradeSymbol = 'N/A';
+      let worstTradeSymbol = 'N/A';
+
+      tradesList.forEach((t) => {
+        const p = t.pnl || 0;
+        netPnl += p;
+        
+        const statusClean = t.status ? t.status.toLowerCase() : '';
+        if (statusClean === 'win') {
+          winners++;
+        } else if (statusClean === 'loss') {
+          losers++;
+        }
+
+        if (p > bestPnl) {
+          bestPnl = p;
+          bestTradeSymbol = t.symbol || 'N/A';
+        }
+        if (p < worstPnl) {
+          worstPnl = p;
+          worstTradeSymbol = t.symbol || 'N/A';
+        }
+      });
+
+      const winRate = totalTrades > 0 ? (winners / totalTrades) * 100 : 0;
+
+      let tradeNotesStr = '';
+      if (tradesList.length > 0) {
+        tradesList.forEach((t) => {
+          const direct = t.direction || 'LONG';
+          const pVal = t.pnl || 0;
+          const stat = t.status || 'Breakeven';
+          tradeNotesStr += `• ${t.symbol} ${direct} → ${formatPnl(pVal)} (${stat})\n`;
+        });
+      } else {
+        tradeNotesStr = 'No trades on this date\n';
+      }
+
+      const dateParts = logDateInput.split('-');
+      const parsedDate = new Date(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2]));
+      const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const monthsOfYear = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      
+      const dayOfWeek = daysOfWeek[parsedDate.getDay()];
+      const monthName = monthsOfYear[parsedDate.getMonth()];
+      const dayOfMonth = dateParts[2];
+      const yearVal = dateParts[0];
+
+      const noteTitle = `${dayOfWeek}, ${monthName} ${dayOfMonth} ${yearVal}`;
+      const formattedNetPnl = formatPnl(netPnl);
+
+      const prefilledBody = `--- NET P&L: [${formattedNetPnl}] | TRADES: [${totalTrades}] | WIN RATE: [${winRate.toFixed(0)}%] ---\n\nPRE-MARKET PLAN:\n\n\nWHAT HAPPENED TODAY:\n\n\nWHAT I DID WELL:\n\n\nWHAT TO IMPROVE:\n\n\nTRADE NOTES:\n${tradeNotesStr}\n\nTOMORROW'S FOCUS:\n`;
+      const htmlBody = prefilledBody.replace(/\n/g, '<br />');
+
+      const { data: newEntryData, error: insertError } = await supabase
+        .from('notebook_entries')
+        .insert([{
+          user_id: user.id,
+          folder_id: null,
+          title: noteTitle,
+          content: htmlBody,
+          tags: ['Log Day'],
+          is_deleted: false,
+          log_date: logDateInput,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }])
+        .select();
+
+      if (insertError) throw insertError;
+
+      showSuccess('Created log day note successfully.');
+      setIsLogDayModalOpen(false);
+
+      await fetchEntries();
+
+      if (newEntryData && newEntryData[0]) {
+        setSelectedFolderId('ALL');
+        setSelectedTag(null);
+        setActiveNoteId(newEntryData[0].id);
+      }
+    } catch (err: any) {
+      console.error('Error creating Log Day note:', err);
+      showError(err.message || 'Failed to create log day.');
+    } finally {
+      setIsCreatingLog(false);
+    }
+  };
+
   // Datetime helper inside panel 3
   const formatDateTime = (dateStr: string | null | undefined) => {
     if (!dateStr) return '—';
@@ -885,25 +1061,65 @@ export function Notebook() {
             className="w-[280px] shrink-0 h-full overflow-y-auto flex flex-col justify-start flex-shrink-0"
             style={{ borderRight: '0.5px solid var(--border)', backgroundColor: 'var(--bg)' }}
           >
+            {/* Search notes box - added above top row nav actions */}
+            <div className="p-3 shrink-0 border-b border-[var(--border)]/40">
+              <div className="relative w-full">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                <input
+                  type="text"
+                  placeholder="Search notes..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full text-xs pl-9 pr-8 py-2 bg-[var(--card)] border border-[var(--border)] rounded-[8px] text-white placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-cyan-500/40"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white p-0.5 bg-transparent border-none cursor-pointer"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+            </div>
+
             {/* Top Row Nav actions */}
-            <div className="p-3 shrink-0 flex items-center justify-between" style={{ borderBottom: '0.5px solid var(--border)' }}>
+            <div className="p-3 shrink-0 flex items-center justify-between gap-1" style={{ borderBottom: '0.5px solid var(--border)' }}>
               {selectedFolderId !== 'TRASH' ? (
-                <button
-                  id="notebook-btn-new-note"
-                  type="button"
-                  onClick={handleCreateNote}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-bold text-cyan-500 hover:text-cyan-400 bg-cyan-500/5 hover:bg-cyan-500/10 cursor-pointer rounded-lg border border-cyan-500/20"
-                >
-                  <FilePlus className="w-3.5 h-3.5" />
-                  NEW NOTE
-                </button>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    id="notebook-btn-new-note"
+                    type="button"
+                    onClick={handleCreateNote}
+                    className="flex items-center gap-1 px-2 py-1.5 text-[11px] font-mono font-bold text-cyan-500 hover:text-cyan-400 bg-cyan-500/5 hover:bg-cyan-500/10 cursor-pointer rounded-lg border border-cyan-500/20"
+                  >
+                    <FilePlus className="w-3 h-3" />
+                    NEW NOTE
+                  </button>
+                  <button
+                    id="notebook-btn-log-day"
+                    type="button"
+                    onClick={() => {
+                      const today = new Date();
+                      const offset = today.getTimezoneOffset();
+                      const localToday = new Date(today.getTime() - (offset * 60 * 1000));
+                      setLogDateInput(localToday.toISOString().split('T')[0]);
+                      setIsLogDayModalOpen(true);
+                    }}
+                    className="flex items-center gap-1 px-2 py-1.5 text-[11px] font-mono font-bold text-cyan-500 hover:text-cyan-400 bg-cyan-500/5 hover:bg-cyan-500/10 cursor-pointer rounded-lg border border-cyan-500/20"
+                  >
+                    <Calendar className="w-3 h-3" />
+                    LOG DAY
+                  </button>
+                </div>
               ) : (
                 <span className="text-[11px] font-bold font-mono text-zinc-400 dark:text-zinc-500 tracking-wider">
                   TRASH CORNER
                 </span>
               )}
               {/* decorative sort button */}
-              <button type="button" className="p-1.5 rounded hover:bg-[var(--bar)] text-zinc-400"><ArrowUpDown className="w-4 h-4" /></button>
+              <button type="button" className="p-1 px-1.5 rounded hover:bg-[var(--bar)] text-zinc-400"><ArrowUpDown className="w-4 h-4" /></button>
             </div>
 
             {/* Select All Checkbox / Bulk Options Row */}
@@ -968,7 +1184,9 @@ export function Notebook() {
                 <div className="p-8 text-center" id="notebook-empty-notes-prompt">
                   <HelpCircle className="w-8 h-8 text-zinc-600 mx-auto mb-2.5" />
                   <p className="text-xs text-zinc-500 font-mono italic leading-relaxed">
-                    {selectedFolderId === 'TRASH'
+                    {searchQuery.trim() !== ''
+                      ? 'No notes match your search.'
+                      : selectedFolderId === 'TRASH'
                       ? 'No deleted notes here.'
                       : 'No notes yet. Click New note to get started.'}
                   </p>
@@ -1004,9 +1222,12 @@ export function Notebook() {
                         <div className="flex items-center justify-between gap-1 w-full">
                           {/* Title */}
                           <span
-                            className="text-[13px] font-semibold tracking-tight truncate flex-1 text-zinc-100"
+                            className="text-[13px] font-semibold tracking-tight truncate flex-1 text-zinc-100 flex items-center gap-1.5"
                             style={{ color: isActive ? 'var(--accent)' : 'var(--text)' }}
                           >
+                            {note.log_date && (
+                              <Calendar className="w-3.5 h-3.5 shrink-0 text-cyan-500" />
+                            )}
                             {note.title && note.title.trim() !== '' ? note.title : 'Untitled'}
                           </span>
                           
@@ -1196,6 +1417,46 @@ export function Notebook() {
                   )}
                 </div>
 
+                {/* RECENTLY USED TEMPLATES ROW */}
+                {!activeNote.is_deleted && (
+                  <div id="notebook-templates-row" className="flex flex-col gap-1.5 py-1.5 shrink-0 border-t border-b border-[var(--border)]/30">
+                    <span className="text-[10px] font-mono font-bold tracking-wider text-zinc-500 uppercase">Recently used templates</span>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleApplyTemplate(`PRE-MARKET BIAS:<br/><br/><br/>KEY LEVELS TO WATCH:<br/><br/><br/>SETUPS I'M LOOKING FOR:<br/><br/><br/>RISK MANAGEMENT TODAY:<br/>- Max loss: <br/>- Max trades: <br/><br/><br/>SESSION NOTES:<br/>`)}
+                        className="px-2.5 py-1 text-[11px] font-medium rounded-full bg-[var(--bar)] hover:bg-[var(--bar)]/80 text-zinc-350 border border-[var(--border)] transition-all cursor-pointer"
+                      >
+                        Daily Game Plan
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleApplyTemplate(`SYMBOL: <br/>DIRECTION: <br/>SETUP: <br/><br/>WHAT I SAW:<br/><br/><br/>ENTRY REASONING:<br/><br/><br/>WHAT ACTUALLY HAPPENED:<br/><br/><br/>LESSON:<br/>`)}
+                        className="px-2.5 py-1 text-[11px] font-medium rounded-full bg-[var(--bar)] hover:bg-[var(--bar)]/80 text-zinc-350 border border-[var(--border)] transition-all cursor-pointer"
+                      >
+                        Trade Review
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleApplyTemplate(`WEEK OF: <br/><br/>BEST TRADE THIS WEEK:<br/>WORST TRADE THIS WEEK:<br/>TOTAL P&L: <br/><br/>WHAT WORKED:<br/><br/><br/>WHAT DIDN'T WORK:<br/><br/><br/>FOCUS FOR NEXT WEEK:<br/>`)}
+                        className="px-2.5 py-1 text-[11px] font-medium rounded-full bg-[var(--bar)] hover:bg-[var(--bar)]/80 text-zinc-350 border border-[var(--border)] transition-all cursor-pointer"
+                      >
+                        Weekly Recap
+                      </button>
+                      
+                      {/* "+ Add Template" button */}
+                      <button
+                        id="notebook-btn-add-template-trigger"
+                        type="button"
+                        onClick={() => setIsAddTemplateModalOpen(true)}
+                        className="text-zinc-500 hover:text-cyan-500 text-[11px] font-semibold ml-1 flex items-center gap-0.5 border border-dashed border-zinc-600 px-2.5 py-1 rounded-full cursor-pointer transition-all bg-transparent"
+                      >
+                        <Plus className="w-3 h-3" /> Add Template
+                      </button>
+                    </div>
+                  </div>
+                )}
+
                 {/* TOOLBAR FOR CONTENTEDITABLE FORMATTING */}
                 {!activeNote.is_deleted && (
                   <div
@@ -1351,6 +1612,86 @@ export function Notebook() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* LOG DAY DIALOG/MODAL */}
+      {isLogDayModalOpen && (
+        <div id="notebook-log-day-modal-overlay" className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div
+            id="notebook-log-day-modal-card"
+            className="w-full max-w-sm rounded-2xl shadow-xl border overflow-hidden p-6 animate-in scale-in duration-200"
+            style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
+          >
+            <h3 className="text-sm font-bold font-mono text-white tracking-wider uppercase mb-5">
+              LOG DAY
+            </h3>
+
+            <div className="space-y-5">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] font-bold font-mono uppercase tracking-widest text-zinc-400">
+                  Select Date
+                </label>
+                <input
+                  id="notebook-input-log-date"
+                  type="date"
+                  required
+                  value={logDateInput}
+                  onChange={(e) => setLogDateInput(e.target.value)}
+                  className="w-full text-xs py-2.5 px-3 bg-zinc-900 border font-sans font-medium rounded-lg text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
+                  style={{ borderColor: 'var(--border)' }}
+                />
+              </div>
+
+              {/* Form Buttons */}
+              <div className="flex items-center justify-end gap-2 pt-2">
+                <button
+                  id="notebook-btn-log-cancel"
+                  type="button"
+                  onClick={() => setIsLogDayModalOpen(false)}
+                  className="px-4 py-2 text-xs font-mono font-bold text-zinc-400 hover:text-white cursor-pointer rounded-lg bg-transparent hover:bg-[var(--bar)] transition-colors"
+                >
+                  CANCEL
+                </button>
+                <button
+                  id="notebook-btn-log-create"
+                  type="button"
+                  disabled={isCreatingLog}
+                  onClick={handleCreateLog}
+                  className="px-4 py-2 text-xs font-mono font-bold rounded-lg text-white bg-cyan-600 hover:bg-cyan-500 hover:shadow-lg hover:shadow-cyan-500/10 cursor-pointer transition-all shrink-0 disabled:opacity-50"
+                >
+                  {isCreatingLog ? 'CREATING...' : 'CREATE LOG'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SAVE AS TEMPLATE DIALOG/MODAL */}
+      {isAddTemplateModalOpen && (
+        <div id="notebook-coming-soon-modal-overlay" className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div
+            id="notebook-coming-soon-modal-card"
+            className="w-full max-w-sm rounded-2xl shadow-xl border overflow-hidden p-6 animate-in scale-in duration-200"
+            style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
+          >
+            <h3 className="text-sm font-bold font-mono text-white tracking-wider uppercase mb-3">
+              SAVE AS TEMPLATE
+            </h3>
+            <p className="text-xs text-zinc-400 font-sans mb-5 leading-normal">
+              Coming soon — template saving will be available soon.
+            </p>
+            <div className="flex items-center justify-end">
+              <button
+                type="button"
+                onClick={() => setIsAddTemplateModalOpen(false)}
+                className="px-4 py-2 text-xs font-mono font-bold rounded-lg text-white bg-cyan-600 hover:bg-cyan-500 cursor-pointer transition-all"
+              >
+                CLOSE
+              </button>
+            </div>
           </div>
         </div>
       )}
