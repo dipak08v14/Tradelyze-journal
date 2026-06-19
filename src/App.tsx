@@ -105,6 +105,7 @@ export default function App() {
             {/* Trading Logs Routing */}
             <Route path="/trading-logs" element={<TradingLogsPage />} />
             <Route path="/trading-logs/:id" element={<TradeTrackingPage />} />
+            <Route path="/trade-tracking/:id" element={<TradeTrackingPage />} />
             <Route path="/logs" element={<Navigate to="/trading-logs" replace />} />
 
             {/* Other Authenticated Pages */}

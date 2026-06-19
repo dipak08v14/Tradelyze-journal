@@ -292,7 +292,7 @@ export const DashboardPage: React.FC = () => {
         // STEP 1 — Fetch filtered trades:
         const { data: tradesData, error: tradesError } = await supabase
           .from('trades')
-          .select('*, strategies(name)')
+          .select('id, *, strategies(name)')
           .eq('user_id', userId)
           .gte('date', startDate)
           .lte('date', endDate)
@@ -306,7 +306,7 @@ export const DashboardPage: React.FC = () => {
         // Fetch all history trades (not filtered by date range)
         const { data: allTradesData, error: allHistoryError } = await supabase
           .from('trades')
-          .select('*, strategies(name)')
+          .select('id, *, strategies(name)')
           .eq('user_id', userId)
           .order('date', { ascending: true });
 
@@ -2132,6 +2132,7 @@ export const DashboardPage: React.FC = () => {
                   <th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="p-2.5 px-3 uppercase">SETUP</th>
                   <th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="p-2.5 px-3 uppercase text-right">P&L</th>
                   <th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="p-2.5 px-3 uppercase text-center">R-MULTIPLE</th>
+                  <th className="w-5"></th>
                 </tr>
               </thead>
               <tbody className="divide-y" style={{ borderColor: 'var(--border)' }}>
@@ -2153,8 +2154,13 @@ export const DashboardPage: React.FC = () => {
                   return (
                     <tr 
                       key={trade.id} 
-                      style={{ borderBottom: '0.5px solid var(--border)' }}
+                      style={{ borderBottom: '0.5px solid var(--border)', cursor: 'pointer' }}
                       className="transition-colors hover:bg-[var(--row)]"
+                      onClick={() => {
+                        console.log("Navigating to trade:" + trade.id);
+                        navigate(`/trade-tracking/${trade.id}`);
+                        setIsDayModalOpen(false);
+                      }}
                     >
                       <td style={{ color: 'var(--text-sub)', fontSize: '12px' }} className="p-2.5 px-3 font-mono">
                         {formatTime(trade.entry_time)}
@@ -2197,6 +2203,9 @@ export const DashboardPage: React.FC = () => {
                         >
                           {formattedR}
                         </span>
+                      </td>
+                      <td style={{ color: 'var(--text-muted)', fontSize: '12px' }} className="p-2.5 pr-4 text-right">
+                        →
                       </td>
                     </tr>
                   );
