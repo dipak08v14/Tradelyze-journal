@@ -129,6 +129,13 @@ export const TradeEntryPage: React.FC = () => {
   const [tradeRating, setTradeRating] = useState<number>(0);
   const [notes, setNotes] = useState<string>('');
 
+  // Target values, SL prices and excursions
+  const [entryPrice, setEntryPrice] = useState<string>('');
+  const [profitTarget, setProfitTarget] = useState<string>('');
+  const [stopLossPrice, setStopLossPrice] = useState<string>('');
+  const [mae, setMae] = useState<string>('');
+  const [mfe, setMfe] = useState<string>('');
+
   // Card 8: Psychology Sliders
   const [externalStress, setExternalStress] = useState<number>(0);
   const [priceActionReading, setPriceActionReading] = useState<number>(0);
@@ -257,6 +264,11 @@ export const TradeEntryPage: React.FC = () => {
           setQuantity(tradeData.quantity !== null ? tradeData.quantity.toString() : '');
           setPoints(tradeData.points !== null ? tradeData.points.toString() : '');
           setFees(tradeData.fees !== null ? tradeData.fees.toString() : '0');
+          setEntryPrice(tradeData.entry_price !== null ? tradeData.entry_price.toString() : '');
+          setProfitTarget(tradeData.profit_target !== null ? tradeData.profit_target.toString() : '');
+          setStopLossPrice(tradeData.stop_loss_price !== null ? tradeData.stop_loss_price.toString() : '');
+          setMae(tradeData.mae !== null ? tradeData.mae.toString() : '');
+          setMfe(tradeData.mfe !== null ? tradeData.mfe.toString() : '');
           setExecutionStatus(tradeData.execution_status || null);
           setMistakeType(tradeData.mistake_type || '');
           setMistakeText(tradeData.mistake_text || '');
@@ -407,6 +419,19 @@ export const TradeEntryPage: React.FC = () => {
       const p = parseFloat(pnl);
       const r = parseFloat(risk);
       if (r !== 0) return p / r;
+    }
+    return null;
+  })();
+
+  const calculatedPlannedR = (() => {
+    if (profitTarget !== '' && stopLossPrice !== '' && entryPrice !== '') {
+      const pt = parseFloat(profitTarget);
+      const sl = parseFloat(stopLossPrice);
+      const ep = parseFloat(entryPrice);
+      const denom = ep - sl;
+      if (denom !== 0) {
+        return (pt - ep) / denom;
+      }
     }
     return null;
   })();
@@ -680,6 +705,11 @@ export const TradeEntryPage: React.FC = () => {
             notes: notes.trim() || null,
             trade_video_url: tradeVideoUrl.trim() || null,
             fees: fees !== '' ? parseFloat(fees) : 0,
+            entry_price: entryPrice !== '' ? parseFloat(entryPrice) : null,
+            profit_target: profitTarget !== '' ? parseFloat(profitTarget) : null,
+            stop_loss_price: stopLossPrice !== '' ? parseFloat(stopLossPrice) : null,
+            mae: mae !== '' ? parseFloat(mae) : null,
+            mfe: mfe !== '' ? parseFloat(mfe) : null,
             month: parsedMonth,
             year: parsedYear,
             needs_review: false,
@@ -734,6 +764,11 @@ export const TradeEntryPage: React.FC = () => {
             chart_image_url: null,
             trade_plan_url: null,
             fees: fees !== '' ? parseFloat(fees) : 0,
+            entry_price: entryPrice !== '' ? parseFloat(entryPrice) : null,
+            profit_target: profitTarget !== '' ? parseFloat(profitTarget) : null,
+            stop_loss_price: stopLossPrice !== '' ? parseFloat(stopLossPrice) : null,
+            mae: mae !== '' ? parseFloat(mae) : null,
+            mfe: mfe !== '' ? parseFloat(mfe) : null,
             month: parsedMonth,
             year: parsedYear,
           })
@@ -990,6 +1025,11 @@ export const TradeEntryPage: React.FC = () => {
     setQuantity('');
     setPoints('');
     setFees('0');
+    setEntryPrice('');
+    setProfitTarget('');
+    setStopLossPrice('');
+    setMae('');
+    setMfe('');
 
     setEntryRules([]);
     setExitRules([]);
@@ -1581,6 +1621,89 @@ export const TradeEntryPage: React.FC = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div>
                         <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                          Entry Price (₹)
+                        </label>
+                        <input
+                          type="number"
+                          step="0.0001"
+                          min="0"
+                          value={entryPrice}
+                          onChange={(e) => setEntryPrice(e.target.value)}
+                          placeholder="average entry price"
+                          style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
+                          className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)]"
+                        />
+                      </div>
+
+                      <div>
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                          Profit Target (₹)
+                        </label>
+                        <input
+                          type="number"
+                          step="0.0001"
+                          min="0"
+                          value={profitTarget}
+                          onChange={(e) => setProfitTarget(e.target.value)}
+                          placeholder="profit target price"
+                          style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
+                          className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)]"
+                        />
+                      </div>
+
+                      <div>
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                          Stop Loss Price (₹)
+                        </label>
+                        <input
+                          type="number"
+                          step="0.0001"
+                          min="0"
+                          value={stopLossPrice}
+                          onChange={(e) => setStopLossPrice(e.target.value)}
+                          placeholder="stop loss price"
+                          style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
+                          className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)]"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Row 4 */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div>
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                          MAE (Worst Price Against You) (₹)
+                        </label>
+                        <input
+                          type="number"
+                          step="0.0001"
+                          min="0"
+                          value={mae}
+                          onChange={(e) => setMae(e.target.value)}
+                          placeholder="max adverse excursion"
+                          style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
+                          className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)]"
+                        />
+                      </div>
+
+                      <div>
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                          MFE (Best Price In Favor) (₹)
+                        </label>
+                        <input
+                          type="number"
+                          step="0.0001"
+                          min="0"
+                          value={mfe}
+                          onChange={(e) => setMfe(e.target.value)}
+                          placeholder="max favorable excursion"
+                          style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
+                          className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)]"
+                        />
+                      </div>
+
+                      <div>
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
                           Brokerage / Fees (₹)
                         </label>
                         <input
@@ -1594,8 +1717,6 @@ export const TradeEntryPage: React.FC = () => {
                           className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)]"
                         />
                       </div>
-                      <div className="hidden sm:block" />
-                      <div className="hidden sm:block" />
                     </div>
                   </div>
                 </section>
@@ -1659,6 +1780,28 @@ export const TradeEntryPage: React.FC = () => {
                       </span>
                       <span style={{ color: 'var(--text-muted)' }} className="text-[10px] uppercase tracking-widest font-bold mt-1.5">
                         R-Multiple
+                      </span>
+                    </div>
+
+                    {/* Planned R-Multiple */}
+                    <div style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)' }} className="flex flex-col items-center justify-center p-3 rounded-lg text-center min-h-[85px]">
+                      <span
+                        className={`text-xl font-black font-display ${
+                          calculatedPlannedR === null
+                            ? 'text-zinc-400'
+                            : calculatedPlannedR > 0
+                            ? 'text-[#22c55e]'
+                            : calculatedPlannedR < 0
+                            ? 'text-[#ef4444]'
+                            : 'text-zinc-650'
+                        }`}
+                      >
+                        {calculatedPlannedR !== null
+                          ? `${calculatedPlannedR >= 0 ? '+' : ''}${calculatedPlannedR.toFixed(1)}R`
+                          : '—'}
+                      </span>
+                      <span style={{ color: 'var(--text-muted)' }} className="text-[10px] uppercase tracking-widest font-bold mt-1.5">
+                        Planned R-Multiple
                       </span>
                     </div>
 

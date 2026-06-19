@@ -1883,7 +1883,7 @@ const TradeTrackingPageContent: React.FC = () => {
                     {chartLoading ? (
                       <span style={{ color: 'var(--accent)' }} className="text-xs font-mono animate-pulse">Syncing TwelveData...</span>
                     ) : apiError ? (
-                      <span className="text-[10px] font-mono" style={{ color: 'var(--text-muted)' }}>Estimated trajectory</span>
+                      null
                     ) : (
                       <span className="text-xs text-green-500 font-mono">Live Session Data</span>
                     )}
@@ -1892,7 +1892,7 @@ const TradeTrackingPageContent: React.FC = () => {
                     Intraday P&L trajectory analysis
                   </p>
 
-                  <div className="h-[180px] w-full flex items-center justify-center font-sans">
+                  <div className="h-[200px] min-h-[200px] w-full flex items-center justify-center font-sans">
                     {chartLoading ? (
                       <div className="flex flex-col items-center gap-2">
                         <div className="w-5 h-5 border-2 rounded-full animate-spin" style={{ borderColor: 'var(--border)', borderTopColor: 'var(--accent)' }} />
@@ -1907,9 +1907,13 @@ const TradeTrackingPageContent: React.FC = () => {
                           <defs>
                             {/* Gradient for fill area */}
                             <linearGradient id="pnlAreaGrad" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset={`${zeroPercent}%`} stopColor="#22c55e" stopOpacity={0.3} />
-                              <stop offset={`${zeroPercent}%`} stopColor="#ef4444" stopOpacity={0.3} />
-                              <stop offset="100%" stopColor="#ef4444" stopOpacity={0.0} />
+                              {/* Green above zero: top (0%) has opacity 0.25, zero line has opacity 0.02 */}
+                              <stop offset="0%" stopColor="#22c55e" stopOpacity={0.25} />
+                              <stop offset={`${zeroPercent}%`} stopColor="#22c55e" stopOpacity={0.02} />
+                              
+                              {/* Red below zero: zero line has opacity 0.02, bottom (100%) has opacity 0.25 */}
+                              <stop offset={`${zeroPercent}%`} stopColor="#ef4444" stopOpacity={0.02} />
+                              <stop offset="100%" stopColor="#ef4444" stopOpacity={0.25} />
                             </linearGradient>
 
                             {/* Gradient for LINE color */}
@@ -1924,7 +1928,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           <YAxis
                             stroke="var(--text-muted)"
                             tickFormatter={(v) => v >= 0 ? `₹${v}` : `-₹${Math.abs(v)}`}
-                            tick={{ fontSize: 10, fill: '#94a3b8' }}
+                            tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
                             axisLine={false}
                             tickLine={false}
                             width={55}
@@ -1932,7 +1936,7 @@ const TradeTrackingPageContent: React.FC = () => {
 
                           <ReferenceLine
                             y={0}
-                            stroke="rgba(255,255,255,0.15)"
+                            stroke="rgba(0,0,0,0.15)"
                             strokeDasharray="4 4"
                             strokeWidth={1}
                           />
@@ -1949,12 +1953,35 @@ const TradeTrackingPageContent: React.FC = () => {
                             type="monotone"
                             dataKey="pnl"
                             stroke="url(#pnlLineGrad)"
-                            strokeWidth={2.5}
+                            strokeWidth={3}
                             dot={(props: any) => {
                               const { cx, cy, index } = props;
-                              if (index === 0 || index === chartData.length - 1) {
-                                const color = props.payload.pnl >= 0 ? '#22c55e' : '#ef4444';
-                                return <circle cx={cx} cy={cy} r={4} fill={color} stroke="var(--card)" strokeWidth={1.5} key={`dot-${index}`} />;
+                              if (index === 0) {
+                                return (
+                                  <circle
+                                    cx={cx}
+                                    cy={cy}
+                                    r={5}
+                                    fill="white"
+                                    stroke="#22c55e"
+                                    strokeWidth={2}
+                                    key="dot-entry"
+                                  />
+                                );
+                              }
+                              if (index === chartData.length - 1) {
+                                const isWin = props.payload?.pnl >= 0;
+                                return (
+                                  <circle
+                                    cx={cx}
+                                    cy={cy}
+                                    r={7}
+                                    fill={isWin ? '#22c55e' : '#ef4444'}
+                                    stroke="white"
+                                    strokeWidth={2.5}
+                                    key="dot-exit"
+                                  />
+                                );
                               }
                               return <g key={`dot-empty-${index}`} />;
                             }}
