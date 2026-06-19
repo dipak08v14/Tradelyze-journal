@@ -392,30 +392,52 @@ const TradeTrackingPageContent: React.FC = () => {
   const getFallbackChartData = () => {
     if (!trade) return [];
     try {
-      const entryDate = new Date(getFullDatetimeString(trade.date, trade.entry_time));
-      const exitDate = new Date(getFullDatetimeString(trade.date, trade.exit_time || trade.entry_time));
+      let entryDate = new Date(getFullDatetimeString(trade.date, trade.entry_time || trade.created_at));
+      if (isNaN(entryDate.getTime())) {
+        entryDate = new Date(trade.created_at || Date.now());
+      }
       
+      let exitDate = new Date(getFullDatetimeString(trade.date, trade.exit_time || trade.updated_at));
+      if (isNaN(exitDate.getTime())) {
+        exitDate = new Date(trade.updated_at || Date.now());
+      }
+
       let entryMs = entryDate.getTime();
       let exitMs = exitDate.getTime();
-      if (isNaN(entryMs)) entryMs = Date.now();
+      
+      if (isNaN(entryMs)) entryMs = Date.now() - 3600000;
       if (isNaN(exitMs) || exitMs <= entryMs) exitMs = entryMs + 3600000;
-      
-      const duration = exitMs - entryMs;
-      
-      const time1 = new Date(entryMs).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      const time2 = new Date(entryMs + duration * 0.25).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      const time3 = new Date(entryMs + duration * 0.60).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      const time4 = new Date(exitMs).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-      const qty = trade.quantity || 1;
-      const maePnl = trade.mae ? -(trade.mae * qty) : 0;
-      const mfePnl = trade.mfe ? (trade.mfe * qty) : (trade.pnl || 0);
+      const duration = exitMs - entryMs;
+      const finalPnl = trade.pnl || 0;
+
+      const time1 = new Date(entryMs).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const time2 = new Date(entryMs + duration * 0.20).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const time3 = new Date(entryMs + duration * 0.50).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const time4 = new Date(entryMs + duration * 0.75).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const time5 = new Date(exitMs).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      // Point 2: initial adverse move against position
+      let p2Pnl = finalPnl > 0 ? -(Math.abs(finalPnl) * 0.15) : -(Math.abs(finalPnl) * 0.30);
+      if (trade.mae !== undefined && trade.mae !== null && trade.mae !== 0) {
+        p2Pnl = -Math.abs(trade.mae);
+      }
+
+      // Point 3: trade moving toward result
+      const p3Pnl = finalPnl > 0 ? finalPnl * 0.60 : finalPnl * 0.40;
+
+      // Point 4: near peak/worst point
+      let p4Pnl = finalPnl > 0 ? finalPnl * 1.10 : finalPnl * 0.80;
+      if (trade.mfe !== undefined && trade.mfe !== null && trade.mfe !== 0) {
+        p4Pnl = Math.abs(trade.mfe);
+      }
 
       return [
-        { time: time1, pnl: 0 },
-        { time: time2, pnl: maePnl },
-        { time: time3, pnl: mfePnl },
-        { time: time4, pnl: trade.pnl || 0 }
+        { name: time1, pnl: 0 },
+        { name: time2, pnl: Math.round(p2Pnl) || 0 },
+        { name: time3, pnl: Math.round(p3Pnl) || 0 },
+        { name: time4, pnl: Math.round(p4Pnl) || 0 },
+        { name: time5, pnl: Math.round(finalPnl) || 0 }
       ];
     } catch {
       return [];
@@ -679,6 +701,21 @@ const TradeTrackingPageContent: React.FC = () => {
   const overallScore = React.useMemo(() => {
     return (technicalScore + psychScore + riskScore) / 3;
   }, [technicalScore, psychScore, riskScore]);
+
+  const gradientOffset = React.useMemo(() => {
+    if (!chartData || chartData.length === 0) return 0;
+    const pnlVals = chartData.map((d: any) => d.pnl || 0);
+    const dataMax = Math.max(...pnlVals, 0);
+    const dataMin = Math.min(...pnlVals, 0);
+    if (dataMax === 0 && dataMin === 0) return 0.5;
+    if (dataMax > dataMin) {
+      return dataMax / (dataMax - dataMin);
+    } else if (dataMax > 0) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }, [chartData]);
 
   // Score styling color code mapper
   const getScoreColor = (score: number) => {
@@ -1864,7 +1901,7 @@ const TradeTrackingPageContent: React.FC = () => {
                     {chartLoading ? (
                       <span style={{ color: 'var(--accent)' }} className="text-xs font-mono animate-pulse">Syncing TwelveData...</span>
                     ) : apiError ? (
-                      <span className="text-xs text-amber-500 font-mono">Using Fallback Model</span>
+                      <span className="text-[10px] font-mono" style={{ color: 'var(--text-muted)' }}>Estimated trajectory</span>
                     ) : (
                       <span className="text-xs text-green-500 font-mono">Live Session Data</span>
                     )}
@@ -1881,23 +1918,22 @@ const TradeTrackingPageContent: React.FC = () => {
                       </div>
                     ) : (
                       <ResponsiveContainer width="100%" height="100%">
-                        <LineChart
+                        <AreaChart
                           data={chartData}
-                          margin={{ top: 12, right: 12, bottom: 0, left: -20 }}
+                          margin={{ top: 12, right: 12, bottom: 0, left: -10 }}
                         >
                           <defs>
-                            <linearGradient id="pnlLineGrad" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="5%" stopColor="var(--accent)" stopOpacity={0.2} />
-                              <stop offset="95%" stopColor="var(--accent)" stopOpacity={0} />
+                            <linearGradient id="pnlSplitGrad" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset={gradientOffset} stopColor="var(--accent)" stopOpacity={0.08} />
+                              <stop offset={gradientOffset} stopColor="#ef4444" stopOpacity={0.08} />
                             </linearGradient>
                           </defs>
                           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
                           <XAxis
                             dataKey="name"
-                            stroke="var(--text-muted)"
-                            fontSize={10}
-                            tickLine={false}
+                            tick={false}
                             axisLine={false}
+                            height={4}
                           />
                           <YAxis
                             stroke="var(--text-muted)"
@@ -1905,8 +1941,8 @@ const TradeTrackingPageContent: React.FC = () => {
                             tickLine={false}
                             axisLine={false}
                             tickFormatter={(val) => {
-                              if (val === 0) return '0';
-                              return val > 0 ? `+₹${val}` : `-₹${Math.abs(val)}`;
+                              if (val === 0) return '₹0';
+                              return val > 0 ? `+₹${val.toLocaleString('en-IN')}` : `-₹${Math.abs(val).toLocaleString('en-IN')}`;
                             }}
                           />
                           <Tooltip
@@ -1919,21 +1955,28 @@ const TradeTrackingPageContent: React.FC = () => {
                             }}
                             labelStyle={{ color: 'var(--text-sub)', fontWeight: 600, marginBottom: 4 }}
                             formatter={(value: any) => [
-                              <span style={{ color: value >= 0 ? '#22c55e' : '#ef4444', fontWeight: 'bold' }}>
+                              <span style={{ color: value >= 0 ? 'var(--accent)' : '#ef4444', fontWeight: 'bold' }}>
                                 ₹{parseFloat(value).toLocaleString('en-IN', { maximumFractionDigits: 1 })}
                               </span>,
-                              'Running P&L'
+                              'P&L'
                             ]}
                           />
-                          <Line
+                          <ReferenceLine
+                            y={0}
+                            stroke="var(--border-md, rgba(255, 255, 255, 0.15))"
+                            strokeDasharray="3 3"
+                            strokeWidth={1}
+                          />
+                          <Area
                             type="monotone"
                             dataKey="pnl"
-                            stroke={trade.pnl >= 0 ? '#22c55e' : '#ef4444'}
+                            stroke={trade.pnl >= 0 ? 'var(--accent)' : '#ef4444'}
                             strokeWidth={2.5}
-                            dot={{ stroke: trade.pnl >= 0 ? '#22c55e' : '#ef4444', strokeWidth: 1.5, r: 3, fill: 'var(--card)' }}
+                            fill="url(#pnlSplitGrad)"
+                            dot={{ stroke: trade.pnl >= 0 ? 'var(--accent)' : '#ef4444', strokeWidth: 1.5, r: 3, fill: 'var(--card)' }}
                             activeDot={{ r: 5 }}
                           />
-                        </LineChart>
+                        </AreaChart>
                       </ResponsiveContainer>
                     )}
                   </div>
