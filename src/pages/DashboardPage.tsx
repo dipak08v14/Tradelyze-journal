@@ -16,7 +16,8 @@ import {
   HelpCircle,
   TrendingDown,
   Calendar,
-  Sparkles
+  Sparkles,
+  X
 } from 'lucide-react';
 import { getLibraryConfidenceMessage } from '../lib/clipEmbedder';
 import {
@@ -50,9 +51,19 @@ const CALENDAR_MONTH_NAMES = [
   'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
+const formatDayHeaderDate = (dateStr: string) => {
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+  } catch {
+    return dateStr;
+  }
+};
+
 export const DashboardPage: React.FC = () => {
   const { user, userId, loading: authLoading } = useAuth();
-  const { showError } = useToast();
+  const { showError, showSuccess } = useToast();
   const navigate = useNavigate();
 
   // Date range picker state
@@ -187,6 +198,18 @@ export const DashboardPage: React.FC = () => {
   
   // Database States
   const [trades, setTrades] = useState<any[]>([]);
+  const [allHistoryTrades, setAllHistoryTrades] = useState<any[]>([]);
+  const [selectedCalendarDay, setSelectedCalendarDay] = useState<string | null>(null);
+  const [isDayModalOpen, setIsDayModalOpen] = useState<boolean>(false);
+  const [startingBalanceInput, setStartingBalanceInput] = useState<number>(() => {
+    const saved = localStorage.getItem('tl-starting-balance');
+    return saved ? parseFloat(saved) : 0;
+  });
+
+  const handleStartingBalanceChange = (val: number) => {
+    setStartingBalanceInput(val);
+    localStorage.setItem('tl-starting-balance', String(val));
+  };
   const [psychologyData, setPsychologyData] = useState<any[]>([]);
   const [riskData, setRiskData] = useState<any[]>([]);
   const [rulesData, setRulesData] = useState<any[]>([]);
@@ -279,6 +302,16 @@ export const DashboardPage: React.FC = () => {
 
         const activeTrades = tradesData || [];
         setTrades(activeTrades);
+
+        // Fetch all history trades (not filtered by date range)
+        const { data: allTradesData, error: allHistoryError } = await supabase
+          .from('trades')
+          .select('*, strategies(name)')
+          .eq('user_id', userId)
+          .order('date', { ascending: true });
+
+        if (allHistoryError) throw allHistoryError;
+        setAllHistoryTrades(allTradesData || []);
 
         if (activeTrades.length === 0) {
           setPsychologyData([]);
@@ -547,6 +580,77 @@ export const DashboardPage: React.FC = () => {
       winDaysPct
     };
   }, [trades, psychologyData, riskData, rulesData, startDate, endDate]);
+
+  const clickedDayTrades = useMemo(() => {
+    if (!selectedCalendarDay) return [];
+    return trades.filter((t) => t.date === selectedCalendarDay);
+  }, [trades, selectedCalendarDay]);
+
+  const clickedDayStats = useMemo(() => {
+    const totalTrades = clickedDayTrades.length;
+    const wins = clickedDayTrades.filter((t) => (t.pnl || 0) > 0);
+    const losses = clickedDayTrades.filter((t) => (t.pnl || 0) < 0);
+    const winRate = totalTrades > 0 ? Math.round((wins.length / totalTrades) * 100) : 0;
+    
+    // GROSS P&L: sum of pnl + sum of fees for that day (before commissions)
+    const grossPnl = clickedDayTrades.reduce((sum, t) => sum + (t.pnl || 0) + (t.fees || 0), 0);
+    const commissions = clickedDayTrades.reduce((sum, t) => sum + (t.fees || 0), 0);
+    const netPnl = clickedDayTrades.reduce((sum, t) => sum + (t.pnl || 0), 0);
+    
+    const winningPnlSum = wins.reduce((sum, t) => sum + (t.pnl || 0), 0);
+    const losingPnlSum = Math.abs(losses.reduce((sum, t) => sum + (t.pnl || 0), 0));
+    const profitFactor = losingPnlSum > 0 ? (winningPnlSum / losingPnlSum).toFixed(2) : '--';
+
+    return {
+      totalTrades,
+      winners: wins.length,
+      losers: losses.length,
+      winRate,
+      grossPnl,
+      commissions,
+      netPnl,
+      profitFactor
+    };
+  }, [clickedDayTrades]);
+
+  const balanceChartData = useMemo(() => {
+    const startingBalance = startingBalanceInput || 0;
+    
+    // Group allHistoryTrades by date and sum pnl for each day
+    const dailyPnl: Record<string, number> = {};
+    allHistoryTrades.forEach((t) => {
+      const d = t.date;
+      if (d) {
+        dailyPnl[d] = (dailyPnl[d] || 0) + (t.pnl || 0);
+      }
+    });
+
+    const sortedDates = Object.keys(dailyPnl).sort((a, b) => a.localeCompare(b));
+
+    const dataPoints = [{ date: 'Start', balance: startingBalance }];
+    let currentBalance = startingBalance;
+    
+    sortedDates.forEach((dateStr) => {
+      currentBalance += dailyPnl[dateStr];
+      const dateObj = new Date(dateStr);
+      const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      dataPoints.push({
+        date: formattedDate,
+        balance: parseFloat(currentBalance.toFixed(2))
+      });
+    });
+
+    const totalWinnerPnl = allHistoryTrades.filter(t => (t.pnl || 0) > 0).reduce((sum, t) => sum + (t.pnl || 0), 0);
+    const totalLoserPnl = Math.abs(allHistoryTrades.filter(t => (t.pnl || 0) < 0).reduce((sum, t) => sum + (t.pnl || 0), 0));
+
+    return {
+      startingBalance,
+      dataPoints,
+      currentBalance,
+      totalWinnerPnl,
+      totalLoserPnl
+    };
+  }, [allHistoryTrades, startingBalanceInput]);
 
   if (authLoading) {
     return (
@@ -1207,15 +1311,22 @@ export const DashboardPage: React.FC = () => {
                           return (
                             <div
                               key={`day-${d}`}
+                              onClick={() => {
+                                if (hasTrades) {
+                                  setSelectedCalendarDay(cellDateStr);
+                                  setIsDayModalOpen(true);
+                                }
+                              }}
                               style={{
                                 width: '80px',
                                 height: '60px',
                                 backgroundColor: hasTrades 
                                   ? (isProfitable ? 'rgba(34, 197, 94, 0.12)' : 'rgba(239, 68, 68, 0.12)')
                                   : 'var(--card)',
-                                borderColor: 'var(--border)'
+                                borderColor: 'var(--border)',
+                                cursor: hasTrades ? 'pointer' : 'default'
                               }}
-                              className="border rounded flex flex-col justify-between p-1.5"
+                              className="border rounded flex flex-col justify-between p-1.5 transition-all hover:brightness-95"
                             >
                               <div className="flex justify-between items-start">
                                 <span 
@@ -1244,6 +1355,132 @@ export const DashboardPage: React.FC = () => {
                       </div>
                     </div>
                   </div>
+                </div>
+
+                {/* ADDITION 5 — Account Balance Section */}
+                <div className="rounded-xl p-5 mb-4" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+                    <div>
+                      <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
+                        Account Balance
+                      </h2>
+                      <p style={{ color: 'var(--text-muted)' }} className="text-xs">
+                        Cumulative historical account progression.
+                      </p>
+                    </div>
+                    
+                    {/* Starting Balance Input Field at top right */}
+                    <div className="flex flex-col">
+                      <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500 }} className="mb-1">
+                        Starting Balance (₹)
+                      </span>
+                      <input
+                        type="number"
+                        value={startingBalanceInput || ''}
+                        onChange={(e) => {
+                          const val = e.target.value === '' ? 0 : parseFloat(e.target.value);
+                          handleStartingBalanceChange(val);
+                        }}
+                        placeholder="Enter starting balance"
+                        style={{
+                          backgroundColor: 'var(--card)',
+                          border: '0.5px solid var(--border)',
+                          borderRadius: '8px',
+                          color: 'var(--text)',
+                          padding: '6px 12px',
+                          width: '180px'
+                        }}
+                        className="text-sm font-medium font-mono focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Recharts AreaChart for Account Balance */}
+                  <div style={{ width: '100%', height: 200 }} className="mb-5">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart
+                        data={balanceChartData.dataPoints}
+                        margin={{ top: 10, right: 10, left: 10, bottom: 5 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--bar)" vertical={false} />
+                        <XAxis
+                          dataKey="date"
+                          tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
+                          tickLine={false}
+                          axisLine={{ stroke: 'var(--border)' }}
+                          interval={6} // Shows every 7th label to avoid crowding
+                        />
+                        <YAxis
+                          hide={true} // No Y axis label/line
+                        />
+                        <RechartsTooltip
+                          contentStyle={{
+                            backgroundColor: 'var(--card)',
+                            border: '0.5px solid var(--border)',
+                            borderRadius: '8px',
+                            color: 'var(--text)',
+                          }}
+                          formatter={(value: any) => [
+                            <span key="val" style={{ fontWeight: 'bold', color: 'var(--text)' }}>
+                              {'₹' + Number(value).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                            </span>,
+                            'Balance'
+                          ]}
+                        />
+                        <Area
+                          type="monotone"
+                          dataKey="balance"
+                          stroke="var(--accent)"
+                          strokeWidth={2}
+                          fill="var(--accent)"
+                          fillOpacity={0.06}
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+
+                  {/* Row of 3 small info boxes */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+                    {/* Box 1 — CURRENT BALANCE */}
+                    <div style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px' }} className="p-3">
+                      <div style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase tracking-wider">CURRENT BALANCE</div>
+                      <div 
+                        style={{ 
+                          fontSize: '18px', 
+                          fontWeight: 700,
+                          color: balanceChartData.currentBalance > balanceChartData.startingBalance 
+                            ? '#22c55e' 
+                            : balanceChartData.currentBalance < balanceChartData.startingBalance 
+                              ? '#ef4444' 
+                              : 'var(--text)'
+                        }} 
+                        className="mt-1 font-mono"
+                      >
+                        ₹{balanceChartData.currentBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                      </div>
+                    </div>
+
+                    {/* Box 2 — TOTAL PROFIT */}
+                    <div style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px' }} className="p-3">
+                      <div style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase tracking-wider">TOTAL PROFIT</div>
+                      <div style={{ fontSize: '18px', fontWeight: 700, color: '#22c55e' }} className="mt-1 font-mono">
+                        ₹{balanceChartData.totalWinnerPnl.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                      </div>
+                    </div>
+
+                    {/* Box 3 — TOTAL LOSS */}
+                    <div style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px' }} className="p-3">
+                      <div style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase tracking-wider">TOTAL LOSS</div>
+                      <div style={{ fontSize: '18px', fontWeight: 700, color: '#ef4444' }} className="mt-1 font-mono">
+                        ₹{balanceChartData.totalLoserPnl.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Note below boxes */}
+                  <p style={{ color: 'var(--text-sub)', fontSize: '11px' }} className="italic">
+                    Balance calculated from starting balance + cumulative P&L. Deposits and withdrawals tracking coming soon.
+                  </p>
                 </div>
 
                 {/* SECTION 5: METRICS + STATS GRID */}
@@ -1769,6 +2006,241 @@ export const DashboardPage: React.FC = () => {
             )}
           </div>
         </main>
+
+    {/* ADDITION 1 — Calendar Day Click Popup */}
+    {isDayModalOpen && selectedCalendarDay && (
+      <div 
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+        onClick={() => setIsDayModalOpen(false)}
+      >
+        <div 
+          style={{ 
+            backgroundColor: 'var(--card)', 
+            border: '0.5px solid var(--border)', 
+            borderRadius: '16px',
+            maxHeight: '90vh',
+            overflowY: 'auto'
+          }} 
+          className="w-full max-w-[680px] p-6 relative flex flex-col gap-5 shadow-2xl"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Modal Header Row */}
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h3 className="text-lg font-bold tracking-tight" style={{ color: 'var(--text)', fontSize: '18px', fontWeight: 700 }}>
+                {formatDayHeaderDate(selectedCalendarDay)}
+              </h3>
+              <div className="flex items-center gap-1.5 mt-1">
+                <span style={{ color: 'var(--text-sub)', fontSize: '12px' }} className="font-semibold uppercase tracking-wider">Day Net P&L:</span>
+                <span 
+                  className="text-base font-bold font-mono" 
+                  style={{ 
+                    fontSize: '16px', 
+                    fontWeight: 700, 
+                    color: clickedDayStats.netPnl > 0 ? '#22c55e' : clickedDayStats.netPnl < 0 ? '#ef4444' : 'var(--text)' 
+                  }}
+                >
+                  {formatINR(clickedDayStats.netPnl)}
+                </span>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  showSuccess('Daily notes coming soon');
+                }}
+                style={{
+                  backgroundColor: 'var(--card)',
+                  border: '0.5px solid var(--border)',
+                  borderRadius: '8px',
+                  color: 'var(--text-sub)',
+                  fontSize: '12px'
+                }}
+                className="px-3 py-1.5 hover:opacity-85 font-medium transition-all"
+              >
+                View Note
+              </button>
+              <button
+                onClick={() => setIsDayModalOpen(false)}
+                style={{ color: 'var(--text-muted)' }}
+                className="p-1 hover:opacity-85 transition-all rounded"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+
+          {/* Day stats row (grid of boxes below header, 4 columns, gap 8px) */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {/* Box 1 */}
+            <div style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px' }} className="p-2.5 px-3">
+              <div style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase">TOTAL TRADES</div>
+              <div style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 700 }} className="mt-0.5 font-mono">{clickedDayStats.totalTrades}</div>
+            </div>
+            {/* Box 2 */}
+            <div style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px' }} className="p-2.5 px-3">
+              <div style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase">WINNERS</div>
+              <div style={{ color: '#22c55e', fontSize: '16px', fontWeight: 700 }} className="mt-0.5 font-mono">{clickedDayStats.winners}</div>
+            </div>
+            {/* Box 3 */}
+            <div style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px' }} className="p-2.5 px-3">
+              <div style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase">LOSERS</div>
+              <div style={{ color: '#ef4444', fontSize: '16px', fontWeight: 700 }} className="mt-0.5 font-mono">{clickedDayStats.losers}</div>
+            </div>
+            {/* Box 4 */}
+            <div style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px' }} className="p-2.5 px-3">
+              <div style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase">WIN RATE</div>
+              <div style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 700 }} className="mt-0.5 font-mono">{clickedDayStats.winRate}%</div>
+            </div>
+            {/* Box 5 */}
+            <div style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px' }} className="p-2.5 px-3">
+              <div style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase">GROSS P&L</div>
+              <div style={{ color: clickedDayStats.grossPnl > 0 ? '#22c55e' : clickedDayStats.grossPnl < 0 ? '#ef4444' : 'var(--text)', fontSize: '16px', fontWeight: 700 }} className="mt-0.5 font-mono">
+                {formatINR(clickedDayStats.grossPnl)}
+              </div>
+            </div>
+            {/* Box 6 */}
+            <div style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px' }} className="p-2.5 px-3">
+              <div style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase">COMMISSIONS</div>
+              <div style={{ color: '#ef4444', fontSize: '16px', fontWeight: 700 }} className="mt-0.5 font-mono">
+                {formatINR(clickedDayStats.commissions)}
+              </div>
+            </div>
+            {/* Box 7 */}
+            <div style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px' }} className="p-2.5 px-3">
+              <div style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase">NET P&L</div>
+              <div style={{ color: clickedDayStats.netPnl > 0 ? '#22c55e' : clickedDayStats.netPnl < 0 ? '#ef4444' : 'var(--text)', fontSize: '16px', fontWeight: 700 }} className="mt-0.5 font-mono">
+                {formatINR(clickedDayStats.netPnl)}
+              </div>
+            </div>
+            {/* Box 8 */}
+            <div style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px' }} className="p-2.5 px-3">
+              <div style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase">PROFIT FACTOR</div>
+              <div style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 700 }} className="mt-0.5 font-mono">{clickedDayStats.profitFactor}</div>
+            </div>
+          </div>
+
+          {/* Trade list table below stats */}
+          <div className="overflow-x-auto mt-2 rounded bg-[var(--bg)] border" style={{ borderColor: 'var(--border)' }}>
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr style={{ backgroundColor: 'var(--bar)' }}>
+                  <th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="p-2.5 px-3 uppercase">TIME</th>
+                  <th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="p-2.5 px-3 uppercase">SYMBOL</th>
+                  <th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="p-2.5 px-3 uppercase">DIRECTION</th>
+                  <th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="p-2.5 px-3 uppercase">SETUP</th>
+                  <th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="p-2.5 px-3 uppercase text-right">P&L</th>
+                  <th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="p-2.5 px-3 uppercase text-center">R-MULTIPLE</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y" style={{ borderColor: 'var(--border)' }}>
+                {clickedDayTrades.map((trade: any) => {
+                  const isDirLong = trade.direction === 'LONG' || trade.direction === 'BUY' || trade.option_type === 'CALL';
+                  const displayDir = trade.option_type ? `${trade.direction} ${trade.option_type}` : trade.direction;
+                  const strategyName = trade.strategies?.name || null;
+                  const rMult = typeof trade.r_multiple === 'number' ? trade.r_multiple : null;
+                  const formattedR = rMult !== null ? (rMult >= 0 ? `+${rMult.toFixed(1)}R` : `${rMult.toFixed(1)}R`) : '—';
+                  
+                  const formatTime = (timeStr: string) => {
+                    if (!timeStr) return '—';
+                    if (timeStr.includes(':')) {
+                      return timeStr.slice(0, 5);
+                    }
+                    return timeStr;
+                  };
+
+                  return (
+                    <tr 
+                      key={trade.id} 
+                      style={{ borderBottom: '0.5px solid var(--border)' }}
+                      className="transition-colors hover:bg-[var(--row)]"
+                    >
+                      <td style={{ color: 'var(--text-sub)', fontSize: '12px' }} className="p-2.5 px-3 font-mono">
+                        {formatTime(trade.entry_time)}
+                      </td>
+                      <td style={{ color: 'var(--text)', fontSize: '13px', fontWeight: 600 }} className="p-2.5 px-3">
+                        {trade.symbol}
+                      </td>
+                      <td className="p-2.5 px-3">
+                        <span 
+                          style={{ 
+                            fontSize: '10px', 
+                            fontWeight: 700,
+                            backgroundColor: isDirLong ? 'rgba(34, 197, 94, 0.12)' : 'rgba(239, 68, 68, 0.12)',
+                            color: isDirLong ? '#22c55e' : '#ef4444'
+                          }} 
+                          className="px-2 py-0.5 rounded-full inline-block uppercase"
+                        >
+                          {displayDir || 'N/A'}
+                        </span>
+                      </td>
+                      <td className="p-2.5 px-3">
+                        {strategyName ? (
+                          <span style={{ color: 'var(--text-sub)', fontSize: '12px' }}>{strategyName}</span>
+                        ) : (
+                          <span style={{ color: 'var(--text-muted)', fontSize: '12px' }} className="italic">No Setup</span>
+                        )}
+                      </td>
+                      <td style={{ color: trade.pnl > 0 ? '#22c55e' : trade.pnl < 0 ? '#ef4444' : 'var(--text)', fontSize: '13px', fontWeight: 700 }} className="p-2.5 px-3 font-mono text-right">
+                        {formatINR(trade.pnl)}
+                      </td>
+                      <td className="p-2.5 px-3 text-center font-mono">
+                        <span 
+                          style={{ 
+                            fontSize: '10px', 
+                            fontWeight: 700,
+                            backgroundColor: rMult !== null ? (rMult >= 0 ? 'rgba(34, 197, 94, 0.12)' : 'rgba(239, 68, 68, 0.12)') : 'transparent',
+                            color: rMult !== null ? (rMult >= 0 ? '#22c55e' : '#ef4444') : 'var(--text-muted)'
+                          }} 
+                          className="px-2 py-0.5 rounded-full inline-block"
+                        >
+                          {formattedR}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Modal footer */}
+          <div className="flex items-center justify-end gap-2 pt-4 border-t" style={{ borderColor: 'var(--border)' }}>
+            <button
+              onClick={() => setIsDayModalOpen(false)}
+              style={{
+                backgroundColor: 'var(--card)',
+                border: '0.5px solid var(--border)',
+                borderRadius: '8px',
+                color: 'var(--text-sub)',
+                fontSize: '13px'
+              }}
+              className="px-4 py-2 hover:opacity-85 font-medium transition-all"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => {
+                setIsDayModalOpen(false);
+                navigate(`/monthly-reports?date=${selectedCalendarDay}`);
+              }}
+              style={{
+                backgroundColor: 'var(--accent)',
+                color: '#ffffff',
+                borderRadius: '8px',
+                fontSize: '13px',
+                fontWeight: 600
+              }}
+              className="px-4 py-2 hover:opacity-90 transition-all font-semibold"
+            >
+              View Details
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+
       </div>
     </div>
   );
