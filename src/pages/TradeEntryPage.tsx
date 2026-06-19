@@ -294,7 +294,6 @@ export const TradeEntryPage: React.FC = () => {
           setQuantity(tradeData.quantity !== null ? tradeData.quantity.toString() : '');
           setPoints(tradeData.points !== null ? tradeData.points.toString() : '');
           setFees(tradeData.fees !== null ? tradeData.fees.toString() : '0');
-          setEntryPrice(tradeData.entry_price !== null ? tradeData.entry_price.toString() : '');
           setProfitTarget(tradeData.profit_target !== null ? tradeData.profit_target.toString() : '');
           setStopLossPrice(tradeData.stop_loss_price !== null ? tradeData.stop_loss_price.toString() : '');
           setMae(tradeData.mae !== null ? tradeData.mae.toString() : '');
@@ -454,15 +453,6 @@ export const TradeEntryPage: React.FC = () => {
   })();
 
   const calculatedPlannedR = (() => {
-    if (profitTarget !== '' && stopLossPrice !== '' && entryPrice !== '') {
-      const pt = parseFloat(profitTarget);
-      const sl = parseFloat(stopLossPrice);
-      const ep = parseFloat(entryPrice);
-      const denom = ep - sl;
-      if (denom !== 0) {
-        return (pt - ep) / denom;
-      }
-    }
     return null;
   })();
 
@@ -735,7 +725,6 @@ export const TradeEntryPage: React.FC = () => {
             notes: notes.trim() || null,
             trade_video_url: tradeVideoUrl.trim() || null,
             fees: fees !== '' ? parseFloat(fees) : 0,
-            entry_price: entryPrice !== '' ? parseFloat(entryPrice) : null,
             profit_target: profitTarget !== '' ? parseFloat(profitTarget) : null,
             stop_loss_price: stopLossPrice !== '' ? parseFloat(stopLossPrice) : null,
             mae: mae !== '' ? parseFloat(mae) : null,
@@ -795,7 +784,6 @@ export const TradeEntryPage: React.FC = () => {
             chart_image_url: null,
             trade_plan_url: null,
             fees: fees !== '' ? parseFloat(fees) : 0,
-            entry_price: entryPrice !== '' ? parseFloat(entryPrice) : null,
             profit_target: profitTarget !== '' ? parseFloat(profitTarget) : null,
             stop_loss_price: stopLossPrice !== '' ? parseFloat(stopLossPrice) : null,
             mae: mae !== '' ? parseFloat(mae) : null,

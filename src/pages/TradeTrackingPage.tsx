@@ -196,25 +196,15 @@ const TradeTrackingPageContent: React.FC = () => {
   }, [trade]);
 
   // Save fields on Blur
-  const getPlannedRMultValue = (ptVal: string, slVal: string, ep: number | null | undefined) => {
-    const pt = parseFloat(ptVal);
-    const sl = parseFloat(slVal);
-    if (isNaN(pt) || isNaN(sl) || !ep || ep === sl) return null;
-    return (pt - ep) / (ep - sl);
-  };
-
   const handleBlurProfitTarget = async () => {
     if (!userId || !tradeId) return;
     const numPT = profitTarget === '' ? null : parseFloat(profitTarget);
-    const numSL = stopLossPrice === '' ? null : parseFloat(stopLossPrice);
-    const rMult = getPlannedRMultValue(profitTarget, stopLossPrice, trade?.entry_price);
     
     try {
       const { error } = await supabase
         .from('trades')
         .update({ 
-          profit_target: numPT,
-          planned_r_multiple: rMult
+          profit_target: numPT
         })
         .eq('id', tradeId)
         .eq('user_id', userId);
@@ -222,8 +212,7 @@ const TradeTrackingPageContent: React.FC = () => {
       
       setTrade((prev: any) => ({
         ...prev,
-        profit_target: numPT,
-        planned_r_multiple: rMult
+        profit_target: numPT
       }));
     } catch (err) {
       console.error('Error saving profit target:', err);
@@ -233,16 +222,13 @@ const TradeTrackingPageContent: React.FC = () => {
 
   const handleBlurStopLossPrice = async () => {
     if (!userId || !tradeId) return;
-    const numPT = profitTarget === '' ? null : parseFloat(profitTarget);
     const numSL = stopLossPrice === '' ? null : parseFloat(stopLossPrice);
-    const rMult = getPlannedRMultValue(profitTarget, stopLossPrice, trade?.entry_price);
     
     try {
       const { error } = await supabase
         .from('trades')
         .update({ 
-          stop_loss_price: numSL,
-          planned_r_multiple: rMult
+          stop_loss_price: numSL
         })
         .eq('id', tradeId)
         .eq('user_id', userId);
@@ -250,8 +236,7 @@ const TradeTrackingPageContent: React.FC = () => {
       
       setTrade((prev: any) => ({
         ...prev,
-        stop_loss_price: numSL,
-        planned_r_multiple: rMult
+        stop_loss_price: numSL
       }));
     } catch (err) {
       console.error('Error saving stop loss:', err);
@@ -303,14 +288,8 @@ const TradeTrackingPageContent: React.FC = () => {
 
   // Planned R-Multiple auto-calculated read-only formula
   const calculatedPlannedR = React.useMemo(() => {
-    const pt = parseFloat(profitTarget);
-    const sl = parseFloat(stopLossPrice);
-    const ep = trade?.entry_price;
-    
-    if (isNaN(pt) || isNaN(sl) || !ep || ep === sl) return '—';
-    const val = (pt - ep) / (ep - sl);
-    return val >= 0 ? `+${val.toFixed(1)}R` : `${val.toFixed(1)}R`;
-  }, [profitTarget, stopLossPrice, trade?.entry_price]);
+    return '—';
+  }, []);
 
   // Playbooks rules handlers
   const handleToggleRule = async (ruleId: string, ruleType: 'entry' | 'exit', currentFollowed: boolean | null) => {
@@ -466,15 +445,15 @@ const TradeTrackingPageContent: React.FC = () => {
           
           const isShort = trade.direction === 'SHORT' || trade.option_type === 'PUT';
           const qty = trade.quantity || 1;
-          const entryPrice = trade.entry_price || 0;
+          const baselinePrice = sortedValues.length > 0 ? parseFloat(sortedValues[0].close) : 0;
           
           const points = sortedValues.map((val: any) => {
             const closeVal = parseFloat(val.close);
             let runningPnl = 0;
             if (isShort) {
-              runningPnl = (entryPrice - closeVal) * qty;
+              runningPnl = (baselinePrice - closeVal) * qty;
             } else {
-              runningPnl = (closeVal - entryPrice) * qty;
+              runningPnl = (closeVal - baselinePrice) * qty;
             }
             const formattedTime = new Date(val.datetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             return {
@@ -509,7 +488,7 @@ const TradeTrackingPageContent: React.FC = () => {
     if (trade) {
       fetchRunningPnlData();
     }
-  }, [trade?.symbol, trade?.entry_time, trade?.exit_time, trade?.entry_price, trade?.quantity, trade?.pnl, trade?.mae, trade?.mfe, trade?.direction, trade?.option_type]);
+  }, [trade?.symbol, trade?.entry_time, trade?.exit_time, trade?.quantity, trade?.pnl, trade?.mae, trade?.mfe, trade?.direction, trade?.option_type]);
 
   // Visual Embeddings States
   const [hasEmbedding, setHasEmbedding] = useState<boolean | null>(null);
