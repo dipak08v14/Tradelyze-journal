@@ -94,9 +94,32 @@ export function Notebook() {
   const [folderColorInput, setFolderColorInput] = useState('#06b6d4');
   const [folderMenuId, setFolderMenuId] = useState<string | null>(null);
 
-  // Editor Inline Tag Add State
-  const [showAddTagInput, setShowAddTagInput] = useState(false);
-  const [tagInputText, setTagInputText] = useState('');
+  // Tag input state
+  const [tagInput, setTagInput] = useState<string>('');
+
+  // Date picker & Link trade date states
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedLogDate, setSelectedLogDate] = useState(() => {
+    const today = new Date();
+    const offset = today.getTimezoneOffset();
+    const localToday = new Date(today.getTime() - (offset * 60 * 1000));
+    return localToday.toISOString().split('T')[0];
+  });
+
+  // Log Day confirmation dialog state
+  const [logDayConfirmData, setLogDayConfirmData] = useState<{ count: number; date: string } | null>(null);
+
+  // Helper bindings for custom tag implementation
+  const fetchNotes = () => { fetchEntries(); };
+  const setActiveNote = (note: EntryItem | null) => {
+    if (!note) {
+      setActiveNoteId(null);
+      return;
+    }
+    setAllEntries((prev) =>
+      prev.map((n) => (n.id === note.id ? note : n))
+    );
+  };
 
   // Save Indicator state
   const [titleSaving, setTitleSaving] = useState(false);
@@ -225,6 +248,33 @@ export function Notebook() {
     return result;
   }, [allEntries, selectedFolderId, selectedTag, searchQuery]);
 
+  // Group entries by log_date
+  const groupedEntries = useMemo(() => {
+    const withLogDate = filteredEntries.filter(entry => entry.log_date);
+    const withoutLogDate = filteredEntries.filter(entry => !entry.log_date);
+
+    const groupsMap: Record<string, EntryItem[]> = {};
+    withLogDate.forEach(entry => {
+      const date = entry.log_date as string;
+      if (!groupsMap[date]) {
+        groupsMap[date] = [];
+      }
+      groupsMap[date].push(entry);
+    });
+
+    Object.keys(groupsMap).forEach(date => {
+      groupsMap[date].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+    });
+
+    const sortedDates = Object.keys(groupsMap).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+
+    return {
+      sortedDates,
+      groupsMap,
+      withoutLogDate
+    };
+  }, [filteredEntries]);
+
   // Identify active note
   const activeNote = useMemo(() => {
     return allEntries.find((entry) => entry.id === activeNoteId) || null;
@@ -243,8 +293,8 @@ export function Notebook() {
       if (editorRef.current) {
         editorRef.current.innerHTML = activeNote.content || '';
       }
-      setShowAddTagInput(false);
-      setTagInputText('');
+      setTagInput('');
+      setShowDatePicker(false);
     } else {
       setLocalTitle('');
       if (editorRef.current) {
@@ -613,58 +663,89 @@ export function Notebook() {
     }
   };
 
-  // Remove individual Tag from Active Note
-  const handleRemoveTag = async (tagToRemove: string) => {
-    if (!activeNote) return;
-    const cleanTags = activeNote.tags.filter((t) => t !== tagToRemove);
-    try {
-      const { error } = await supabase
-        .from('notebook_entries')
-        .update({ tags: cleanTags, updated_at: new Date().toISOString() })
+  // Tag input onKeyDown handler
+  const handleTagKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      const newTag = tagInput.trim();
+      if (!newTag || !activeNote) return;
+      if (activeNote.tags?.includes(newTag)) { setTagInput(''); return; }
+      const updatedTags = [...(activeNote.tags || []), newTag];
+      setTagInput('');
+      setActiveNote({ ...activeNote, tags: updatedTags });
+      await supabase.from('notebook_entries')
+        .update({ tags: updatedTags, updated_at: new Date().toISOString() })
         .eq('id', activeNote.id);
-
-      if (error) throw error;
-
-      setAllEntries((prev) =>
-        prev.map((n) => (n.id === activeNote.id ? { ...n, tags: cleanTags, updated_at: new Date().toISOString() } : n))
-      );
-    } catch (err) {
-      console.error('Error removing tag:', err);
-      showError('Failed to remove tag.');
+      fetchNotes();
+    }
+    if (e.key === 'Backspace' && tagInput === '' && activeNote.tags?.length > 0) {
+      const updatedTags = activeNote.tags.slice(0, -1);
+      setActiveNote({ ...activeNote, tags: updatedTags });
+      await supabase.from('notebook_entries')
+        .update({ tags: updatedTags, updated_at: new Date().toISOString() })
+        .eq('id', activeNote.id);
+      fetchNotes();
     }
   };
 
-  // Add individual Tag inline
-  const handleAddTagInline = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!activeNote || !tagInputText.trim()) return;
+  // Remove tag (×) handler
+  const removeTag = async (tagToRemove: string) => {
+    const updatedTags = (activeNote.tags || []).filter(t => t !== tagToRemove);
+    setActiveNote({ ...activeNote, tags: updatedTags });
+    await supabase.from('notebook_entries')
+      .update({ tags: updatedTags, updated_at: new Date().toISOString() })
+      .eq('id', activeNote.id);
+    fetchNotes();
+  };
 
-    const newTag = tagInputText.trim();
-    if (activeNote.tags && activeNote.tags.includes(newTag)) {
-      showWarning('Tag already exists on this note.');
-      setTagInputText('');
-      setShowAddTagInput(false);
-      return;
+  const formatLogDateLabel = (dateStr: string | null | undefined) => {
+    if (!dateStr) return '';
+    try {
+      const parts = dateStr.split('-');
+      if (parts.length !== 3) return dateStr;
+      const d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+      return d.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
+    } catch {
+      return dateStr;
     }
+  };
 
-    const updatedTags = [...(activeNote.tags || []), newTag];
+  const handleRemoveTradeDate = async () => {
+    if (!activeNote) return;
     try {
       const { error } = await supabase
         .from('notebook_entries')
-        .update({ tags: updatedTags, updated_at: new Date().toISOString() })
+        .update({ log_date: null, updated_at: new Date().toISOString() })
         .eq('id', activeNote.id);
-
       if (error) throw error;
-
-      setAllEntries((prev) =>
-        prev.map((n) => (n.id === activeNote.id ? { ...n, tags: updatedTags, updated_at: new Date().toISOString() } : n))
-      );
-
-      setTagInputText('');
-      setShowAddTagInput(false);
+      setActiveNote({ ...activeNote, log_date: null });
+      fetchNotes();
+      showSuccess('Trade date removed.');
     } catch (err) {
-      console.error('Error adding tag:', err);
-      showError('Failed to add tag.');
+      console.error(err);
+      showError('Failed to remove trade date.');
+    }
+  };
+
+  const handleConfirmTradeDate = async () => {
+    if (!activeNote) return;
+    try {
+      const { error } = await supabase
+        .from('notebook_entries')
+        .update({ log_date: selectedLogDate, updated_at: new Date().toISOString() })
+        .eq('id', activeNote.id);
+      if (error) throw error;
+      setActiveNote({ ...activeNote, log_date: selectedLogDate });
+      fetchNotes();
+      setShowDatePicker(false);
+      showSuccess('Linked to trading day.');
+    } catch (err) {
+      console.error(err);
+      showError('Failed to set trade date.');
     }
   };
 
@@ -699,8 +780,20 @@ export function Notebook() {
   };
 
   // Handler to fetch trade details and create pre-filled Log Day entry
-  const handleCreateLog = async () => {
+  const handleCreateLog = async (bypassExistsCheck: boolean = false) => {
     if (!user?.id) return;
+
+    if (!bypassExistsCheck) {
+      const existingEntriesCount = allEntries.filter(
+        (entry) => !entry.is_deleted && entry.log_date === logDateInput
+      ).length;
+
+      if (existingEntriesCount > 0) {
+        setLogDayConfirmData({ count: existingEntriesCount, date: logDateInput });
+        return;
+      }
+    }
+
     setIsCreatingLog(true);
     try {
       const { data: tradesData, error: tradesError } = await supabase
@@ -846,6 +939,89 @@ export function Notebook() {
   // UI styling helpers
   const getFolderColorDot = (color: string | undefined | null) => {
     return color || '#06b6d4';
+  };
+
+  // Render note item helper for grouped and other lists
+  const renderNoteItem = (note: EntryItem) => {
+    const isActive = activeNoteId === note.id;
+    const isChecked = selectedNoteIds.includes(note.id);
+
+    return (
+      <div
+        key={note.id}
+        onClick={() => setActiveNoteId(note.id)}
+        className="group p-3.5 hover:bg-[var(--bar)]/40 transition-all cursor-pointer relative flex items-start gap-3"
+        style={{
+          backgroundColor: isActive ? 'var(--accent-muted)' : 'transparent',
+        }}
+      >
+        {/* Checkbox */}
+        <button
+          type="button"
+          onClick={(e) => handleToggleSelectNote(e, note.id)}
+          className="mt-0.5 text-zinc-500 hover:text-zinc-200 transition-colors shrink-0 cursor-pointer bg-transparent border-none p-0"
+        >
+          {isChecked ? (
+            <CheckSquare className="w-4 h-4 text-[var(--accent)]" />
+          ) : (
+            <Square className="w-4 h-4" />
+          )}
+        </button>
+
+        <div className="flex-1 min-w-0 flex flex-col gap-1.5">
+          <div className="flex items-center justify-between gap-1 w-full">
+            {/* Title */}
+            <span
+              className="text-[13px] font-semibold tracking-tight truncate flex-1 text-zinc-100 flex items-center gap-1.5"
+              style={{ color: isActive ? 'var(--accent)' : 'var(--text)' }}
+            >
+              {note.log_date && (
+                <Calendar className="w-3.5 h-3.5 shrink-0 text-cyan-500" />
+              )}
+              {note.title && note.title.trim() !== '' ? note.title : 'Untitled'}
+            </span>
+            
+            {/* Folder Color indicator dot if All Notes is active */}
+            {selectedFolderId === 'ALL' && note.folder_id && (
+              <span
+                className="w-2 h-2 rounded-full shrink-0"
+                style={{
+                  backgroundColor: getFolderColorDot(
+                    folders.find((f) => f.id === note.folder_id)?.color
+                  )
+                }}
+                title={folders.find((f) => f.id === note.folder_id)?.name}
+              />
+            )}
+          </div>
+
+          {/* Content text snippet */}
+          <p className="text-[11px] text-zinc-400 dark:text-zinc-500 font-sans line-clamp-2 leading-relaxed">
+            {note.content && note.content.trim() !== ''
+              ? note.content.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ') // remove HTML tags
+              : 'No content...'}
+          </p>
+
+          <div className="flex items-center justify-between mt-1">
+            {/* Date */}
+            <span className="font-mono text-[10px] text-zinc-500 dark:text-zinc-600">
+              {formatDate(note.created_at)}
+            </span>
+
+            {/* Restore button if in trash */}
+            {selectedFolderId === 'TRASH' && (
+              <button
+                type="button"
+                onClick={(e) => handleRestoreNoteItem(e, note.id)}
+                className="px-2 py-0.5 text-[10px] font-mono font-bold text-green-500 bg-green-500/10 hover:bg-green-500/20 rounded cursor-pointer transition-colors"
+              >
+                Restore
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -1192,87 +1368,42 @@ export function Notebook() {
                   </p>
                 </div>
               ) : (
-                filteredEntries.map((note) => {
-                  const isActive = activeNoteId === note.id;
-                  const isChecked = selectedNoteIds.includes(note.id);
-
-                  return (
-                    <div
-                      key={note.id}
-                      onClick={() => setActiveNoteId(note.id)}
-                      className="group p-3.5 hover:bg-[var(--bar)]/40 transition-all cursor-pointer relative flex items-start gap-3"
-                      style={{
-                        backgroundColor: isActive ? 'var(--accent-muted)' : 'transparent',
-                      }}
-                    >
-                      {/* Checkbox */}
-                      <button
-                        type="button"
-                        onClick={(e) => handleToggleSelectNote(e, note.id)}
-                        className="mt-0.5 text-zinc-500 hover:text-zinc-200 transition-colors shrink-0 cursor-pointer"
-                      >
-                        {isChecked ? (
-                          <CheckSquare className="w-4 h-4 text-[var(--accent)]" />
-                        ) : (
-                          <Square className="w-4 h-4" />
-                        )}
-                      </button>
-
-                      <div className="flex-1 min-w-0 flex flex-col gap-1.5">
-                        <div className="flex items-center justify-between gap-1 w-full">
-                          {/* Title */}
-                          <span
-                            className="text-[13px] font-semibold tracking-tight truncate flex-1 text-zinc-100 flex items-center gap-1.5"
-                            style={{ color: isActive ? 'var(--accent)' : 'var(--text)' }}
-                          >
-                            {note.log_date && (
-                              <Calendar className="w-3.5 h-3.5 shrink-0 text-cyan-500" />
-                            )}
-                            {note.title && note.title.trim() !== '' ? note.title : 'Untitled'}
-                          </span>
-                          
-                          {/* Folder Color indicator dot if All Notes is active */}
-                          {selectedFolderId === 'ALL' && note.folder_id && (
-                            <span
-                              className="w-2 h-2 rounded-full shrink-0"
-                              style={{
-                                backgroundColor: getFolderColorDot(
-                                  folders.find((f) => f.id === note.folder_id)?.color
-                                )
-                              }}
-                              title={folders.find((f) => f.id === note.folder_id)?.name}
-                            />
-                          )}
+                <div className="flex flex-col">
+                  {/* render date groups */}
+                  {groupedEntries.sortedDates.map((groupDate) => {
+                    const notes = groupedEntries.groupsMap[groupDate];
+                    return (
+                      <div key={groupDate} id={`date-group-${groupDate}`} className="flex flex-col">
+                        <div
+                          className="px-3 py-2 text-[10px] font-bold font-mono tracking-wider uppercase text-zinc-400 dark:text-zinc-500 flex items-center gap-1.5 shrink-0"
+                          style={{ backgroundColor: 'var(--bar)' }}
+                        >
+                          <span>📅 {formatLogDateLabel(groupDate)}</span>
                         </div>
-
-                        {/* Content text snippet */}
-                        <p className="text-[11px] text-zinc-400 dark:text-zinc-500 font-sans line-clamp-2 leading-relaxed">
-                          {note.content && note.content.trim() !== ''
-                            ? note.content.replace(/<[^>]+>/g, '') // remove HTML tags
-                            : 'No content...'}
-                        </p>
-
-                        <div className="flex items-center justify-between mt-1">
-                          {/* Date */}
-                          <span className="font-mono text-[10px] text-zinc-500 dark:text-zinc-600">
-                            {formatDate(note.created_at)}
-                          </span>
-
-                          {/* Restore button if in trash */}
-                          {selectedFolderId === 'TRASH' && (
-                            <button
-                              type="button"
-                              onClick={(e) => handleRestoreNoteItem(e, note.id)}
-                              className="px-2 py-0.5 text-[10px] font-mono font-bold text-green-500 bg-green-500/10 hover:bg-green-500/20 rounded cursor-pointer transition-colors"
-                            >
-                              Restore
-                            </button>
-                          )}
+                        <div className="divide-y divide-[var(--border)]/30">
+                          {notes.map((note) => renderNoteItem(note))}
                         </div>
                       </div>
+                    );
+                  })}
+
+                  {/* render notes without log_date */}
+                  {groupedEntries.withoutLogDate.length > 0 && (
+                    <div className="flex flex-col">
+                      {groupedEntries.sortedDates.length > 0 && (
+                        <div
+                          className="px-3 py-2 text-[10px] font-bold font-mono tracking-wider uppercase text-zinc-400 dark:text-zinc-500 flex items-center gap-1.5 shrink-0"
+                          style={{ backgroundColor: 'var(--bar)' }}
+                        >
+                          <span>— OTHER NOTES —</span>
+                        </div>
+                      )}
+                      <div className="divide-y divide-[var(--border)]/30 border-t border-[var(--border)]/30">
+                        {groupedEntries.withoutLogDate.map((note) => renderNoteItem(note))}
+                      </div>
                     </div>
-                  );
-                })
+                  )}
+                </div>
               )}
             </div>
           </section>
@@ -1334,9 +1465,81 @@ export function Notebook() {
                     className="text-2xl font-bold font-sans text-white focus:outline-none w-full bg-transparent border-none p-0 focus:ring-0 mt-1 placeholder:text-zinc-600"
                   />
 
+                  {/* Subtle link prompt if log_date is not set */}
+                  {!activeNote.is_deleted && !activeNote.log_date && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const today = new Date();
+                        const offset = today.getTimezoneOffset();
+                        const localToday = new Date(today.getTime() - (offset * 60 * 1000));
+                        setSelectedLogDate(localToday.toISOString().split('T')[0]);
+                        setShowDatePicker(true);
+                      }}
+                      className="text-xs text-zinc-400 hover:text-cyan-400 transition-colors cursor-pointer text-left w-fit p-0 border-none bg-transparent flex items-center gap-1 mt-0.5"
+                    >
+                      📅 Link this note to a trading day →
+                    </button>
+                  )}
+
                   {/* Dates created, updated & trash delete button */}
                   <div className="flex flex-wrap items-center justify-between gap-2 mt-1 text-[11px] text-zinc-500 font-mono">
-                    <div>
+                    <div className="flex items-center flex-wrap gap-2">
+                      {!activeNote.is_deleted && (
+                        <>
+                          {activeNote.log_date ? (
+                            <div className="flex items-center gap-1.5 bg-cyan-500/10 text-cyan-400 px-2 py-0.5 rounded border border-cyan-500/20 font-mono text-xs">
+                              <span>📅 {formatLogDateLabel(activeNote.log_date)}</span>
+                              <button
+                                type="button"
+                                onClick={handleRemoveTradeDate}
+                                className="hover:text-red-400 font-bold ml-1 text-sm bg-transparent border-none p-0 cursor-pointer"
+                                title="Remove date link"
+                              >
+                                &times;
+                              </button>
+                            </div>
+                          ) : showDatePicker ? (
+                            <div className="flex items-center gap-1.5 bg-zinc-900 px-2 py-1 rounded border border-[var(--border)] animate-in fade-in zoom-in-95 duration-100">
+                              <input
+                                type="date"
+                                value={selectedLogDate}
+                                onChange={(e) => setSelectedLogDate(e.target.value)}
+                                className="bg-zinc-800 border border-[var(--border)] rounded px-1.5 py-0.5 text-xs text-white focus:outline-none"
+                              />
+                              <button
+                                type="button"
+                                onClick={handleConfirmTradeDate}
+                                className="px-2 py-0.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded text-xs transition-colors cursor-pointer"
+                              >
+                                Link to this day
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setShowDatePicker(false)}
+                                className="text-zinc-400 hover:text-white px-1 text-xs cursor-pointer bg-transparent border-none"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const today = new Date();
+                                const offset = today.getTimezoneOffset();
+                                const localToday = new Date(today.getTime() - (offset * 60 * 1000));
+                                setSelectedLogDate(localToday.toISOString().split('T')[0]);
+                                setShowDatePicker(true);
+                              }}
+                              className="flex items-center gap-1 px-2 py-0.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded border border-[var(--border)] text-xs transition-all cursor-pointer"
+                            >
+                              📅 Set trade date
+                            </button>
+                          )}
+                          <span className="mx-2">•</span>
+                        </>
+                      )}
                       <span>Created: {formatDateTime(activeNote.created_at)}</span>
                       <span className="mx-2">•</span>
                       <span>Last updated: {formatDateTime(activeNote.updated_at)}</span>
@@ -1369,7 +1572,7 @@ export function Notebook() {
                       {!activeNote.is_deleted && (
                         <button
                           type="button"
-                          onClick={() => handleRemoveTag(tag)}
+                          onClick={() => removeTag(tag)}
                           className="hover:text-red-400 p-0 text-xs shrink-0 line-height-none border-none bg-transparent cursor-pointer font-bold select-none text-zinc-500"
                         >
                           &times;
@@ -1378,42 +1581,15 @@ export function Notebook() {
                     </span>
                   ))}
 
-                  {/* Add Tag toggler */}
                   {!activeNote.is_deleted && (
-                    <div className="relative inline-block">
-                      {!showAddTagInput ? (
-                        <button
-                          id="notebook-btn-add-tag-trigger"
-                          type="button"
-                          onClick={() => {
-                            setShowAddTagInput(true);
-                            // brief delay to allow DOM focus
-                            setTimeout(() => {
-                              document.getElementById('notebook-inline-tag-input')?.focus();
-                            }, 50);
-                          }}
-                          className="px-2.5 py-0.5 rounded-full bg-cyan-500/5 text-cyan-500 hover:bg-cyan-500/10 border border-cyan-500/20 text-xs font-mono font-bold flex items-center gap-1 transition-all cursor-pointer"
-                        >
-                          <Plus className="w-3 h-3" />
-                          Add tag
-                        </button>
-                      ) : (
-                        <form onSubmit={handleAddTagInline} className="inline-block">
-                          <input
-                            id="notebook-inline-tag-input"
-                            type="text"
-                            placeholder="Type and enter..."
-                            value={tagInputText}
-                            onChange={(e) => setTagInputText(e.target.value)}
-                            onBlur={() => {
-                              // dismiss if empty
-                              if (!tagInputText.trim()) setShowAddTagInput(false);
-                            }}
-                            className="px-2.5 py-0.5 rounded-full bg-zinc-800 border border-[var(--border)] text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 w-32 font-mono font-medium"
-                          />
-                        </form>
-                      )}
-                    </div>
+                    <input
+                      type="text"
+                      placeholder="Type tag, press Enter..."
+                      value={tagInput}
+                      onChange={(e) => setTagInput(e.target.value)}
+                      onKeyDown={handleTagKeyDown}
+                      className="px-2.5 py-0.5 rounded-full bg-zinc-800 border border-[var(--border)] text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 w-44 font-mono font-medium"
+                    />
                   )}
                 </div>
 
@@ -1658,12 +1834,51 @@ export function Notebook() {
                   id="notebook-btn-log-create"
                   type="button"
                   disabled={isCreatingLog}
-                  onClick={handleCreateLog}
+                  onClick={() => handleCreateLog(false)}
                   className="px-4 py-2 text-xs font-mono font-bold rounded-lg text-white bg-cyan-600 hover:bg-cyan-500 hover:shadow-lg hover:shadow-cyan-500/10 cursor-pointer transition-all shrink-0 disabled:opacity-50"
                 >
                   {isCreatingLog ? 'CREATING...' : 'CREATE LOG'}
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* LOG DAY ALREADY EXISTS CONFIRMATION MODAL */}
+      {logDayConfirmData && (
+        <div id="notebook-log-day-confirm-modal-overlay" className="fixed inset-0 bg-black/75 backdrop-blur-md z-[60] flex items-center justify-center p-4">
+          <div
+            id="notebook-log-day-confirm-modal"
+            className="w-full max-w-sm rounded-2xl shadow-xl border overflow-hidden p-6 animate-in scale-in duration-200 bg-zinc-950 border-amber-500/30"
+          >
+            <div className="flex items-center gap-2 text-amber-500 mb-3 font-mono font-bold text-sm uppercase tracking-wider">
+              <span>⚠️ Already Logged</span>
+            </div>
+            
+            <p className="text-xs text-zinc-300 font-sans leading-relaxed mb-6">
+              A note is already linked to the trading day <strong className="text-white">{formatLogDateLabel(logDayConfirmData.date)}</strong>.<br/><br/>
+              There {logDayConfirmData.count === 1 ? 'is' : 'are'} currently <strong className="text-cyan-400">{logDayConfirmData.count}</strong> note{logDayConfirmData.count === 1 ? '' : 's'} linked to this date. Do you want to create another anyway?
+            </p>
+
+            <div className="flex items-center justify-end gap-2.5">
+              <button
+                type="button"
+                onClick={() => setLogDayConfirmData(null)}
+                className="px-4 py-2 text-xs font-mono font-bold text-zinc-400 hover:text-white cursor-pointer rounded-lg bg-transparent hover:bg-zinc-900 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  setLogDayConfirmData(null);
+                  await handleCreateLog(true);
+                }}
+                className="px-4 py-2 text-xs font-mono font-bold rounded-lg text-white bg-amber-600 hover:bg-amber-500 hover:shadow-lg hover:shadow-amber-500/10 cursor-pointer transition-all shrink-0"
+              >
+                Create anyway
+              </button>
             </div>
           </div>
         </div>
