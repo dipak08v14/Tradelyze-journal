@@ -73,8 +73,8 @@ export const StrategiesPage: React.FC = () => {
   const [filterDropdownOpen, setFilterDropdownOpen] = useState(false);
 
   // Sorting State
-  const [sortBy, setSortBy] = useState<string>('name');
-  const [sortAsc, setSortAsc] = useState<boolean>(true);
+  const [sortColumn, setSortColumn] = useState<string>('name');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
   // Pagination page state (15 setups per page)
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -271,29 +271,46 @@ export const StrategiesPage: React.FC = () => {
       const statsA = computedStats[a.id];
       const statsB = computedStats[b.id];
 
-      if (sortBy === 'name') {
+      if (sortColumn === 'name') {
         aVal = a.name.toLowerCase();
         bVal = b.name.toLowerCase();
-      } else if (sortBy === 'trades') {
+      } else if (sortColumn === 'type') {
+        aVal = (a.type_of_strategy || '').toLowerCase();
+        bVal = (b.type_of_strategy || '').toLowerCase();
+      } else if (sortColumn === 'trades') {
         aVal = statsA?.totalTrades || 0;
         bVal = statsB?.totalTrades || 0;
-      } else if (sortBy === 'pnl') {
+      } else if (sortColumn === 'pnl') {
         aVal = statsA?.netPnl || 0;
         bVal = statsB?.netPnl || 0;
-      } else if (sortBy === 'winrate') {
+      } else if (sortColumn === 'winrate') {
         aVal = statsA?.winRate || 0;
         bVal = statsB?.winRate || 0;
-      } else if (sortBy === 'expectancy') {
+      } else if (sortColumn === 'avgr') {
+        aVal = statsA?.avgR || 0;
+        bVal = statsB?.avgR || 0;
+      } else if (sortColumn === 'profitfactor') {
+        const aFactor = statsA ? (statsA.profitFactor === 'N/A' ? Infinity : Number(statsA.profitFactor) || 0) : 0;
+        const bFactor = statsB ? (statsB.profitFactor === 'N/A' ? Infinity : Number(statsB.profitFactor) || 0) : 0;
+        aVal = aFactor;
+        bVal = bFactor;
+      } else if (sortColumn === 'expectancy') {
         aVal = statsA?.expectancy || 0;
         bVal = statsB?.expectancy || 0;
+      } else if (sortColumn === 'missed') {
+        aVal = statsA?.missedTrades || 0;
+        bVal = statsB?.missedTrades || 0;
+      } else if (sortColumn === 'status') {
+        aVal = (a.status || '').toLowerCase();
+        bVal = (b.status || '').toLowerCase();
       }
 
-      if (aVal < bVal) return sortAsc ? -1 : 1;
-      if (aVal > bVal) return sortAsc ? 1 : -1;
+      if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+      if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
       return 0;
     });
     return result;
-  }, [filteredStrategies, sortBy, sortAsc, computedStats]);
+  }, [filteredStrategies, sortColumn, sortDirection, computedStats]);
 
   // Paginated strategies calculation
   const paginatedStrategies = useMemo(() => {
@@ -435,6 +452,46 @@ export const StrategiesPage: React.FC = () => {
       default:
         return <div className="w-1 h-4 rounded-sm bg-amber-500 shrink-0" />;
     }
+  };
+
+  const renderSortableHeader = (columnKey: string, label: string, isCenter: boolean = true, extraStyles?: React.CSSProperties) => {
+    const isActive = sortColumn === columnKey;
+    const isAsc = sortDirection === 'asc';
+
+    const handleSort = () => {
+      if (sortColumn === columnKey) {
+        setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+      } else {
+        setSortColumn(columnKey);
+        setSortDirection('asc');
+      }
+    };
+
+    return (
+      <th
+        onClick={handleSort}
+        style={{
+          color: isActive ? 'var(--accent)' : 'var(--text-muted)',
+          cursor: 'pointer',
+          userSelect: 'none',
+          ...extraStyles
+        }}
+        className={`py-3 px-4 font-sans font-bold select-none text-[10px] uppercase tracking-wider ${isCenter ? 'text-center' : ''}`}
+      >
+        <div className={`inline-flex items-center gap-1 hover:opacity-85 ${isCenter ? 'justify-center w-full' : ''}`}>
+          <span>{label}</span>
+          <span
+            className="font-mono text-xs font-normal"
+            style={{
+              color: isActive ? 'var(--accent)' : 'var(--text-muted)',
+              opacity: isActive ? 1 : 0.4
+            }}
+          >
+            {isActive ? (isAsc ? '↑' : '↓') : '↕'}
+          </span>
+        </div>
+      </th>
+    );
   };
 
   return (
@@ -674,20 +731,22 @@ export const StrategiesPage: React.FC = () => {
                 <table className="w-full text-left border-collapse min-w-[900px]">
                   <thead>
                     <tr className="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 bg-zinc-900/50 border-b border-zinc-800" style={{ backgroundColor: 'var(--bar)' }}>
-                      <th className="py-3 px-4 min-w-[240px] font-sans font-bold text-zinc-400">Strategy Name</th>
-                      <th className="py-3 px-4 text-center font-sans font-bold text-zinc-400">Trades</th>
-                      <th className="py-3 px-4 text-center font-sans font-bold text-zinc-400">Net P&L</th>
-                      <th className="py-3 px-4 text-center font-sans font-bold text-zinc-400">Win Rate</th>
-                      <th className="py-3 px-4 text-center font-sans font-bold text-zinc-400">Avg R</th>
-                      <th className="py-3 px-4 text-center font-sans font-bold text-zinc-400">Profit Factor</th>
-                      <th className="py-3 px-4 text-center font-sans font-bold text-zinc-400">Expectancy</th>
-                      <th className="py-3 px-4 text-center font-sans font-bold text-zinc-400">Missed Trades</th>
-                      <th className="py-3 px-4 text-center font-sans font-bold text-zinc-400">Status</th>
+                      <th className="py-3 px-4 text-center font-sans font-bold text-zinc-400" style={{ width: '40px' }}>#</th>
+                      {renderSortableHeader('name', 'Strategy Name', false, { minWidth: '240px' })}
+                      {renderSortableHeader('type', 'TYPE', true, { width: '100px' })}
+                      {renderSortableHeader('trades', 'Trades')}
+                      {renderSortableHeader('pnl', 'Net P&L')}
+                      {renderSortableHeader('winrate', 'Win Rate')}
+                      {renderSortableHeader('avgr', 'Avg R')}
+                      {renderSortableHeader('profitfactor', 'Profit Factor')}
+                      {renderSortableHeader('expectancy', 'Expectancy')}
+                      {renderSortableHeader('missed', 'Missed Trades')}
+                      {renderSortableHeader('status', 'Status')}
                       <th className="py-3 px-4"></th>
                     </tr>
                   </thead>
                   <tbody>
-                    {paginatedStrategies.map((strat) => {
+                    {paginatedStrategies.map((strat, index) => {
                       const stats = computedStats[strat.id] || {
                         totalTrades: 0,
                         winRate: 0,
@@ -714,14 +773,44 @@ export const StrategiesPage: React.FC = () => {
                           style={{ borderColor: 'var(--border)' }}
                           onClick={() => navigate(`/strategies/${strat.id}`)}
                         >
-                          <td className="py-2.5 px-4">
-                            <div className="flex items-center gap-3">
-                              {getTypeSquare(strat.type_of_strategy)}
-                              <div className="flex items-center gap-2">
-                                <span className="font-semibold text-zinc-200 text-sm hover:text-cyan-400 transition-colors">{strat.name}</span>
-                                <span className="text-[10px] text-zinc-500 font-medium">· {strat.type_of_strategy || 'Neutral'}</span>
-                              </div>
-                            </div>
+                          <td className="py-2.5 px-4 text-center text-xs font-mono text-zinc-500" style={{ width: '40px' }}>
+                            {(currentPage - 1) * itemsPerPage + index + 1}
+                          </td>
+                          <td className="py-2.5 px-4 animate-fade-in">
+                            <span className="font-semibold text-zinc-200 text-sm hover:text-cyan-400 transition-colors">{strat.name}</span>
+                          </td>
+                          <td className="py-2.5 px-4 text-center" style={{ width: '100px' }}>
+                            {(() => {
+                              const strategyType = (strat.type_of_strategy || 'Neutral').trim();
+                              const lower = strategyType.toLowerCase();
+                              let bg = 'rgba(245, 158, 11, 0.13)';
+                              let fg = '#f59e0b';
+                              if (lower === 'breakout') {
+                                bg = 'var(--accent-muted)';
+                                fg = 'var(--accent)';
+                              } else if (lower === 'reversal') {
+                                bg = 'rgba(168, 85, 247, 0.13)';
+                                fg = '#a855f7';
+                              }
+
+                              return (
+                                <span
+                                  style={{
+                                    display: 'inline-block',
+                                    fontSize: '10px',
+                                    fontWeight: 700,
+                                    textTransform: 'uppercase',
+                                    padding: '2px 8px',
+                                    borderRadius: '999px',
+                                    backgroundColor: bg,
+                                    color: fg,
+                                    whiteSpace: 'nowrap'
+                                  }}
+                                >
+                                  {strategyType}
+                                </span>
+                              );
+                            })()}
                           </td>
                           <td className="py-2.5 px-4 text-center text-xs font-mono font-medium text-zinc-300">{stats.totalTrades}</td>
                           <td className={`py-2.5 px-4 text-center text-xs font-mono font-bold ${isPnlPositive ? 'text-emerald-400' : 'text-red-400'}`}>
@@ -737,7 +826,7 @@ export const StrategiesPage: React.FC = () => {
                           <td className={`py-2.5 px-4 text-center text-xs font-mono font-semibold ${isExpectancyPositive ? 'text-emerald-400' : 'text-red-400'}`}>
                             {formatCurrency(stats.expectancy)}
                           </td>
-                          <td className="py-2.5 px-4 text-center text-xs font-mono text-zinc-500">0</td>
+                          <td className="py-2.5 px-4 text-center text-xs font-mono text-zinc-300">{stats.missedTrades}</td>
                           <td className="py-2.5 px-4 text-center">{getStatusBadgeMinimal(strat.status)}</td>
                           <td className="py-2.5 px-4 text-center relative" onClick={(e) => e.stopPropagation()}>
                             <button
