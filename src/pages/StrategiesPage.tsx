@@ -474,6 +474,7 @@ export const StrategiesPage: React.FC = () => {
           color: isActive ? 'var(--accent)' : 'var(--text-muted)',
           cursor: 'pointer',
           userSelect: 'none',
+          whiteSpace: 'nowrap',
           ...extraStyles
         }}
         className={`py-3 px-4 font-sans font-bold select-none text-[10px] uppercase tracking-wider ${isCenter ? 'text-center' : ''}`}
@@ -671,11 +672,19 @@ export const StrategiesPage: React.FC = () => {
                 </div>
 
                 {/* LIST / GRID TOGGLER */}
-                <div className="flex items-center border rounded-xl overflow-hidden p-0.5" style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bar)' }}>
+                <div className="flex items-center gap-1.5">
                   <button
                     onClick={() => setViewType('table')}
-                    className={`py-1.5 px-2.5 rounded-lg cursor-pointer transition-colors ${
-                      viewType === 'table' ? 'bg-[#1E1F29] text-cyan-400' : 'text-zinc-500 hover:text-zinc-300'
+                    style={{
+                      background: viewType === 'table' ? 'var(--accent-muted)' : 'transparent',
+                      border: viewType === 'table' ? '0.5px solid var(--accent)' : '0.5px solid var(--border)',
+                      color: viewType === 'table' ? 'var(--accent)' : 'var(--text-sub)',
+                      borderRadius: '6px',
+                      padding: '6px 8px',
+                      cursor: 'pointer'
+                    }}
+                    className={`transition-colors flex items-center justify-center ${
+                      viewType !== 'table' ? 'hover:bg-[var(--bar)] hover:text-[var(--text)]' : ''
                     }`}
                     title="List Table View"
                   >
@@ -683,8 +692,16 @@ export const StrategiesPage: React.FC = () => {
                   </button>
                   <button
                     onClick={() => setViewType('grid')}
-                    className={`py-1.5 px-2.5 rounded-lg cursor-pointer transition-colors ${
-                      viewType === 'grid' ? 'bg-[#1E1F29] text-cyan-400' : 'text-zinc-500 hover:text-zinc-300'
+                    style={{
+                      background: viewType === 'grid' ? 'var(--accent-muted)' : 'transparent',
+                      border: viewType === 'grid' ? '0.5px solid var(--accent)' : '0.5px solid var(--border)',
+                      color: viewType === 'grid' ? 'var(--accent)' : 'var(--text-sub)',
+                      borderRadius: '6px',
+                      padding: '6px 8px',
+                      cursor: 'pointer'
+                    }}
+                    className={`transition-colors flex items-center justify-center ${
+                      viewType !== 'grid' ? 'hover:bg-[var(--bar)] hover:text-[var(--text)]' : ''
                     }`}
                     title="Grid Minimal View"
                   >
@@ -728,11 +745,11 @@ export const StrategiesPage: React.FC = () => {
             ) : viewType === 'table' ? (
               /* CLEAN TRADEZELLA-STYLE TABLE VIEW */
               <div className="w-full overflow-x-auto select-none mt-2">
-                <table className="w-full text-left border-collapse min-w-[900px]">
+                <table className="w-full text-left border-collapse min-w-[900px]" style={{ tableLayout: 'auto', width: '100%' }}>
                   <thead>
                     <tr className="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 bg-zinc-900/50 border-b border-zinc-800" style={{ backgroundColor: 'var(--bar)' }}>
-                      <th className="py-3 px-4 text-center font-sans font-bold text-zinc-400" style={{ width: '40px' }}>#</th>
-                      {renderSortableHeader('name', 'Strategy Name', false, { minWidth: '240px' })}
+                      <th className="py-3 px-4 text-center font-sans font-bold text-zinc-400" style={{ width: '40px', whiteSpace: 'nowrap' }}>#</th>
+                      {renderSortableHeader('name', 'Strategy Name', false, { maxWidth: '220px', overflow: 'hidden', textOverflow: 'ellipsis' })}
                       {renderSortableHeader('type', 'TYPE', true, { width: '100px' })}
                       {renderSortableHeader('trades', 'Trades')}
                       {renderSortableHeader('pnl', 'Net P&L')}
@@ -742,7 +759,7 @@ export const StrategiesPage: React.FC = () => {
                       {renderSortableHeader('expectancy', 'Expectancy')}
                       {renderSortableHeader('missed', 'Missed Trades')}
                       {renderSortableHeader('status', 'Status')}
-                      <th className="py-3 px-4"></th>
+                      <th className="py-3 px-4" style={{ whiteSpace: 'nowrap' }}></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -773,13 +790,13 @@ export const StrategiesPage: React.FC = () => {
                           style={{ borderColor: 'var(--border)' }}
                           onClick={() => navigate(`/strategies/${strat.id}`)}
                         >
-                          <td className="py-2.5 px-4 text-center text-xs font-mono text-zinc-500" style={{ width: '40px' }}>
+                          <td className="py-2.5 px-4 text-center text-xs font-mono text-zinc-500" style={{ width: '40px', whiteSpace: 'nowrap' }}>
                             {(currentPage - 1) * itemsPerPage + index + 1}
                           </td>
-                          <td className="py-2.5 px-4 animate-fade-in">
+                          <td className="py-2.5 px-4 animate-fade-in" style={{ maxWidth: '220px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             <span className="font-semibold text-zinc-200 text-sm hover:text-cyan-400 transition-colors">{strat.name}</span>
                           </td>
-                          <td className="py-2.5 px-4 text-center" style={{ width: '100px' }}>
+                          <td className="py-2.5 px-4 text-center" style={{ width: '100px', whiteSpace: 'nowrap' }}>
                             {(() => {
                               const strategyType = (strat.type_of_strategy || 'Neutral').trim();
                               const lower = strategyType.toLowerCase();
@@ -812,23 +829,23 @@ export const StrategiesPage: React.FC = () => {
                               );
                             })()}
                           </td>
-                          <td className="py-2.5 px-4 text-center text-xs font-mono font-medium text-zinc-300">{stats.totalTrades}</td>
-                          <td className={`py-2.5 px-4 text-center text-xs font-mono font-bold ${isPnlPositive ? 'text-emerald-400' : 'text-red-400'}`}>
+                          <td className="py-2.5 px-4 text-center text-xs font-mono font-medium text-zinc-300" style={{ whiteSpace: 'nowrap' }}>{stats.totalTrades}</td>
+                          <td className={`py-2.5 px-4 text-center text-xs font-mono font-bold ${isPnlPositive ? 'text-emerald-400' : 'text-red-400'}`} style={{ whiteSpace: 'nowrap' }}>
                             {formatCurrency(stats.netPnl)}
                           </td>
-                          <td className={`py-2.5 px-4 text-center text-xs font-mono font-bold ${winRateColor}`}>{stats.winRate.toFixed(1)}%</td>
-                          <td className={`py-2.5 px-4 text-center text-xs font-mono ${stats.avgR >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                          <td className={`py-2.5 px-4 text-center text-xs font-mono font-bold ${winRateColor}`} style={{ whiteSpace: 'nowrap' }}>{stats.winRate.toFixed(1)}%</td>
+                          <td className={`py-2.5 px-4 text-center text-xs font-mono ${stats.avgR >= 0 ? 'text-emerald-400' : 'text-red-400'}`} style={{ whiteSpace: 'nowrap' }}>
                             {stats.avgR >= 0 ? '+' : ''}{stats.avgR.toFixed(2)}R
                           </td>
-                          <td className="py-2.5 px-4 text-center text-xs font-mono font-semibold text-zinc-300">
+                          <td className="py-2.5 px-4 text-center text-xs font-mono font-semibold text-zinc-300" style={{ whiteSpace: 'nowrap' }}>
                             {typeof stats.profitFactor === 'number' ? stats.profitFactor.toFixed(2) : stats.profitFactor}
                           </td>
-                          <td className={`py-2.5 px-4 text-center text-xs font-mono font-semibold ${isExpectancyPositive ? 'text-emerald-400' : 'text-red-400'}`}>
+                          <td className={`py-2.5 px-4 text-center text-xs font-mono font-semibold ${isExpectancyPositive ? 'text-emerald-400' : 'text-red-400'}`} style={{ whiteSpace: 'nowrap' }}>
                             {formatCurrency(stats.expectancy)}
                           </td>
-                          <td className="py-2.5 px-4 text-center text-xs font-mono text-zinc-300">{stats.missedTrades}</td>
-                          <td className="py-2.5 px-4 text-center">{getStatusBadgeMinimal(strat.status)}</td>
-                          <td className="py-2.5 px-4 text-center relative" onClick={(e) => e.stopPropagation()}>
+                          <td className="py-2.5 px-4 text-center text-xs font-mono text-zinc-300" style={{ whiteSpace: 'nowrap' }}>{stats.missedTrades}</td>
+                          <td className="py-2.5 px-4 text-center" style={{ whiteSpace: 'nowrap' }}>{getStatusBadgeMinimal(strat.status)}</td>
+                          <td className="py-2.5 px-4 text-center relative" onClick={(e) => e.stopPropagation()} style={{ whiteSpace: 'nowrap' }}>
                             <button
                               onClick={() => {
                                 if (isMenuOpen) {
