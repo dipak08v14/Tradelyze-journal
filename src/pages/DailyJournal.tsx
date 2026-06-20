@@ -13,7 +13,8 @@ import {
   ChevronUp,
   Award,
   Calendar as CalendarIcon,
-  Plus
+  Plus,
+  FileText
 } from 'lucide-react';
 import {
   AreaChart,
@@ -66,10 +67,24 @@ export const DailyJournal: React.FC = () => {
 
   // Trades fetched for this selected month
   const [trades, setTrades] = useState<Trade[]>([]);
+  const [linkedNotes, setLinkedNotes] = useState<{ id: string; title: string | null; log_date: string | null }[]>([]);
 
   // Expanded collapsible days keys
   const [expandedDays, setExpandedDays] = useState<Record<string, boolean>>({});
   const [highlightedDay, setHighlightedDay] = useState<string | null>(null);
+
+  const notesByDate = useMemo(() => {
+    const map: Record<string, { id: string; title: string | null; log_date: string | null }[]> = {};
+    linkedNotes.forEach(note => {
+      if (!note.log_date) return;
+      const dateKey = note.log_date.split('T')[0];
+      if (!map[dateKey]) {
+        map[dateKey] = [];
+      }
+      map[dateKey].push(note);
+    });
+    return map;
+  }, [linkedNotes]);
 
   // Check if they have at least 1 trade ever
   const checkNeverTraded = async () => {
@@ -101,11 +116,45 @@ export const DailyJournal: React.FC = () => {
 
       if (error) throw error;
       setTrades((data as any) || []);
+
+      const { data: notesData, error: notesError } = await supabase
+        .from('notebook_entries')
+        .select('id, title, log_date')
+        .eq('user_id', userId)
+        .not('log_date', 'is', null)
+        .eq('is_deleted', false);
+
+      if (notesError) throw notesError;
+      setLinkedNotes((notesData as any) || []);
     } catch (err: any) {
       console.error('Error fetching trades for Daily Journal:', err);
       showError(err.message || 'Failed to load journal records.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleAddNoteClick = async (dateKey: string) => {
+    if (!userId) return;
+    try {
+      const { data, error } = await supabase
+        .from('notebook_entries')
+        .insert({
+          user_id: userId,
+          title: 'Untitled',
+          content: '',
+          log_date: dateKey,
+          is_deleted: false,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        .select();
+
+      if (error) throw error;
+      navigate(`/notebook?date=${dateKey}`);
+    } catch (err: any) {
+      console.error('Error creating linked note:', err);
+      showError(err.message || 'Failed to create linked note.');
     }
   };
 
@@ -601,6 +650,9 @@ export const DailyJournal: React.FC = () => {
                       const isExpanded = !!expandedDays[dateStr];
                       const isHighlighted = highlightedDay === dateStr;
 
+                      const notesForDay = notesByDate[dateStr] || [];
+                      const hasNotes = notesForDay.length > 0;
+
                       // Net P&L = SUM(pnl) minus SUM(fees)
                       const sumPnl = dayTrades.reduce((sum, t) => sum + (t.pnl || 0), 0);
                       const sumFees = dayTrades.reduce((sum, t) => sum + (t.fees || 0), 0);
@@ -659,15 +711,31 @@ export const DailyJournal: React.FC = () => {
                               </span>
 
                               {/* Placeholder Add Note button */}
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation(); // Avoid triggering card expand/collapse
-                                }}
-                                style={{ border: '0.5px solid var(--border)', backgroundColor: 'var(--bar)', color: 'var(--text-sub)' }}
-                                className="px-2.5 py-1 rounded text-[11px] font-medium transition-opacity cursor-pointer hover:opacity-85"
-                              >
-                                Add Note
-                              </button>
+                              {hasNotes ? (
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation(); // Avoid triggering card expand/collapse
+                                    navigate(`/notebook?date=${dateStr}`);
+                                  }}
+                                  style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
+                                  className="px-2.5 py-1 rounded text-[11px] font-semibold transition-opacity cursor-pointer hover:opacity-85 inline-flex items-center gap-1 shrink-0"
+                                >
+                                  <FileText className="w-3.5 h-3.5" />
+                                  View Note
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={async (e) => {
+                                    e.stopPropagation(); // Avoid triggering card expand/collapse
+                                    await handleAddNoteClick(dateStr);
+                                  }}
+                                  style={{ border: '0.5px solid var(--border)', backgroundColor: 'var(--bar)', color: 'var(--text-sub)' }}
+                                  className="px-2.5 py-1 rounded text-[11px] font-medium transition-opacity cursor-pointer hover:opacity-85 inline-flex items-center gap-1 shrink-0"
+                                >
+                                  <Plus className="w-3.5 h-3.5" />
+                                  Add Note
+                                </button>
+                              )}
                             </div>
                           </div>
 
