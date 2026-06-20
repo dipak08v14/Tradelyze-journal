@@ -289,29 +289,28 @@ export const DashboardPage: React.FC = () => {
       try {
         setLoading(true);
 
-        // STEP 1 — Fetch filtered trades:
-        const { data: tradesData, error: tradesError } = await supabase
-          .from('trades')
-          .select('id, *, strategies(name)')
-          .eq('user_id', userId)
-          .gte('date', startDate)
-          .lte('date', endDate)
-          .order('date', { ascending: true });
+        // STEP 1 — Fetch filtered and all history trades in parallel:
+        const [tradesRes, allHistoryRes] = await Promise.all([
+          supabase
+            .from('trades')
+            .select('id, *, strategies(name)')
+            .eq('user_id', userId)
+            .gte('date', startDate)
+            .lte('date', endDate)
+            .order('date', { ascending: true }),
+          supabase
+            .from('trades')
+            .select('id, *, strategies(name)')
+            .eq('user_id', userId)
+            .order('date', { ascending: true })
+        ]);
 
-        if (tradesError) throw tradesError;
+        if (tradesRes.error) throw tradesRes.error;
+        if (allHistoryRes.error) throw allHistoryRes.error;
 
-        const activeTrades = tradesData || [];
+        const activeTrades = tradesRes.data || [];
         setTrades(activeTrades);
-
-        // Fetch all history trades (not filtered by date range)
-        const { data: allTradesData, error: allHistoryError } = await supabase
-          .from('trades')
-          .select('id, *, strategies(name)')
-          .eq('user_id', userId)
-          .order('date', { ascending: true });
-
-        if (allHistoryError) throw allHistoryError;
-        setAllHistoryTrades(allTradesData || []);
+        setAllHistoryTrades(allHistoryRes.data || []);
 
         if (activeTrades.length === 0) {
           setPsychologyData([]);

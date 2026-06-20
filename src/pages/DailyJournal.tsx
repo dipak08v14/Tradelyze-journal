@@ -107,25 +107,26 @@ export const DailyJournal: React.FC = () => {
     if (!userId) return;
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('trades')
-        .select('*, strategies(name)')
-        .eq('user_id', userId)
-        .eq('month', selectedMonth)
-        .eq('year', selectedYear);
+      const [tradesRes, notesRes] = await Promise.all([
+        supabase
+          .from('trades')
+          .select('*, strategies(name)')
+          .eq('user_id', userId)
+          .eq('month', selectedMonth)
+          .eq('year', selectedYear),
+        supabase
+          .from('notebook_entries')
+          .select('id, title, log_date')
+          .eq('user_id', userId)
+          .not('log_date', 'is', null)
+          .eq('is_deleted', false)
+      ]);
 
-      if (error) throw error;
-      setTrades((data as any) || []);
+      if (tradesRes.error) throw tradesRes.error;
+      if (notesRes.error) throw notesRes.error;
 
-      const { data: notesData, error: notesError } = await supabase
-        .from('notebook_entries')
-        .select('id, title, log_date')
-        .eq('user_id', userId)
-        .not('log_date', 'is', null)
-        .eq('is_deleted', false);
-
-      if (notesError) throw notesError;
-      setLinkedNotes((notesData as any) || []);
+      setTrades((tradesRes.data as any) || []);
+      setLinkedNotes((notesRes.data as any) || []);
     } catch (err: any) {
       console.error('Error fetching trades for Daily Journal:', err);
       showError(err.message || 'Failed to load journal records.');
