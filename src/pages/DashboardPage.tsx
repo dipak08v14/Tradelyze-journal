@@ -2048,7 +2048,8 @@ export const DashboardPage: React.FC = () => {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => {
-                  showSuccess('Daily notes coming soon');
+                  navigate(`/notebook?date=${selectedCalendarDay}`);
+                  setIsDayModalOpen(false);
                 }}
                 style={{
                   backgroundColor: 'var(--card)',

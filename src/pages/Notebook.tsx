@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
@@ -59,6 +60,8 @@ export function Notebook() {
   const { user } = useAuth();
   const { showSuccess, showError, showWarning } = useToast();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchParams] = useSearchParams();
+  const [dateFromDashboard, setDateFromDashboard] = useState<string | null>(null);
 
   // States
   const [folders, setFolders] = useState<FolderItem[]>([]);
@@ -66,6 +69,13 @@ export function Notebook() {
   const [selectedFolderId, setSelectedFolderId] = useState<string | 'ALL' | 'TRASH'>('ALL');
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
+
+  // Clear dateFromDashboard when an active note is selected
+  useEffect(() => {
+    if (activeNoteId) {
+      setDateFromDashboard(null);
+    }
+  }, [activeNoteId]);
 
   // Search feature state
   const [searchQuery, setSearchQuery] = useState('');
@@ -187,7 +197,22 @@ export function Notebook() {
         .eq('user_id', user.id);
 
       if (error) throw error;
-      setAllEntries(data || []);
+      const loadedEntries = data || [];
+      setAllEntries(loadedEntries);
+
+      // Handle auto-open note logic from URL date parameter
+      const dateParam = searchParams.get('date');
+      if (dateParam) {
+        const matchingNote = loadedEntries.find(n =>
+          n.log_date && n.log_date.startsWith(dateParam)
+        );
+        if (matchingNote) {
+          setActiveNoteId(matchingNote.id);
+        } else {
+          setDateFromDashboard(dateParam);
+        }
+        window.history.replaceState({}, '', '/notebook');
+      }
     } catch (err: any) {
       console.error('Error fetching entries:', err);
       showError('Failed to load notebook notes.');
@@ -1415,15 +1440,38 @@ export function Notebook() {
             style={{ backgroundColor: 'var(--card)' }}
           >
             {!activeNote ? (
-              <div id="notebook-no-note-prompt" className="flex-1 flex flex-col items-center justify-center text-center p-12">
-                <FileText className="w-12 h-12 text-zinc-600 animate-none mb-3" />
-                <h4 className="text-zinc-400 font-sans font-bold text-sm tracking-wider uppercase mb-1">
-                  NO NOTE SELECTED
-                </h4>
-                <p className="text-xs text-zinc-500 font-mono italic">
-                  Select a note or create a new one to start writing.
-                </p>
-              </div>
+              dateFromDashboard ? (
+                <div id="notebook-no-note-date-prompt" className="flex-1 flex flex-col items-center justify-center text-center p-12 max-w-sm mx-auto">
+                  <Calendar className="w-12 h-12 text-cyan-500 animate-none mb-3 shrink-0" />
+                  <h4 className="text-zinc-200 font-sans font-bold text-sm tracking-wide uppercase mb-2">
+                    NO NOTE LINKED
+                  </h4>
+                  <p className="text-xs text-zinc-400 font-sans leading-relaxed mb-6">
+                    No note linked to <strong className="text-white">{formatLogDateLabel(dateFromDashboard)}</strong> yet.<br/><br/>
+                    Click Log Day below to create one, or open an existing note and use <strong className="text-cyan-400">Set trade date</strong> to link it to this day.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLogDateInput(dateFromDashboard);
+                      setIsLogDayModalOpen(true);
+                    }}
+                    className="px-4 py-2 text-xs font-mono font-bold rounded-lg text-white bg-cyan-600 hover:bg-cyan-500 hover:shadow-lg hover:shadow-cyan-500/10 cursor-pointer transition-all shrink-0"
+                  >
+                    Log Day &rarr;
+                  </button>
+                </div>
+              ) : (
+                <div id="notebook-no-note-prompt" className="flex-1 flex flex-col items-center justify-center text-center p-12">
+                  <FileText className="w-12 h-12 text-zinc-600 animate-none mb-3" />
+                  <h4 className="text-zinc-400 font-sans font-bold text-sm tracking-wider uppercase mb-1">
+                    NO NOTE SELECTED
+                  </h4>
+                  <p className="text-xs text-zinc-500 font-mono italic">
+                    Select a note or create a new one to start writing.
+                  </p>
+                </div>
+              )
             ) : (
               <div id="notebook-active-note-view" className="flex-1 flex flex-col gap-5 max-w-4xl mx-auto w-full">
                 
