@@ -15,7 +15,8 @@ import {
   ChevronLeft,
   X,
   Plus,
-  Trash2
+  Trash2,
+  Image
 } from 'lucide-react';
 import {
   AreaChart,
@@ -94,7 +95,7 @@ const PREDEFINED_SYMBOLS = [
   'RELIANCE', 'TCS', 'HDFCBANK', 'INFY', 'ICICIBANK', 'SBIN', 'WIPRO', 'ADANIENT', 'BAJFINANCE', 'TATAMOTORS'
 ];
 
-type TabType = 'OVERVIEW' | 'RULES PERFORMANCE' | 'EXECUTED TRADES' | 'MISSED TRADES' | 'NOTES';
+type TabType = 'OVERVIEW' | 'RULES PERFORMANCE' | 'EXECUTED TRADES' | 'MISSED TRADES' | 'NOTES' | 'REFERENCE';
 
 export const StrategyDetail: React.FC = () => {
   const { id: strategyId } = useParams<{ id: string }>();
@@ -125,6 +126,37 @@ export const StrategyDetail: React.FC = () => {
   const [notesText, setNotesText] = useState<string>('');
   const [activeTab, setActiveTab] = useState<TabType>('OVERVIEW');
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
+
+  // Lightbox state
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
+  const handlePrevImage = () => {
+    if (lightboxIndex === null || !strategy?.reference_images) return;
+    const total = strategy.reference_images.length;
+    setLightboxIndex((lightboxIndex - 1 + total) % total);
+  };
+
+  const handleNextImage = () => {
+    if (lightboxIndex === null || !strategy?.reference_images) return;
+    const total = strategy.reference_images.length;
+    setLightboxIndex((lightboxIndex + 1) % total);
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (lightboxIndex !== null) {
+        if (e.key === 'Escape') {
+          setLightboxIndex(null);
+        } else if (e.key === 'ArrowLeft') {
+          handlePrevImage();
+        } else if (e.key === 'ArrowRight') {
+          handleNextImage();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [lightboxIndex, strategy?.reference_images]);
 
   // Executed trades pagination page state
   const [tradePage, setTradePage] = useState<number>(1);
@@ -578,7 +610,20 @@ export const StrategyDetail: React.FC = () => {
                   )}
                 </div>
                 <p className="text-zinc-500 text-xs font-mono mt-1">
-                  ID: {strategyId} · STATUS: <span className="text-zinc-300 font-bold uppercase">{strategy?.status || 'active'}</span>
+                  STATUS:{' '}
+                  <span
+                    className="font-bold uppercase animate-fade-in"
+                    style={{
+                      color:
+                        strategy?.status?.toLowerCase() === 'active'
+                          ? '#10b981'
+                          : strategy?.status?.toLowerCase() === 'not working'
+                          ? '#f59e0b'
+                          : '#71717a'
+                    }}
+                  >
+                    {strategy?.status ? strategy.status.toUpperCase() : 'ACTIVE'}
+                  </span>
                 </p>
               </div>
 
@@ -612,7 +657,7 @@ export const StrategyDetail: React.FC = () => {
 
             {/* TAB SELECTORS ACTIONS */}
             <div className="flex border-b overflow-x-auto gap-1 sticky top-0 z-10 scrollbar-none mb-6" style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg)' }}>
-              {(['OVERVIEW', 'RULES PERFORMANCE', 'EXECUTED TRADES', 'MISSED TRADES', 'NOTES'] as TabType[]).map((tab) => {
+              {(['OVERVIEW', 'RULES PERFORMANCE', 'EXECUTED TRADES', 'MISSED TRADES', 'NOTES', 'REFERENCE'] as TabType[]).map((tab) => {
                 const active = activeTab === tab;
                 return (
                   <button
@@ -730,10 +775,10 @@ export const StrategyDetail: React.FC = () => {
                             >
                               <defs>
                                 <linearGradient id="stratAreaGrad" x1="0" y1="0" x2="0" y2="1">
-                                  <stop offset="0%" stopColor="#22c55e" stopOpacity={0.15} />
-                                  <stop offset={`${chartDetails.zeroPercent}%`} stopColor="#22c55e" stopOpacity={0.05} />
-                                  <stop offset={`${chartDetails.zeroPercent}%`} stopColor="#ef4444" stopOpacity={0.05} />
-                                  <stop offset="100%" stopColor="#ef4444" stopOpacity={0.15} />
+                                  <stop offset="0%" stopColor="#22c55e" stopOpacity={0.40} />
+                                  <stop offset={`${chartDetails.zeroPercent}%`} stopColor="#22c55e" stopOpacity={0.00} />
+                                  <stop offset={`${chartDetails.zeroPercent}%`} stopColor="#ef4444" stopOpacity={0.00} />
+                                  <stop offset="100%" stopColor="#ef4444" stopOpacity={0.40} />
                                 </linearGradient>
                                 <linearGradient id="stratLineGrad" x1="0" y1="0" x2="0" y2="1">
                                   <stop offset="0%" stopColor="#22c55e" stopOpacity={1} />
@@ -1351,11 +1396,209 @@ export const StrategyDetail: React.FC = () => {
                     </div>
                   </div>
                 )}
+
+                {/* TAB 6: REFERENCE */}
+                {activeTab === 'REFERENCE' && (
+                  <div className="space-y-4 animate-fade-in">
+                    {(() => {
+                      const referenceImages = strategy && Array.isArray(strategy.reference_images)
+                        ? strategy.reference_images.filter(Boolean)
+                        : [];
+
+                      if (referenceImages.length === 0) {
+                        return (
+                          <div
+                            className="flex flex-col items-center justify-center p-12 py-20 text-center rounded-2xl border"
+                            style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
+                          >
+                            <div className="p-4 rounded-full bg-zinc-800/30 mb-4 text-zinc-500">
+                              <Image className="w-8 h-8" />
+                            </div>
+                            <h3 className="text-sm font-semibold text-zinc-200">No reference images yet</h3>
+                            <p className="text-xs text-zinc-500 mt-1.5 max-w-sm leading-relaxed font-sans">
+                              Add reference images when editing this strategy to see them here.
+                            </p>
+                            <Link
+                              to={`/strategies/${strategyId}/edit`}
+                              className="mt-5 px-4 py-2 rounded-lg text-white font-medium text-xs hover:opacity-90 active:scale-95 transition-all cursor-pointer inline-flex items-center"
+                              style={{ backgroundColor: 'var(--accent)' }}
+                            >
+                              Edit Strategy
+                            </Link>
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <div className="space-y-4 font-sans">
+                          {/* Image Grid */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[12px]">
+                            {referenceImages.map((imgUrl, index) => (
+                              <div
+                                key={index}
+                                onClick={() => setLightboxIndex(index)}
+                                className="relative aspect-[4/3] rounded-[8px] overflow-hidden cursor-pointer hover:opacity-90 hover:scale-[1.01] transition-all group border shadow-sm"
+                                style={{
+                                  border: '0.5px solid var(--border)',
+                                  backgroundColor: 'var(--bar)'
+                                }}
+                              >
+                                <img
+                                  src={imgUrl}
+                                  alt={`Playbook screenshot ${index + 1}`}
+                                  className="w-full h-full object-cover rounded-[8px]"
+                                  referrerPolicy="no-referrer"
+                                  loading="lazy"
+                                />
+                                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center animate-fade-in">
+                                  <span className="text-[11px] font-mono font-medium px-2 py-1 rounded bg-zinc-900/80 text-white">
+                                    View Maximized
+                                  </span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Image Count Footer */}
+                          <p className="text-xs text-zinc-500 font-mono mt-3">
+                            {referenceImages.length} reference image{referenceImages.length === 1 ? '' : 's'}
+                          </p>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                )}
               </>
             )}
           </div>
         </main>
       </div>
+
+      {/* FULLSCREEN LIGHTBOX OVERLAY */}
+      {lightboxIndex !== null && (() => {
+        const referenceImages = strategy && Array.isArray(strategy.reference_images)
+          ? strategy.reference_images.filter(Boolean)
+          : [];
+        const currentImgUrl = referenceImages[lightboxIndex];
+        if (!currentImgUrl) return null;
+
+        return (
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              width: '100vw',
+              height: '100vh',
+              zIndex: 9999,
+              background: 'rgba(0, 0, 0, 0.92)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+            onClick={() => setLightboxIndex(null)}
+          >
+            {/* Close button (×) */}
+            <button
+              onClick={() => setLightboxIndex(null)}
+              style={{
+                position: 'fixed',
+                top: '20px',
+                right: '24px',
+                zIndex: 10000,
+                fontSize: '28px',
+                color: 'white',
+                cursor: 'pointer',
+                background: 'none',
+                border: 'none',
+                outline: 'none'
+              }}
+            >
+              &times;
+            </button>
+
+            {/* Prev Arrow */}
+            {referenceImages.length > 1 && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePrevImage();
+                }}
+                style={{
+                  position: 'fixed',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  zIndex: 10000,
+                  left: '20px',
+                  color: 'white',
+                  fontSize: '32px',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer'
+                }}
+              >
+                <ChevronLeft style={{ width: '32px', height: '32px' }} />
+              </button>
+            )}
+
+            {/* Image Display */}
+            <div onClick={(e) => e.stopPropagation()}>
+              <img
+                src={currentImgUrl}
+                alt={`Reference image ${lightboxIndex + 1}`}
+                style={{
+                  maxWidth: '90vw',
+                  maxHeight: '90vh',
+                  objectFit: 'contain',
+                  borderRadius: '8px'
+                }}
+                referrerPolicy="no-referrer"
+              />
+            </div>
+
+            {/* Next Arrow */}
+            {referenceImages.length > 1 && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNextImage();
+                }}
+                style={{
+                  position: 'fixed',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  zIndex: 10000,
+                  right: '20px',
+                  color: 'white',
+                  fontSize: '32px',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer'
+                }}
+              >
+                <ChevronRight style={{ width: '32px', height: '32px' }} />
+              </button>
+            )}
+
+            {/* Image counter (e.g. "2 / 5") */}
+            <div
+              style={{
+                position: 'fixed',
+                bottom: '24px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                color: 'white',
+                fontSize: '13px',
+                zIndex: 10000
+              }}
+            >
+              {lightboxIndex + 1} / {referenceImages.length}
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 };
