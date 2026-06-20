@@ -2233,7 +2233,7 @@ export const DashboardPage: React.FC = () => {
             <button
               onClick={() => {
                 setIsDayModalOpen(false);
-                navigate(`/monthly-reports?date=${selectedCalendarDay}`);
+                navigate(`/daily-journal?date=${selectedCalendarDay}`);
               }}
               style={{
                 backgroundColor: 'var(--accent)',

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
@@ -48,6 +48,7 @@ export const DailyJournal: React.FC = () => {
   const { user, userId, loading: authLoading } = useAuth();
   const { showError } = useToast();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   // State
   const [loading, setLoading] = useState<boolean>(true);
@@ -120,6 +121,49 @@ export const DailyJournal: React.FC = () => {
     }
   }, [userId, selectedMonth, selectedYear]);
 
+  // Handle navigation from Dashboard's View Details
+  useEffect(() => {
+    const dateParam = searchParams.get('date');
+    if (!dateParam || !userId) return;
+
+    // Parse YYYY-MM-DD
+    const parts = dateParam.split('-');
+    if (parts.length === 3) {
+      const year = parseInt(parts[0], 10);
+      const monthIdx = parseInt(parts[1], 10) - 1;
+      if (monthIdx >= 0 && monthIdx < 12) {
+        const monthName = MONTH_NAMES[monthIdx];
+        
+        // If current selected month/year is not correct, change them first and wait for reload
+        if (selectedMonth !== monthName || selectedYear !== year) {
+          setSelectedMonth(monthName);
+          setSelectedYear(year);
+          return; // This effect will run again after setSelectedMonth and setSelectedYear finish
+        }
+      }
+    }
+
+    // If we are in the correct month/year, and loading has finished, we can expand and scroll
+    if (!loading) {
+      // Expand that specific day card
+      setExpandedDays(prev => ({ ...prev, [dateParam]: true }));
+
+      // Highlight the day as well
+      setHighlightedDay(dateParam);
+
+      // Scroll to that day card after a short delay to allow render
+      setTimeout(() => {
+        const el = document.getElementById(`day-card-${dateParam}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 300);
+
+      // Clear URL param so refresh doesn't retrigger
+      window.history.replaceState({}, '', '/daily-journal');
+    }
+  }, [searchParams, loading, userId, selectedMonth, selectedYear]);
+
   // Group trades by date on client side
   const groupedTrades = useMemo(() => {
     const groups: Record<string, Trade[]> = {};
@@ -166,6 +210,7 @@ export const DailyJournal: React.FC = () => {
   };
 
   const toggleDayCard = (dateStr: string) => {
+    setHighlightedDay(null);
     setExpandedDays((prev) => ({
       ...prev,
       [dateStr]: !prev[dateStr],
