@@ -10,6 +10,7 @@ import OnboardingPage from './pages/OnboardingPage';
 import SettingsPage from './pages/SettingsPage';
 import RiskCalculatorPage from './pages/RiskCalculatorPage';
 import { StrategiesPage } from './pages/StrategiesPage';
+import { StrategyDetail } from './pages/StrategyDetail';
 import { StrategyBuilderPage } from './pages/StrategyBuilderPage';
 import { TradeEntryPage } from './pages/TradeEntryPage';
 import { TradingLogsPage } from './pages/TradingLogsPage';
@@ -97,6 +98,7 @@ export default function App() {
             
             {/* Strategies setup dashboard */}
             <Route path="/strategies" element={<StrategiesPage />} />
+            <Route path="/strategies/:id" element={<StrategyDetail />} />
             <Route path="/strategies/new" element={<StrategyBuilderPage />} />
             <Route path="/strategies/:id/edit" element={<StrategyBuilderPage />} />
 
