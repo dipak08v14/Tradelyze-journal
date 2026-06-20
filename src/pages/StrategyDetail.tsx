@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams, useNavigate, Link, Navigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
@@ -14,7 +14,8 @@ import {
   Layers,
   ChevronLeft,
   X,
-  Plus
+  Plus,
+  Trash2
 } from 'lucide-react';
 import {
   AreaChart,
@@ -64,6 +65,35 @@ interface AdherenceItem {
   followed: boolean;
 }
 
+interface MissedTradeItem {
+  id: string;
+  user_id: string;
+  strategy_id: string;
+  date: string;
+  symbol: string;
+  direction: 'LONG' | 'SHORT' | string;
+  notes: string | null;
+  potential_pnl: number | null;
+  created_at: string;
+}
+
+const PREDEFINED_SYMBOLS = [
+  // Forex
+  'EURUSD', 'GBPUSD', 'USDJPY', 'AUDUSD', 'USDCAD', 'USDCHF', 'NZDUSD', 'EURGBP', 'EURJPY', 'GBPJPY', 'USDINR', 'EURINR',
+  // Gold/Silver
+  'XAUUSD', 'XAGUSD',
+  // Crypto
+  'BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT', 'ADAUSDT', 'DOGEUSDT',
+  // Indian Indices
+  'NIFTY', 'BANKNIFTY', 'FINNIFTY', 'SENSEX', 'MIDCPNIFTY',
+  // US Indices
+  'US30', 'NAS100', 'SPX500',
+  // MCX
+  'GOLD', 'SILVER', 'CRUDEOIL', 'NATURALGAS',
+  // Stocks
+  'RELIANCE', 'TCS', 'HDFCBANK', 'INFY', 'ICICIBANK', 'SBIN', 'WIPRO', 'ADANIENT', 'BAJFINANCE', 'TATAMOTORS'
+];
+
 type TabType = 'OVERVIEW' | 'RULES PERFORMANCE' | 'EXECUTED TRADES' | 'MISSED TRADES' | 'NOTES';
 
 export const StrategyDetail: React.FC = () => {
@@ -77,6 +107,17 @@ export const StrategyDetail: React.FC = () => {
   const [trades, setTrades] = useState<TradeItem[]>([]);
   const [rules, setRules] = useState<RuleItem[]>([]);
   const [adherences, setAdherences] = useState<AdherenceItem[]>([]);
+  const [missedTrades, setMissedTrades] = useState<MissedTradeItem[]>([]);
+
+  // Add missed trade modal states
+  const [addModalOpen, setAddModalOpen] = useState(false);
+  const [mtDate, setMtDate] = useState(() => new Date().toISOString().split('T')[0]);
+  const [mtSymbol, setMtSymbol] = useState('');
+  const [mtDirection, setMtDirection] = useState<'LONG' | 'SHORT'>('LONG');
+  const [mtPotentialPnl, setMtPotentialPnl] = useState('');
+  const [mtNotes, setMtNotes] = useState('');
+  const [showMtSuggestions, setShowMtSuggestions] = useState(false);
+  const mtSymbolContainerRef = useRef<HTMLDivElement>(null);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [savingNotes, setSavingNotes] = useState<boolean>(false);
@@ -95,7 +136,7 @@ export const StrategyDetail: React.FC = () => {
     try {
       setLoading(true);
 
-      const [strategyRes, tradesRes, rulesRes] = await Promise.all([
+      const [strategyRes, tradesRes, rulesRes, missedTradesRes] = await Promise.all([
         supabase
           .from('strategies')
           .select('id, name, type_of_strategy, sub_type, status, notes, reference_images')
@@ -113,12 +154,19 @@ export const StrategyDetail: React.FC = () => {
           .select('id, rule_type, rule_text, rule_order')
           .eq('strategy_id', strategyId)
           .eq('user_id', userId)
-          .order('rule_order', { ascending: true })
+          .order('rule_order', { ascending: true }),
+        supabase
+          .from('missed_trades')
+          .select('id, user_id, strategy_id, date, symbol, direction, notes, potential_pnl, created_at')
+          .eq('strategy_id', strategyId)
+          .eq('user_id', userId)
+          .order('date', { ascending: false })
       ]);
 
       if (strategyRes.error) throw strategyRes.error;
       if (tradesRes.error) throw tradesRes.error;
       if (rulesRes.error) throw rulesRes.error;
+      if (missedTradesRes.error) throw missedTradesRes.error;
 
       if (!strategyRes.data) {
         showError('Strategy not found.');
@@ -129,6 +177,7 @@ export const StrategyDetail: React.FC = () => {
       setStrategy(strategyRes.data as StrategyDetailItem);
       setNotesText(strategyRes.data.notes || '');
       setTrades((tradesRes.data as TradeItem[]) || []);
+      setMissedTrades((missedTradesRes.data as MissedTradeItem[]) || []);
       
       const loadedRules = (rulesRes.data as RuleItem[]) || [];
       setRules(loadedRules);
@@ -349,6 +398,127 @@ export const StrategyDetail: React.FC = () => {
   }, [trades, tradePage]);
 
   const totalTradePages = Math.ceil(trades.length / tradesPerPage) || 1;
+
+  // Formatting date as "DD Mon YYYY"
+  const formatDateCustom = (dateStr: string) => {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    const day = d.getDate();
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const month = monthNames[d.getMonth()];
+    const year = d.getFullYear();
+    return `${day} ${month} ${year}`;
+  };
+
+  // Missed trades stats
+  const missedTradesStats = useMemo(() => {
+    const totalMissed = missedTrades.length;
+    const withPnl = missedTrades.filter(m => m.potential_pnl !== null && m.potential_pnl !== undefined);
+    const potentialPnlSum = missedTrades.reduce((sum, mt) => sum + (mt.potential_pnl || 0), 0);
+    const avgPotential = withPnl.length > 0 ? potentialPnlSum / withPnl.length : 0;
+
+    return {
+      totalMissed,
+      potentialPnlSum,
+      avgPotential
+    };
+  }, [missedTrades]);
+
+  // Hook up event handles for missed trades suggestions
+  useEffect(() => {
+    const handleCloseSuggestions = (e: MouseEvent) => {
+      if (mtSymbolContainerRef.current && !mtSymbolContainerRef.current.contains(e.target as Node)) {
+        setShowMtSuggestions(false);
+      }
+    };
+    document.addEventListener('mousedown', handleCloseSuggestions);
+    return () => document.removeEventListener('mousedown', handleCloseSuggestions);
+  }, []);
+
+  const mtSuggestions = useMemo(() => {
+    if (!mtSymbol.trim()) return [];
+    return PREDEFINED_SYMBOLS.filter((s) =>
+      s.toLowerCase().includes(mtSymbol.toLowerCase())
+    ).slice(0, 6);
+  }, [mtSymbol]);
+
+  // Hook up handle handlers logic
+  const handleSaveMissedTrade = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!userId || !strategyId) return;
+
+    if (!mtDate.trim()) {
+      showError("Please select a date.");
+      return;
+    }
+    if (!mtSymbol.trim()) {
+      showError("Please enter a symbol.");
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('missed_trades')
+        .insert({
+          user_id: userId,
+          strategy_id: strategyId,
+          date: mtDate,
+          symbol: mtSymbol.toUpperCase().trim(),
+          direction: mtDirection,
+          potential_pnl: mtPotentialPnl.trim() !== '' ? parseFloat(mtPotentialPnl) : null,
+          notes: mtNotes.trim() !== '' ? mtNotes.trim() : null
+        })
+        .select();
+
+      if (error) throw error;
+
+      showSuccess("Missed trade logged successfully!");
+      
+      // Close modal
+      setAddModalOpen(false);
+
+      // Reset form
+      setMtDate(new Date().toISOString().split('T')[0]);
+      setMtSymbol('');
+      setMtDirection('LONG');
+      setMtPotentialPnl('');
+      setMtNotes('');
+
+      // Refresh list
+      const { data: updatedMissed, error: fetchErr } = await supabase
+        .from('missed_trades')
+        .select('id, user_id, strategy_id, date, symbol, direction, notes, potential_pnl, created_at')
+        .eq('strategy_id', strategyId)
+        .eq('user_id', userId)
+        .order('date', { ascending: false });
+
+      if (fetchErr) throw fetchErr;
+      setMissedTrades((updatedMissed as MissedTradeItem[]) || []);
+    } catch (err: any) {
+      console.error(err);
+      showError(err.message || "Failed to log missed trade.");
+    }
+  };
+
+  const handleDeleteMissedTrade = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!userId) return;
+    try {
+      const { error } = await supabase
+        .from('missed_trades')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', userId);
+
+      if (error) throw error;
+      showSuccess("Missed trade deleted.");
+      setMissedTrades(prev => prev.filter(mt => mt.id !== id));
+    } catch (err: any) {
+      console.error(err);
+      showError(err.message || "Failed to delete missed trade.");
+    }
+  };
 
   if (authLoading) {
     return (
@@ -856,8 +1026,299 @@ export const StrategyDetail: React.FC = () => {
 
                 {/* TAB 4: MISSED TRADES */}
                 {activeTab === 'MISSED TRADES' && (
-                  <div className="p-12 text-center rounded-2xl border text-xs font-mono text-zinc-500 leading-relaxed capitalize tracking-wide animate-fade-in" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
-                    Coming soon — Missed Trades tracking will be added in the next update.
+                  <div className="space-y-6 animate-fade-in">
+                    {/* Top Header & Stats Section */}
+                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                      {/* Stats Cards */}
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 flex-1">
+                        {/* CARD 1 */}
+                        <div className="p-4 rounded-xl border flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
+                          <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-500">Total Missed</span>
+                          <span className="text-2xl font-bold font-sans mt-1.5 text-zinc-100">{missedTradesStats.totalMissed}</span>
+                        </div>
+                        {/* CARD 2 */}
+                        <div className="p-4 rounded-xl border flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
+                          <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-500">Potential P&L</span>
+                          <span className={`text-2xl font-bold font-sans mt-1.5 ${missedTradesStats.potentialPnlSum >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                            {formatCurrency(missedTradesStats.potentialPnlSum)}
+                          </span>
+                        </div>
+                        {/* CARD 3 */}
+                        <div className="p-4 rounded-xl border flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
+                          <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-500">Avg Potential</span>
+                          <span className={`text-2xl font-bold font-sans mt-1.5 ${missedTradesStats.avgPotential >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                            {formatCurrency(missedTradesStats.avgPotential)}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Action Button */}
+                      <div className="flex justify-end items-center self-end lg:self-center">
+                        <button
+                          onClick={() => setAddModalOpen(true)}
+                          className="px-4 py-2.5 rounded-lg text-white font-medium text-xs flex items-center gap-1.5 cursor-pointer hover:opacity-90 active:scale-[0.98] transition-all"
+                          style={{ backgroundColor: 'var(--accent)' }}
+                        >
+                          <Plus className="w-4 h-4" />
+                          Log Missed Trade
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Missed Trades Table or Empty State */}
+                    <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
+                      {missedTrades.length === 0 ? (
+                        <div className="py-16 text-center px-4">
+                          <p className="text-sm font-semibold text-zinc-300">No missed trades logged for this strategy.</p>
+                          <p className="text-xs text-zinc-500 mt-1.5 max-w-sm mx-auto leading-relaxed font-sans">
+                            Log trades you missed to analyze opportunity costs and improve discipline.
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-left border-collapse">
+                            <thead>
+                              <tr className="border-b font-mono text-[10px] text-zinc-400 uppercase tracking-wider" style={{ borderColor: 'var(--border)', backgroundColor: 'rgba(255,255,255,0.01)' }}>
+                                <th className="py-3.5 px-4 font-bold">Date</th>
+                                <th className="py-3.5 px-4 font-bold">Symbol</th>
+                                <th className="py-3.5 px-4 font-bold">Direction</th>
+                                <th className="py-3.5 px-4 font-bold text-right">Potential P&L</th>
+                                <th className="py-3.5 px-4 font-bold">Notes</th>
+                                <th className="py-3.5 px-4 font-bold text-center w-20">Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y" style={{ borderColor: 'var(--border)' }}>
+                              {missedTrades.map((mt) => {
+                                const isLong = mt.direction === 'LONG';
+                                return (
+                                  <tr
+                                    key={mt.id}
+                                    className="hover:bg-zinc-800/10 transition-colors"
+                                  >
+                                    <td className="py-3.5 px-4 text-xs font-mono text-zinc-400">
+                                      {formatDateCustom(mt.date)}
+                                    </td>
+                                    <td className="py-3.5 px-4 font-bold text-[#E4E4E7] text-sm tracking-tight uppercase">
+                                      {mt.symbol}
+                                    </td>
+                                    <td className="py-3.5 px-4">
+                                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                                        isLong
+                                          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                          : 'bg-rose-500/10 text-rose-400 border border-rose-550/20'
+                                      }`}>
+                                        {mt.direction}
+                                      </span>
+                                    </td>
+                                    <td className={`py-3.5 px-4 text-right text-xs font-mono font-bold ${mt.potential_pnl !== null && mt.potential_pnl !== undefined ? (mt.potential_pnl >= 0 ? 'text-emerald-400' : 'text-rose-400') : 'text-zinc-500'}`}>
+                                      {mt.potential_pnl !== null && mt.potential_pnl !== undefined ? formatCurrency(mt.potential_pnl) : '--'}
+                                    </td>
+                                    <td className="py-3.5 px-4 text-xs text-zinc-300 max-w-xs truncate" title={mt.notes || ''}>
+                                      {mt.notes || '--'}
+                                    </td>
+                                    <td className="py-3.5 px-4 text-center">
+                                      <button
+                                        onClick={(e) => {
+                                          if (confirm("Are you sure you want to delete this missed trade?")) {
+                                            handleDeleteMissedTrade(mt.id, e);
+                                          }
+                                        }}
+                                        className="p-1.5 text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer inline-flex items-center"
+                                        title="Delete missed trade"
+                                      >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                      </button>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* ADD MISSED TRADE MODAL */}
+                    {addModalOpen && (
+                      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                        {/* Backdrop overlay */}
+                        <div 
+                          className="absolute inset-0 bg-black/40 backdrop-blur-xs" 
+                          onClick={() => setAddModalOpen(false)}
+                        />
+                        
+                        {/* Modal Box */}
+                        <div 
+                          className="relative w-full max-w-[480px] rounded-2xl border p-6 z-10 shadow-2xl animate-scale-in"
+                          style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
+                        >
+                          {/* Header */}
+                          <div className="flex items-center justify-between mb-5">
+                            <h3 className="text-base font-bold text-[#E4E4E7] tracking-tight">Log Missed Trade</h3>
+                            <button 
+                              onClick={() => setAddModalOpen(false)}
+                              className="p-1.5 text-zinc-400 hover:text-white rounded-lg transition-colors cursor-pointer"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+
+                          <form onSubmit={handleSaveMissedTrade} className="space-y-4">
+                            {/* Date field */}
+                            <div>
+                              <label htmlFor="mt-date" className="block text-[10px] font-mono font-bold uppercase tracking-widest text-zinc-500 mb-1.5">
+                                Date <span className="text-[var(--accent)]">*</span>
+                              </label>
+                              <input
+                                id="mt-date"
+                                type="date"
+                                required
+                                value={mtDate}
+                                onChange={(e) => setMtDate(e.target.value)}
+                                className="w-full rounded-lg border px-3.5 py-2 text-sm font-sans placeholder-zinc-500 transition-colors focus:outline-none focus:border-cyan-500"
+                                style={{ backgroundColor: 'rgba(255,255,255,0.01)', borderColor: 'var(--border)', color: 'var(--text)' }}
+                              />
+                            </div>
+
+                            {/* Symbol field */}
+                            <div className="relative" ref={mtSymbolContainerRef}>
+                              <label htmlFor="mt-symbol" className="block text-[10px] font-mono font-bold uppercase tracking-widest text-zinc-500 mb-1.5">
+                                Symbol <span className="text-[var(--accent)]">*</span>
+                              </label>
+                              <input
+                                id="mt-symbol"
+                                type="text"
+                                required
+                                autoComplete="off"
+                                placeholder="e.g. EURUSD, NIFTY..."
+                                value={mtSymbol}
+                                onChange={(e) => {
+                                  setMtSymbol(e.target.value);
+                                  setShowMtSuggestions(true);
+                                }}
+                                onFocus={() => setShowMtSuggestions(true)}
+                                className="w-full rounded-lg border px-3.5 py-2 text-sm font-sans placeholder-zinc-500 transition-colors focus:outline-none focus:border-cyan-500 uppercase"
+                                style={{ backgroundColor: 'rgba(255,255,255,0.01)', borderColor: 'var(--border)', color: 'var(--text)' }}
+                              />
+
+                              {/* Autocomplete suggestions dropdown */}
+                              {showMtSuggestions && mtSuggestions.length > 0 && (
+                                <div 
+                                  className="absolute left-0 right-0 mt-1 max-h-40 overflow-y-auto rounded-lg border z-50 shadow-xl text-xs" 
+                                  style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
+                                >
+                                  {mtSuggestions.map((sym) => (
+                                    <button
+                                      key={sym}
+                                      type="button"
+                                      onClick={() => {
+                                        setMtSymbol(sym);
+                                        setShowMtSuggestions(false);
+                                      }}
+                                      className="w-full text-left px-3 py-2 text-zinc-300 hover:bg-zinc-805 hover:text-white transition-colors cursor-pointer"
+                                    >
+                                      {sym}
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Direction field */}
+                            <div>
+                              <label className="block text-[10px] font-mono font-bold uppercase tracking-widest text-zinc-500 mb-1.5">
+                                Direction <span className="text-[var(--accent)]">*</span>
+                              </label>
+                              <div className="grid grid-cols-2 gap-2 font-sans">
+                                {(['LONG', 'SHORT'] as const).map((dir) => {
+                                  const isSel = mtDirection === dir;
+                                  
+                                  const defaultStyle = {
+                                    backgroundColor: 'transparent',
+                                    border: '1px solid var(--border)',
+                                    color: 'var(--text-sub)'
+                                  };
+
+                                  const activeStyle = dir === 'LONG' ? {
+                                    backgroundColor: 'rgba(34,197,94,0.12)',
+                                    border: '1.5px solid #22c55e',
+                                    color: '#22c55e'
+                                  } : {
+                                    backgroundColor: 'rgba(239,68,68,0.12)',
+                                    border: '1.5px solid #ef4444',
+                                    color: '#ef4444'
+                                  };
+
+                                  return (
+                                    <button
+                                      key={dir}
+                                      type="button"
+                                      onClick={() => setMtDirection(dir)}
+                                      style={isSel ? activeStyle : defaultStyle}
+                                      className="rounded-lg py-2 px-4 text-xs font-semibold text-center cursor-pointer transition-all border"
+                                    >
+                                      {dir}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+
+                            {/* Potential P&L field */}
+                            <div>
+                              <label htmlFor="mt-potential-pnl" className="block text-[10px] font-mono font-bold uppercase tracking-widest text-zinc-500 mb-1.5">
+                                Potential P&L (₹, Optional)
+                              </label>
+                              <input
+                                id="mt-potential-pnl"
+                                type="number"
+                                step="any"
+                                placeholder="e.g. 5000 or -2500"
+                                value={mtPotentialPnl}
+                                onChange={(e) => setMtPotentialPnl(e.target.value)}
+                                className="w-full rounded-lg border px-3.5 py-2 text-sm font-sans placeholder-zinc-500 transition-colors focus:outline-none focus:border-cyan-500"
+                                style={{ backgroundColor: 'rgba(255,255,255,0.01)', borderColor: 'var(--border)', color: 'var(--text)' }}
+                              />
+                            </div>
+
+                            {/* Notes field */}
+                            <div>
+                              <label htmlFor="mt-notes" className="block text-[10px] font-mono font-bold uppercase tracking-widest text-zinc-500 mb-1.5">
+                                Notes (Optional)
+                              </label>
+                              <textarea
+                                id="mt-notes"
+                                placeholder="Describe setup details, why you missed it, or what patterns you noticed..."
+                                rows={3}
+                                value={mtNotes}
+                                onChange={(e) => setMtNotes(e.target.value)}
+                                className="w-full rounded-lg border px-3.5 py-2 text-sm font-sans placeholder-zinc-500 transition-colors focus:outline-none focus:border-cyan-500 leading-relaxed"
+                                style={{ backgroundColor: 'rgba(255,255,255,0.01)', borderColor: 'var(--border)', color: 'var(--text)' }}
+                              />
+                            </div>
+
+                            {/* Form actions */}
+                            <div className="flex items-center justify-end gap-2 pt-2 border-t" style={{ borderColor: 'var(--border)' }}>
+                              <button
+                                type="button"
+                                onClick={() => setAddModalOpen(false)}
+                                className="px-4 py-2 text-xs font-semibold rounded-lg border transition-all hover:bg-zinc-800 cursor-pointer"
+                                style={{ borderColor: 'var(--border)', color: 'var(--text)' }}
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                type="submit"
+                                className="px-4 py-2 text-xs font-semibold rounded-lg text-white transition-all hover:opacity-90 active:scale-95 cursor-pointer"
+                                style={{ backgroundColor: 'var(--accent)' }}
+                              >
+                                Save Missed Trade
+                              </button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 

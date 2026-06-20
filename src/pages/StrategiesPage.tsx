@@ -46,6 +46,7 @@ export const StrategiesPage: React.FC = () => {
   const [strategies, setStrategies] = useState<Strategy[]>([]);
   const [trades, setTrades] = useState<any[]>([]);
   const [rules, setRules] = useState<any[]>([]);
+  const [missedTrades, setMissedTrades] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -104,7 +105,7 @@ export const StrategiesPage: React.FC = () => {
     if (!userId) return;
     try {
       setLoading(true);
-      const [stratRes, tradesRes, rulesRes] = await Promise.all([
+      const [stratRes, tradesRes, rulesRes, missedTradesRes] = await Promise.all([
         supabase
           .from('strategies')
           .select('*')
@@ -117,16 +118,22 @@ export const StrategiesPage: React.FC = () => {
         supabase
           .from('strategy_rules')
           .select('id, strategy_id, rule_type')
+          .eq('user_id', userId),
+        supabase
+          .from('missed_trades')
+          .select('id, strategy_id')
           .eq('user_id', userId)
       ]);
 
       if (stratRes.error) throw stratRes.error;
       if (tradesRes.error) throw tradesRes.error;
       if (rulesRes.error) throw rulesRes.error;
+      if (missedTradesRes.error) throw missedTradesRes.error;
 
       setStrategies((stratRes.data as Strategy[]) || []);
       setTrades(tradesRes.data || []);
       setRules(rulesRes.data || []);
+      setMissedTrades(missedTradesRes.data || []);
     } catch (err: any) {
       console.error('Error fetching strategies page context:', err);
       showError(err.message || 'Failed to load strategies.');
@@ -176,6 +183,7 @@ export const StrategiesPage: React.FC = () => {
     strategies.forEach((strat) => {
       const stratTrades = trades.filter((t) => t.strategy_id === strat.id);
       const stratRules = rules.filter((r) => r.strategy_id === strat.id);
+      const stratMissedTrades = missedTrades.filter((mt) => mt.strategy_id === strat.id);
 
       const totalTrades = stratTrades.length;
       const wins = stratTrades.filter((t) => t.status === 'Win');
@@ -208,14 +216,14 @@ export const StrategiesPage: React.FC = () => {
         avgR,
         profitFactor,
         expectancy,
-        missedTrades: 0,
+        missedTrades: stratMissedTrades.length,
         entryRulesCount,
         exitRulesCount
       };
     });
 
     return statsMap;
-  }, [strategies, trades, rules]);
+  }, [strategies, trades, rules, missedTrades]);
 
   // Total active filters count for badge display
   const activeFiltersCount = useMemo(() => {
