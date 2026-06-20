@@ -58,6 +58,13 @@ export const StrategiesPage: React.FC = () => {
   // Current sub-tab active (default: My Strategies)
   const [activeSubTab, setActiveSubTab] = useState<'my' | 'shared'>('my');
 
+  const getTabStyle = (isActive: boolean) => ({
+    color: isActive ? 'var(--accent)' : 'var(--text-sub)',
+    borderBottom: isActive ? '2px solid var(--accent)' : '2px solid transparent',
+    background: 'transparent',
+    fontWeight: isActive ? 600 : 400
+  });
+
   // Filters State
   const [statusFilter, setStatusFilter] = useState<string>('All');
   const [typeFilter, setTypeFilter] = useState<string>('All');
@@ -464,11 +471,8 @@ export const StrategiesPage: React.FC = () => {
                     setActiveSubTab('my');
                     setCurrentPage(1);
                   }}
-                  className={`px-4 py-2.5 font-semibold text-[15px] font-display transition-all cursor-pointer border-b-2 relative -bottom-[2px] ${
-                    activeSubTab === 'my'
-                      ? 'border-cyan-500 text-white font-bold'
-                      : 'border-transparent text-zinc-500 hover:text-zinc-300'
-                  }`}
+                  style={getTabStyle(activeSubTab === 'my')}
+                  className="px-4 py-2.5 text-[15px] font-display transition-all cursor-pointer relative -bottom-[2px]"
                 >
                   My Strategies
                 </button>
@@ -476,11 +480,8 @@ export const StrategiesPage: React.FC = () => {
                   onClick={() => {
                     showSuccess('Coming soon — Shared setup Playbook will be added in a future update.');
                   }}
-                  className={`px-4 py-2.5 font-semibold text-[15px] font-display transition-all cursor-pointer border-b-2 relative -bottom-[2px] ${
-                    activeSubTab === 'shared'
-                      ? 'border-cyan-500 text-white font-bold'
-                      : 'border-transparent text-zinc-500 hover:text-zinc-300'
-                  }`}
+                  style={getTabStyle(activeSubTab === 'shared')}
+                  className="px-4 py-2.5 text-[15px] font-display transition-all cursor-pointer relative -bottom-[2px]"
                 >
                   Shared Strategies
                 </button>
