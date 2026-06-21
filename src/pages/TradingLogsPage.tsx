@@ -601,7 +601,7 @@ export const TradingLogsPage: React.FC = () => {
       sortField: 'symbol',
       renderCell: (item) => (
         <div className="flex items-center gap-2">
-          <span className="font-bold font-mono tracking-wide" style={{ color: 'var(--text)' }}>
+          <span className="font-mono tracking-wide" style={{ color: 'var(--text)', fontWeight: 600 }}>
             {item.symbol}
           </span>
           {item.needs_review && (
@@ -1384,7 +1384,7 @@ export const TradingLogsPage: React.FC = () => {
                       className="w-full text-left border-collapse"
                     >
                     <thead>
-                      <tr className="border-b select-none font-sans" style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)', color: 'var(--text-muted)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      <tr className="border-b select-none font-sans" style={{ background: 'rgba(0, 0, 0, 0.04)', borderColor: 'rgba(0, 0, 0, 0.08)', color: 'var(--text-muted)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                         {/* SELECT ALL CHECKBOX */}
                         <th className="px-4 py-4 w-12 text-center">
                           <div 
@@ -1478,12 +1478,19 @@ export const TradingLogsPage: React.FC = () => {
                     </thead>
                     <tbody>
                       {sortedTrades.map((item, index) => {
+                        const isEven = index % 2 === 1;
                         return (
                           <tr
                             key={item.id}
                             onClick={() => navigate(`/trading-logs/${item.id}`)}
-                            className="even:bg-[rgba(0,0,0,0.015)] hover:bg-[rgba(0,0,0,0.025)] cursor-pointer transition-colors text-sm"
-                            style={{ borderBottom: '1px solid rgba(0,0,0,0.06)', color: 'var(--text)' }}
+                            className="cursor-pointer transition-colors text-sm"
+                            style={{ 
+                              borderBottom: '1px solid rgba(0, 0, 0, 0.05)', 
+                              color: 'var(--text)',
+                              backgroundColor: isEven ? 'rgba(0, 0, 0, 0.018)' : 'transparent'
+                            }}
+                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.025)')}
+                            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = isEven ? 'rgba(0, 0, 0, 0.018)' : 'transparent')}
                           >
                             {/* Row Checkbox Column */}
                             <td 

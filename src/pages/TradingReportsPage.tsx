@@ -402,7 +402,7 @@ export const TradingReportsPage: React.FC = () => {
                   >
                     <table className="w-full text-left border-collapse text-sm">
                       <thead>
-                        <tr style={{ background: 'rgba(0,0,0,0.02)' }} className="border-b">
+                        <tr style={{ background: 'rgba(0, 0, 0, 0.04)', borderBottom: '1px solid rgba(0, 0, 0, 0.08)' }}>
                           <th className="px-4 py-3" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Date</th>
                           <th className="px-3 py-3 text-center" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Trades</th>
                           <th className="px-3 py-3" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Symbols</th>
@@ -421,15 +421,18 @@ export const TradingReportsPage: React.FC = () => {
                             month: 'short',
                           });
 
+                          const isEven = idx % 2 === 1;
                           return (
                             <tr
                               key={row.date}
                               style={{ 
                                 color: 'var(--text)', 
-                                borderBottom: '1px solid var(--border)',
-                                background: idx % 2 === 1 ? 'rgba(0,0,0,0.015)' : 'transparent'
+                                borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
+                                background: isEven ? 'rgba(0, 0, 0, 0.018)' : 'transparent'
                               }}
-                              className="transition-colors hover:bg-[rgba(0,0,0,0.025)] cursor-pointer"
+                              className="transition-colors cursor-pointer"
+                              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.025)')}
+                              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = isEven ? 'rgba(0, 0, 0, 0.018)' : 'transparent')}
                             >
                               {/* Date Column */}
                               <td 
@@ -522,17 +525,17 @@ export const TradingReportsPage: React.FC = () => {
                       {/* STATS TOTAL FOOTER */}
                       {stats && (
                         <tfoot>
-                          <tr className="font-bold border-t" style={{ backgroundColor: 'rgba(0,0,0,0.02)', borderColor: 'var(--border)' }}>
-                            <td className="px-4 py-3.5 uppercase tracking-wider text-xs" style={{ color: 'var(--text)', fontWeight: 600 }}>
+                          <tr style={{ background: 'rgba(0, 0, 0, 0.04)', borderTop: '2px solid rgba(0, 0, 0, 0.10)' }}>
+                            <td className="px-4 py-3.5 uppercase tracking-wider text-xs" style={{ color: 'var(--text)', fontWeight: 700 }}>
                               TOTAL ({selectedMonth})
                             </td>
-                            <td className="px-3 py-3.5 text-center font-mono text-xs" style={{ color: 'var(--text)' }}>
+                            <td className="px-3 py-3.5 text-center font-mono text-xs" style={{ color: 'var(--text)', fontWeight: 700 }}>
                               {stats.totalTrades}
                             </td>
-                            <td className="px-3 py-3.5" />
-                            <td className="px-3 py-3.5" />
-                            <td className="px-3 py-3.5 text-center font-mono">
-                              <span className="font-semibold text-xs" style={{ color: 'var(--text-sub)' }}>
+                            <td className="px-3 py-3.5" style={{ fontWeight: 700 }} />
+                            <td className="px-3 py-3.5" style={{ fontWeight: 700 }} />
+                            <td className="px-3 py-3.5 text-center font-mono" style={{ fontWeight: 700 }}>
+                              <span className="text-xs" style={{ color: 'var(--text-sub)', fontWeight: 700 }}>
                                 {stats.wins}W / {stats.losses}L / {stats.breakevens}BE
                               </span>
                             </td>
@@ -540,7 +543,7 @@ export const TradingReportsPage: React.FC = () => {
                               className="px-4 py-3.5 text-right font-mono text-sm"
                               style={{ 
                                 color: stats.totalPnl >= 0 ? '#22c55e' : '#ef4444', 
-                                fontWeight: 600 
+                                fontWeight: 700 
                               }}
                             >
                               {formatINR(stats.totalPnl)}
@@ -549,12 +552,12 @@ export const TradingReportsPage: React.FC = () => {
                               className="px-4 py-3.5 text-right font-mono text-sm"
                               style={{ 
                                 color: stats.totalPnl >= 0 ? '#22c55e' : '#ef4444', 
-                                fontWeight: 600 
+                                fontWeight: 700 
                               }}
                             >
                               {formatINR(stats.totalPnl)}
                             </td>
-                            <td className="px-4 py-3.5" />
+                            <td className="px-4 py-3.5" style={{ fontWeight: 700 }} />
                           </tr>
                         </tfoot>
                       )}

@@ -475,9 +475,13 @@ export const StrategiesPage: React.FC = () => {
           cursor: 'pointer',
           userSelect: 'none',
           whiteSpace: 'nowrap',
+          fontSize: '11px',
+          fontWeight: 600,
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em',
           ...extraStyles
         }}
-        className={`py-3 px-4 font-sans font-bold select-none text-[10px] uppercase tracking-wider ${isCenter ? 'text-center' : ''}`}
+        className={`py-3 px-4 select-none ${isCenter ? 'text-center' : ''}`}
       >
         <div className={`inline-flex items-center gap-1 hover:opacity-85 ${isCenter ? 'justify-center w-full' : ''}`}>
           <span>{label}</span>
@@ -794,8 +798,8 @@ export const StrategiesPage: React.FC = () => {
               >
                 <table className="w-full text-left border-collapse min-w-[900px]" style={{ tableLayout: 'auto', width: '100%' }}>
                   <thead>
-                    <tr className="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 bg-zinc-900/50 border-b border-zinc-800" style={{ background: 'rgba(0,0,0,0.02)' }}>
-                      <th className="py-3 px-4 text-center font-sans font-bold text-zinc-400" style={{ width: '40px', whiteSpace: 'nowrap' }}>#</th>
+                    <tr style={{ background: 'rgba(0, 0, 0, 0.04)', borderBottom: '1px solid rgba(0, 0, 0, 0.08)' }}>
+                      <th className="py-3 px-4 text-center" style={{ width: '40px', whiteSpace: 'nowrap', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>#</th>
                       {renderSortableHeader('name', 'Strategy Name', false, { maxWidth: '220px', overflow: 'hidden', textOverflow: 'ellipsis' })}
                       {renderSortableHeader('type', 'TYPE', true, { width: '100px' })}
                       {renderSortableHeader('trades', 'Trades')}
@@ -830,18 +834,24 @@ export const StrategiesPage: React.FC = () => {
 
                       const isMenuOpen = activeMenuId === strat.id;
 
+                      const isEven = index % 2 === 1;
                       return (
                         <tr
                           key={strat.id}
-                          className="border-b transition-colors cursor-pointer h-[52px] hover:bg-[rgba(0,0,0,0.025)]"
-                          style={{ borderBottom: '1px solid var(--border)' }}
+                          className="transition-colors cursor-pointer h-[52px]"
+                          style={{ 
+                            borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
+                            backgroundColor: isEven ? 'rgba(0, 0, 0, 0.018)' : 'transparent'
+                          }}
                           onClick={() => navigate(`/strategies/${strat.id}`)}
+                          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.025)')}
+                          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = isEven ? 'rgba(0, 0, 0, 0.018)' : 'transparent')}
                         >
-                          <td className="py-2.5 px-4 text-center text-xs font-mono text-zinc-500" style={{ width: '40px', whiteSpace: 'nowrap' }}>
+                          <td className="py-2.5 px-4 text-center text-xs font-mono" style={{ width: '40px', whiteSpace: 'nowrap', color: 'var(--text-muted)' }}>
                             {(currentPage - 1) * itemsPerPage + index + 1}
                           </td>
                           <td className="py-2.5 px-4 animate-fade-in" style={{ maxWidth: '220px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                            <span className="font-semibold text-zinc-200 text-sm hover:text-cyan-400 transition-colors">{strat.name}</span>
+                            <span className="transition-colors text-sm hover:text-[var(--accent)]" style={{ fontWeight: 600, color: 'var(--text)' }}>{strat.name}</span>
                           </td>
                           <td className="py-2.5 px-4 text-center" style={{ width: '100px', whiteSpace: 'nowrap' }}>
                             {(() => {
