@@ -787,16 +787,16 @@ export const StrategiesPage: React.FC = () => {
             ) : viewType === 'table' ? (
               /* CLEAN TRADEZELLA-STYLE TABLE VIEW */
               <div
-                className="w-full overflow-x-auto select-none mt-2"
+                className="w-full select-none mt-2"
                 style={{
                   background: 'var(--card)',
                   boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
                   border: '1px solid rgba(0,0,0,0.06)',
                   borderRadius: '12px',
-                  overflow: 'hidden'
+                  overflowX: 'auto'
                 }}
               >
-                <table className="w-full text-left border-collapse min-w-[900px]" style={{ tableLayout: 'auto', width: '100%' }}>
+                <table className="w-full text-left border-collapse" style={{ tableLayout: 'auto', width: '100%', minWidth: '900px' }}>
                   <thead>
                     <tr style={{ background: 'rgba(0, 0, 0, 0.04)', borderBottom: '1px solid rgba(0, 0, 0, 0.08)' }}>
                       <th className="py-3 px-4 text-center" style={{ width: '40px', whiteSpace: 'nowrap', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>#</th>
