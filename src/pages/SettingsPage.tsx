@@ -979,7 +979,7 @@ export default function SettingsPage() {
                   
                   {/* PROFILE CARD */}
                   <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
-                    <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                    <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-4 flex items-center gap-2">
                       <User className="w-4 h-4 text-[var(--accent)]" /> Profile Details
                     </h3>
                     
@@ -1064,7 +1064,7 @@ export default function SettingsPage() {
 
                   {/* SECURITY CARD */}
                   <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
-                    <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                    <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-4 flex items-center gap-2">
                       <Lock className="w-4 h-4 text-[var(--accent)]" /> Security / Change Password
                     </h3>
                     
@@ -1114,7 +1114,7 @@ export default function SettingsPage() {
 
                   {/* ACCOUNT EXPORT / DESTRUCTION */}
                   <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
-                    <h3 className="text-lg font-bold mb-1.5 flex items-center gap-2">
+                    <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-1.5 flex items-center gap-2">
                        Account Management
                     </h3>
                     <p className="text-xs text-[var(--text-sub)] mb-6">Backup raw structured database configurations, or permanently destroy telemetry sessions.</p>
@@ -1640,7 +1640,7 @@ export default function SettingsPage() {
               {/* TAB 2: APPEARANCE */}
               {activeTab === 'appearance' && (
                 <div className="space-y-6 animate-fade-in bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
-                  <h3 className="text-lg font-bold mb-2 flex items-center gap-2">
+                  <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-2 flex items-center gap-2">
                     <Palette className="w-4 h-4 text-[var(--accent)]" /> Visual Themes Customization
                   </h3>
                   <p className="text-xs text-[var(--text-sub)] mb-6">Select a visual theme palette and accent setup. Edits apply instantly on screen.</p>
@@ -1723,7 +1723,7 @@ export default function SettingsPage() {
               {/* TAB 3: SUBSCRIPTION */}
               {activeTab === 'subscription' && (
                 <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md space-y-6 animate-fade-in animate-none">
-                  <h3 className="text-lg font-bold mb-1 flex items-center gap-2">
+                  <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-1 flex items-center gap-2">
                     <CreditCard className="w-4 h-4 text-[var(--accent)]" /> Plan Workspace Billing
                   </h3>
                   <p className="text-xs text-[var(--text-sub)]">Validate limits, trial duration, billing invoices, and payment integration cycles.</p>
@@ -1818,7 +1818,7 @@ export default function SettingsPage() {
               {/* TAB 4: NOTIFICATIONS */}
               {activeTab === 'notifications' && (
                 <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md space-y-6 animate-fade-in animate-none">
-                  <h3 className="text-lg font-bold mb-1 flex items-center gap-2">
+                  <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-1 flex items-center gap-2">
                     <Bell className="w-4 h-4 text-[var(--accent)]" /> Extension Signals Threshold
                   </h3>
                   <p className="text-xs text-[var(--text-sub)]">Manage alerts, push notifications, and live chart scanning triggers.</p>

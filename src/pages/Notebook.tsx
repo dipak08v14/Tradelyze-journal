@@ -80,6 +80,14 @@ export function Notebook() {
   // Search feature state
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Hover states for enhanced visual styling
+  const [isAddFolderHovered, setIsAddFolderHovered] = useState(false);
+  const [isAllNotesHovered, setIsAllNotesHovered] = useState(false);
+  const [hoveredFolderId, setHoveredFolderId] = useState<string | null>(null);
+  const [hoveredTagName, setHoveredTagName] = useState<string | null>(null);
+  const [isTrashHovered, setIsTrashHovered] = useState(false);
+  const [hoveredEntryId, setHoveredEntryId] = useState<string | null>(null);
+
   // Log Day feature states
   const [isLogDayModalOpen, setIsLogDayModalOpen] = useState(false);
   const [logDateInput, setLogDateInput] = useState(() => {
@@ -970,15 +978,21 @@ export function Notebook() {
   const renderNoteItem = (note: EntryItem) => {
     const isActive = activeNoteId === note.id;
     const isChecked = selectedNoteIds.includes(note.id);
+    const isHovered = hoveredEntryId === note.id;
 
     return (
       <div
         key={note.id}
         onClick={() => setActiveNoteId(note.id)}
-        className="group p-3.5 hover:bg-[var(--bar)]/40 transition-all cursor-pointer relative flex items-start gap-3"
+        className="group transition-all relative flex items-start gap-3"
         style={{
-          backgroundColor: isActive ? 'var(--accent-muted)' : 'transparent',
+          backgroundColor: isActive ? 'var(--accent-muted)' : (isHovered ? 'rgba(0,0,0,0.025)' : 'transparent'),
+          borderBottom: '1px solid rgba(0,0,0,0.05)',
+          padding: '10px 12px',
+          cursor: 'pointer'
         }}
+        onMouseEnter={() => setHoveredEntryId(note.id)}
+        onMouseLeave={() => setHoveredEntryId(null)}
       >
         {/* Checkbox */}
         <button
@@ -997,8 +1011,12 @@ export function Notebook() {
           <div className="flex items-center justify-between gap-1 w-full">
             {/* Title */}
             <span
-              className="text-[13px] font-semibold tracking-tight truncate flex-1 text-zinc-100 flex items-center gap-1.5"
-              style={{ color: isActive ? 'var(--accent)' : 'var(--text)' }}
+              className="tracking-tight truncate flex-1 flex items-center gap-1.5"
+              style={{
+                fontSize: '13px',
+                fontWeight: 600,
+                color: isActive ? 'var(--accent)' : 'var(--text)'
+              }}
             >
               {note.log_date && (
                 <Calendar className="w-3.5 h-3.5 shrink-0 text-cyan-500" />
@@ -1021,7 +1039,16 @@ export function Notebook() {
           </div>
 
           {/* Content text snippet */}
-          <p className="text-[11px] text-zinc-400 dark:text-zinc-500 font-sans line-clamp-2 leading-relaxed">
+          <p
+            className="font-sans leading-relaxed"
+            style={{
+              fontSize: '12px',
+              color: 'var(--text-muted)',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis'
+            }}
+          >
             {note.content && note.content.trim() !== ''
               ? note.content.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ') // remove HTML tags
               : 'No content...'}
@@ -1029,7 +1056,7 @@ export function Notebook() {
 
           <div className="flex items-center justify-between mt-1">
             {/* Date */}
-            <span className="font-mono text-[10px] text-zinc-500 dark:text-zinc-600">
+            <span style={{ fontSize: '11px', color: 'var(--text-muted)' }} className="font-mono">
               {formatDate(note.created_at)}
             </span>
 
@@ -1082,7 +1109,7 @@ export function Notebook() {
           <aside
             id="notebook-panel-folders"
             className="w-[220px] shrink-0 h-full overflow-y-auto flex flex-col justify-between p-4 flex-shrink-0"
-            style={{ borderRight: '0.5px solid var(--border)', backgroundColor: 'var(--topbar)' }}
+            style={{ borderRight: '1px solid var(--border)', backgroundColor: 'var(--card)' }}
           >
             <div>
               {/* Add folder full width */}
@@ -1090,15 +1117,34 @@ export function Notebook() {
                 id="notebook-btn-add-folder"
                 type="button"
                 onClick={handleOpenAddFolderModal}
-                className="w-full flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-mono font-bold rounded-lg border hover:bg-[var(--bar)] bg-[var(--card)] transition-colors cursor-pointer"
-                style={{ borderColor: 'var(--border)' }}
+                className="w-full flex items-center justify-center gap-1.5 py-2 px-3 transition-colors cursor-pointer"
+                style={{
+                  background: 'transparent',
+                  border: isAddFolderHovered ? '1px solid var(--accent)' : '1px solid var(--border)',
+                  borderRadius: '8px',
+                  color: isAddFolderHovered ? 'var(--accent)' : 'var(--text-sub)',
+                  fontSize: '13px',
+                  fontWeight: 500
+                }}
+                onMouseEnter={() => setIsAddFolderHovered(true)}
+                onMouseLeave={() => setIsAddFolderHovered(false)}
               >
                 <Plus className="w-3.5 h-3.5" />
                 ADD FOLDER
               </button>
 
               {/* FOLDERS Label */}
-              <div id="notebook-lbl-folders" className="text-[10px] font-bold font-mono text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-2 mt-5">
+              <div
+                id="notebook-lbl-folders"
+                className="mb-2 mt-5"
+                style={{
+                  fontSize: '10px',
+                  fontWeight: 600,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  color: 'var(--text-muted)'
+                }}
+              >
                 FOLDERS
               </div>
 
@@ -1111,17 +1157,21 @@ export function Notebook() {
                     setSelectedFolderId('ALL');
                     setSelectedTag(null);
                   }}
-                  className="w-full flex items-center justify-between px-2.5 py-1.5 text-[13px] rounded-lg cursor-pointer transition-colors text-left"
+                  className="w-full flex items-center justify-between px-2.5 py-1.5 cursor-pointer transition-colors text-left"
                   style={{
-                    backgroundColor: selectedFolderId === 'ALL' ? 'var(--accent-muted)' : 'transparent',
-                    color: selectedFolderId === 'ALL' ? 'var(--accent)' : 'var(--text-sub)'
+                    backgroundColor: selectedFolderId === 'ALL' ? 'var(--accent-muted)' : (isAllNotesHovered ? 'rgba(0,0,0,0.04)' : 'transparent'),
+                    color: selectedFolderId === 'ALL' ? 'var(--accent)' : 'var(--text-sub)',
+                    fontWeight: selectedFolderId === 'ALL' ? 600 : 400,
+                    borderRadius: '8px'
                   }}
+                  onMouseEnter={() => setIsAllNotesHovered(true)}
+                  onMouseLeave={() => setIsAllNotesHovered(false)}
                 >
                   <div className="flex items-center gap-2">
                     <BookOpen className="w-3.5 h-3.5 text-zinc-400" />
                     <span className="font-sans font-medium">All notes</span>
                   </div>
-                  <span className="font-mono text-[10px] text-zinc-500">
+                  <span style={{ fontSize: '11px', color: 'var(--text-muted)' }} className="font-mono">
                     {allEntries.filter((entr) => !entr.is_deleted).length}
                   </span>
                 </button>
@@ -1129,20 +1179,25 @@ export function Notebook() {
                 {/* Custom Folder Items */}
                 {folders.map((folder) => {
                   const isActive = selectedFolderId === folder.id;
+                  const isHovered = hoveredFolderId === folder.id;
                   const countInFolder = allEntries.filter((entr) => !entr.is_deleted && entr.folder_id === folder.id).length;
 
                   return (
                     <div
                       key={folder.id}
-                      className="group relative flex items-center justify-between rounded-lg px-2.5 py-1.5 text-[13px] cursor-pointer hover:bg-[var(--bar)] transition-colors"
+                      className="group relative flex items-center justify-between px-2.5 py-1.5 cursor-pointer transition-colors"
                       style={{
-                        backgroundColor: isActive ? 'var(--accent-muted)' : 'transparent',
-                        color: isActive ? 'var(--accent)' : 'var(--text-sub)'
+                        backgroundColor: isActive ? 'var(--accent-muted)' : (isHovered ? 'rgba(0,0,0,0.04)' : 'transparent'),
+                        color: isActive ? 'var(--accent)' : 'var(--text-sub)',
+                        fontWeight: isActive ? 600 : 400,
+                        borderRadius: '8px'
                       }}
                       onClick={() => {
                         setSelectedFolderId(folder.id);
                         setSelectedTag(null);
                       }}
+                      onMouseEnter={() => setHoveredFolderId(folder.id)}
+                      onMouseLeave={() => setHoveredFolderId(null)}
                     >
                       <div className="flex items-center gap-2 overflow-hidden mr-1">
                         <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: getFolderColorDot(folder.color) }} />
@@ -1151,7 +1206,7 @@ export function Notebook() {
 
                       <div className="flex items-center gap-1.5 shrink-0">
                         {/* count */}
-                        <span className="font-mono text-[10px] text-zinc-500 group-hover:hidden">
+                        <span style={{ fontSize: '11px', color: 'var(--text-muted)' }} className="font-mono group-hover:hidden">
                           {countInFolder}
                         </span>
 
@@ -1195,7 +1250,17 @@ export function Notebook() {
               </div>
 
               {/* TAGS Label */}
-              <div id="notebook-lbl-tags" className="text-[10px] font-bold font-mono text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-2 mt-6">
+              <div
+                id="notebook-lbl-tags"
+                className="mb-2 mt-6"
+                style={{
+                  fontSize: '10px',
+                  fontWeight: 600,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  color: 'var(--text-muted)'
+                }}
+              >
                 TAGS
               </div>
 
@@ -1208,6 +1273,7 @@ export function Notebook() {
                 ) : (
                   Object.entries(tagsWithCounts).map(([tagName, tagCount]) => {
                     const isTagActive = selectedTag === tagName;
+                    const isTagHovered = hoveredTagName === tagName;
                     return (
                       <button
                         key={tagName}
@@ -1215,12 +1281,17 @@ export function Notebook() {
                         onClick={() => {
                           setSelectedTag(selectedTag === tagName ? null : tagName);
                         }}
-                        className="px-2 py-0.5 text-xs font-medium rounded-full transition-all cursor-pointer inline-flex items-center gap-1 border border-transparent"
+                        className="inline-flex items-center gap-1 transition-all cursor-pointer animate-none"
                         style={{
-                          backgroundColor: isTagActive ? 'var(--accent-muted)' : 'var(--bar)',
-                          color: isTagActive ? 'var(--accent)' : 'var(--text-sub)',
-                          borderColor: isTagActive ? 'var(--accent)' : 'transparent'
+                          background: isTagActive ? 'var(--accent-muted)' : 'var(--bg)',
+                          border: isTagActive || isTagHovered ? '1px solid var(--accent)' : '1px solid var(--border)',
+                          borderRadius: '20px',
+                          fontSize: '11px',
+                          color: isTagActive || isTagHovered ? 'var(--accent)' : 'var(--text-sub)',
+                          padding: '2px 8px'
                         }}
+                        onMouseEnter={() => setHoveredTagName(tagName)}
+                        onMouseLeave={() => setHoveredTagName(null)}
                       >
                         <Tag className="w-2.5 h-2.5" />
                         <span>{tagName}</span>
@@ -1241,15 +1312,18 @@ export function Notebook() {
                   setSelectedFolderId('TRASH');
                   setSelectedTag(null);
                 }}
-                className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] rounded-lg cursor-pointer transition-all text-left"
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer transition-all text-left"
                 style={{
                   backgroundColor: selectedFolderId === 'TRASH' ? 'var(--accent-muted)' : 'transparent',
-                  color: selectedFolderId === 'TRASH' ? 'var(--accent)' : 'var(--text-sub)'
+                  color: selectedFolderId === 'TRASH' ? 'var(--accent)' : (isTrashHovered ? '#ef4444' : 'var(--text-muted)'),
+                  fontSize: '12px'
                 }}
+                onMouseEnter={() => setIsTrashHovered(true)}
+                onMouseLeave={() => setIsTrashHovered(false)}
               >
-                <Trash2 className="w-4 h-4 text-zinc-400" />
+                <Trash2 className="w-4 h-4" style={{ color: selectedFolderId === 'TRASH' ? 'var(--accent)' : (isTrashHovered ? '#ef4444' : 'var(--text-muted)') }} />
                 <span className="font-sans font-medium">Recently Deleted</span>
-                <span className="ml-auto font-mono text-[10px] text-zinc-500">
+                <span className="ml-auto font-mono text-[10px]" style={{ color: selectedFolderId === 'TRASH' ? 'var(--accent)' : (isTrashHovered ? '#ef4444' : 'var(--text-muted)') }}>
                   {allEntries.filter((entr) => entr.is_deleted).length}
                 </span>
               </button>
@@ -1400,8 +1474,16 @@ export function Notebook() {
                     return (
                       <div key={groupDate} id={`date-group-${groupDate}`} className="flex flex-col">
                         <div
-                          className="px-3 py-2 text-[10px] font-bold font-mono tracking-wider uppercase text-zinc-400 dark:text-zinc-500 flex items-center gap-1.5 shrink-0"
-                          style={{ backgroundColor: 'var(--bar)' }}
+                          className="flex items-center gap-1.5 shrink-0"
+                          style={{
+                            fontSize: '10px',
+                            fontWeight: 600,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.06em',
+                            color: 'var(--text-muted)',
+                            background: 'rgba(0,0,0,0.02)',
+                            padding: '4px 12px'
+                          }}
                         >
                           <span>📅 {formatLogDateLabel(groupDate)}</span>
                         </div>
@@ -1417,8 +1499,16 @@ export function Notebook() {
                     <div className="flex flex-col">
                       {groupedEntries.sortedDates.length > 0 && (
                         <div
-                          className="px-3 py-2 text-[10px] font-bold font-mono tracking-wider uppercase text-zinc-400 dark:text-zinc-500 flex items-center gap-1.5 shrink-0"
-                          style={{ backgroundColor: 'var(--bar)' }}
+                          className="flex items-center gap-1.5 shrink-0"
+                          style={{
+                            fontSize: '10px',
+                            fontWeight: 600,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.06em',
+                            color: 'var(--text-muted)',
+                            background: 'rgba(0,0,0,0.02)',
+                            padding: '4px 12px'
+                          }}
                         >
                           <span>— OTHER NOTES —</span>
                         </div>
@@ -1464,10 +1554,23 @@ export function Notebook() {
               ) : (
                 <div id="notebook-no-note-prompt" className="flex-1 flex flex-col items-center justify-center text-center p-12">
                   <FileText className="w-12 h-12 text-zinc-600 animate-none mb-3" />
-                  <h4 className="text-zinc-400 font-sans font-bold text-sm tracking-wider uppercase mb-1">
+                  <h4
+                    className="font-sans uppercase mb-1"
+                    style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: 'var(--text-muted)'
+                    }}
+                  >
                     NO NOTE SELECTED
                   </h4>
-                  <p className="text-xs text-zinc-500 font-mono italic">
+                  <p
+                    className="font-mono italic"
+                    style={{
+                      fontSize: '13px',
+                      color: 'var(--text-muted)'
+                    }}
+                  >
                     Select a note or create a new one to start writing.
                   </p>
                 </div>
