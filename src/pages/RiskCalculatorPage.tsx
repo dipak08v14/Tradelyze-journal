@@ -416,7 +416,8 @@ export default function RiskCalculatorPage() {
                   backgroundColor: 'var(--card)',
                   boxShadow: '0 4px 6px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.06)',
                   border: '1px solid rgba(0,0,0,0.08)',
-                  borderRadius: '16px'
+                  borderRadius: '16px',
+                  overflow: 'hidden'
                 }}
               >
                 <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }}>
@@ -432,19 +433,22 @@ export default function RiskCalculatorPage() {
                       backgroundColor: 'var(--bar)', 
                       boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
                       border: '1px solid rgba(0,0,0,0.06)',
-                      borderRadius: '10px'
+                      borderRadius: '10px',
+                      overflow: 'hidden',
+                      wordBreak: 'break-word',
+                      minHeight: 'unset'
                     }}
-                    className="p-3 flex flex-col justify-between h-[82px] relative select-all group"
+                    className="p-3 flex flex-col justify-between relative select-all group"
                   >
                     <span style={{ fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)' }}>Risk Amount</span>
-                    <span className="font-mono mt-1" style={{ fontSize: '18px', fontWeight: 700, color: '#ef4444' }}>₹{riskAmount.toLocaleString('en-IN')}</span>
+                    <span className="font-mono mt-1" style={{ fontSize: '15px', fontWeight: 700, lineHeight: 1.2, wordBreak: 'break-word', color: '#ef4444' }}>₹{riskAmount.toLocaleString('en-IN')}</span>
                     <button
                       onClick={() => handleCopyValue(`₹${riskAmount}`, 'risk')}
                       className="absolute top-2 right-2 text-[var(--text-muted)] hover:text-[var(--text)]"
                     >
                       <Copy className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </button>
-                    <span style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-muted)' }}>Absolute Loss Capital</span>
+                    <span style={{ fontSize: '10px', fontWeight: 400, color: 'var(--text-muted)' }}>Absolute Loss Capital</span>
                   </div>
 
                   {/* POSITION SIZE BOX */}
@@ -453,12 +457,15 @@ export default function RiskCalculatorPage() {
                       backgroundColor: 'var(--bar)', 
                       boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
                       border: '1px solid rgba(0,0,0,0.06)',
-                      borderRadius: '10px'
+                      borderRadius: '10px',
+                      overflow: 'hidden',
+                      wordBreak: 'break-word',
+                      minHeight: 'unset'
                     }}
-                    className="p-3 flex flex-col justify-between h-[82px] relative select-all group"
+                    className="p-3 flex flex-col justify-between relative select-all group"
                   >
                     <span style={{ fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)' }}>Position Size</span>
-                    <span className="font-mono mt-1" style={{ fontSize: '18px', fontWeight: 700, color: 'var(--accent)' }}>
+                    <span className="font-mono mt-1" style={{ fontSize: '15px', fontWeight: 700, lineHeight: 1.2, wordBreak: 'break-word', color: 'var(--accent)' }}>
                       {positionSize} {activeInst.unitLabel}
                     </span>
                     <button
@@ -467,7 +474,7 @@ export default function RiskCalculatorPage() {
                     >
                       <Copy className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </button>
-                    <span style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-muted)' }}>Exact sizing entry</span>
+                    <span style={{ fontSize: '10px', fontWeight: 400, color: 'var(--text-muted)' }}>Exact sizing entry</span>
                   </div>
 
                   {/* R-R RATIO */}
@@ -476,19 +483,22 @@ export default function RiskCalculatorPage() {
                       backgroundColor: 'var(--bar)', 
                       boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
                       border: '1px solid rgba(0,0,0,0.06)',
-                      borderRadius: '10px'
+                      borderRadius: '10px',
+                      overflow: 'hidden',
+                      wordBreak: 'break-word',
+                      minHeight: 'unset'
                     }}
-                    className="p-3 flex flex-col justify-between h-[82px] relative select-all group"
+                    className="p-3 flex flex-col justify-between relative select-all group"
                   >
                     <span style={{ fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)' }}>Reward:Risk Ratio</span>
-                    <span className="font-mono mt-1" style={{ fontSize: '18px', fontWeight: 700, color: 'var(--accent)' }}>{rMultiple}:1 R:R</span>
+                    <span className="font-mono mt-1" style={{ fontSize: '15px', fontWeight: 700, lineHeight: 1.2, wordBreak: 'break-word', color: 'var(--accent)' }}>{rMultiple}:1 R:R</span>
                     <button
                       onClick={() => handleCopyValue(`${rMultiple}:1`, 'rr')}
                       className="absolute top-2 right-2 text-[var(--text-muted)] hover:text-[var(--text)]"
                     >
                       <Copy className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </button>
-                    <span style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-muted)' }}>Strategy Adherence</span>
+                    <span style={{ fontSize: '10px', fontWeight: 400, color: 'var(--text-muted)' }}>Strategy Adherence</span>
                   </div>
 
                   {/* POTENTIAL POTENTIAL PROFIT */}
@@ -497,19 +507,22 @@ export default function RiskCalculatorPage() {
                       backgroundColor: 'var(--bar)', 
                       boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
                       border: '1px solid rgba(0,0,0,0.06)',
-                      borderRadius: '10px'
+                      borderRadius: '10px',
+                      overflow: 'hidden',
+                      wordBreak: 'break-word',
+                      minHeight: 'unset'
                     }}
-                    className="p-3 flex flex-col justify-between h-[82px] relative select-all group"
+                    className="p-3 flex flex-col justify-between relative select-all group"
                   >
                     <span style={{ fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)' }}>Potential Profit</span>
-                    <span className="font-mono mt-1" style={{ fontSize: '18px', fontWeight: 700, color: '#22c55e' }}>₹{potentialProfit.toLocaleString('en-IN')}</span>
+                    <span className="font-mono mt-1" style={{ fontSize: '15px', fontWeight: 700, lineHeight: 1.2, wordBreak: 'break-word', color: '#22c55e' }}>₹{potentialProfit.toLocaleString('en-IN')}</span>
                     <button
                       onClick={() => handleCopyValue(`₹${potentialProfit}`, 'profit')}
                       className="absolute top-2 right-2 text-[var(--text-muted)] hover:text-[var(--text)]"
                     >
                       <Copy className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </button>
-                    <span style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-muted)' }}>Est. Reward Gain</span>
+                    <span style={{ fontSize: '10px', fontWeight: 400, color: 'var(--text-muted)' }}>Est. Reward Gain</span>
                   </div>
 
                 </div>
