@@ -127,12 +127,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
               className="flex items-center gap-3 cursor-pointer"
               style={{
                 padding: '8px 12px',
-                borderRadius: isActive ? '8px 0 0 8px' : '8px',
+                borderRadius: '8px',
+                margin: '2px 8px',
                 fontSize: '13px',
                 fontWeight: isActive ? '600' : '400',
                 backgroundColor: isActive ? 'var(--accent-muted)' : 'transparent',
                 color: isActive ? 'var(--accent)' : 'var(--text-sub)',
-                borderRight: isActive ? '2px solid var(--accent)' : 'none',
                 transition: 'background 120ms ease',
                 display: 'flex',
                 alignItems: 'center',
