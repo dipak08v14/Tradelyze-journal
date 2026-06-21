@@ -299,10 +299,10 @@ export const AnnualReportsPage: React.FC = () => {
             {/* HEADER AREA */}
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div>
-                <h1 style={{ color: 'var(--text)' }} className="text-3xl font-extrabold tracking-tight font-display">
+                <h1 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }} className="font-display tracking-tight">
                   Annual Reports
                 </h1>
-                <p style={{ color: 'var(--text-muted)' }} className="text-sm mt-1">
+                <p style={{ fontSize: '13px', fontWeight: 400, color: 'var(--text-sub)' }} className="mt-1">
                   Full year analysis — all calculations from your trade data.
                 </p>
               </div>
@@ -313,8 +313,15 @@ export const AnnualReportsPage: React.FC = () => {
                 <select
                   value={selectedYear}
                   onChange={(e) => setSelectedYear(parseInt(e.target.value, 10))}
-                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
-                  className="rounded-xl px-4 py-2 text-sm font-medium font-mono focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer transition-all"
+                  style={{
+                    background: 'var(--card)',
+                    border: '1px solid var(--border)',
+                    borderRadius: '8px',
+                    fontSize: '13px',
+                    color: 'var(--text)',
+                    padding: '6px 12px'
+                  }}
+                  className="font-medium font-mono focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer transition-all"
                 >
                   {availableYears.map((yr) => (
                     <option key={yr} value={yr}>
@@ -336,14 +343,22 @@ export const AnnualReportsPage: React.FC = () => {
               </div>
             ) : trades.length === 0 ? (
               /* EMPTY YEAR STATE */
-              <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '16px' }} className="p-12 text-center flex flex-col items-center justify-center py-20 shadow-sm">
+              <div
+                style={{
+                  background: 'var(--card)',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
+                  border: '1px solid rgba(0,0,0,0.06)',
+                  borderRadius: '12px'
+                }}
+                className="p-12 text-center flex flex-col items-center justify-center py-20"
+              >
                 <div style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)' }} className="w-16 h-16 rounded-full flex items-center justify-center border mb-4">
                   <BarChart2 style={{ color: 'var(--text-muted)' }} className="w-8 h-8" />
                 </div>
                 <h3 style={{ color: 'var(--text)' }} className="text-xl font-bold tracking-tight font-display">
                   No trades in {selectedYear}
                 </h3>
-                <p style={{ color: 'var(--text-muted)' }} className="text-xs mt-1.5 max-w-sm font-sans">
+                <p style={{ fontSize: '13px', fontWeight: 400, color: 'var(--text-sub)' }} className="mt-1.5 max-w-sm font-sans">
                   To view interactive charts, month-over-month summaries, and automated compliance reports, log trades for this year.
                 </p>
                 <button
@@ -366,70 +381,71 @@ export const AnnualReportsPage: React.FC = () => {
             ) : (
               /* ACTIVE COMPREHENSIVE ANNUAL DISPLAY */
               <div className="space-y-6 animate-fade-in">
-                
-                {/* SECTION 1: ANNUAL STATS STRIP CARD */}
+                                {/* SECTION 1: ANNUAL STATS STRIP CARD */}
                 {annualStats && (
-                  <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="p-5 shadow-sm">
+                  <div
+                    style={{
+                      background: 'var(--card)',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
+                      border: '1px solid rgba(0,0,0,0.06)',
+                      borderRadius: '12px'
+                    }}
+                    className="p-5"
+                  >
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-y-4 md:gap-y-0 text-center">
                       
                       {/* STAT Card: NET P&L */}
-                      <div className="p-3 flex flex-col justify-center" style={{ borderRight: '0.5px solid var(--border)' }}>
-                        <span style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase tracking-widest font-sans">Net P&L</span>
-                        <span style={{ fontWeight: 700 }} className={`text-[15px] font-mono mt-1 ${pnlColor(annualStats.totalPnl)}`}>
+                      <div className="p-3 flex flex-col justify-center" style={{ borderRight: '1px solid var(--border)' }}>
+                        <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="font-sans">Net P&L</span>
+                        <span style={{ fontSize: '26px', fontWeight: 700, color: annualStats.totalPnl >= 0 ? '#22c55e' : '#ef4444' }} className="font-mono mt-1">
                           {formatINR(annualStats.totalPnl)}
                         </span>
                       </div>
 
                       {/* STAT Card: TOTAL TRADES */}
-                      <div className="p-3 flex flex-col justify-center" style={{ borderRight: '0.5px solid var(--border)' }}>
-                        <span style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase tracking-widest font-sans">Total Trades</span>
-                        <span style={{ color: 'var(--text)', fontWeight: 700 }} className="text-[15px] font-mono mt-1">
+                      <div className="p-3 flex flex-col justify-center" style={{ borderRight: '1px solid var(--border)' }}>
+                        <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="font-sans">Total Trades</span>
+                        <span style={{ fontSize: '26px', fontWeight: 700, color: 'var(--text)' }} className="font-mono mt-1">
                           {annualStats.totalTrades}
                         </span>
                       </div>
 
                       {/* STAT Card: WIN RATE */}
-                      <div className="p-3 flex flex-col justify-center" style={{ borderRight: '0.5px solid var(--border)' }}>
-                        <span style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase tracking-widest font-sans">Win Rate</span>
-                        <span style={{ fontWeight: 700 }} className={`text-[15px] font-mono mt-1 ${getScoreColor(annualStats.winRate)}`}>
+                      <div className="p-3 flex flex-col justify-center" style={{ borderRight: '1px solid var(--border)' }}>
+                        <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="font-sans">Win Rate</span>
+                        <span style={{ fontSize: '26px', fontWeight: 700, color: 'var(--accent)' }} className="font-mono mt-1">
                           {annualStats.winRate.toFixed(1)}%
                         </span>
                       </div>
 
                       {/* STAT Card: PROFIT FACTOR */}
-                      <div className="p-3 flex flex-col justify-center" style={{ borderRight: '0.5px solid var(--border)' }}>
-                        <span style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase tracking-widest font-sans">Profit Factor</span>
-                        <span style={{ fontWeight: 700 }} className={`text-[15px] font-mono mt-1 ${
-                          annualStats.profitFactor > 1.5
-                            ? 'text-green-500'
-                            : annualStats.profitFactor >= 1.0
-                            ? 'text-amber-500'
-                            : 'text-red-500'
-                        }`}>
+                      <div className="p-3 flex flex-col justify-center" style={{ borderRight: '1px solid var(--border)' }}>
+                        <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="font-sans">Profit Factor</span>
+                        <span style={{ fontSize: '26px', fontWeight: 700, color: annualStats.profitFactor >= 1.0 ? 'var(--accent)' : '#ef4444' }} className="font-mono mt-1">
                           {annualStats.profitFactor === 999 ? '∞' : annualStats.profitFactor.toFixed(2)}
                         </span>
                       </div>
 
                       {/* STAT Card: AVG R */}
-                      <div className="p-3 flex flex-col justify-center" style={{ borderRight: '0.5px solid var(--border)' }}>
-                        <span style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase tracking-widest font-sans">Avg R</span>
-                        <span style={{ fontWeight: 700 }} className={`text-[15px] font-mono mt-1 ${pnlColor(annualStats.avgR)}`}>
+                      <div className="p-3 flex flex-col justify-center" style={{ borderRight: '1px solid var(--border)' }}>
+                        <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="font-sans">Avg R</span>
+                        <span style={{ fontSize: '26px', fontWeight: 700, color: annualStats.avgR >= 0 ? '#22c55e' : '#ef4444' }} className="font-mono mt-1">
                           {annualStats.avgR >= 0 ? '+' : ''}{annualStats.avgR.toFixed(2)}R
                         </span>
                       </div>
 
                       {/* STAT Card: ACTIVE MONTHS */}
-                      <div className="p-3 flex flex-col justify-center" style={{ borderRight: '0.5px solid var(--border)' }}>
-                        <span style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase tracking-widest font-sans">Active Months</span>
-                        <span style={{ color: 'var(--text)', fontWeight: 700 }} className="text-[15px] font-mono mt-1">
+                      <div className="p-3 flex flex-col justify-center" style={{ borderRight: '1px solid var(--border)' }}>
+                        <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="font-sans">Active Months</span>
+                        <span style={{ fontSize: '26px', fontWeight: 700, color: 'var(--text)' }} className="font-mono mt-1">
                           {monthsWithData.length} / 12
                         </span>
                       </div>
 
                       {/* STAT Card: OVERALL SCORE */}
                       <div className="p-3 flex flex-col justify-center">
-                        <span style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase tracking-widest font-sans">Compliance</span>
-                        <span style={{ fontWeight: 700 }} className={`text-[15px] font-mono mt-1 ${getScoreColor(annualScores.avgOverall)}`}>
+                        <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="font-sans">Compliance</span>
+                        <span style={{ fontSize: '26px', fontWeight: 700, color: annualScores.avgOverall >= 70 ? '#22c55e' : annualScores.avgOverall >= 50 ? 'var(--accent)' : '#ef4444' }} className="font-mono mt-1">
                           {annualScores.avgOverall.toFixed(0)}%
                         </span>
                       </div>
@@ -440,9 +456,17 @@ export const AnnualReportsPage: React.FC = () => {
 
                 {/* SECTION 2: ANNUAL EQUITY CURVE + MONTHLY P&L COMBO CHART */}
                 {annualStats && (
-                  <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="p-5 shadow-sm">
+                  <div
+                    style={{
+                      background: 'var(--card)',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
+                      border: '1px solid rgba(0,0,0,0.06)',
+                      borderRadius: '12px'
+                    }}
+                    className="p-5"
+                  >
                     <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between border-b pb-3 mb-4">
-                      <h2 style={{ color: 'var(--text)', fontSize: '14px', fontWeight: 600 }} className="text-md font-bold tracking-tight">
+                      <h2 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)' }} className="tracking-tight">
                         Annual P&L Performance
                       </h2>
                       <span style={{ color: '#22c55e', fontWeight: 600 }} className="font-mono text-sm">
@@ -480,26 +504,43 @@ export const AnnualReportsPage: React.FC = () => {
                 )}
 
                 {/* SECTION 3: 12-MONTH PERFORMANCE TABLE */}
-                <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="p-5 shadow-sm">
+                <div
+                  style={{
+                    background: 'var(--card)',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
+                    border: '1px solid rgba(0,0,0,0.06)',
+                    borderRadius: '12px'
+                  }}
+                  className="p-5"
+                >
                   <div style={{ borderColor: 'var(--border)' }} className="border-b pb-3 mb-4">
-                    <h2 style={{ color: 'var(--text)' }} className="text-md font-bold tracking-tight">
+                    <h2 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)' }} className="tracking-tight">
                       Month-by-Month Performance
                     </h2>
                   </div>
 
-                  <div style={{ borderColor: 'var(--border)' }} className="overflow-x-auto border rounded-xl">
+                  <div
+                    style={{
+                      background: 'var(--card)',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
+                      border: '1px solid rgba(0,0,0,0.06)',
+                      borderRadius: '12px',
+                      overflow: 'hidden'
+                    }}
+                    className="overflow-x-auto"
+                  >
                     <table className="w-full text-left border-collapse text-sm">
                       <thead>
-                        <tr style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)', color: 'var(--text-muted)' }} className="text-[11px] font-bold uppercase tracking-wider border-b">
-                          <th className="px-4 py-3">Month</th>
-                          <th className="px-4 py-3 text-center">Trades</th>
-                          <th className="px-4 py-3 text-center">Win</th>
-                          <th className="px-4 py-3 text-center">Loss</th>
-                          <th className="px-4 py-3 text-center">Win Rate</th>
-                          <th className="px-4 py-3 text-right">P&L</th>
-                          <th className="px-4 py-3 text-right">Avg R</th>
-                          <th className="px-4 py-3 text-center">PF</th>
-                          <th className="px-4 py-3 text-center font-sans">Score</th>
+                        <tr style={{ background: 'rgba(0,0,0,0.02)', borderBottom: '1px solid var(--border)' }}>
+                          <th className="px-4 py-3" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Month</th>
+                          <th className="px-4 py-3 text-center" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Trades</th>
+                          <th className="px-4 py-3 text-center" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Win</th>
+                          <th className="px-4 py-3 text-center" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Loss</th>
+                          <th className="px-4 py-3 text-center" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Win Rate</th>
+                          <th className="px-4 py-3 text-right" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>P&L</th>
+                          <th className="px-4 py-3 text-right" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Avg R</th>
+                          <th className="px-4 py-3 text-center" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>PF</th>
+                          <th className="px-4 py-3 text-center" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Score</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -507,12 +548,10 @@ export const AnnualReportsPage: React.FC = () => {
                           const isBest = bestMonth && bestMonth.month === month;
                           const isWorst = worstMonth && worstMonth.month === month;
 
-                          let customRowStyle = 'border-b transition-colors hover:bg-[var(--row)]';
-                          let customStyle: React.CSSProperties = { borderColor: 'var(--border)' };
-                          
-                          if (idx % 2 !== 0) {
-                            customStyle.backgroundColor = 'var(--row)';
-                          }
+                          const customStyle: React.CSSProperties = {
+                            borderColor: 'var(--border)',
+                            background: idx % 2 === 1 ? 'rgba(0,0,0,0.015)' : 'transparent'
+                          };
 
                           if (mStats && mStats.totalTrades > 0) {
                             if (isBest) {
@@ -524,8 +563,15 @@ export const AnnualReportsPage: React.FC = () => {
 
                           if (!mStats || monthTrades.length === 0) {
                             return (
-                              <tr key={month} style={{ borderColor: 'var(--border)' }} className="border-b text-zinc-400">
-                                <td style={{ color: 'var(--text-muted)' }} className="px-4 py-3 font-medium text-xs">{month}</td>
+                              <tr
+                                key={month}
+                                style={{ 
+                                  borderColor: 'var(--border)',
+                                  background: idx % 2 === 1 ? 'rgba(0,0,0,0.015)' : 'transparent'
+                                }}
+                                className="border-b text-zinc-400 transition-colors hover:bg-[rgba(0,0,0,0.025)]"
+                              >
+                                <td style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="px-4 py-3">{month}</td>
                                 <td className="px-4 py-3 text-center font-mono">—</td>
                                 <td className="px-4 py-3 text-center font-mono">—</td>
                                 <td className="px-4 py-3 text-center font-mono">—</td>
@@ -539,9 +585,13 @@ export const AnnualReportsPage: React.FC = () => {
                           }
 
                           return (
-                            <tr key={month} style={customStyle} className={customRowStyle}>
+                            <tr
+                              key={month}
+                              style={customStyle}
+                              className="border-b transition-colors hover:bg-[rgba(0,0,0,0.025)]"
+                            >
                               {/* Month Name */}
-                              <td style={{ color: 'var(--text)' }} className="px-4 py-3 font-bold text-xs flex items-center gap-1">
+                              <td style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="px-4 py-3 flex items-center gap-1">
                                 <span>{month}</span>
                                 {isBest && (
                                   <span className="bg-green-500/10 text-green-600 text-[9px] font-bold rounded-lg px-2 py-0.5 border border-green-500/20 whitespace-nowrap">
@@ -571,12 +621,21 @@ export const AnnualReportsPage: React.FC = () => {
                               </td>
 
                               {/* Win Rate */}
-                              <td className={`px-4 py-3 text-center font-mono text-xs font-semibold ${getScoreColor(mStats.winRate)}`}>
+                              <td
+                                style={{ color: 'var(--accent)', fontWeight: 600 }}
+                                className="px-4 py-3 text-center font-mono text-xs"
+                              >
                                 {mStats.winRate.toFixed(0)}%
                               </td>
 
                               {/* Month overall P&L */}
-                              <td className={`px-4 py-3 text-right font-bold font-mono text-xs ${pnlColor(mStats.totalPnl)}`}>
+                              <td
+                                style={{ 
+                                  color: mStats.totalPnl >= 0 ? '#22c55e' : '#ef4444', 
+                                  fontWeight: 600 
+                                }}
+                                className="px-4 py-3 text-right font-mono text-xs"
+                              >
                                 {formatINR(mStats.totalPnl)}
                               </td>
 
@@ -646,13 +705,20 @@ export const AnnualReportsPage: React.FC = () => {
                     </table>
                   </div>
                 </div>
-
-                {/* SECTION 4: INSIGHTS GRID */}
+                                {/* SECTION 4: INSIGHTS GRID */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   {/* CARD A — BEST MONTH */}
-                  <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="p-4 shadow-sm flex flex-col justify-between min-h-[140px]">
+                  <div
+                    style={{
+                      background: 'var(--card)',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
+                      border: '1px solid rgba(0,0,0,0.06)',
+                      borderRadius: '12px'
+                    }}
+                    className="p-4 flex flex-col justify-between min-h-[140px]"
+                  >
                     <div className="flex items-start justify-between">
-                      <span style={{ color: 'var(--text-muted)' }} className="text-[10px] font-extrabold uppercase tracking-widest leading-none">
+                      <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="font-sans leading-none">
                         Best Month
                       </span>
                       <TrendingUp className="w-5 h-5 text-green-500 shrink-0" />
@@ -665,15 +731,23 @@ export const AnnualReportsPage: React.FC = () => {
                         {bestMonth ? formatINR(bestMonth.stats?.totalPnl || 0) : ''}
                       </div>
                     </div>
-                    <div style={{ color: 'var(--text-muted)' }} className="text-[10px] leading-none mt-2 font-mono">
+                    <div style={{ color: 'var(--text-sub)' }} className="text-[11px] leading-none mt-2 font-mono">
                       {bestMonth?.stats?.totalTrades || 0} trades | {bestMonth?.stats?.winRate.toFixed(0) || 0}% win rate
                     </div>
                   </div>
 
                   {/* CARD B — WORST MONTH */}
-                  <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="p-4 shadow-sm flex flex-col justify-between min-h-[140px]">
+                  <div
+                    style={{
+                      background: 'var(--card)',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
+                      border: '1px solid rgba(0,0,0,0.06)',
+                      borderRadius: '12px'
+                    }}
+                    className="p-4 flex flex-col justify-between min-h-[140px]"
+                  >
                     <div className="flex items-start justify-between">
-                      <span style={{ color: 'var(--text-muted)' }} className="text-[10px] font-extrabold uppercase tracking-widest leading-none">
+                      <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="font-sans leading-none">
                         Worst Month
                       </span>
                       <TrendingDown className="w-5 h-5 text-red-500 shrink-0" />
@@ -686,15 +760,23 @@ export const AnnualReportsPage: React.FC = () => {
                         {worstMonth ? `(${formatINR(Math.abs(worstMonth.stats?.totalPnl || 0))})` : ''}
                       </div>
                     </div>
-                    <div style={{ color: 'var(--text-muted)' }} className="text-[10px] leading-none mt-2 font-mono">
+                    <div style={{ color: 'var(--text-sub)' }} className="text-[11px] leading-none mt-2 font-mono">
                       {worstMonth?.stats?.totalTrades || 0} trades | {worstMonth?.stats?.winRate.toFixed(0) || 0}% win rate
                     </div>
                   </div>
 
                   {/* CARD C — BEST SETUP */}
-                  <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="p-4 shadow-sm flex flex-col justify-between min-h-[140px]">
+                  <div
+                    style={{
+                      background: 'var(--card)',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
+                      border: '1px solid rgba(0,0,0,0.06)',
+                      borderRadius: '12px'
+                    }}
+                    className="p-4 flex flex-col justify-between min-h-[140px]"
+                  >
                     <div className="flex items-start justify-between">
-                      <span style={{ color: 'var(--text-muted)' }} className="text-[10px] font-extrabold uppercase tracking-widest leading-none">
+                      <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="font-sans leading-none">
                         Best Setup of Year
                       </span>
                       <Target className="w-5 h-5 text-indigo-500 shrink-0" />
@@ -707,15 +789,23 @@ export const AnnualReportsPage: React.FC = () => {
                         {bestSetup ? formatINR(bestSetup.pnl) : ''}
                       </div>
                     </div>
-                    <div style={{ color: 'var(--text-muted)' }} className="text-[10px] leading-none mt-2 font-mono">
+                    <div style={{ color: 'var(--text-sub)' }} className="text-[11px] leading-none mt-2 font-mono">
                       {bestSetup?.tradeCount || 0} trades | {bestSetup?.winRate.toFixed(0) || 0}% win rate
                     </div>
                   </div>
 
                   {/* CARD D — MOST REPEATED MISTAKE */}
-                  <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="p-4 shadow-sm flex flex-col justify-between min-h-[140px]">
+                  <div
+                    style={{
+                      background: 'var(--card)',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
+                      border: '1px solid rgba(0,0,0,0.06)',
+                      borderRadius: '12px'
+                    }}
+                    className="p-4 flex flex-col justify-between min-h-[140px]"
+                  >
                     <div className="flex items-start justify-between">
-                      <span style={{ color: 'var(--text-muted)' }} className="text-[10px] font-extrabold uppercase tracking-widest leading-none">
+                      <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="font-sans leading-none">
                         Top Repeated Mistake
                       </span>
                       <AlertCircle className="w-5 h-5 text-amber-500 shrink-0" />
@@ -732,20 +822,28 @@ export const AnnualReportsPage: React.FC = () => {
                         )}
                       </div>
                     </div>
-                    <div style={{ color: 'var(--text-muted)' }} className="text-[10px] leading-none mt-2 font-mono">
+                    <div style={{ color: 'var(--text-sub)' }} className="text-[11px] leading-none mt-2 font-mono">
                       Audit checklist compliance
                     </div>
                   </div>
                 </div>
 
                 {/* SECTION 5: ANNUAL COMPLIANCE SCORES + SETUP PERFORMANCE DETAILS */}
-                <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="p-5 shadow-sm">
+                <div
+                  style={{
+                    background: 'var(--card)',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
+                    border: '1px solid rgba(0,0,0,0.06)',
+                    borderRadius: '12px'
+                  }}
+                  className="p-5"
+                >
                   <div style={{ borderColor: 'var(--border)' }} className="border-b pb-3 mb-4">
-                    <h2 style={{ color: 'var(--text)' }} className="text-md font-bold tracking-tight">
+                    <h2 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)' }} className="tracking-tight">
                       Annual Trading Scores & Setup Performance
                     </h2>
-                    <p style={{ color: 'var(--text-muted)' }} className="text-xs mt-1">
-                      avg across all {annualStats.totalTrades} trades this year
+                    <p style={{ fontSize: '13px', color: 'var(--text-sub)' }} className="mt-1">
+                      Average across all {annualStats.totalTrades} trades this year
                     </p>
                   </div>
 
@@ -812,33 +910,58 @@ export const AnnualReportsPage: React.FC = () => {
 
                     {/* RIGHT SETUP PERFORMANCE BREAKDOWN */}
                     <div className="space-y-3">
-                      <h3 style={{ color: 'var(--text)' }} className="text-sm font-semibold">
+                      <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text)' }} className="tracking-tight">
                         Setup Performance Breakdown
                       </h3>
 
-                      <div style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)' }} className="overflow-x-auto border rounded-xl text-xs">
+                      <div
+                        style={{
+                          background: 'var(--card)',
+                          boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
+                          border: '1px solid rgba(0,0,0,0.06)',
+                          borderRadius: '12px',
+                          overflow: 'hidden'
+                        }}
+                        className="overflow-x-auto text-xs"
+                      >
                         <table className="w-full text-left">
                           <thead>
-                            <tr style={{ backgroundColor: 'var(--bar)', color: 'var(--text-muted)', borderColor: 'var(--border)' }} className="text-[10px] font-bold uppercase tracking-wider border-b">
-                              <th className="px-4 py-2.5">Setup Name</th>
-                              <th className="px-3 py-2.5 text-center">Trades</th>
-                              <th className="px-3 py-2.5 text-center">Win Rate</th>
-                              <th className="px-4 py-2.5 text-right">P&L</th>
+                            <tr style={{ background: 'rgba(0,0,0,0.02)', borderBottom: '1px solid var(--border)' }}>
+                              <th className="px-4 py-2.5 font-sans" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Setup Name</th>
+                              <th className="px-3 py-2.5 text-center font-sans" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Trades</th>
+                              <th className="px-3 py-2.5 text-center font-sans" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Win Rate</th>
+                              <th className="px-4 py-2.5 text-right font-sans" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>P&L</th>
                             </tr>
                           </thead>
                           <tbody>
-                            {setupList.map((setupItem) => (
-                              <tr key={setupItem.name} style={{ borderColor: 'var(--border)' }} className="border-b last:border-0">
-                                <td style={{ color: 'var(--text)' }} className="px-4 py-2.5 font-medium text-zinc-350">
+                            {setupList.map((setupItem, sIdx) => (
+                              <tr
+                                key={setupItem.name}
+                                style={{
+                                  borderColor: 'var(--border)',
+                                  background: sIdx % 2 === 1 ? 'rgba(0,0,0,0.015)' : 'transparent'
+                                }}
+                                className="border-b last:border-0 transition-colors hover:bg-[rgba(0,0,0,0.025)]"
+                              >
+                                <td style={{ color: 'var(--text)', fontSize: '12px', fontWeight: 500 }} className="px-4 py-2.5">
                                   {setupItem.name}
                                 </td>
-                                <td style={{ color: 'var(--text-muted)' }} className="px-3 py-2.5 text-center font-mono">
+                                <td style={{ color: 'var(--text-sub)' }} className="px-3 py-2.5 text-center font-mono text-xs">
                                   {setupItem.tradeCount}
                                 </td>
-                                <td className={`px-3 py-2.5 text-center font-mono font-semibold ${getScoreColor(setupItem.winRate)}`}>
+                                <td
+                                  style={{ color: 'var(--accent)', fontWeight: 600 }}
+                                  className="px-3 py-2.5 text-center font-mono text-xs"
+                                >
                                   {setupItem.winRate.toFixed(0)}%
                                 </td>
-                                <td className={`px-4 py-2.5 text-right font-bold font-mono ${pnlColor(setupItem.pnl)}`}>
+                                <td
+                                  style={{ 
+                                    color: setupItem.pnl >= 0 ? '#22c55e' : '#ef4444', 
+                                    fontWeight: 600 
+                                  }}
+                                  className="px-4 py-2.5 text-right font-mono text-xs"
+                                >
                                   {formatINR(setupItem.pnl)}
                                 </td>
                               </tr>
