@@ -126,8 +126,8 @@ export default function RiskCalculatorPage() {
               <Menu className="w-5 h-5" />
             </button>
             <div>
-              <h1 className="text-xl font-bold tracking-tight">Risk Calculator</h1>
-              <p className="text-xs text-[var(--text-sub)]">Determine precise lot sizing, R-multiple targets, and account exposure ratios.</p>
+              <h1 className="tracking-tight" style={{ color: 'var(--text)', fontSize: '28px', fontWeight: 700, letterSpacing: '-0.3px' }}>Risk Calculator</h1>
+              <p className="mt-1" style={{ color: 'var(--text-sub)', fontSize: '13px', fontWeight: 400 }}>Determine precise lot sizing, R-multiple targets, and account exposure ratios.</p>
             </div>
           </div>
         </div>
@@ -142,27 +142,55 @@ export default function RiskCalculatorPage() {
             <div className="lg:col-span-7 space-y-6">
               
               {/* SECTION 1: ACCOUNT DETAILS */}
-              <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 md:p-6 shadow-sm space-y-4">
-                <h3 className="text-sm font-bold uppercase tracking-wider font-mono text-[var(--accent)] flex items-center gap-2">
-                  <Calculator className="w-4 h-4" /> 1. Account Details
+              <div 
+                style={{ 
+                  backgroundColor: 'var(--card)', 
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
+                  border: '1px solid rgba(0,0,0,0.06)',
+                  borderRadius: '12px'
+                }} 
+                className="p-5 md:p-6 space-y-4"
+              >
+                <h3 className="flex items-center gap-2" style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }}>
+                  <Calculator className="w-4 h-4" style={{ color: 'var(--accent)' }} /> 1. Account Details
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-[var(--text-sub)] mb-1.5">
+                    <label 
+                      className="block mb-1.5"
+                      style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}
+                    >
                       Account Size (₹)
                     </label>
                     <input
                       type="number"
                       value={accountSize}
                       onChange={(e) => setAccountSize(Math.max(0, parseFloat(e.target.value) || 0))}
-                      style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
-                      className="rounded-xl px-4 py-2.5 w-full focus:outline-none focus:ring-1 focus:ring-[var(--accent)] text-sm font-mono font-bold"
+                      style={{ 
+                        background: 'var(--card)', 
+                        border: '1px solid var(--border)', 
+                        borderRadius: '8px', 
+                        fontSize: '14px', 
+                        color: 'var(--text)',
+                        padding: '8px 12px'
+                      }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--accent)';
+                        e.currentTarget.style.outline = 'none';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--border)';
+                      }}
+                      className="w-full font-mono font-bold"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-xs font-semibold text-[var(--text-sub)] mb-1.5">
+                    <label 
+                      className="block mb-1.5"
+                      style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}
+                    >
                       Risk Exposure (%)
                     </label>
                     <input
@@ -170,46 +198,99 @@ export default function RiskCalculatorPage() {
                       step="0.1"
                       value={riskPercent}
                       onChange={(e) => setRiskPercent(Math.max(0, parseFloat(e.target.value) || 0))}
-                      style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
-                      className="rounded-xl px-4 py-2.5 w-full focus:outline-none focus:ring-1 focus:ring-[var(--accent)] text-sm font-mono font-bold"
+                      style={{ 
+                        background: 'var(--card)', 
+                        border: '1px solid var(--border)', 
+                        borderRadius: '8px', 
+                        fontSize: '14px', 
+                        color: 'var(--text)',
+                        padding: '8px 12px'
+                      }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--accent)';
+                        e.currentTarget.style.outline = 'none';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--border)';
+                      }}
+                      className="w-full font-mono font-bold"
                     />
                   </div>
                 </div>
 
                 {/* Quick percentage tabs */}
                 <div className="flex gap-2">
-                  {[0.5, 1.0, 1.5, 2.0].map((pct) => (
-                    <button
-                      key={pct}
-                      onClick={() => setRiskPercent(pct)}
-                      style={{
-                        backgroundColor: riskPercent === pct ? 'var(--accent-muted)' : 'var(--bar)',
-                        borderColor: riskPercent === pct ? 'var(--accent)' : 'var(--border)'
-                      }}
-                      className="flex-1 py-1 px-3 border rounded-lg text-xs font-bold font-mono transition-colors cursor-pointer"
-                    >
-                      {pct}%
-                    </button>
-                  ))}
+                  {[0.5, 1.0, 1.5, 2.0].map((pct) => {
+                    const isActive = riskPercent === pct;
+                    return (
+                      <button
+                        key={pct}
+                        onClick={() => setRiskPercent(pct)}
+                        style={isActive ? {
+                          background: 'var(--accent-muted)',
+                          border: '2px solid var(--accent)',
+                          color: 'var(--accent)',
+                          fontWeight: 600,
+                          borderRadius: '20px',
+                          padding: '5px 14px'
+                        } : {
+                          background: 'var(--card)',
+                          border: '1px solid var(--border)',
+                          color: 'var(--text-sub)',
+                          fontWeight: 400,
+                          borderRadius: '20px',
+                          padding: '5px 14px'
+                        }}
+                        className="flex-1 text-xs font-mono transition-colors cursor-pointer"
+                      >
+                        {pct}%
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
               {/* SECTION 2 & 3: SETUP DETAILS */}
-              <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 md:p-6 shadow-sm space-y-4">
-                <h3 className="text-sm font-bold uppercase tracking-wider font-mono text-[var(--accent)] flex items-center gap-2">
-                  <Calculator className="w-4 h-4" /> 2. Setup Parameters
+              <div 
+                style={{ 
+                  backgroundColor: 'var(--card)', 
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
+                  border: '1px solid rgba(0,0,0,0.06)',
+                  borderRadius: '12px'
+                }} 
+                className="p-5 md:p-6 space-y-4"
+              >
+                <h3 className="flex items-center gap-2" style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }}>
+                  <Calculator className="w-4 h-4" style={{ color: 'var(--accent)' }} /> 2. Setup Parameters
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="sm:col-span-2">
-                    <label className="block text-xs font-semibold text-[var(--text-sub)] mb-1.5">
+                    <label 
+                      className="block mb-1.5"
+                      style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}
+                    >
                       Instrument
                     </label>
                     <select
                       value={selectedInstName}
                       onChange={(e) => setSelectedInstName(e.target.value)}
-                      style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
-                      className="rounded-xl px-4 py-2.5 w-full focus:outline-none focus:ring-1 focus:ring-[var(--accent)] text-sm"
+                      style={{ 
+                        background: 'var(--card)', 
+                        border: '1px solid var(--border)', 
+                        borderRadius: '8px', 
+                        fontSize: '14px', 
+                        color: 'var(--text)',
+                        padding: '8px 12px'
+                      }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--accent)';
+                        e.currentTarget.style.outline = 'none';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--border)';
+                      }}
+                      className="w-full"
                     >
                       {INSTRUMENTS.map((inst) => (
                         <option key={inst.name} value={inst.name}>
@@ -220,7 +301,10 @@ export default function RiskCalculatorPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-[var(--text-sub)] mb-1.5">
+                    <label 
+                      className="block mb-1.5"
+                      style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}
+                    >
                       Entry Price
                     </label>
                     <input
@@ -228,13 +312,30 @@ export default function RiskCalculatorPage() {
                       step="any"
                       value={entryPrice}
                       onChange={(e) => setEntryPrice(Math.max(0, parseFloat(e.target.value) || 0))}
-                      style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
-                      className="rounded-xl px-4 py-2.5 w-full focus:outline-none focus:ring-1 focus:ring-[var(--accent)] text-sm font-mono font-bold"
+                      style={{ 
+                        background: 'var(--card)', 
+                        border: '1px solid var(--border)', 
+                        borderRadius: '8px', 
+                        fontSize: '14px', 
+                        color: 'var(--text)',
+                        padding: '8px 12px'
+                      }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--accent)';
+                        e.currentTarget.style.outline = 'none';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--border)';
+                      }}
+                      className="w-full font-mono font-bold"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-[var(--text-sub)] mb-1.5">
+                    <label 
+                      className="block mb-1.5"
+                      style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}
+                    >
                       Stop Loss Price
                     </label>
                     <input
@@ -242,22 +343,53 @@ export default function RiskCalculatorPage() {
                       step="any"
                       value={stopLoss}
                       onChange={(e) => setStopLoss(Math.max(0, parseFloat(e.target.value) || 0))}
-                      style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
-                      className="rounded-xl px-4 py-2.5 w-full focus:outline-none focus:ring-1 focus:ring-[var(--accent)] text-sm font-mono font-bold"
+                      style={{ 
+                        background: 'var(--card)', 
+                        border: '1px solid var(--border)', 
+                        borderRadius: '8px', 
+                        fontSize: '14px', 
+                        color: 'var(--text)',
+                        padding: '8px 12px'
+                      }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--accent)';
+                        e.currentTarget.style.outline = 'none';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--border)';
+                      }}
+                      className="w-full font-mono font-bold"
                     />
                   </div>
 
                   <div className="sm:col-span-2">
-                    <label className="block text-xs font-semibold text-[var(--text-sub)] mb-1.5">
-                      Take Profit Price <span className="text-[var(--text-muted)] font-normal">(Optional, for absolute ROI estimates)</span>
+                    <label 
+                      className="block mb-1.5"
+                      style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}
+                    >
+                      Take Profit Price <span className="font-normal text-xs" style={{ textTransform: 'none', color: 'var(--text-muted)' }}>(Optional, for absolute ROI estimates)</span>
                     </label>
                     <input
                       type="number"
                       step="any"
                       value={takeProfit}
                       onChange={(e) => setTakeProfit(Math.max(0, parseFloat(e.target.value) || 0))}
-                      style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
-                      className="rounded-xl px-4 py-2.5 w-full focus:outline-none focus:ring-1 focus:ring-[var(--accent)] text-sm font-mono font-bold"
+                      style={{ 
+                        background: 'var(--card)', 
+                        border: '1px solid var(--border)', 
+                        borderRadius: '8px', 
+                        fontSize: '14px', 
+                        color: 'var(--text)',
+                        padding: '8px 12px'
+                      }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--accent)';
+                        e.currentTarget.style.outline = 'none';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--border)';
+                      }}
+                      className="w-full font-mono font-bold"
                     />
                   </div>
                 </div>
@@ -265,8 +397,8 @@ export default function RiskCalculatorPage() {
                 <div 
                   className="p-3 bg-[var(--bar)] rounded-xl border border-[var(--border)] flex justify-between items-center text-xs"
                 >
-                  <span className="font-semibold text-[var(--text-sub)]">Stop Loss Distance:</span>
-                  <span className="font-mono font-extrabold text-[var(--accent)] bg-[var(--accent-muted)] py-0.5 px-3 rounded-md">
+                  <span style={{ fontSize: '12px', color: 'var(--text-sub)' }}>Stop Loss Distance:</span>
+                  <span className="font-mono py-0.5 px-3 rounded-md" style={{ color: 'var(--accent)', fontWeight: 600, backgroundColor: 'var(--accent-muted)' }}>
                     {slPoints.toLocaleString(undefined, { maximumFractionDigits: 4 })} Points
                   </span>
                 </div>
@@ -279,10 +411,15 @@ export default function RiskCalculatorPage() {
               
               {/* RESULTS CARD */}
               <div 
-                className="rounded-2xl p-6 border border-[var(--border)] space-y-6 shadow-lg"
-                style={{ backgroundColor: 'var(--card)' }}
+                className="p-6 space-y-6"
+                style={{ 
+                  backgroundColor: 'var(--card)',
+                  boxShadow: '0 4px 6px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.06)',
+                  border: '1px solid rgba(0,0,0,0.08)',
+                  borderRadius: '16px'
+                }}
               >
-                <h3 className="text-sm font-bold uppercase tracking-wider font-mono text-[var(--accent)]">
+                <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }}>
                   Calculated Risk Profile
                 </h3>
 
@@ -290,22 +427,38 @@ export default function RiskCalculatorPage() {
                 <div className="grid grid-cols-2 gap-4">
                   
                   {/* RISK BOX */}
-                  <div className="bg-[var(--bar)] p-3 rounded-xl border border-[var(--border)] flex flex-col justify-between h-[82px] relative select-all group">
-                    <span className="text-[10px] text-[var(--text-sub)] uppercase font-mono font-semibold">Risk Amount</span>
-                    <span className="text-sm md:text-base font-mono font-extrabold text-red-400 mt-1">₹{riskAmount.toLocaleString('en-IN')}</span>
+                  <div 
+                    style={{ 
+                      backgroundColor: 'var(--bar)', 
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
+                      border: '1px solid rgba(0,0,0,0.06)',
+                      borderRadius: '10px'
+                    }}
+                    className="p-3 flex flex-col justify-between h-[82px] relative select-all group"
+                  >
+                    <span style={{ fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)' }}>Risk Amount</span>
+                    <span className="font-mono mt-1" style={{ fontSize: '18px', fontWeight: 700, color: '#ef4444' }}>₹{riskAmount.toLocaleString('en-IN')}</span>
                     <button
                       onClick={() => handleCopyValue(`₹${riskAmount}`, 'risk')}
                       className="absolute top-2 right-2 text-[var(--text-muted)] hover:text-[var(--text)]"
                     >
                       <Copy className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </button>
-                    <span className="text-[9px] text-[var(--text-muted)]">Absolute Loss Capital</span>
+                    <span style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-muted)' }}>Absolute Loss Capital</span>
                   </div>
 
                   {/* POSITION SIZE BOX */}
-                  <div className="bg-[var(--bar)] p-3 rounded-xl border border-[var(--border)] flex flex-col justify-between h-[82px] relative select-all group">
-                    <span className="text-[10px] text-[var(--text-sub)] uppercase font-mono font-semibold">Position Size</span>
-                    <span className="text-sm md:text-base font-mono font-extrabold text-[var(--accent)] mt-1">
+                  <div 
+                    style={{ 
+                      backgroundColor: 'var(--bar)', 
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
+                      border: '1px solid rgba(0,0,0,0.06)',
+                      borderRadius: '10px'
+                    }}
+                    className="p-3 flex flex-col justify-between h-[82px] relative select-all group"
+                  >
+                    <span style={{ fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)' }}>Position Size</span>
+                    <span className="font-mono mt-1" style={{ fontSize: '18px', fontWeight: 700, color: 'var(--accent)' }}>
                       {positionSize} {activeInst.unitLabel}
                     </span>
                     <button
@@ -314,33 +467,49 @@ export default function RiskCalculatorPage() {
                     >
                       <Copy className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </button>
-                    <span className="text-[9px] text-[var(--text-muted)]">Exact sizing entry</span>
+                    <span style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-muted)' }}>Exact sizing entry</span>
                   </div>
 
                   {/* R-R RATIO */}
-                  <div className="bg-[var(--bar)] p-3 rounded-xl border border-[var(--border)] flex flex-col justify-between h-[82px] relative select-all group">
-                    <span className="text-[10px] text-[var(--text-sub)] uppercase font-mono font-semibold">Reward:Risk Ratio</span>
-                    <span className="text-sm md:text-base font-mono font-extrabold text-cyan-400 mt-1">{rMultiple}:1 R:R</span>
+                  <div 
+                    style={{ 
+                      backgroundColor: 'var(--bar)', 
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
+                      border: '1px solid rgba(0,0,0,0.06)',
+                      borderRadius: '10px'
+                    }}
+                    className="p-3 flex flex-col justify-between h-[82px] relative select-all group"
+                  >
+                    <span style={{ fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)' }}>Reward:Risk Ratio</span>
+                    <span className="font-mono mt-1" style={{ fontSize: '18px', fontWeight: 700, color: 'var(--accent)' }}>{rMultiple}:1 R:R</span>
                     <button
                       onClick={() => handleCopyValue(`${rMultiple}:1`, 'rr')}
                       className="absolute top-2 right-2 text-[var(--text-muted)] hover:text-[var(--text)]"
                     >
                       <Copy className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </button>
-                    <span className="text-[9px] text-[var(--text-muted)]">Strategy Adherence</span>
+                    <span style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-muted)' }}>Strategy Adherence</span>
                   </div>
 
                   {/* POTENTIAL POTENTIAL PROFIT */}
-                  <div className="bg-[var(--bar)] p-3 rounded-xl border border-[var(--border)] flex flex-col justify-between h-[82px] relative select-all group">
-                    <span className="text-[10px] text-[var(--text-sub)] uppercase font-mono font-semibold">Potential Profit</span>
-                    <span className="text-sm md:text-base font-mono font-extrabold text-emerald-400 mt-1">₹{potentialProfit.toLocaleString('en-IN')}</span>
+                  <div 
+                    style={{ 
+                      backgroundColor: 'var(--bar)', 
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
+                      border: '1px solid rgba(0,0,0,0.06)',
+                      borderRadius: '10px'
+                    }}
+                    className="p-3 flex flex-col justify-between h-[82px] relative select-all group"
+                  >
+                    <span style={{ fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)' }}>Potential Profit</span>
+                    <span className="font-mono mt-1" style={{ fontSize: '18px', fontWeight: 700, color: '#22c55e' }}>₹{potentialProfit.toLocaleString('en-IN')}</span>
                     <button
                       onClick={() => handleCopyValue(`₹${potentialProfit}`, 'profit')}
                       className="absolute top-2 right-2 text-[var(--text-muted)] hover:text-[var(--text)]"
                     >
                       <Copy className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </button>
-                    <span className="text-[9px] text-[var(--text-muted)]">Est. Reward Gain</span>
+                    <span style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-muted)' }}>Est. Reward Gain</span>
                   </div>
 
                 </div>
