@@ -782,10 +782,19 @@ export const StrategiesPage: React.FC = () => {
               </div>
             ) : viewType === 'table' ? (
               /* CLEAN TRADEZELLA-STYLE TABLE VIEW */
-              <div className="w-full overflow-x-auto select-none mt-2">
+              <div
+                className="w-full overflow-x-auto select-none mt-2"
+                style={{
+                  background: 'var(--card)',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
+                  border: '1px solid rgba(0,0,0,0.06)',
+                  borderRadius: '12px',
+                  overflow: 'hidden'
+                }}
+              >
                 <table className="w-full text-left border-collapse min-w-[900px]" style={{ tableLayout: 'auto', width: '100%' }}>
                   <thead>
-                    <tr className="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 bg-zinc-900/50 border-b border-zinc-800" style={{ backgroundColor: 'var(--bar)' }}>
+                    <tr className="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 bg-zinc-900/50 border-b border-zinc-800" style={{ background: 'rgba(0,0,0,0.02)' }}>
                       <th className="py-3 px-4 text-center font-sans font-bold text-zinc-400" style={{ width: '40px', whiteSpace: 'nowrap' }}>#</th>
                       {renderSortableHeader('name', 'Strategy Name', false, { maxWidth: '220px', overflow: 'hidden', textOverflow: 'ellipsis' })}
                       {renderSortableHeader('type', 'TYPE', true, { width: '100px' })}
@@ -824,8 +833,8 @@ export const StrategiesPage: React.FC = () => {
                       return (
                         <tr
                           key={strat.id}
-                          className="border-b transition-colors cursor-pointer h-[52px]"
-                          style={{ borderColor: 'var(--border)' }}
+                          className="border-b transition-colors cursor-pointer h-[52px] hover:bg-[rgba(0,0,0,0.025)]"
+                          style={{ borderBottom: '1px solid var(--border)' }}
                           onClick={() => navigate(`/strategies/${strat.id}`)}
                         >
                           <td className="py-2.5 px-4 text-center text-xs font-mono text-zinc-500" style={{ width: '40px', whiteSpace: 'nowrap' }}>
