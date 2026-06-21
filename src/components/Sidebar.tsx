@@ -124,7 +124,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
               key={item.label}
               to={item.route}
               onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-3 cursor-pointer"
+              className="flex items-center gap-3 cursor-pointer sidebar-nav-link"
               style={{
                 padding: '8px 12px',
                 borderRadius: '8px',
@@ -169,7 +169,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
         </div>
         <button
           onClick={handleSignOut}
-          className="bg-transparent border-none p-0 mt-2 cursor-pointer text-left font-medium hover:opacity-80 transition-opacity"
+          className="bg-transparent border-none p-0 mt-2 cursor-pointer text-left font-medium hover:opacity-80 transition-opacity sidebar-nav-link"
           style={{ 
             fontSize: '11px', 
             color: 'var(--text-muted)',

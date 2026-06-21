@@ -314,6 +314,17 @@ div.bg-zinc-900\/40 {
   line-height: 1.2;
 }
 
+/* Sidebar focus-indicators */
+.sidebar-nav-link:focus {
+  outline: none;
+}
+
+.sidebar-nav-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
 
 
 
