@@ -1150,7 +1150,7 @@ export default function SettingsPage() {
 
                   {/* BROKER CONNECTIONS SECTION */}
                   <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
-                    <h3 className="text-lg font-bold mb-1 flex items-center gap-2 uppercase tracking-wide font-display">
+                    <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-1 flex items-center gap-2 font-display">
                        Broker Connections
                     </h3>
                     <p className="text-xs text-[var(--text-sub)] mb-6">
@@ -1261,7 +1261,7 @@ export default function SettingsPage() {
 
                     {/* DHAN INTEGRATION SUBSECTION */}
                     <div className="border-t border-[var(--border)] pt-6 mt-6">
-                      <h4 className="text-md font-bold mb-4 uppercase tracking-wide font-display">Dhan Broker Connection</h4>
+                      <h4 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-4 font-display">Dhan Broker Connection</h4>
                       
                       {(() => {
                         const dhanConnComp = connections.find(c => c.broker_type === 'dhan' && c.is_active);
