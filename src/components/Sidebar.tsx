@@ -59,7 +59,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
       className="flex flex-col h-full font-sans"
       style={{ 
         backgroundColor: 'var(--topbar)', 
-        borderRight: '0.5px solid var(--border)', 
+        borderRight: '1px solid rgba(0, 0, 0, 0.08)', 
+        boxShadow: '1px 0 3px rgba(0, 0, 0, 0.04)',
         color: 'var(--text)',
         fontFamily: 'Inter, system-ui, sans-serif'
       }}
@@ -126,18 +127,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
               className="flex items-center gap-3 cursor-pointer"
               style={{
                 padding: '8px 12px',
-                borderRadius: '7px',
+                borderRadius: isActive ? '8px 0 0 8px' : '8px',
                 fontSize: '13px',
-                fontWeight: '500',
+                fontWeight: isActive ? '600' : '400',
                 backgroundColor: isActive ? 'var(--accent-muted)' : 'transparent',
                 color: isActive ? 'var(--accent)' : 'var(--text-sub)',
-                transition: 'all 120ms ease-in-out',
+                borderRight: isActive ? '2px solid var(--accent)' : 'none',
+                transition: 'background 120ms ease',
                 display: 'flex',
                 alignItems: 'center',
               }}
               onMouseEnter={(e) => {
                 if (!isActive) {
-                  e.currentTarget.style.backgroundColor = 'var(--bar)';
+                  e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.04)';
                 }
               }}
               onMouseLeave={(e) => {
@@ -185,7 +187,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
       {/* Desktop sidebar */}
       <aside 
         className="hidden md:flex flex-col w-[220px] h-screen sticky top-0 overflow-y-auto flex-shrink-0"
-        style={{ backgroundColor: 'var(--topbar)', borderRight: '0.5px solid var(--border)' }}
+        style={{ backgroundColor: 'var(--topbar)', borderRight: '1px solid rgba(0, 0, 0, 0.08)', boxShadow: '1px 0 3px rgba(0, 0, 0, 0.04)' }}
       >
         {sidebarContent}
       </aside>
@@ -204,7 +206,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
         className={`fixed inset-y-0 left-0 w-[220px] z-50 md:hidden shadow-2xl transition-transform duration-250 ease-in-out ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
-        style={{ backgroundColor: 'var(--topbar)', borderRight: '0.5px solid var(--border)' }}
+        style={{ backgroundColor: 'var(--topbar)', borderRight: '1px solid rgba(0, 0, 0, 0.08)', boxShadow: '1px 0 3px rgba(0, 0, 0, 0.04)' }}
       >
         {sidebarContent}
       </div>
