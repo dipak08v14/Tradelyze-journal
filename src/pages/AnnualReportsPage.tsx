@@ -531,7 +531,7 @@ export const AnnualReportsPage: React.FC = () => {
                   >
                     <table className="w-full text-left border-collapse text-sm">
                       <thead>
-                        <tr style={{ background: 'rgba(0,0,0,0.02)', borderBottom: '1px solid var(--border)' }}>
+                        <tr style={{ background: 'rgba(0, 0, 0, 0.04)', borderBottom: '1px solid rgba(0, 0, 0, 0.08)' }}>
                           <th className="px-4 py-3" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Month</th>
                           <th className="px-4 py-3 text-center" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Trades</th>
                           <th className="px-4 py-3 text-center" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Win</th>
@@ -550,7 +550,9 @@ export const AnnualReportsPage: React.FC = () => {
 
                           const customStyle: React.CSSProperties = {
                             borderColor: 'var(--border)',
-                            background: idx % 2 === 1 ? 'rgba(0,0,0,0.015)' : 'transparent'
+                            background: idx % 2 === 1 ? 'rgba(0, 0, 0, 0.018)' : 'transparent',
+                            borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
+                            borderTop: idx === 0 ? '1px solid rgba(0, 0, 0, 0.06)' : undefined,
                           };
 
                           if (mStats && mStats.totalTrades > 0) {
@@ -567,9 +569,11 @@ export const AnnualReportsPage: React.FC = () => {
                                 key={month}
                                 style={{ 
                                   borderColor: 'var(--border)',
-                                  background: idx % 2 === 1 ? 'rgba(0,0,0,0.015)' : 'transparent'
+                                  background: idx % 2 === 1 ? 'rgba(0, 0, 0, 0.018)' : 'transparent',
+                                  borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
+                                  borderTop: idx === 0 ? '1px solid rgba(0, 0, 0, 0.06)' : undefined,
                                 }}
-                                className="border-b text-zinc-400 transition-colors hover:bg-[rgba(0,0,0,0.025)]"
+                                className="border-b text-zinc-400 transition-colors hover:bg-[rgba(0, 0, 0, 0.03)] cursor-pointer"
                               >
                                 <td style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="px-4 py-3">{month}</td>
                                 <td className="px-4 py-3 text-center font-mono">—</td>
@@ -588,7 +592,7 @@ export const AnnualReportsPage: React.FC = () => {
                             <tr
                               key={month}
                               style={customStyle}
-                              className="border-b transition-colors hover:bg-[rgba(0,0,0,0.025)]"
+                              className="border-b transition-colors hover:bg-[rgba(0, 0, 0, 0.03)] cursor-pointer"
                             >
                               {/* Month Name */}
                               <td style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="px-4 py-3 flex items-center gap-1">
@@ -669,34 +673,32 @@ export const AnnualReportsPage: React.FC = () => {
                       {/* ANNUAL TOTAL FOOTER ROW */}
                       {annualStats && (
                         <tfoot>
-                          <tr style={{ backgroundColor: 'var(--bar)', borderTopWidth: '2px', borderColor: 'var(--border)' }} className="font-bold">
-                            <td style={{ color: 'var(--text)' }} className="px-4 py-3.5 text-xs uppercase tracking-wider font-extrabold">
+                          <tr style={{ background: 'rgba(0, 0, 0, 0.04)', borderTop: '2px solid rgba(0, 0, 0, 0.10)', fontWeight: 700 }} className="font-bold">
+                            <td style={{ color: 'var(--text)', fontWeight: 700 }} className="px-4 py-3.5 text-xs uppercase tracking-wider">
                               YEAR {selectedYear}
                             </td>
-                            <td style={{ color: 'var(--text)' }} className="px-4 py-3.5 text-center font-mono text-xs">
+                            <td style={{ color: 'var(--text)', fontWeight: 700 }} className="px-4 py-3.5 text-center font-mono text-xs">
                               {annualStats.totalTrades}
                             </td>
-                            <td className="px-4 py-3.5 text-center font-mono text-xs" style={{ color: '#22c55e' }}>
+                            <td className="px-4 py-3.5 text-center font-mono text-xs" style={{ color: '#22c55e', fontWeight: 700 }}>
                               {annualStats.wins}
                             </td>
-                            <td className="px-4 py-3.5 text-center font-mono text-xs" style={{ color: '#ef4444' }}>
+                            <td className="px-4 py-3.5 text-center font-mono text-xs" style={{ color: '#ef4444', fontWeight: 700 }}>
                               {annualStats.losses}
                             </td>
-                            <td className={`px-4 py-3.5 text-center font-mono text-xs font-black ${getScoreColor(annualStats.winRate)}`}>
+                            <td className="px-4 py-3.5 text-center font-mono text-xs" style={{ color: 'var(--accent)', fontWeight: 700 }}>
                               {annualStats.winRate.toFixed(1)}%
                             </td>
-                            <td className={`px-4 py-3.5 text-right font-mono text-sm ${pnlColor(annualStats.totalPnl)}`}>
+                            <td className="px-4 py-3.5 text-right font-mono text-sm" style={{ color: annualStats.totalPnl >= 0 ? '#22c55e' : '#ef4444', fontWeight: 700 }}>
                               {formatINR(annualStats.totalPnl)}
                             </td>
-                            <td className={`px-4 py-3.5 text-right font-mono text-xs ${pnlColor(annualStats.avgR)}`}>
+                            <td className="px-4 py-3.5 text-right font-mono text-xs" style={{ color: annualStats.avgR >= 0 ? '#22c55e' : '#ef4444', fontWeight: 700 }}>
                               {annualStats.avgR >= 0 ? '+' : ''}{annualStats.avgR.toFixed(2)}R
                             </td>
-                            <td className={`px-4 py-3.5 text-center font-mono text-xs font-black ${
-                              annualStats.profitFactor >= 1.0 ? 'text-green-500' : 'text-red-500'
-                            }`}>
+                            <td className="px-4 py-3.5 text-center font-mono text-xs" style={{ color: annualStats.profitFactor >= 1.0 ? '#22c55e' : '#ef4444', fontWeight: 700 }}>
                               {annualStats.profitFactor === 999 ? '∞' : annualStats.profitFactor.toFixed(2)}
                             </td>
-                            <td className={`px-4 py-3.5 text-center font-mono text-xs font-black ${getScoreColor(annualScores.avgOverall)}`}>
+                            <td className="px-4 py-3.5 text-center font-mono text-xs" style={{ color: annualScores.avgOverall >= 70 ? '#22c55e' : annualScores.avgOverall >= 50 ? 'var(--accent)' : '#ef4444', fontWeight: 700 }}>
                               {annualScores.avgOverall.toFixed(0)}%
                             </td>
                           </tr>
