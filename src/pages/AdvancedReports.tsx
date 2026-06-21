@@ -1463,10 +1463,10 @@ export const AdvancedReports: React.FC = () => {
             {/* PAGE HEADER & FILTERS */}
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
               <div>
-                <h1 className="text-3xl font-extrabold tracking-tight font-display text-zinc-100">
+                <h1 className="text-3xl font-extrabold tracking-tight font-display" style={{ color: 'var(--text)' }}>
                   Reports
                 </h1>
-                <p className="text-sm text-zinc-400 mt-1">
+                <p className="text-sm mt-1" style={{ color: 'var(--text-sub)' }}>
                   Complete trading performance analytics.
                 </p>
               </div>
