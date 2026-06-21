@@ -226,6 +226,34 @@ div.bg-zinc-900\/40 {
   animation: shimmer 1.5s infinite !important;
 }
 
+/* =============================================
+   TRADELYZE — Card Elevation System (Phase 1)
+   ============================================= */
+
+/* Standard card — use on all main content cards */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+/* Elevated card — use on modals, overlays, featured cards */
+.card-elevated {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* Flat card — use on table containers and filter bars */
+.card-flat {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: none;
+}
+
 
 
 
