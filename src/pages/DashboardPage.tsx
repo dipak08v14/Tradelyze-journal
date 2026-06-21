@@ -705,10 +705,10 @@ export const DashboardPage: React.FC = () => {
             {/* PAGE HEADER */}
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div>
-                <h1 className="text-3xl font-extrabold tracking-tight font-display" style={{ color: 'var(--text)' }}>
+                <h1 className="font-display" style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }}>
                   Dashboard
                 </h1>
-                <p className="text-sm mt-1" style={{ color: 'var(--text-sub)' }}>
+                <p className="mt-1" style={{ fontSize: '13px', fontWeight: 400, color: 'var(--text-sub)' }}>
                   Monthly performance overview — all calculated from your trade data.
                 </p>
               </div>
@@ -723,8 +723,8 @@ export const DashboardPage: React.FC = () => {
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '8px', color: 'var(--text)', padding: '6.5px 12px' }}
-                    className="text-sm focus:outline-none cursor-pointer transition-all font-medium font-mono"
+                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text)', padding: '6px 10px', fontSize: '13px', fontFamily: 'inherit' }}
+                    className="focus:outline-none cursor-pointer transition-all font-medium"
                   />
 
                   <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500" style={{ color: 'var(--text-muted)' }}>To</span>
@@ -732,8 +732,8 @@ export const DashboardPage: React.FC = () => {
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '8px', color: 'var(--text)', padding: '6.5px 12px' }}
-                    className="text-sm focus:outline-none cursor-pointer transition-all font-medium font-mono"
+                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text)', padding: '6px 10px', fontSize: '13px', fontFamily: 'inherit' }}
+                    className="focus:outline-none cursor-pointer transition-all font-medium"
                   />
                 </div>
 
@@ -840,69 +840,69 @@ export const DashboardPage: React.FC = () => {
                 {/* SECTION 2: KEY STATS ROW */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
                   {/* Card 1 — NET P&L */}
-                  <div className="p-[14px] px-[18px] rounded-[10px]" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
-                    <div className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
+                  <div className="p-[14px] px-[18px]" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
+                    <div className="mb-1.5" style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       NET P&L
                     </div>
-                    <div className="text-[26px] font-bold tracking-tight font-sans leading-none" style={{ color: stats.totalPnl > 0 ? '#22c55e' : stats.totalPnl < 0 ? '#ef4444' : 'var(--text)', letterSpacing: '-0.5px' }}>
+                    <div className="font-sans" style={{ fontSize: '26px', fontWeight: 700, color: stats.totalPnl > 0 ? '#22c55e' : stats.totalPnl < 0 ? '#ef4444' : 'var(--text)', lineHeight: '1.1' }}>
                       {formatPnlNoDecimals(stats.totalPnl)}
                     </div>
-                    <div style={{ color: 'var(--text-sub)', fontSize: '12px' }} className="mt-1">
+                    <div style={{ color: 'var(--text-sub)', fontSize: '12px', fontWeight: 400 }} className="mt-1">
                       {stats.totalTrades} trades
                     </div>
-                    <div className="text-[11px] mt-1 font-medium" style={{ color: 'var(--text-sub)' }}>
+                    <div className="mt-1" style={{ color: 'var(--text-sub)', fontSize: '12px', fontWeight: 400 }}>
                       This month
                     </div>
                   </div>
 
                   {/* Card 2 — TOTAL TRADES */}
-                  <div className="p-[14px] px-[18px] rounded-[10px]" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
-                    <div className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
+                  <div className="p-[14px] px-[18px]" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
+                    <div className="mb-1.5" style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       TOTAL TRADES
                     </div>
-                    <div className="text-[26px] font-bold tracking-tight font-sans leading-none" style={{ color: 'var(--text)', letterSpacing: '-0.5px' }}>
+                    <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text)', lineHeight: '1.1' }}>
                       {stats.totalTrades}
                     </div>
-                    <div className="text-[11px] mt-1 font-semibold" style={{ color: 'var(--text-sub)' }}>
+                    <div className="mt-1" style={{ color: 'var(--text-sub)', fontSize: '12px', fontWeight: 400 }}>
                       W: {stats.wins.length} &middot; L: {stats.losses.length} &middot; BE: {stats.breakevens.length}
                     </div>
                   </div>
 
                   {/* Card 3 — WIN RATE */}
-                  <div className="p-[14px] px-[18px] rounded-[10px]" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
-                    <div className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
+                  <div className="p-[14px] px-[18px]" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
+                    <div className="mb-1.5" style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       WIN RATE
                     </div>
-                    <div className="text-[26px] font-bold tracking-tight font-sans leading-none" style={{ color: 'var(--accent)', letterSpacing: '-0.5px' }}>
+                    <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--accent)', lineHeight: '1.1' }}>
                       {stats.winRate.toFixed(0)}%
                     </div>
-                    <div className="text-[11px] mt-1 font-medium" style={{ color: 'var(--text-sub)' }}>
+                    <div className="mt-1" style={{ color: 'var(--text-sub)', fontSize: '12px', fontWeight: 400 }}>
                       Win days this month
                     </div>
                   </div>
 
                   {/* Card 4 — PROFIT FACTOR */}
-                  <div className="p-[14px] px-[18px] rounded-[10px]" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
-                    <div className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
+                  <div className="p-[14px] px-[18px]" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
+                    <div className="mb-1.5" style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       PROFIT FACTOR
                     </div>
-                    <div className="text-[26px] font-bold tracking-tight font-sans leading-none" style={{ color: stats.profitFactor > 1.5 ? '#22c55e' : stats.profitFactor > 1.0 ? '#f59e0b' : '#ef4444', letterSpacing: '-0.5px' }}>
+                    <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--accent)', lineHeight: '1.1' }}>
                       {stats.profitFactor === 999 ? '∞' : stats.profitFactor.toFixed(2)}
                     </div>
-                    <div className="text-[11px] mt-1 font-medium" style={{ color: 'var(--text-sub)' }}>
+                    <div className="mt-1" style={{ color: 'var(--text-sub)', fontSize: '12px', fontWeight: 400 }}>
                       Target: &gt;1.5
                     </div>
                   </div>
 
                   {/* ADDITION 2 — DAY WIN % STATUS CARD */}
-                  <div className="p-[14px] px-[18px] rounded-[10px]" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
-                    <div className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
+                  <div className="p-[14px] px-[18px]" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
+                    <div className="mb-1.5" style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       DAY WIN %
                     </div>
-                    <div className="text-[26px] font-bold tracking-tight font-sans leading-none" style={{ color: 'var(--accent)', letterSpacing: '-0.5px' }}>
+                    <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--accent)', lineHeight: '1.1' }}>
                       {Math.round(stats.winDaysPct)}%
                     </div>
-                    <div className="text-[11px] mt-1 font-medium" style={{ color: 'var(--text-sub)' }}>
+                    <div className="mt-1" style={{ color: 'var(--text-sub)', fontSize: '12px', fontWeight: 400 }}>
                       Profitable trading days
                     </div>
                   </div>
@@ -910,10 +910,10 @@ export const DashboardPage: React.FC = () => {
                   {/* Card 5 — BROKER SYNC */}
                   <div 
                     onClick={() => navigate('/trading-logs?filter=needs_review')}
-                    className="p-[14px] px-[18px] rounded-[10px] cursor-pointer hover:border-orange-500/20 active:scale-[0.98] transition-all group relative overflow-hidden" 
-                    style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+                    className="p-[14px] px-[18px] cursor-pointer hover:border-orange-500/20 active:scale-[0.98] transition-all group relative overflow-hidden" 
+                    style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}
                   >
-                    <div className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 flex items-center justify-between" style={{ color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
+                    <div className="mb-1.5 flex items-center justify-between" style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       <span>BROKER SYNC</span>
                       {syncStatus === 'active' && (
                         <span className="flex h-2 w-2 relative">
@@ -922,18 +922,18 @@ export const DashboardPage: React.FC = () => {
                         </span>
                       )}
                     </div>
-                    <div className="text-[26px] font-bold tracking-tight font-sans leading-none flex items-baseline gap-2" style={{ color: 'var(--text)', letterSpacing: '-0.5px' }}>
+                    <div className="leading-none flex items-baseline gap-2" style={{ color: 'var(--text)' }}>
                       {syncStatus === 'idle' ? (
                         <span className="text-zinc-500 text-xl font-semibold uppercase">Disconnected</span>
                       ) : syncStatus === 'active' ? (
-                        <span className="text-[#22c55e] text-xl font-bold uppercase flex items-center gap-1.5">
+                        <span className="text-[#22c55e] uppercase" style={{ fontSize: '18px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                           ● Live
                         </span>
                       ) : (
                         <span className="text-amber-500 text-xl font-semibold uppercase">Inactive</span>
                       )}
                     </div>
-                    <div className="text-[11px] mt-1.5 font-medium flex items-center justify-between" style={{ color: 'var(--text-sub)' }}>
+                    <div className="mt-1.5 flex items-center justify-between" style={{ color: 'var(--text-sub)', fontSize: '12px', fontWeight: 400 }}>
                       <span>Synced: <b className="font-mono text-xs">{totalSyncedCount}</b></span>
                       {needsReviewCount > 0 ? (
                         <span style={{ color: '#f97316' }} className="font-bold flex items-center gap-0.5 animate-pulse">
@@ -947,12 +947,17 @@ export const DashboardPage: React.FC = () => {
                 </div>
 
                 {/* SECTION 3: EQUITY CURVE */}
-                <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', paddingBottom: '16px', overflow: 'visible' }}>
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
-                    <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5" style={{ color: 'var(--text)' }}>
-                      <TrendingUp className="w-5 h-5" style={{ color: chartColor }} />
-                      Cumulative P&L — {startDate} to {endDate}
-                    </h2>
+                <div className="p-5" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', paddingBottom: '16px', overflow: 'visible' }}>
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-4">
+                    <div className="flex flex-col">
+                      <h2 className="flex items-center gap-1.5" style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)' }}>
+                        <TrendingUp className="w-5 h-5" style={{ color: chartColor }} />
+                        Cumulative P&L
+                      </h2>
+                      <span style={{ fontSize: '13px', fontWeight: 400, color: 'var(--text-sub)', marginLeft: '26px' }} className="mt-0.5">
+                        {startDate} to {endDate}
+                      </span>
+                    </div>
                     <span
                       className={`font-mono font-extrabold text-sm ${
                         stats.totalPnl > 0
@@ -1062,9 +1067,9 @@ export const DashboardPage: React.FC = () => {
                 </div>
 
                 {/* ADDITION 3 — Daily P&L Bar Chart */}
-                <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', paddingBottom: '16px' }}>
+                <div className="p-5" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', paddingBottom: '16px' }}>
                   <div className="flex items-center justify-between gap-2 mb-4">
-                    <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
+                    <h2 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)' }}>
                       Daily P&L
                     </h2>
                   </div>
