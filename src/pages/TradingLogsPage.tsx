@@ -621,11 +621,11 @@ export const TradingLogsPage: React.FC = () => {
       renderCell: (item) => item.direction ? (
         <span
           style={{
-            backgroundColor: item.direction === 'LONG' ? 'rgba(34,197,94,0.12)' : 'rgba(239,68,68,0.12)',
-            color: item.direction === 'LONG' ? '#22c55e' : '#ef4444',
-            borderRadius: '999px',
-            padding: '2px 10px',
-            fontSize: '10px',
+            backgroundColor: item.direction === 'LONG' ? '#dcfce7' : '#fee2e2',
+            color: item.direction === 'LONG' ? '#16a34a' : '#dc2626',
+            borderRadius: '6px',
+            padding: '2px 8px',
+            fontSize: '11px',
             fontWeight: 700,
           }}
           className="inline-block"
@@ -639,24 +639,33 @@ export const TradingLogsPage: React.FC = () => {
     option_type: {
       label: 'Option Type',
       sortField: 'option_type',
-      renderCell: (item) => item.option_type ? (
-        <span
-          style={{
-            backgroundColor: 'var(--row)',
-            color: 'var(--text)',
-            border: '0.5px solid var(--border)',
-            borderRadius: '6px',
-            padding: '2px 8px',
-            fontSize: '10px',
-            fontWeight: 600,
-          }}
-          className="inline-block font-mono"
-        >
-          {item.option_type}
-        </span>
-      ) : (
-        <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
-      )
+      renderCell: (item) => {
+        if (!item.option_type) return <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>;
+        const isCallOrPut = item.option_type === 'CALL' || item.option_type === 'PUT';
+        return (
+          <span
+            style={isCallOrPut ? {
+              backgroundColor: '#1e293b',
+              color: '#ffffff',
+              borderRadius: '6px',
+              padding: '2px 8px',
+              fontSize: '11px',
+              fontWeight: 700,
+            } : {
+              backgroundColor: 'var(--row)',
+              color: 'var(--text)',
+              border: '0.5px solid var(--border)',
+              borderRadius: '6px',
+              padding: '2px 8px',
+              fontSize: '10px',
+              fontWeight: 600,
+            }}
+            className="inline-block font-sans"
+          >
+            {item.option_type}
+          </span>
+        );
+      }
     },
     strategies: {
       label: 'Setup',
@@ -681,7 +690,7 @@ export const TradingLogsPage: React.FC = () => {
           <span
             style={{
               color: hasProfit ? '#22c55e' : hasLoss ? '#ef4444' : 'var(--text-muted)',
-              fontWeight: 700
+              fontWeight: 600
             }}
             className="font-mono text-sm"
           >
@@ -712,12 +721,12 @@ export const TradingLogsPage: React.FC = () => {
       renderCell: (item) => (
         <>
           {item.status === 'Win' && (
-            <span style={{ backgroundColor: 'rgba(34,197,94,0.12)', color: '#22c55e' }} className="px-2.5 py-0.5 text-[10px] font-extrabold rounded-lg">
+            <span style={{ backgroundColor: '#dcfce7', color: '#16a34a', border: '1px solid #bbf7d0', borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px' }} className="inline-block">
               WIN
             </span>
           )}
           {item.status === 'Loss' && (
-            <span style={{ backgroundColor: 'rgba(239,68,68,0.12)', color: '#ef4444' }} className="px-2.5 py-0.5 text-[10px] font-extrabold rounded-lg">
+            <span style={{ backgroundColor: '#fee2e2', color: '#dc2626', border: '1px solid #fecaca', borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px' }} className="inline-block">
               LOSS
             </span>
           )}
@@ -884,7 +893,7 @@ export const TradingLogsPage: React.FC = () => {
             {/* PAGE HEADER */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <h1 className="text-3xl font-extrabold tracking-tight font-display" style={{ color: 'var(--text)' }}>
+                <h1 className="font-display" style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }}>
                   Trading Logs
                 </h1>
                 <p className="text-sm mt-1.5" style={{ color: 'var(--text-sub)' }}>
@@ -918,7 +927,7 @@ export const TradingLogsPage: React.FC = () => {
             <div className="border-b mt-4 mb-6" style={{ borderColor: 'var(--border)' }} />
 
             {/* FILTER BAR SECTION CARD */}
-            <div className="rounded-2xl p-5 mb-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+            <div className="p-5 mb-5" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
               {/* Row 1 Filter Fields */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {/* Month Dropdown */}
@@ -929,8 +938,8 @@ export const TradingLogsPage: React.FC = () => {
                   <select
                     value={filterMonth}
                     onChange={(e) => setFilterMonth(e.target.value)}
-                    style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
-                    className="rounded-xl px-3 py-2.5 w-full focus:border-indigo-500 focus:outline-none text-xs cursor-pointer"
+                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
+                    className="w-full focus:border-indigo-500 focus:outline-none cursor-pointer"
                   >
                     <option value="All">All Months</option>
                     {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((m) => (
@@ -949,8 +958,8 @@ export const TradingLogsPage: React.FC = () => {
                   <select
                     value={filterYear}
                     onChange={(e) => setFilterYear(e.target.value)}
-                    style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
-                    className="rounded-xl px-3 py-2.5 w-full focus:border-indigo-500 focus:outline-none text-xs cursor-pointer"
+                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
+                    className="w-full focus:border-indigo-500 focus:outline-none cursor-pointer"
                   >
                     <option value="All">All Years</option>
                     {uniqueYears.map((y) => (
@@ -972,8 +981,8 @@ export const TradingLogsPage: React.FC = () => {
                       value={filterSymbol}
                       onChange={(e) => setFilterSymbol(e.target.value.toUpperCase())}
                       placeholder="e.g. BTCUSDT"
-                      style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
-                      className="placeholder-zinc-500 rounded-xl pl-3 pr-8 py-2.5 w-full focus:border-indigo-500 focus:outline-none text-xs font-mono"
+                      style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
+                      className="placeholder-zinc-500 w-full focus:border-indigo-500 focus:outline-none font-mono"
                     />
                     {filterSymbol && (
                       <button
@@ -996,8 +1005,8 @@ export const TradingLogsPage: React.FC = () => {
                   <select
                     value={filterSetup}
                     onChange={(e) => setFilterSetup(e.target.value)}
-                    style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
-                    className="rounded-xl px-3 py-2.5 w-full focus:border-indigo-500 focus:outline-none text-xs cursor-pointer"
+                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
+                    className="w-full focus:border-indigo-500 focus:outline-none cursor-pointer"
                   >
                     <option value="All">All Setups</option>
                     {uniqueSetups.map((setupName) => (
@@ -1067,8 +1076,8 @@ export const TradingLogsPage: React.FC = () => {
                   <select
                     value={filterExecution}
                     onChange={(e) => setFilterExecution(e.target.value)}
-                    style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
-                    className="rounded-xl px-3 py-2 w-auto focus:border-indigo-500 focus:outline-none text-xs cursor-pointer"
+                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
+                    className="w-auto focus:border-indigo-500 focus:outline-none cursor-pointer"
                   >
                     <option value="All">All Executions</option>
                     <option value="BEST TRADE">BEST TRADE</option>
@@ -1082,8 +1091,8 @@ export const TradingLogsPage: React.FC = () => {
                   <select
                     value={filterMistakeType}
                     onChange={(e) => setFilterMistakeType(e.target.value)}
-                    style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
-                    className="rounded-xl px-3 py-2 w-auto focus:border-indigo-500 focus:outline-none text-xs cursor-pointer"
+                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
+                    className="w-auto focus:border-indigo-500 focus:outline-none cursor-pointer"
                   >
                     <option value="All">All Mistakes</option>
                     <option value="Technical">Technical</option>
@@ -1122,16 +1131,16 @@ export const TradingLogsPage: React.FC = () => {
             </div>
 
             {/* ADDITION 1 — SUMMARY STATS BAR */}
-            <div className="grid gap-4 mb-5 md:grid" style={{ gridTemplateColumns: 'repeat(5, 1fr)' }}>
+            <div className="grid gap-4 mb-5 md:grid animate-in fade-in duration-200" style={{ gridTemplateColumns: 'repeat(5, 1fr)' }}>
               {/* Card 1: TOTAL TRADES */}
               <div 
-                style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
-                className="rounded-2xl p-4 shadow-sm"
+                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}
+                className="p-4"
               >
-                <div className="text-[10px] font-bold uppercase tracking-wider font-mono text-zinc-400" style={{ color: 'var(--text-muted)' }}>
+                <div style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>
                   TOTAL TRADES
                 </div>
-                <div className="text-lg font-bold mt-1 font-mono" style={{ color: 'var(--text)' }}>
+                <div className="mt-1 font-mono" style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text)' }}>
                   {calculatedStats.totalCount}
                 </div>
                 <div className="text-[10px] font-mono mt-1 flex flex-wrap items-center gap-1" style={{ color: 'var(--text-sub)' }}>
@@ -1145,15 +1154,15 @@ export const TradingLogsPage: React.FC = () => {
 
               {/* Card 2: NET P&L */}
               <div 
-                style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
-                className="rounded-2xl p-4 shadow-sm"
+                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}
+                className="p-4"
               >
-                <div className="text-[10px] font-bold uppercase tracking-wider font-mono text-zinc-400" style={{ color: 'var(--text-muted)' }}>
+                <div style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>
                   NET P&L
                 </div>
                 <div 
-                  className="text-lg font-bold mt-1 font-mono"
-                  style={{ color: calculatedStats.totalPnl > 0 ? '#22c55e' : calculatedStats.totalPnl < 0 ? '#ef4444' : 'var(--text)' }}
+                  className="mt-1 font-mono"
+                  style={{ fontSize: '20px', fontWeight: 700, color: calculatedStats.totalPnl > 0 ? '#22c55e' : calculatedStats.totalPnl < 0 ? '#ef4444' : 'var(--text)' }}
                 >
                   {formatINRStat(calculatedStats.totalPnl)}
                 </div>
@@ -1161,48 +1170,46 @@ export const TradingLogsPage: React.FC = () => {
 
               {/* Card 3: PROFIT FACTOR */}
               <div 
-                style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
-                className="rounded-2xl p-4 shadow-sm"
+                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}
+                className="p-4"
               >
-                <div className="text-[10px] font-bold uppercase tracking-wider font-mono text-zinc-400" style={{ color: 'var(--text-muted)' }}>
+                <div style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>
                   PROFIT FACTOR
                 </div>
-                <div className="text-lg font-bold mt-1 font-mono" style={{ color: 'var(--text)' }}>
+                <div 
+                  className="mt-1 font-mono" 
+                  style={{ fontSize: '20px', fontWeight: 700, color: calculatedStats.profitFactor >= 1.0 ? 'var(--accent)' : '#ef4444' }}
+                >
                   {calculatedStats.profitFactor === Infinity ? 'MAX' : calculatedStats.profitFactor === 0 ? '--' : calculatedStats.profitFactor.toFixed(2)}
                 </div>
               </div>
 
               {/* Card 4: WIN RATE */}
               <div 
-                style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
-                className="rounded-2xl p-4 shadow-sm"
+                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}
+                className="p-4"
               >
-                <div className="text-[10px] font-bold uppercase tracking-wider font-mono text-zinc-400" style={{ color: 'var(--text-muted)' }}>
+                <div style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>
                   WIN RATE
                 </div>
-                <div className="text-lg font-bold mt-1 font-mono" style={{ color: 'var(--text)' }}>
+                <div className="mt-1 font-mono" style={{ fontSize: '20px', fontWeight: 700, color: 'var(--accent)' }}>
                   {calculatedStats.winRate.toFixed(1)}%
                 </div>
               </div>
 
-              {/* Card 5: AVG WIN / AVG LOSS */}
+              {/* Card 5: AVG R */}
               <div 
-                style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
-                className="rounded-2xl p-4 shadow-sm"
+                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}
+                className="p-4"
               >
-                <div className="text-[10px] font-bold uppercase tracking-wider font-mono text-zinc-400" style={{ color: 'var(--text-muted)' }}>
-                  AVG WIN / AVG LOSS
+                <div style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>
+                  AVG R
                 </div>
-                <div className="text-lg font-bold mt-1 font-mono">
-                  {calculatedStats.avgWin > 0 || calculatedStats.avgLoss < 0 ? (
-                    <div className="flex items-center gap-1">
-                      <span className="text-green-500">{formatINRStat(calculatedStats.avgWin)}</span>
-                      <span style={{ color: 'var(--border-md)' }}>/</span>
-                      <span className="text-red-500">{formatINRStat(calculatedStats.avgLoss)}</span>
-                    </div>
-                  ) : (
-                    <span style={{ color: 'var(--text-muted)' }}>--</span>
-                  )}
+                <div 
+                  className="mt-1 font-mono"
+                  style={{ fontSize: '20px', fontWeight: 700, color: calculatedStats.avgR >= 0 ? 'var(--accent)' : '#ef4444' }}
+                >
+                  {calculatedStats.avgR > 0 ? '+' : ''}{calculatedStats.avgR.toFixed(2)}R
                 </div>
               </div>
             </div>
@@ -1211,10 +1218,10 @@ export const TradingLogsPage: React.FC = () => {
 
             {/* ERROR SKELETON OR DYNAMIC TABLES LAYOUT */}
             {loading ? (
-              <div className="rounded-2xl overflow-hidden shadow-sm animate-pulse" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+              <div className="overflow-hidden animate-pulse" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}>
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b text-[10px] font-mono font-extrabold uppercase tracking-widest" style={{ backgroundColor: 'var(--row)', borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
+                    <tr className="border-b select-none font-sans" style={{ backgroundColor: 'var(--row)', borderColor: 'var(--border)', color: 'var(--text-muted)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       <th className="px-4 py-4 w-12 text-center">
                         <div className="h-4 rounded w-4 mx-auto" style={{ backgroundColor: 'var(--row)' }} />
                       </th>
@@ -1290,7 +1297,7 @@ export const TradingLogsPage: React.FC = () => {
             ) : (
               /* MAIN INTERACTIVE SORTABLE DATATABLE */
               <div className="flex flex-col animate-in fade-in duration-200">
-                <div id="trading-logs-datatable-container" className="shadow-sm overflow-hidden" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderBottom: 'none', borderTopLeftRadius: '12px', borderTopRightRadius: '12px' }}>
+                <div id="trading-logs-datatable-container" className="overflow-hidden" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderBottom: 'none', borderTopLeftRadius: '12px', borderTopRightRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}>
                   {/* BULK ACTION BAR */}
                   {selectedTradeIds.length > 0 && (
                     <div 
@@ -1377,7 +1384,7 @@ export const TradingLogsPage: React.FC = () => {
                       className="w-full text-left border-collapse"
                     >
                     <thead>
-                      <tr className="border-b text-[10px] font-sans font-semibold uppercase tracking-widest select-none" style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
+                      <tr className="border-b select-none font-sans" style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)', color: 'var(--text-muted)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                         {/* SELECT ALL CHECKBOX */}
                         <th className="px-4 py-4 w-12 text-center">
                           <div 
@@ -1475,8 +1482,8 @@ export const TradingLogsPage: React.FC = () => {
                           <tr
                             key={item.id}
                             onClick={() => navigate(`/trading-logs/${item.id}`)}
-                            className="hover:bg-[var(--row)] cursor-pointer transition-colors text-sm"
-                            style={{ borderBottom: '0.5px solid var(--border)', color: 'var(--text)' }}
+                            className="even:bg-[rgba(0,0,0,0.015)] hover:bg-[rgba(0,0,0,0.025)] cursor-pointer transition-colors text-sm"
+                            style={{ borderBottom: '1px solid rgba(0,0,0,0.06)', color: 'var(--text)' }}
                           >
                             {/* Row Checkbox Column */}
                             <td 
@@ -1527,7 +1534,7 @@ export const TradingLogsPage: React.FC = () => {
                             </td>
 
                             {/* Counter Index */}
-                            <td style={{ padding: '10px 16px', color: 'var(--text-muted)' }} className="text-center text-xs font-mono font-bold w-10">
+                            <td style={{ padding: '10px 16px', color: 'var(--text-muted)', fontSize: '13px' }} className="text-center font-bold w-10">
                               {(currentPage - 1) * tradesPerPage + index + 1}
                             </td>
 
@@ -1535,14 +1542,14 @@ export const TradingLogsPage: React.FC = () => {
                             {ALL_COLUMNS_INFO.map((col) => {
                               if (!selectedColumns[col.id]) return null;
                               return (
-                                <td key={col.id} style={{ padding: '10px 16px' }} className="whitespace-nowrap font-sans">
+                                <td key={col.id} style={{ padding: '10px 16px', fontSize: '13px', color: 'var(--text)' }} className="whitespace-nowrap font-sans">
                                   {colDefinitions[col.id].renderCell(item)}
                                 </td>
                               );
                             })}
 
                             {/* AI Action column */}
-                            <td style={{ padding: '10px 16px' }} className="whitespace-nowrap text-center font-sans">
+                            <td style={{ padding: '10px 16px', fontSize: '13px', color: 'var(--text)' }} className="whitespace-nowrap text-center font-sans">
                               <button
                                 id={`logs-table-ask-ai-${item.id}`}
                                 onClick={(e) => {
@@ -1575,7 +1582,7 @@ export const TradingLogsPage: React.FC = () => {
               {/* ADDITION 2 — PAGINATION CONTROLS */}
               {calculatedStats.totalCount > 0 && (
                 <div 
-                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderTop: 'none', borderBottomLeftRadius: '12px', borderBottomRightRadius: '12px' }}
+                  style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderTop: 'none', borderBottomLeftRadius: '12px', borderBottomRightRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}
                   className="px-5 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-medium"
                 >
                   <div className="flex items-center gap-2">
