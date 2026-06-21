@@ -25,9 +25,9 @@ export const ScoreBar: React.FC<ScoreBarProps> = ({
 
   return (
     <div id={id} className="space-y-1.5 font-sans">
-      <div className="flex justify-between items-center text-sm">
-        <span style={{ color: 'var(--text-sub)' }} className="font-medium">{label}</span>
-        <span className={`font-bold ${getScoreColor(value)}`}>
+      <div className="flex justify-between items-center">
+        <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>{label}</span>
+        <span className={`text-[13px] font-bold ${getScoreColor(value)}`}>
           {value.toFixed(0)}%
         </span>
       </div>

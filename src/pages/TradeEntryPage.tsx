@@ -1126,7 +1126,7 @@ export const TradeEntryPage: React.FC = () => {
                     <span className="text-zinc-300">EDIT</span>
                   </div>
                 )}
-                <h1 className="text-3xl font-extrabold tracking-tight text-zinc-100 font-display">
+                <h1 className="font-display" style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }}>
                   {isEditMode ? 'Edit Trade' : 'Log Trade'}
                 </h1>
                 <p className="text-sm text-zinc-400 mt-1.5">
@@ -1165,10 +1165,10 @@ export const TradeEntryPage: React.FC = () => {
                       backgroundColor: 'var(--accent)',
                       color: '#ffffff',
                       border: 'none',
-                      padding: '14px',
+                      padding: '12px 24px',
                       borderRadius: '10px',
-                      fontSize: '14px',
-                      fontWeight: 600,
+                      fontSize: '15px',
+                      fontWeight: 700,
                       cursor: 'pointer',
                       width: '100%'
                     }}
@@ -1220,9 +1220,9 @@ export const TradeEntryPage: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
               {/* LEFT COLUMN (COL SPAN 2): Form Fields Cards 1-6 */}
               <div className="lg:col-span-2 space-y-3">
-                     {/* CARD 1: TRADE DETAILS */}
-                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '16px 20px' }} className="relative overflow-hidden">
-                  <h2 style={{ color: 'var(--text)', fontSize: '15px', fontWeight: '600' }} className="font-display tracking-tight mb-4">
+                {/* CARD 1: TRADE DETAILS */}
+                <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
+                  <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight mb-4">
                     Trade Details
                   </h2>
 
@@ -1230,28 +1230,28 @@ export const TradeEntryPage: React.FC = () => {
                     {/* Date and Entry Time row */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                           Date <span className="text-[var(--accent)]">*</span>
                         </label>
                         <input
                           type="date"
                           value={date}
                           onChange={(e) => setDate(e.target.value)}
-                          style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
-                          className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)]"
+                          style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+                          className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
                           required
                         />
                       </div>
                       <div>
-                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                           Entry Time
                         </label>
                         <input
                           type="time"
                           value={entryTime}
                           onChange={(e) => setEntryTime(e.target.value)}
-                          style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
-                          className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)] font-mono"
+                          style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+                          className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)] font-mono"
                         />
                       </div>
                     </div>
@@ -1259,7 +1259,7 @@ export const TradeEntryPage: React.FC = () => {
                     {/* Symbol, Direction, and Option Type row */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="relative" ref={symbolContainerRef}>
-                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                           Symbol <span className="text-[var(--accent)]">*</span>
                         </label>
                         <input
@@ -1271,8 +1271,8 @@ export const TradeEntryPage: React.FC = () => {
                           }}
                           onFocus={() => setShowSymbolSuggestions(true)}
                           placeholder="e.g. XAUUSD, BANKNIFTY"
-                          style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
-                          className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)] font-mono"
+                          style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+                          className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)] font-mono"
                           required
                         />
 
@@ -1310,7 +1310,7 @@ export const TradeEntryPage: React.FC = () => {
                         )}
                       </div>
                       <div>
-                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                           DIRECTION <span className="text-[var(--accent)]">*</span>
                         </label>
                         <div className="grid grid-cols-2 gap-1.5 font-sans">
@@ -1318,19 +1318,27 @@ export const TradeEntryPage: React.FC = () => {
                             const isSel = direction === dir;
                             
                             const defaultStyle = {
-                              backgroundColor: 'transparent',
+                              backgroundColor: 'var(--card)',
                               border: '1px solid var(--border)',
-                              color: 'var(--text-sub)'
+                              color: 'var(--text-sub)',
+                              borderRadius: '8px',
+                              padding: '8px 16px'
                             };
 
                             const activeStyle = dir === 'LONG' ? {
                               backgroundColor: 'rgba(34,197,94,0.12)',
-                              border: '1.5px solid #22c55e',
-                              color: '#22c55e'
+                              border: '1px solid #22c55e',
+                              color: '#22c55e',
+                              fontWeight: 600,
+                              borderRadius: '8px',
+                              padding: '8px 16px'
                             } : {
                               backgroundColor: 'rgba(239,68,68,0.12)',
-                              border: '1.5px solid #ef4444',
-                              color: '#ef4444'
+                              border: '1px solid #ef4444',
+                              color: '#ef4444',
+                              fontWeight: 600,
+                              borderRadius: '8px',
+                              padding: '8px 16px'
                             };
 
                             return (
@@ -1339,7 +1347,7 @@ export const TradeEntryPage: React.FC = () => {
                                 type="button"
                                 onClick={() => setDirection(dir)}
                                 style={isSel ? activeStyle : defaultStyle}
-                                className="rounded-lg py-2 px-4 text-[12px] font-semibold text-center cursor-pointer transition-all border"
+                                className="text-[12px] text-center cursor-pointer transition-all"
                               >
                                 {dir}
                               </button>
@@ -1348,7 +1356,7 @@ export const TradeEntryPage: React.FC = () => {
                         </div>
                       </div>
                       <div>
-                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                           OPTION TYPE
                         </label>
                         <div className="grid grid-cols-3 gap-1.5 font-sans">
@@ -1356,15 +1364,20 @@ export const TradeEntryPage: React.FC = () => {
                             const isSelected = opt === 'NONE' ? optionType === null : optionType === opt;
                             
                             const defaultStyle = {
-                              backgroundColor: 'transparent',
+                              backgroundColor: 'var(--card)',
                               border: '1px solid var(--border)',
-                              color: 'var(--text-sub)'
+                              color: 'var(--text-sub)',
+                              borderRadius: '8px',
+                              padding: '8px 16px'
                             };
 
                             const activeStyle = {
-                              backgroundColor: 'var(--accent-muted)',
-                              border: '1.5px solid var(--accent)',
-                              color: 'var(--accent)'
+                              backgroundColor: 'rgba(30,41,59,0.12)',
+                              border: '1px solid #1e293b',
+                              color: '#1e293b',
+                              fontWeight: 650, // 600
+                              borderRadius: '8px',
+                              padding: '8px 16px'
                             };
 
                             return (
@@ -1373,7 +1386,7 @@ export const TradeEntryPage: React.FC = () => {
                                 type="button"
                                 onClick={() => setOptionType(opt === 'NONE' ? null : opt)}
                                 style={isSelected ? activeStyle : defaultStyle}
-                                className="rounded-lg py-2 px-4 text-[12px] font-semibold text-center cursor-pointer transition-all border"
+                                className="text-[12px] text-center cursor-pointer transition-all"
                               >
                                 {opt}
                               </button>
@@ -1385,14 +1398,14 @@ export const TradeEntryPage: React.FC = () => {
 
                     {/* Strategy Setup Selection */}
                     <div>
-                      <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                      <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                         Strategy / Setup
                       </label>
                       <select
                         value={strategyId}
                         onChange={handleStrategyChange}
-                        style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
-                        className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px]"
+                        style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+                        className="focus:border-[var(--accent)] w-full focus:outline-none"
                       >
                         <option value="" style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}>— No Setup / Select Strategy —</option>
                         {strategies.map((st) => (
@@ -1406,14 +1419,14 @@ export const TradeEntryPage: React.FC = () => {
                     {/* Opening conditions row */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div>
-                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                           Opening Condition
                         </label>
                         <select
                           value={openingCondition}
                           onChange={(e) => setOpeningCondition(e.target.value)}
-                          style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
-                          className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px]"
+                          style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+                          className="focus:border-[var(--accent)] w-full focus:outline-none"
                         >
                           <option value="" style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}>— Select —</option>
                           <option value="London Open" style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}>London Open</option>
@@ -1427,7 +1440,7 @@ export const TradeEntryPage: React.FC = () => {
                       </div>
 
                       <div>
-                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                           Hourly Trend
                         </label>
                         <div className="grid grid-cols-3 gap-1 font-sans">
@@ -1462,14 +1475,14 @@ export const TradeEntryPage: React.FC = () => {
                       </div>
 
                       <div>
-                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                           Phase (PO3)
                         </label>
                         <select
                           value={phase}
                           onChange={(e) => setPhase(e.target.value)}
-                          style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
-                          className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px]"
+                          style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+                          className="focus:border-[var(--accent)] w-full focus:outline-none"
                         >
                           <option value="" style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}>— Select —</option>
                           <option value="Accumulation" style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}>Accumulation</option>
@@ -1482,14 +1495,14 @@ export const TradeEntryPage: React.FC = () => {
                     {/* Trend Position and Holding times */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                           Trend Position
                         </label>
                         <select
                           value={trendPosition}
                           onChange={(e) => setTrendPosition(e.target.value)}
-                          style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
-                          className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px]"
+                          style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+                          className="focus:border-[var(--accent)] w-full focus:outline-none"
                         >
                           <option value="" style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}>— Select —</option>
                           <option value="Trend Starting" style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}>Trend Starting</option>
@@ -1500,7 +1513,7 @@ export const TradeEntryPage: React.FC = () => {
                       </div>
 
                       <div>
-                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                           Holding Time (mins)
                         </label>
                         <input
@@ -1510,8 +1523,8 @@ export const TradeEntryPage: React.FC = () => {
                           value={holdingTimeMins}
                           onChange={(e) => setHoldingTimeMins(e.target.value)}
                           placeholder="e.g. 45"
-                          style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
-                          className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)]"
+                          style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+                          className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
                         />
                       </div>
                     </div>
@@ -1519,9 +1532,9 @@ export const TradeEntryPage: React.FC = () => {
                 </section>
 
                 {/* CARD 2: FINANCIAL DATA */}
-                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '16px 20px' }} className="relative overflow-hidden">
+                <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 style={{ color: 'var(--text)', fontSize: '15px', fontWeight: '600' }} className="font-display tracking-tight">
+                    <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight">
                       Financial Data
                     </h2>
                     <span style={{ color: 'var(--text-muted)' }} className="text-[10px] font-mono tracking-widest uppercase">
@@ -1533,7 +1546,7 @@ export const TradeEntryPage: React.FC = () => {
                     {/* Row 1 */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div>
-                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                           Investment (₹)
                         </label>
                         <input
@@ -1543,13 +1556,13 @@ export const TradeEntryPage: React.FC = () => {
                           value={investment}
                           onChange={(e) => setInvestment(e.target.value)}
                           placeholder="deployed capital"
-                          style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
-                          className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)]"
+                          style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+                          className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
                         />
                       </div>
 
                       <div>
-                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                           Risk (₹)
                         </label>
                         <input
@@ -1559,13 +1572,13 @@ export const TradeEntryPage: React.FC = () => {
                           value={risk}
                           onChange={(e) => setRisk(e.target.value)}
                           placeholder="max risk amount"
-                          style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
-                          className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)]"
+                          style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+                          className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
                         />
                       </div>
 
                       <div>
-                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                           Net P&L (₹)
                         </label>
                         <input
@@ -1574,8 +1587,8 @@ export const TradeEntryPage: React.FC = () => {
                           value={pnl}
                           onChange={(e) => setPnl(e.target.value)}
                           placeholder="negative for loss"
-                          style={{ backgroundColor: 'var(--card)' }}
-                          className={`rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)] ${
+                          style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', padding: '8px 12px' }}
+                          className={`focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)] ${
                             pnl === ''
                               ? 'text-[var(--text)]'
                               : parseFloat(pnl) > 0
@@ -1591,7 +1604,7 @@ export const TradeEntryPage: React.FC = () => {
                     {/* Row 2 */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div>
-                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                           Max Drawdown (₹)
                         </label>
                         <input
@@ -1601,13 +1614,13 @@ export const TradeEntryPage: React.FC = () => {
                           value={maxDrawdown}
                           onChange={(e) => setMaxDrawdown(e.target.value)}
                           placeholder="worst adverse amount"
-                          style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
-                          className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)]"
+                          style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+                          className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
                         />
                       </div>
 
                       <div>
-                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                           Qty / Lots
                         </label>
                         <input
@@ -1616,13 +1629,13 @@ export const TradeEntryPage: React.FC = () => {
                           value={quantity}
                           onChange={(e) => setQuantity(e.target.value)}
                           placeholder="0.00"
-                          style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
-                          className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)]"
+                          style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+                          className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
                         />
                       </div>
 
                       <div>
-                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                           Points / Pips
                         </label>
                         <input
@@ -1631,8 +1644,8 @@ export const TradeEntryPage: React.FC = () => {
                           value={points}
                           onChange={(e) => setPoints(e.target.value)}
                           placeholder="0.00"
-                          style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
-                          className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)]"
+                          style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+                          className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
                         />
                       </div>
                     </div>
@@ -1640,7 +1653,7 @@ export const TradeEntryPage: React.FC = () => {
                     {/* Row 3 */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div>
-                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                           Entry Price (₹)
                         </label>
                         <input
@@ -1650,13 +1663,13 @@ export const TradeEntryPage: React.FC = () => {
                           value={entryPrice}
                           onChange={(e) => setEntryPrice(e.target.value)}
                           placeholder="average entry price"
-                          style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
-                          className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)]"
+                          style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+                          className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
                         />
                       </div>
 
                       <div>
-                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                           Profit Target (₹)
                         </label>
                         <input
@@ -1666,13 +1679,13 @@ export const TradeEntryPage: React.FC = () => {
                           value={profitTarget}
                           onChange={(e) => setProfitTarget(e.target.value)}
                           placeholder="profit target price"
-                          style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
-                          className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)]"
+                          style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+                          className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
                         />
                       </div>
 
                       <div>
-                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                           Stop Loss Price (₹)
                         </label>
                         <input
@@ -1682,8 +1695,8 @@ export const TradeEntryPage: React.FC = () => {
                           value={stopLossPrice}
                           onChange={(e) => setStopLossPrice(e.target.value)}
                           placeholder="stop loss price"
-                          style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
-                          className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)]"
+                          style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+                          className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
                         />
                       </div>
                     </div>
@@ -1691,7 +1704,7 @@ export const TradeEntryPage: React.FC = () => {
                     {/* Row 4 */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div>
-                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                           MAE (Worst Price Against You) (₹)
                         </label>
                         <input
@@ -1701,13 +1714,13 @@ export const TradeEntryPage: React.FC = () => {
                           value={mae}
                           onChange={(e) => setMae(e.target.value)}
                           placeholder="max adverse excursion"
-                          style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
-                          className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)]"
+                          style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+                          className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
                         />
                       </div>
 
                       <div>
-                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                           MFE (Best Price In Favor) (₹)
                         </label>
                         <input
@@ -1717,13 +1730,13 @@ export const TradeEntryPage: React.FC = () => {
                           value={mfe}
                           onChange={(e) => setMfe(e.target.value)}
                           placeholder="max favorable excursion"
-                          style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
-                          className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)]"
+                          style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+                          className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
                         />
                       </div>
 
                       <div>
-                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                           Brokerage / Fees (₹)
                         </label>
                         <input
@@ -1733,8 +1746,8 @@ export const TradeEntryPage: React.FC = () => {
                           value={fees}
                           onChange={(e) => setFees(e.target.value)}
                           placeholder="0.00"
-                          style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
-                          className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)]"
+                          style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+                          className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
                         />
                       </div>
                     </div>
@@ -1742,9 +1755,9 @@ export const TradeEntryPage: React.FC = () => {
                 </section>
 
                 {/* CARD 3: AUTO-CALCULATED RESULTS */}
-                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '16px 20px' }} className="relative overflow-hidden">
+                <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 style={{ color: 'var(--text)', fontSize: '15px', fontWeight: '600' }} className="font-display tracking-tight">
+                    <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight">
                       Auto-Calculated
                     </h2>
                     <span style={{ color: 'var(--text-muted)' }} className="text-xs animate-pulse flex items-center gap-1 font-medium">
@@ -1886,10 +1899,10 @@ export const TradeEntryPage: React.FC = () => {
                 </section>
 
                 {/* CARD 4: ENTRY RULES CHECKLIST */}
-                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '16px 20px' }} className="relative overflow-hidden">
+                <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
                   <div className="flex justify-between items-start mb-2">
                     <div>
-                      <h2 style={{ color: 'var(--text)', fontSize: '15px', fontWeight: '600' }} className="font-display tracking-tight">
+                      <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight">
                         Entry Rules
                       </h2>
                       <p style={{ color: 'var(--text-muted)' }} className="text-[11px] mt-1">
@@ -1930,9 +1943,9 @@ export const TradeEntryPage: React.FC = () => {
                 </section>
 
                 {/* CARD 5: EXIT RULES CHECKLIST */}
-                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '16px 20px' }} className="relative overflow-hidden">
+                <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
                   <div className="mb-2">
-                    <h2 style={{ color: 'var(--text)', fontSize: '15px', fontWeight: '600' }} className="font-display tracking-tight">
+                    <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight">
                       Exit Rules
                     </h2>
                     <p style={{ color: 'var(--text-muted)' }} className="text-[11px] mt-1">
@@ -1949,8 +1962,8 @@ export const TradeEntryPage: React.FC = () => {
                 </section>
 
                 {/* CARD 6: EXECUTION QUALITY */}
-                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '16px 20px' }} className="relative overflow-hidden">
-                  <h2 style={{ color: 'var(--text)', fontSize: '15px', fontWeight: '600' }} className="font-display tracking-tight mb-4">
+                <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
+                  <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight mb-4">
                     Execution Quality
                   </h2>
 
@@ -1961,14 +1974,14 @@ export const TradeEntryPage: React.FC = () => {
                     {/* Type and actual mistake cascading cascade */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                           Type of Mistake
                         </label>
                         <select
                           value={mistakeType}
                           onChange={(e) => setMistakeType(e.target.value)}
-                          style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
-                          className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px]"
+                          style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+                          className="focus:border-[var(--accent)] w-full focus:outline-none"
                         >
                           <option value="" style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}>— Select —</option>
                           <option value="Technical" style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}>Technical</option>
@@ -1979,7 +1992,7 @@ export const TradeEntryPage: React.FC = () => {
                       </div>
 
                       <div>
-                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                        <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                           Actual Mistake
                         </label>
                         {mistakeType === 'No Mistake' ? (
@@ -1987,16 +2000,16 @@ export const TradeEntryPage: React.FC = () => {
                             type="text"
                             value="Clean trade execution"
                             disabled
-                            style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text-muted)' }}
-                            className="rounded-lg px-[14px] py-[10px] w-full text-[13px] font-medium opacity-60"
+                            style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text-muted)', padding: '8px 12px' }}
+                            className="w-full opacity-60 focus:outline-none"
                           />
                         ) : (
                           <select
                             value={mistakeText}
                             onChange={(e) => setMistakeText(e.target.value)}
                             disabled={!mistakeType}
-                            style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
-                            className={`rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] ${
+                            style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+                            className={`focus:border-[var(--accent)] w-full focus:outline-none ${
                               !mistakeType ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'
                             }`}
                           >
@@ -2051,7 +2064,7 @@ export const TradeEntryPage: React.FC = () => {
 
                     {/* Notes textarea text input area */}
                     <div>
-                      <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                      <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                         Notes / Observations
                       </label>
                       <textarea
@@ -2059,8 +2072,8 @@ export const TradeEntryPage: React.FC = () => {
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
                         placeholder="What happened on this trade? What did you observe? What would you do differently? Key lesson..."
-                        style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
-                        className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)] resize-y"
+                        style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+                        className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)] resize-y"
                       />
                     </div>
                   </div>
@@ -2070,9 +2083,9 @@ export const TradeEntryPage: React.FC = () => {
               {/* RIGHT COLUMN (COL SPAN 1): sticky widgets Cards 7-10 */}
               <div className="space-y-4">
                 {/* CARD 7: LIVE TRADE SCORE CONTAINER */}
-                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '20px', position: 'sticky', top: '24px' }} className="z-10 transition-all">
+                <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '20px', position: 'sticky', top: '24px' }} className="z-10 transition-all">
                   <div className="flex justify-between items-center mb-4">
-                    <h2 style={{ color: 'var(--text)' }} className="text-[15px] font-semibold font-display tracking-tight">
+                    <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight">
                       Trade Score
                     </h2>
                     <span className="bg-green-50 text-green-600 border border-green-200 text-[10px] font-mono tracking-widest uppercase font-bold rounded-full px-2.5 py-0.5 animate-pulse">
@@ -2107,12 +2120,12 @@ export const TradeEntryPage: React.FC = () => {
 
                     {/* Overall composite score display */}
                     <div className="text-center font-sans space-y-1">
-                      <div style={{ color: 'var(--text-muted)' }} className="text-[11px] font-semibold tracking-[0.5px] uppercase">
+                      <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                         Overall Score
                       </div>
                       <div
                         style={{
-                          fontSize: '48px',
+                          fontSize: '36px',
                           fontWeight: '800',
                           color: overallScore >= 70 ? '#22c55e' : overallScore >= 50 ? '#f59e0b' : '#ef4444'
                         }}
@@ -2128,8 +2141,8 @@ export const TradeEntryPage: React.FC = () => {
                 </section>
 
                 {/* CARD 8: PSYCHOLOGY INDEX */}
-                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '16px 20px' }} className="relative overflow-hidden">
-                  <h2 style={{ color: 'var(--text)', fontSize: '15px', fontWeight: '600' }} className="font-display tracking-tight">
+                <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
+                  <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight">
                     Psychology Index
                   </h2>
                   <p style={{ color: 'var(--text-muted)' }} className="text-[11px] mt-1 mb-4">
@@ -2199,7 +2212,7 @@ export const TradeEntryPage: React.FC = () => {
 
                     {/* Composite psychological outcome result display */}
                     <div style={{ borderColor: 'var(--border)' }} className="border-t pt-4 mt-2">
-                       <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                       <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                         Psychological Condition
                       </div>
                       <div
@@ -2218,15 +2231,15 @@ export const TradeEntryPage: React.FC = () => {
                 </section>
 
                 {/* CARD 9: RISK MANAGEMENT */}
-                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '16px 20px' }} className="relative overflow-hidden">
-                  <h2 style={{ color: 'var(--text)', fontSize: '15px', fontWeight: '600' }} className="font-display tracking-tight mb-4">
+                <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
+                  <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight mb-4">
                     Risk Management
                   </h2>
 
                   <div className="space-y-4">
                     {/* Decided planned risk */}
                     <div>
-                      <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                      <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                         Planned Risk Before Entry (₹)
                       </label>
                       <input
@@ -2235,8 +2248,8 @@ export const TradeEntryPage: React.FC = () => {
                         value={decidedRisk}
                         onChange={(e) => setDecidedRisk(e.target.value)}
                         placeholder={risk || 'Amount you planned to risk'}
-                        style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
-                        className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)]"
+                        style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+                        className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
                       />
                       <span style={{ color: 'var(--text-muted)' }} className="text-[10px] italic mt-1.5 block">
                         May differ from actual Risk field inside Card 2
@@ -2246,7 +2259,7 @@ export const TradeEntryPage: React.FC = () => {
                     {/* Rating slider */}
                     <div>
                       <div className="flex justify-between items-center text-sm mb-2">
-                        <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                        <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                           Followed Risk Rules
                         </span>
                         <span
@@ -2276,15 +2289,15 @@ export const TradeEntryPage: React.FC = () => {
                 </section>
 
                 {/* CARD 10: TRADE MEDIA SECTION */}
-                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '16px 20px' }} className="relative overflow-hidden">
-                  <h2 style={{ color: 'var(--text)', fontSize: '15px', fontWeight: '600' }} className="font-display tracking-tight mb-4">
+                <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
+                  <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight mb-4">
                     Trade Media
                   </h2>
 
                   <div className="space-y-4">
                     {/* Chart Screenshot area */}
                     <div>
-                      <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                      <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                         Chart Screenshot
                       </label>
                       <input
@@ -2367,7 +2380,7 @@ export const TradeEntryPage: React.FC = () => {
 
                     {/* Trade Video URl */}
                     <div>
-                      <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                      <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                         Trade Recording URL (optional)
                       </label>
                       <input
@@ -2375,14 +2388,14 @@ export const TradeEntryPage: React.FC = () => {
                         value={tradeVideoUrl}
                         onChange={(e) => setTradeVideoUrl(e.target.value)}
                         placeholder="YouTube, Loom, or other recording link"
-                        style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}
-                        className="rounded-lg border-[0.5px] border-[var(--border)] focus:border focus:border-[var(--accent)] px-[14px] py-[10px] w-full focus:outline-none text-[13px] placeholder:text-[var(--text-muted)] font-mono"
+                        style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+                        className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)] font-mono"
                       />
                     </div>
 
                     {/* Trade Plan PDF/Image */}
                     <div>
-                      <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }} className="block mb-2">
+                      <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
                         Trade Plan (optional)
                       </label>
                       <input
