@@ -1169,7 +1169,7 @@ const TradeTrackingPageContent: React.FC = () => {
 
                       {/* FINANCIAL GRID */}
                       <div>
-                        <h3 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, borderColor: 'var(--border)' }} className="font-display uppercase tracking-wider mb-3 border-b pb-1">
+                        <h3 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, borderColor: 'var(--border)', textTransform: 'none' }} className="font-display tracking-wider mb-3 border-b pb-1">
                           Financial Calculations
                         </h3>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -1425,7 +1425,7 @@ const TradeTrackingPageContent: React.FC = () => {
 
                       {/* CONTEXT GRID */}
                       <div style={{ borderColor: 'var(--border)' }} className="mt-6 pt-5 border-t">
-                        <h3 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display uppercase tracking-wider mb-3 pb-1">
+                        <h3 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, textTransform: 'none' }} className="font-display tracking-wider mb-3 pb-1">
                           Trading Context Variables
                         </h3>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -1613,8 +1613,8 @@ const TradeTrackingPageContent: React.FC = () => {
                       className="p-6"
                     >
                       <div className="flex items-center justify-between mb-4">
-                        <span style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">
-                          ENTRY RULES
+                        <span style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, textTransform: 'none' }} className="font-display">
+                          Entry Rules
                         </span>
                         <button
                           type="button"
@@ -1697,8 +1697,8 @@ const TradeTrackingPageContent: React.FC = () => {
                       className="p-6"
                     >
                       <div className="flex items-center justify-between mb-4">
-                        <span style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">
-                          EXIT RULES
+                        <span style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, textTransform: 'none' }} className="font-display">
+                          Exit Rules
                         </span>
                         <button
                           type="button"
@@ -2239,7 +2239,7 @@ const TradeTrackingPageContent: React.FC = () => {
 
                    {/* CARD H: MEDIA VIEWER ZONE */}
                 <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="rounded-xl p-6 shadow-sm">
-                  <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display mb-3">
+                  <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, textTransform: 'none' }} className="font-display mb-3">
                     Trade Attachments
                   </h2>
 
