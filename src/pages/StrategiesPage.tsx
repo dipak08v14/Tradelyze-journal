@@ -520,6 +520,16 @@ export const StrategiesPage: React.FC = () => {
         <main className="flex-1 overflow-y-auto px-6 py-8">
           <div className="max-w-6xl mx-auto">
             
+            {/* PAGE HEADER */}
+            <div className="mb-6">
+              <h1 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }} className="font-display tracking-tight">
+                Strategies
+              </h1>
+              <p style={{ fontSize: '13px', fontWeight: 400, color: 'var(--text-sub)' }} className="mt-1">
+                Develop, evaluate, and scale your personal edge setup playbook.
+              </p>
+            </div>
+
             {/* NEW PAGE HEADER ROW */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 pb-2">
               {/* LEFT SIDE TABS */}
@@ -586,18 +596,26 @@ export const StrategiesPage: React.FC = () => {
                               <button
                                 key={st}
                                 onClick={() => setTempStatusFilter(st)}
-                                className="px-2 py-1 rounded-lg text-xs font-semibold text-center transition-all cursor-pointer"
+                                className="text-center transition-all cursor-pointer"
                                 style={
                                   isSelected
                                     ? {
-                                        backgroundColor: 'var(--accent-muted)',
+                                        background: 'var(--accent-muted)',
                                         color: 'var(--accent)',
-                                        border: '1px solid var(--accent)'
+                                        border: '1px solid var(--accent)',
+                                        borderRadius: '20px',
+                                        fontSize: '12px',
+                                        fontWeight: 600,
+                                        padding: '5px 14px'
                                       }
                                     : {
-                                        backgroundColor: 'var(--bar)',
+                                        background: 'var(--card)',
                                         color: 'var(--text-sub)',
-                                        border: '0.5px solid var(--border)'
+                                        border: '1px solid var(--border)',
+                                        borderRadius: '20px',
+                                        fontSize: '12px',
+                                        fontWeight: 400,
+                                        padding: '5px 14px'
                                       }
                                 }
                               >
@@ -618,18 +636,26 @@ export const StrategiesPage: React.FC = () => {
                               <button
                                 key={ty}
                                 onClick={() => setTempTypeFilter(ty)}
-                                className="px-2 py-1 rounded-lg text-xs font-semibold text-center transition-all cursor-pointer"
+                                className="text-center transition-all cursor-pointer"
                                 style={
                                   isSelected
                                     ? {
-                                        backgroundColor: 'var(--accent-muted)',
+                                        background: 'var(--accent-muted)',
                                         color: 'var(--accent)',
-                                        border: '1px solid var(--accent)'
+                                        border: '1px solid var(--accent)',
+                                        borderRadius: '20px',
+                                        fontSize: '12px',
+                                        fontWeight: 600,
+                                        padding: '5px 14px'
                                       }
                                     : {
-                                        backgroundColor: 'var(--bar)',
+                                        background: 'var(--card)',
                                         color: 'var(--text-sub)',
-                                        border: '0.5px solid var(--border)'
+                                        border: '1px solid var(--border)',
+                                        borderRadius: '20px',
+                                        fontSize: '12px',
+                                        fontWeight: 400,
+                                        padding: '5px 14px'
                                       }
                                 }
                               >
@@ -712,7 +738,19 @@ export const StrategiesPage: React.FC = () => {
                 {/* ADD NEW STRATEGY */}
                 <Link
                   to="/strategies/new"
-                  className="px-4 py-1.5 bg-cyan-600 font-semibold text-white rounded-xl text-xs hover:bg-cyan-500 shadow-md inline-flex items-center gap-1.5 transition-all cursor-pointer"
+                  style={{
+                    backgroundColor: 'var(--accent)',
+                    color: '#ffffff',
+                    fontWeight: 700,
+                    borderRadius: '10px',
+                    padding: '10px 20px',
+                    fontSize: '14px',
+                    border: 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px'
+                  }}
+                  className="shadow-md hover:brightness-105 transition-all cursor-pointer font-sans"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Add New Strategy</span>
@@ -939,22 +977,79 @@ export const StrategiesPage: React.FC = () => {
               </div>
             ) : (
               /* GRID MINIMAL VIEW (JUST NAME, TYP, STATUS, NO STATS) */
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
                 {paginatedStrategies.map((strat) => {
                   const isMenuOpen = activeMenuId === strat.id;
+                  const stats = computedStats[strat.id] || {
+                    totalTrades: 0,
+                    winRate: 0,
+                    netPnl: 0,
+                    avgR: 0,
+                    profitFactor: 1.00,
+                    expectancy: 0,
+                    missedTrades: 0,
+                    entryRulesCount: 0,
+                    exitRulesCount: 0
+                  };
+
+                  const strategyType = (strat.type_of_strategy || 'Neutral').trim();
+                  const lowerType = strategyType.toLowerCase();
+                  
+                  // Strategy type badge styles
+                  let typeBg = '#f1f5f9';
+                  let typeFg = '#475569';
+                  if (lowerType === 'breakout') {
+                    typeBg = '#dbeafe';
+                    typeFg = '#1d4ed8';
+                  } else if (lowerType === 'reversal') {
+                    typeBg = '#ede9fe';
+                    typeFg = '#6d28d9';
+                  }
+
+                  const cleanStatus = strat.status === 'active' ? 'Active' : strat.status === 'not_working' ? 'Not Working' : strat.status === 'retired' ? 'Retired' : strat.status;
+                  
+                  // Strategy status badge styles
+                  let statusBg = '#fee2e2';
+                  let statusFg = '#dc2626';
+                  if (cleanStatus === 'Active') {
+                    statusBg = '#d1fae5';
+                    statusFg = '#065f46';
+                  } else if (cleanStatus === 'Not Working') {
+                    statusBg = '#fef3c7';
+                    statusFg = '#92400e';
+                  }
+
+                  const totalRulesCount = (stats.entryRulesCount || 0) + (stats.exitRulesCount || 0);
 
                   return (
                     <div
                       key={strat.id}
                       onClick={() => navigate(`/strategies/${strat.id}`)}
-                      className="rounded-xl p-4 flex flex-col cursor-pointer border transition-all duration-[120ms] hover:border-zinc-700"
-                      style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', borderRadius: '10px' }}
+                      className="p-5 flex flex-col cursor-pointer border hover:border-zinc-700/50"
+                      style={{
+                        backgroundColor: 'var(--card)',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
+                        border: '1px solid rgba(0,0,0,0.06)',
+                        borderRadius: '12px',
+                        transition: 'box-shadow 150ms ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.05)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)';
+                      }}
                     >
                       {/* TOP ROW */}
-                      <div className="flex items-start justify-between gap-2 mb-2">
+                      <div className="flex items-start justify-between gap-2 mb-3">
                         <div className="flex items-center gap-2">
                           {getTypeSquare(strat.type_of_strategy)}
-                          <h3 className="font-semibold text-zinc-200 text-sm tracking-tight leading-snug line-clamp-1">{strat.name}</h3>
+                          <h3
+                            style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)' }}
+                            className="font-display tracking-tight leading-snug line-clamp-1"
+                          >
+                            {strat.name}
+                          </h3>
                         </div>
                         <div className="relative shrink-0" onClick={(e) => e.stopPropagation()}>
                           <button
@@ -965,7 +1060,7 @@ export const StrategiesPage: React.FC = () => {
                                 setActiveMenuId(strat.id);
                               }
                             }}
-                            className="p-1 rounded text-zinc-500 hover:text-white hover:bg-zinc-850 transition-colors cursor-pointer"
+                            className="p-1 rounded text-zinc-500 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
                           >
                             <MoreHorizontal className="w-3.5 h-3.5" />
                           </button>
@@ -1016,12 +1111,102 @@ export const StrategiesPage: React.FC = () => {
                         </div>
                       </div>
 
-                      {/* SECOND ROW */}
-                      <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
-                        <span className="text-[10px] text-zinc-500 font-mono font-semibold">{strat.type_of_strategy || 'Neutral'}</span>
-                        <span className="text-[10px] text-zinc-650 font-mono font-bold">·</span>
-                        {getStatusBadgeMinimal(strat.status)}
+                      {/* BADGES ROW */}
+                      <div className="flex items-center gap-2 mb-4 flex-wrap">
+                        <span
+                          style={{
+                            background: typeBg,
+                            color: typeFg,
+                            borderRadius: '6px',
+                            fontSize: '11px',
+                            fontWeight: 700,
+                            padding: '2px 8px'
+                          }}
+                        >
+                          {strategyType}
+                        </span>
+
+                        <span
+                          style={{
+                            background: statusBg,
+                            color: statusFg,
+                            borderRadius: '6px',
+                            fontSize: '11px',
+                            fontWeight: 700,
+                            padding: '2px 8px'
+                          }}
+                        >
+                          {cleanStatus}
+                        </span>
+
+                        <span style={{ fontSize: '12px', color: 'var(--text-muted)' }} className="ml-auto font-sans">
+                          {totalRulesCount} rules
+                        </span>
                       </div>
+
+                      {/* STATS BENTO GRID */}
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-3 py-3 border-t border-b border-[rgba(0,0,0,0.06)] mb-3">
+                        {/* Win Rate */}
+                        <div className="space-y-0.5">
+                          <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block">
+                            Win Rate
+                          </span>
+                          <span style={{ fontSize: '18px', fontWeight: 700, color: 'var(--accent)' }} className="block font-sans">
+                            {stats.winRate.toFixed(1)}%
+                          </span>
+                        </div>
+
+                        {/* Profit Factor */}
+                        <div className="space-y-0.5">
+                          <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block">
+                            Profit Factor
+                          </span>
+                          <span
+                            style={{
+                              fontSize: '18px',
+                              fontWeight: 700,
+                              color: typeof stats.profitFactor === 'number' && stats.profitFactor >= 1.0 ? 'var(--accent)' : stats.profitFactor === 'N/A' ? 'var(--accent)' : '#ef4444'
+                            }}
+                            className="block font-sans"
+                          >
+                            {typeof stats.profitFactor === 'number' ? stats.profitFactor.toFixed(2) : stats.profitFactor}
+                          </span>
+                        </div>
+
+                        {/* Trades */}
+                        <div className="space-y-0.5">
+                          <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block">
+                            Trades
+                          </span>
+                          <span style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text)' }} className="block font-sans">
+                            {stats.totalTrades}
+                          </span>
+                        </div>
+
+                        {/* Avg R */}
+                        <div className="space-y-0.5">
+                          <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block">
+                            Avg R
+                          </span>
+                          <span
+                            style={{
+                              fontSize: '18px',
+                              fontWeight: 700,
+                              color: stats.avgR >= 0 ? 'var(--accent)' : '#ef4444'
+                            }}
+                            className="block font-sans"
+                          >
+                            {stats.avgR >= 0 ? '+' : ''}{stats.avgR.toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* NOTES PREVIEW */}
+                      {strat.notes && (
+                        <p style={{ fontSize: '13px', color: 'var(--text-sub)', fontStyle: 'italic' }} className="line-clamp-2 leading-relaxed mt-1">
+                          {strat.notes}
+                        </p>
+                      )}
                     </div>
                   );
                 })}
