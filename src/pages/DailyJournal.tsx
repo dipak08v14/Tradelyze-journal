@@ -547,10 +547,10 @@ export const DailyJournal: React.FC = () => {
             {/* PAGE HEADER */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b" style={{ borderColor: 'var(--border)' }}>
               <div>
-                <h1 className="text-3xl font-extrabold tracking-tight font-display" style={{ color: 'var(--text)' }}>
+                <h1 className="font-display" style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }}>
                   Daily Journal
                 </h1>
-                <p className="text-sm mt-1.5" style={{ color: 'var(--text-sub)' }}>
+                <p className="mt-1.5" style={{ fontSize: '13px', fontWeight: 400, color: 'var(--text-sub)' }}>
                   Interactive day-by-day catalog of your trade histories.
                 </p>
               </div>
@@ -588,7 +588,7 @@ export const DailyJournal: React.FC = () => {
 
             {hasNoTradesEver ? (
               /* EMPTY STATE: NO TRADES EVER */
-              <div className="mt-12 rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+              <div className="mt-12 text-center flex flex-col items-center justify-center py-20" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}>
                 <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}>
                   <Award className="w-8 h-8 text-zinc-500" />
                 </div>
@@ -637,7 +637,7 @@ export const DailyJournal: React.FC = () => {
                     </div>
                   ) : sortedDates.length === 0 ? (
                     /* EMPTY STATE: NO TRADES IN SELECTED PERIOD */
-                    <div className="rounded-xl p-12 text-center flex flex-col items-center justify-center py-20" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                    <div className="text-center flex flex-col items-center justify-center py-20" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}>
                       <p className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
                         No trades found for {selectedMonth} {selectedYear}.
                       </p>
@@ -677,11 +677,12 @@ export const DailyJournal: React.FC = () => {
                           id={`day-card-${dateStr}`}
                           style={{
                             backgroundColor: 'var(--card)',
-                            border: isHighlighted ? '2px solid var(--accent)' : '0.5px solid var(--border)',
-                            boxShadow: isHighlighted ? '0 0 15px rgba(99, 102, 241, 0.35)' : 'none',
+                            border: isHighlighted ? '2px solid var(--accent)' : '1px solid rgba(0,0,0,0.06)',
+                            borderRadius: '12px',
+                            boxShadow: isHighlighted ? '0 0 15px rgba(99, 102, 241, 0.35)' : '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
                             transition: 'all 400ms ease-in-out',
                           }}
-                          className="rounded-xl overflow-hidden shadow-sm"
+                          className="overflow-hidden"
                         >
                           {/* CARD HEADER */}
                           <div
@@ -745,7 +746,7 @@ export const DailyJournal: React.FC = () => {
                             <div className="border-t px-5 pb-6 pt-4" style={{ borderColor: 'var(--border)' }}>
                               {/* SECTION 1 — Mini equity curve chart */}
                               <div className="mb-6">
-                                <h4 className="text-[10px] font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>
+                                <h4 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, textTransform: 'none' }} className="font-display mb-2">
                                   Running Net P&L Trajectory
                                 </h4>
                                 <div className="h-[120px] w-full rounded-lg" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}>
@@ -822,63 +823,63 @@ export const DailyJournal: React.FC = () => {
 
                               {/* SECTION 2 — Stats grid */}
                               <div className="mb-6">
-                                <h4 className="text-[10px] font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>
-                                  Day Performance Scorecard
+                                <h4 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, textTransform: 'none' }} className="font-display mb-2">
+                                  Daily Summary
                                 </h4>
-                                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 p-4 rounded-xl" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}>
+                                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 p-4 rounded-xl" style={{ backgroundColor: 'var(--row)', border: '1px solid var(--border)' }}>
                                   {/* Total Trades */}
                                   <div>
-                                    <span className="text-[10px] uppercase font-semibold text-zinc-500" style={{ color: 'var(--text-muted)' }}>Total Trades</span>
-                                    <p className="text-base font-bold font-mono mt-0.5" style={{ color: 'var(--text)' }}>
+                                    <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block">Total Trades</span>
+                                    <p className="font-mono mt-0.5" style={{ fontSize: '22px', fontWeight: 700, color: 'var(--text)' }}>
                                       {dayStats.totalTrades}
                                     </p>
                                   </div>
                                   {/* Winners */}
                                   <div>
-                                    <span className="text-[10px] uppercase font-semibold text-zinc-500" style={{ color: 'var(--text-muted)' }}>Winners</span>
-                                    <p className="text-base font-bold font-mono mt-0.5 text-green-400">
+                                    <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block">Winners</span>
+                                    <p className="font-mono mt-0.5" style={{ fontSize: '22px', fontWeight: 700, color: 'var(--text)' }}>
                                       {dayStats.winnersCount}
                                     </p>
                                   </div>
                                   {/* Gross P&L */}
                                   <div>
-                                    <span className="text-[10px] uppercase font-semibold text-zinc-500" style={{ color: 'var(--text-muted)' }}>Gross P&L</span>
-                                    <p className="text-base font-bold font-mono mt-0.5" style={{ color: dayStats.grossPnl >= 0 ? '#22c55e' : '#ef4444' }}>
+                                    <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block">Gross P&L</span>
+                                    <p className="font-mono mt-0.5" style={{ fontSize: '22px', fontWeight: 700, color: dayStats.grossPnl >= 0 ? '#22c55e' : '#ef4444' }}>
                                       {formatINR(dayStats.grossPnl)}
                                     </p>
                                   </div>
                                   {/* Commissions */}
                                   <div>
-                                    <span className="text-[10px] uppercase font-semibold text-zinc-500" style={{ color: 'var(--text-muted)' }}>Commissions</span>
-                                    <p className="text-base font-bold font-mono mt-0.5 text-zinc-400">
+                                    <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block">Commissions</span>
+                                    <p className="font-mono mt-0.5" style={{ fontSize: '22px', fontWeight: 700, color: dayStats.commissions > 0 ? '#ef4444' : 'var(--text)' }}>
                                       {formatINR(dayStats.commissions)}
                                     </p>
                                   </div>
                                   {/* Win Rate */}
                                   <div>
-                                    <span className="text-[10px] uppercase font-semibold text-zinc-500" style={{ color: 'var(--text-muted)' }}>Win Rate</span>
-                                    <p className="text-base font-bold font-mono mt-0.5" style={{ color: 'var(--text)' }}>
+                                    <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block">Win Rate</span>
+                                    <p className="font-mono mt-0.5" style={{ fontSize: '22px', fontWeight: 700, color: 'var(--accent)' }}>
                                       {dayStats.winRate}
                                     </p>
                                   </div>
                                   {/* Losers */}
                                   <div>
-                                    <span className="text-[10px] uppercase font-semibold text-zinc-500" style={{ color: 'var(--text-muted)' }}>Losers</span>
-                                    <p className="text-base font-bold font-mono mt-0.5 text-red-400">
+                                    <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block">Losers</span>
+                                    <p className="font-mono mt-0.5" style={{ fontSize: '22px', fontWeight: 700, color: 'var(--text)' }}>
                                       {dayStats.losersCount}
                                     </p>
                                   </div>
                                   {/* Volume */}
                                   <div>
-                                    <span className="text-[10px] uppercase font-semibold text-zinc-500" style={{ color: 'var(--text-muted)' }}>Volume</span>
-                                    <p className="text-base font-bold font-mono mt-0.5" style={{ color: 'var(--text)' }}>
+                                    <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block">Volume</span>
+                                    <p className="font-mono mt-0.5" style={{ fontSize: '22px', fontWeight: 700, color: 'var(--text)' }}>
                                       {dayStats.volume}
                                     </p>
                                   </div>
                                   {/* Profit Factor */}
                                   <div>
-                                    <span className="text-[10px] uppercase font-semibold text-zinc-500" style={{ color: 'var(--text-muted)' }}>Profit Factor</span>
-                                    <p className="text-base font-bold font-mono mt-0.5" style={{ color: 'var(--text)' }}>
+                                    <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block">Profit Factor</span>
+                                    <p className="font-mono mt-0.5" style={{ fontSize: '22px', fontWeight: 700, color: 'var(--text)' }}>
                                       {dayStats.profitFactor}
                                     </p>
                                   </div>
@@ -887,23 +888,23 @@ export const DailyJournal: React.FC = () => {
 
                               {/* SECTION 3 — Trade table */}
                               <div>
-                                <h4 className="text-[10px] font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>
-                                  Individual Day Trades
+                                <h4 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, textTransform: 'none' }} className="font-display mb-2">
+                                  Trade List
                                 </h4>
-                                <div className="overflow-x-auto" style={{ border: '0.5px solid var(--border)', borderRadius: '10px' }}>
+                                <div className="overflow-x-auto" style={{ border: '1px solid var(--border)', borderRadius: '10px' }}>
                                   <table className="w-full text-left border-collapse text-xs">
                                     <thead>
-                                      <tr style={{ backgroundColor: 'var(--bar)', borderBottom: '0.5px solid var(--border)' }}>
-                                        <th className="px-4 py-2.5 font-semibold uppercase tracking-wider text-[10px]" style={{ color: 'var(--text-muted)' }}>Time</th>
-                                        <th className="px-4 py-2.5 font-semibold uppercase tracking-wider text-[10px]" style={{ color: 'var(--text-muted)' }}>Symbol</th>
-                                        <th className="px-4 py-2.5 font-semibold uppercase tracking-wider text-[10px]" style={{ color: 'var(--text-muted)' }}>Dir</th>
-                                        <th className="px-4 py-2.5 font-semibold uppercase tracking-wider text-[10px]" style={{ color: 'var(--text-muted)' }}>Setup</th>
-                                        <th className="px-4 py-2.5 font-semibold uppercase tracking-wider text-[10px]" style={{ color: 'var(--text-muted)' }}>Qty</th>
-                                        <th className="px-4 py-2.5 font-semibold uppercase tracking-wider text-[10px]" style={{ color: 'var(--text-muted)' }}>Net P&L</th>
-                                        <th className="px-4 py-2.5 font-semibold uppercase tracking-wider text-[10px]" style={{ color: 'var(--text-muted)' }}>R</th>
-                                        <th className="px-4 py-2.5 font-semibold uppercase tracking-wider text-[10px]" style={{ color: 'var(--text-muted)' }}>Execution</th>
-                                        <th className="px-4 py-2.5 font-semibold uppercase tracking-wider text-[10px]" style={{ color: 'var(--text-muted)' }}>Hold</th>
-                                        <th className="px-4 py-2.5 font-semibold uppercase tracking-wider text-[10px]" style={{ color: 'var(--text-muted)' }}>Result</th>
+                                      <tr style={{ backgroundColor: 'var(--bar)', borderBottom: '1px solid var(--border)' }}>
+                                        <th className="px-4 py-2.5" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Time</th>
+                                        <th className="px-4 py-2.5" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Symbol</th>
+                                        <th className="px-4 py-2.5" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Dir</th>
+                                        <th className="px-4 py-2.5" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Setup</th>
+                                        <th className="px-4 py-2.5" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Qty</th>
+                                        <th className="px-4 py-2.5" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Net P&L</th>
+                                        <th className="px-4 py-2.5" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>R</th>
+                                        <th className="px-4 py-2.5" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Execution</th>
+                                        <th className="px-4 py-2.5" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Hold</th>
+                                        <th className="px-4 py-2.5" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Result</th>
                                       </tr>
                                     </thead>
                                     <tbody className="divide-y" style={{ borderColor: 'var(--border)' }}>
@@ -912,7 +913,7 @@ export const DailyJournal: React.FC = () => {
                                           <tr
                                             key={t.id}
                                             onClick={() => navigate(`/trade/${t.id}`)}
-                                            className="hover:bg-zinc-50/5 transition-colors cursor-pointer"
+                                            className="hover:bg-[rgba(0,0,0,0.025)] transition-colors cursor-pointer"
                                           >
                                             {/* Column 1 - Time */}
                                             <td className="px-4 py-2.5 font-mono" style={{ color: 'var(--text)' }}>
@@ -953,8 +954,8 @@ export const DailyJournal: React.FC = () => {
                                             </td>
 
                                             {/* Column 6 - Net P&L */}
-                                            <td className="px-4 py-2.5 font-mono font-bold">
-                                              <span style={{ color: (t.pnl || 0) >= 0 ? '#22c55e' : '#ef4444' }}>
+                                            <td className="px-4 py-2.5 font-mono">
+                                              <span style={{ color: (t.pnl || 0) >= 0 ? '#22c55e' : '#ef4444', fontWeight: 600 }}>
                                                 {t.pnl !== null ? formatINR(t.pnl) : '—'}
                                               </span>
                                             </td>
@@ -962,7 +963,7 @@ export const DailyJournal: React.FC = () => {
                                             {/* Column 7 - R */}
                                             <td className="px-4 py-2.5 font-mono">
                                               {t.r_multiple !== null && t.r_multiple !== undefined ? (
-                                                <span style={{ color: t.r_multiple >= 0 ? '#22c55e' : '#ef4444' }} className="font-bold">
+                                                <span style={{ color: t.r_multiple >= 0 ? '#22c55e' : '#ef4444', fontWeight: 600 }}>
                                                   {t.r_multiple >= 0 ? '+' : ''}
                                                   {t.r_multiple.toFixed(1)}R
                                                 </span>
@@ -1048,8 +1049,13 @@ export const DailyJournal: React.FC = () => {
                 {/* RIGHT SIDEBAR (~25%): CALENDAR WIDGET */}
                 <div className="lg:col-span-1">
                   <div
-                    style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
-                    className="rounded-xl p-4 sticky top-6 shadow-sm select-none"
+                    style={{
+                      backgroundColor: 'var(--card)',
+                      border: '1px solid rgba(0,0,0,0.06)',
+                      borderRadius: '12px',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
+                    }}
+                    className="p-4 sticky top-6 select-none"
                   >
                     {/* CALENDAR HEADER */}
                     <div className="flex items-center justify-between pb-3 border-b" style={{ borderColor: 'var(--border)' }}>
@@ -1091,6 +1097,7 @@ export const DailyJournal: React.FC = () => {
                         const tradesOnDay = groupedTrades[dayObj.dateStr] || [];
                         const hasTrades = tradesOnDay.length > 0;
                         const isToday = dayObj.dateStr === todayStr;
+                        const isSelected = dayObj.dateStr === highlightedDay;
 
                         // Calculate Net P&L for highlighting
                         const daySumPnl = tradesOnDay.reduce((sum, t) => sum + (t.pnl || 0), 0);
@@ -1109,7 +1116,12 @@ export const DailyJournal: React.FC = () => {
                           borderRadius: '6px',
                           cursor: 'pointer',
                           position: 'relative',
-                          border: isToday ? '1.5px solid var(--accent)' : '1px solid transparent',
+                          border: isSelected
+                            ? '2px solid var(--accent)'
+                            : isToday
+                            ? '1.5px dashed var(--accent)'
+                            : '1px solid transparent',
+                          boxShadow: isSelected ? '0 0 10px rgba(99, 102, 241, 0.25)' : 'none',
                         };
 
                         if (hasTrades) {
