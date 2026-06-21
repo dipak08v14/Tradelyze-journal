@@ -42,7 +42,7 @@ export default async function handler(req, res) {
       .order('opening_time', { ascending: false });
 
     if (error) {
-      return res.status(550).json({ error: 'Database query failed', detail: error.message });
+      return res.status(500).json({ error: 'Database query failed', detail: error.message });
     }
 
     return res.status(200).json({ positions: data || [] });

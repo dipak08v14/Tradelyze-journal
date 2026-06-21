@@ -928,7 +928,7 @@ export const AnnualReportsPage: React.FC = () => {
                       >
                         <table className="w-full text-left">
                           <thead>
-                            <tr style={{ background: 'rgba(0,0,0,0.02)', borderBottom: '1px solid var(--border)' }}>
+                            <tr style={{ background: 'rgba(0, 0, 0, 0.04)', borderBottom: '1px solid rgba(0, 0, 0, 0.08)' }}>
                               <th className="px-4 py-2.5 font-sans" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Setup Name</th>
                               <th className="px-3 py-2.5 text-center font-sans" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Trades</th>
                               <th className="px-3 py-2.5 text-center font-sans" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Win Rate</th>
@@ -940,10 +940,11 @@ export const AnnualReportsPage: React.FC = () => {
                               <tr
                                 key={setupItem.name}
                                 style={{
-                                  borderColor: 'var(--border)',
-                                  background: sIdx % 2 === 1 ? 'rgba(0,0,0,0.015)' : 'transparent'
+                                  background: sIdx % 2 === 1 ? 'rgba(0, 0, 0, 0.018)' : 'transparent',
+                                  borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
+                                  borderTop: sIdx === 0 ? '1px solid rgba(0, 0, 0, 0.06)' : undefined,
                                 }}
-                                className="border-b last:border-0 transition-colors hover:bg-[rgba(0,0,0,0.025)]"
+                                className="border-b transition-colors hover:bg-[rgba(0, 0, 0, 0.03)] cursor-pointer"
                               >
                                 <td style={{ color: 'var(--text)', fontSize: '12px', fontWeight: 500 }} className="px-4 py-2.5">
                                   {setupItem.name}
