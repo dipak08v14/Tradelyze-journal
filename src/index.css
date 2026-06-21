@@ -254,6 +254,66 @@ div.bg-zinc-900\/40 {
   box-shadow: none;
 }
 
+/* =============================================
+   TRADELYZE Typography System — Phase 1
+   ============================================= */
+
+/* For page titles (Dashboard, Trading Logs, etc.) */
+.text-l1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+/* For section headings (Cumulative P&L, Daily P&L, etc.) */
+.text-l2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+/* For KPI labels and field labels (NET P&L, TOTAL TRADES, WIN RATE, etc.) */
+.text-l3 {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* For body copy, sub-text, captions, context notes */
+.text-l4 {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-sub);
+  line-height: 1.5;
+}
+
+/* For the primary hero KPI value on a card (e.g. ₹1,815 on the NET P&L card) */
+.kpi-hero {
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+/* For standard KPI values across stat cards */
+.kpi-standard {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+/* For secondary stat values and supporting numbers */
+.kpi-secondary {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.2;
+}
+
 
 
 
