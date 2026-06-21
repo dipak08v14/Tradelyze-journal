@@ -66,49 +66,42 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
       }}
     >
       {/* Top logo section */}
-      <div className="flex flex-col gap-2" style={{ padding: '20px 16px', borderBottom: '0.5px solid var(--border)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <svg width="22" height="20" viewBox="0 0 108 102" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <linearGradient id="sidebarGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="var(--accent)" />
-                  <stop offset="100%" stopColor="var(--accent)" stopOpacity={0.8} />
-                </linearGradient>
-              </defs>
-              <path d="M16 21h45.5l-3.5 11.5H41v40H26.5v-40H16Z" fill="url(#sidebarGrad)" />
-              <path d="M65 21h14.5L67.8 61H96l-3.5 11.5H50Z" fill="var(--text)" />
-            </svg>
-            <span style={{ fontSize: '14px', fontWeight: '800', letterSpacing: '1px', color: 'var(--accent)', fontFamily: 'Inter, sans-serif' }}>
-              TRADELYZE
-            </span>
-          </div>
-          {mobileOpen && (
-            <button
-              onClick={() => setMobileOpen(false)}
-              className="md:hidden p-1 bg-transparent rounded-lg cursor-pointer"
-              style={{ color: 'var(--text-sub)' }}
-              aria-label="Close menu"
-            >
-              <X className="w-5 h-5 animate-none" />
-            </button>
-          )}
-        </div>
-        
-        {/* current month pill */}
-        <div className="self-start">
-          <span style={{ 
-            backgroundColor: 'var(--accent-muted)', 
-            color: 'var(--accent)', 
-            fontSize: '11px', 
-            fontWeight: '600', 
-            borderRadius: '999px', 
-            padding: '3px 10px',
-            display: 'inline-block'
-          }}>
-            {new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}
-          </span>
-        </div>
+      <div 
+        id="sidebar-logo-wrapper"
+        style={{ 
+          padding: '20px 16px 16px 16px', 
+          borderBottom: '1px solid var(--border)', 
+          display: 'block',
+          position: 'relative'
+        }}
+      >
+        <span 
+          id="sidebar-brand-text"
+          style={{ 
+            fontSize: '22px', 
+            fontWeight: 900, 
+            color: 'var(--text)', 
+            letterSpacing: '0.02em',
+            textTransform: 'uppercase',
+            whiteSpace: 'nowrap'
+          }}
+        >
+          TRADELYZE
+        </span>
+        {mobileOpen && (
+          <button
+            onClick={() => setMobileOpen(false)}
+            className="md:hidden p-1 bg-transparent rounded-lg cursor-pointer absolute"
+            style={{ 
+              color: 'var(--text-sub)',
+              top: '20px',
+              right: '16px'
+            }}
+            aria-label="Close menu"
+          >
+            <X className="w-5 h-5 animate-none" />
+          </button>
+        )}
       </div>
 
       {/* Navigation items section */}
