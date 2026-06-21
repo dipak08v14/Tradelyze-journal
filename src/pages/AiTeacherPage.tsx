@@ -546,11 +546,11 @@ export const AiTeacherPage: React.FC = () => {
             <div>
               <div className="flex items-center gap-2">
                 <Brain style={{ color: 'var(--accent)' }} className="w-6 h-6 animate-pulse" />
-                <h1 style={{ color: 'var(--text)' }} className="text-xl font-extrabold tracking-tight font-display">
+                <h1 style={{ color: 'var(--text)', fontSize: '28px', fontWeight: 700, letterSpacing: '-0.3px' }} className="tracking-tight font-display">
                   AI Teacher
                 </h1>
               </div>
-              <p style={{ color: 'var(--text-muted)' }} className="text-[11px] font-medium">
+              <p style={{ color: 'var(--text-sub)', fontSize: '13px', fontWeight: 400 }} className="mt-1">
                 On-demand Claude AI performance coaching aligned with ICT frameworks.
               </p>
             </div>
@@ -585,12 +585,12 @@ export const AiTeacherPage: React.FC = () => {
             <aside style={{ backgroundColor: 'var(--bg-sub, #FAF9F6)', borderColor: 'var(--border)' }} className="w-full lg:w-[350px] border-r p-5 overflow-y-auto shrink-0 space-y-5">
               
               {/* SPECIFIC TRADE SELECT BOX */}
-              <div style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }} className="p-4 border rounded-2xl space-y-2.5 shadow-sm">
-                <div style={{ color: 'var(--text)' }} className="flex items-center gap-1.5 text-xs font-bold">
+              <div style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }} className="p-4 space-y-2.5">
+                <div style={{ color: 'var(--text)', fontSize: '14px', fontWeight: 600 }} className="flex items-center gap-1.5">
                   <Compass style={{ color: 'var(--accent)' }} className="w-4 h-4" />
                   <span>Trade Focus</span>
                 </div>
-                <p style={{ color: 'var(--text-muted)' }} className="text-[10px]">
+                <p style={{ color: 'var(--text-sub)', fontSize: '12px' }} className="">
                   Select a specific trade. Claude will parse its checklist, rules, stress parameters, and risk ratios.
                 </p>
                 <select
@@ -626,39 +626,39 @@ export const AiTeacherPage: React.FC = () => {
 
               {/* MENTAL PREDEFINED PROMPTS LIST */}
               <div className="space-y-3">
-                <h3 style={{ color: 'var(--text-muted)' }} className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 pl-1">
+                <h3 style={{ color: 'var(--text-muted)', fontSize: '13px', fontWeight: 600, textTransform: 'none' }} className="flex items-center gap-1.5 pl-1">
                   <HelpCircle className="w-3.5 h-3.5" />
                   <span>Suggested Prompts</span>
                 </h3>
                 <div className="grid grid-cols-1 gap-2">
                   <button
                     onClick={() => handlePredefined("What is my top repeated mistake and how can I resolve it using ICT concepts?")}
-                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '20px' }}
-                    className="w-full text-left py-2.5 px-4 transition-all text-xs text-zinc-500 cursor-pointer font-semibold hover:bg-[var(--accent-muted)] hover:text-[var(--accent)] hover:border-[var(--accent)] flex items-center justify-between group"
+                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', color: 'var(--text)' }}
+                    className="w-full text-left transition-all cursor-pointer font-semibold hover:text-[var(--accent)] hover:border-[var(--accent)] flex items-center justify-between group"
                   >
                     <span>What is my top repeated mistake?</span>
                     <ArrowRight style={{ color: 'var(--accent)' }} className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transform translate-x-[-4px] group-hover:translate-x-0 transition-all font-bold" />
                   </button>
                   <button
                     onClick={() => handlePredefined("Analyze my emotional condition and discipline scores. Are there patterns?")}
-                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '20px' }}
-                    className="w-full text-left py-2.5 px-4 transition-all text-xs text-zinc-500 cursor-pointer font-semibold hover:bg-[var(--accent-muted)] hover:text-[var(--accent)] hover:border-[var(--accent)] flex items-center justify-between group"
+                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', color: 'var(--text)' }}
+                    className="w-full text-left transition-all cursor-pointer font-semibold hover:text-[var(--accent)] hover:border-[var(--accent)] flex items-center justify-between group"
                   >
                     <span>Analyze emotional condition and scores?</span>
                     <ArrowRight style={{ color: 'var(--accent)' }} className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transform translate-x-[-4px] group-hover:translate-x-0 transition-all font-bold" />
                   </button>
                   <button
                     onClick={() => handlePredefined("Are my Win Rate and R-Multiple aligned for long-term consistency?")}
-                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '20px' }}
-                    className="w-full text-left py-2.5 px-4 transition-all text-xs text-zinc-500 cursor-pointer font-semibold hover:bg-[var(--accent-muted)] hover:text-[var(--accent)] hover:border-[var(--accent)] flex items-center justify-between group"
+                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', color: 'var(--text)' }}
+                    className="w-full text-left transition-all cursor-pointer font-semibold hover:text-[var(--accent)] hover:border-[var(--accent)] flex items-center justify-between group"
                   >
                     <span>Win Rate & R-Multiple long-term consistency?</span>
                     <ArrowRight style={{ color: 'var(--accent)' }} className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transform translate-x-[-4px] group-hover:translate-x-0 transition-all font-bold" />
                   </button>
                   <button
                     onClick={() => handlePredefined("Provide a step-by-step trading plan to improve my risk-to-reward ratio.")}
-                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '20px' }}
-                    className="w-full text-left py-2.5 px-4 transition-all text-xs text-zinc-500 cursor-pointer font-semibold hover:bg-[var(--accent-muted)] hover:text-[var(--accent)] hover:border-[var(--accent)] flex items-center justify-between group"
+                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', color: 'var(--text)' }}
+                    className="w-full text-left transition-all cursor-pointer font-semibold hover:text-[var(--accent)] hover:border-[var(--accent)] flex items-center justify-between group"
                   >
                     <span>Get a plan to improve my risk ratio</span>
                     <ArrowRight style={{ color: 'var(--accent)' }} className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transform translate-x-[-4px] group-hover:translate-x-0 transition-all font-bold" />
@@ -668,31 +668,31 @@ export const AiTeacherPage: React.FC = () => {
 
               {/* QUICK STATS PANEL BOX */}
               {!loading && stats && (
-                <div style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }} className="p-4 border rounded-2xl space-y-3 shadow-sm">
-                  <div style={{ color: 'var(--text)' }} className="flex items-center gap-1.5 text-xs font-bold">
+                <div style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }} className="p-4 space-y-3">
+                  <div style={{ color: 'var(--text)', fontSize: '14px', fontWeight: 600 }} className="flex items-center gap-1.5 font-bold">
                     <Activity style={{ color: 'var(--accent)' }} className="w-3.5 h-3.5" />
                     <span>Scanned Context Variables</span>
                   </div>
                   <div style={{ borderColor: 'var(--border)' }} className="divide-y text-[11px] font-mono">
                     <div style={{ borderColor: 'var(--border)' }} className="py-2 flex justify-between">
-                      <span style={{ color: 'var(--text-muted)' }}>Total Scanned Trades:</span>
-                      <span style={{ color: 'var(--text)' }} className="font-bold">{stats.overall?.totalTrades}</span>
+                      <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500 }}>Total Scanned Trades:</span>
+                      <span style={{ color: 'var(--text)', fontSize: '13px', fontWeight: 600 }}>{stats.overall?.totalTrades}</span>
                     </div>
                     <div style={{ borderColor: 'var(--border)' }} className="py-2 flex justify-between">
-                      <span style={{ color: 'var(--text-muted)' }}>Win Rate:</span>
-                      <span className={`font-bold ${scoreColor(stats.overall?.winRate || 0)}`}>{stats.overall?.winRate?.toFixed(1)}%</span>
+                      <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500 }}>Win Rate:</span>
+                      <span style={{ fontSize: '13px', fontWeight: 600 }} className={`font-bold ${scoreColor(stats.overall?.winRate || 0)}`}>{stats.overall?.winRate?.toFixed(1)}%</span>
                     </div>
                     <div style={{ borderColor: 'var(--border)' }} className="py-2 flex justify-between">
-                      <span style={{ color: 'var(--text-muted)' }}>Net Profit Factor:</span>
-                      <span style={{ color: 'var(--text)' }} className="font-bold">{stats.overall?.profitFactor === 999 ? '∞' : stats.overall?.profitFactor?.toFixed(2)}</span>
+                      <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500 }}>Net Profit Factor:</span>
+                      <span style={{ color: 'var(--text)', fontSize: '13px', fontWeight: 600 }}>{stats.overall?.profitFactor === 999 ? '∞' : stats.overall?.profitFactor?.toFixed(2)}</span>
                     </div>
                     <div style={{ borderColor: 'var(--border)' }} className="py-2 flex justify-between">
-                      <span style={{ color: 'var(--text-muted)' }}>Top Mistake Pattern:</span>
-                      <span style={{ color: 'var(--text)' }} className="font-bold truncate max-w-[140px]">{stats.topMistake ? `"${stats.topMistake[0]}"` : 'None'}</span>
+                      <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500 }}>Top Mistake Pattern:</span>
+                      <span style={{ color: 'var(--text)', fontSize: '13px', fontWeight: 600 }} className="truncate max-w-[140px]">{stats.topMistake ? `"${stats.topMistake[0]}"` : 'None'}</span>
                     </div>
                     <div style={{ borderColor: 'var(--border)' }} className="py-2 flex justify-between border-b pb-2">
-                      <span style={{ color: 'var(--text-muted)' }}>Avg Overall Score:</span>
-                      <span className={`font-bold ${scoreColor(stats.scores?.avgOverall || 0)}`}>{stats.scores?.avgOverall?.toFixed(0)}%</span>
+                      <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500 }}>Avg Overall Score:</span>
+                      <span style={{ fontSize: '13px', fontWeight: 600 }} className={`font-bold ${scoreColor(stats.scores?.avgOverall || 0)}`}>{stats.scores?.avgOverall?.toFixed(0)}%</span>
                     </div>
                   </div>
                 </div>
