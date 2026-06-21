@@ -76,7 +76,7 @@ export default async function handler(req, res) {
     );
 
     // Get the authenticated user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     if (authError || !user) {
       return res.status(401).json({ error: 'Unauthorized: User authentication failed' });
     }
