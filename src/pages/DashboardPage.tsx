@@ -1173,7 +1173,7 @@ export const DashboardPage: React.FC = () => {
               /* ACTIVE DASHBOARD RENDER OUT */
               <div className="space-y-5">
                 {/* SECTION 2: KEY STATS ROW */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3" style={{ marginTop: '4px' }}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
                   {/* Card 1 — NET P&L */}
                   <div 
                     style={{ 
