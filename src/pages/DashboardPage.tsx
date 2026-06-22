@@ -64,6 +64,70 @@ const formatDayHeaderDate = (dateStr: string) => {
   }
 };
 
+const SemicircleGauge: React.FC<{ percentage: number }> = ({ percentage }) => {
+  const radius = 25;
+  const pathLength = Math.PI * radius; // ~78.54
+  const val = Math.min(Math.max(percentage, 0), 100);
+  const offset = pathLength * (1 - val / 100);
+  return (
+    <svg width="60" height="32" viewBox="0 0 60 32" className="overflow-visible inline-block">
+      {/* Background Arc */}
+      <path
+        d="M 5,30 A 25,25 0 0,1 55,30"
+        fill="none"
+        stroke="var(--border)"
+        strokeWidth="4"
+        strokeLinecap="round"
+      />
+      {/* Colored Foreground Arc */}
+      <path
+        d="M 5,30 A 25,25 0 0,1 55,30"
+        fill="none"
+        stroke="#22c55e"
+        strokeWidth="4"
+        strokeLinecap="round"
+        strokeDasharray={pathLength}
+        strokeDashoffset={offset}
+        className="transition-all duration-500 ease-out"
+        style={{ stroke: '#22c55e' }}
+      />
+    </svg>
+  );
+};
+
+const CircleGauge: React.FC<{ value: number }> = ({ value }) => {
+  const radius = 21;
+  const circ = 2 * Math.PI * radius; // ~131.95
+  const cap = Math.min(Math.max(value, 0), 3.0);
+  const offset = circ * (1 - cap / 3.0);
+  return (
+    <svg width="50" height="50" viewBox="0 0 50 50" className="overflow-visible inline-block">
+      <circle
+        cx="25"
+        cy="25"
+        r={radius}
+        fill="none"
+        stroke="var(--border)"
+        strokeWidth="3.5"
+      />
+      <circle
+        cx="25"
+        cy="25"
+        r={radius}
+        fill="none"
+        stroke="#22c55e"
+        strokeWidth="3.5"
+        strokeLinecap="round"
+        strokeDasharray={circ}
+        strokeDashoffset={offset}
+        transform="rotate(-90 25 25)"
+        className="transition-all duration-500 ease-out"
+        style={{ stroke: '#22c55e' }}
+      />
+    </svg>
+  );
+};
+
 const getBrokerCode = (broker: any) => {
   const name = (broker.broker_name || broker.broker_type || '').toLowerCase();
   if (name.includes('dhan')) return 'DH';
@@ -1087,111 +1151,173 @@ export const DashboardPage: React.FC = () => {
               /* ACTIVE DASHBOARD RENDER OUT */
               <div className="space-y-5">
                 {/* SECTION 2: KEY STATS ROW */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
                   {/* Card 1 — NET P&L */}
-                  <div className="p-[14px] px-[18px]" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
-                    <div className="mb-1.5" style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                      NET P&L
+                  <div 
+                    style={{ 
+                      height: '130px', 
+                      display: 'flex', 
+                      flexDirection: 'column', 
+                      justifyContent: 'space-between', 
+                      backgroundColor: 'var(--card)', 
+                      border: '1px solid rgba(0, 0, 0, 0.06)', 
+                      borderRadius: '12px', 
+                      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
+                      padding: '12px'
+                    }}
+                  >
+                    <div>
+                      <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>
+                        NET P&L
+                      </div>
+                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: stats.totalPnl > 0 ? '#22c55e' : stats.totalPnl < 0 ? '#ef4444' : 'var(--text)', lineHeight: '1.2' }}>
+                        {formatPnlNoDecimals(stats.totalPnl)}
+                      </div>
                     </div>
-                    <div className="font-sans" style={{ fontSize: '26px', fontWeight: 700, color: stats.totalPnl > 0 ? '#22c55e' : stats.totalPnl < 0 ? '#ef4444' : 'var(--text)', lineHeight: '1.1' }}>
-                      {formatPnlNoDecimals(stats.totalPnl)}
-                    </div>
-                    <div style={{ color: 'var(--text-sub)', fontSize: '12px', fontWeight: 400 }} className="mt-1">
-                      {stats.totalTrades} trades
-                    </div>
-                    <div className="mt-1" style={{ color: 'var(--text-sub)', fontSize: '12px', fontWeight: 400 }}>
-                      This month
-                    </div>
-                  </div>
-
-                  {/* Card 2 — TOTAL TRADES */}
-                  <div className="p-[14px] px-[18px]" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
-                    <div className="mb-1.5" style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                      TOTAL TRADES
-                    </div>
-                    <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text)', lineHeight: '1.1' }}>
-                      {stats.totalTrades}
-                    </div>
-                    <div className="mt-1" style={{ color: 'var(--text-sub)', fontSize: '12px', fontWeight: 400 }}>
-                      W: {stats.wins.length} &middot; L: {stats.losses.length} &middot; BE: {stats.breakevens.length}
+                    <div style={{ color: 'var(--text-sub)', fontSize: '11px', fontWeight: 400 }}>
+                      {stats.totalTrades} {stats.totalTrades === 1 ? 'trade' : 'trades'}
                     </div>
                   </div>
 
-                  {/* Card 3 — WIN RATE */}
-                  <div className="p-[14px] px-[18px]" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
-                    <div className="mb-1.5" style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                      WIN RATE
+                  {/* Card 2 — TRADE WIN % */}
+                  <div 
+                    style={{ 
+                      height: '130px', 
+                      display: 'flex', 
+                      flexDirection: 'column', 
+                      justifyContent: 'space-between', 
+                      backgroundColor: 'var(--card)', 
+                      border: '1px solid rgba(0, 0, 0, 0.06)', 
+                      borderRadius: '12px', 
+                      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
+                      padding: '12px'
+                    }}
+                  >
+                    <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      TRADE WIN %
                     </div>
-                    <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--accent)', lineHeight: '1.1' }}>
-                      {stats.winRate.toFixed(0)}%
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexGrow: 1 }}>
+                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--accent)', lineHeight: '1.1' }}>
+                        {stats.winRate.toFixed(2)}%
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <SemicircleGauge percentage={stats.winRate} />
+                      </div>
                     </div>
-                    <div className="mt-1" style={{ color: 'var(--text-sub)', fontSize: '12px', fontWeight: 400 }}>
-                      Win days this month
+                    <div style={{ fontSize: '11px', fontWeight: 505, display: 'flex', gap: '4px' }} className="font-mono">
+                      <span style={{ color: '#22c55e' }}>{stats.wins.length}</span>
+                      <span style={{ color: 'var(--text-muted)' }}>|</span>
+                      <span style={{ color: 'var(--text-sub)' }}>{stats.breakevens.length}</span>
+                      <span style={{ color: 'var(--text-muted)' }}>|</span>
+                      <span style={{ color: '#ef4444' }}>{stats.losses.length}</span>
                     </div>
                   </div>
 
-                  {/* Card 4 — PROFIT FACTOR */}
-                  <div className="p-[14px] px-[18px]" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
-                    <div className="mb-1.5" style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  {/* Card 3 — PROFIT FACTOR */}
+                  <div 
+                    style={{ 
+                      height: '130px', 
+                      display: 'flex', 
+                      flexDirection: 'column', 
+                      justifyContent: 'space-between', 
+                      backgroundColor: 'var(--card)', 
+                      border: '1px solid rgba(0, 0, 0, 0.06)', 
+                      borderRadius: '12px', 
+                      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
+                      padding: '12px'
+                    }}
+                  >
+                    <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       PROFIT FACTOR
                     </div>
-                    <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--accent)', lineHeight: '1.1' }}>
-                      {stats.profitFactor === 999 ? '∞' : stats.profitFactor.toFixed(2)}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexGrow: 1 }}>
+                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--accent)', lineHeight: '1.1' }}>
+                        {stats.profitFactor === 999 ? '∞' : stats.profitFactor.toFixed(2)}
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <CircleGauge value={stats.profitFactor} />
+                      </div>
                     </div>
-                    <div className="mt-1" style={{ color: 'var(--text-sub)', fontSize: '12px', fontWeight: 400 }}>
-                      Target: &gt;1.5
-                    </div>
+                    <div style={{ height: '16px' }} />
                   </div>
 
-                  {/* ADDITION 2 — DAY WIN % STATUS CARD */}
-                  <div className="p-[14px] px-[18px]" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
-                    <div className="mb-1.5" style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  {/* Card 4 — DAY WIN % */}
+                  <div 
+                    style={{ 
+                      height: '130px', 
+                      display: 'flex', 
+                      flexDirection: 'column', 
+                      justifyContent: 'space-between', 
+                      backgroundColor: 'var(--card)', 
+                      border: '1px solid rgba(0, 0, 0, 0.06)', 
+                      borderRadius: '12px', 
+                      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
+                      padding: '12px'
+                    }}
+                  >
+                    <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       DAY WIN %
                     </div>
-                    <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--accent)', lineHeight: '1.1' }}>
-                      {Math.round(stats.winDaysPct)}%
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexGrow: 1 }}>
+                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--accent)', lineHeight: '1.1' }}>
+                        {stats.winDaysPct.toFixed(2)}%
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <SemicircleGauge percentage={stats.winDaysPct} />
+                      </div>
                     </div>
-                    <div className="mt-1" style={{ color: 'var(--text-sub)', fontSize: '12px', fontWeight: 400 }}>
-                      Profitable trading days
+                    <div style={{ fontSize: '11px', fontWeight: 505, display: 'flex', gap: '4px' }} className="font-mono">
+                      <span style={{ color: '#22c55e' }}>{stats.winDays}</span>
+                      <span style={{ color: 'var(--text-muted)' }}>|</span>
+                      <span style={{ color: 'var(--text-sub)' }}>{stats.beDays}</span>
+                      <span style={{ color: 'var(--text-muted)' }}>|</span>
+                      <span style={{ color: '#ef4444' }}>{stats.lossDays}</span>
                     </div>
                   </div>
 
-                  {/* Card 5 — BROKER SYNC */}
+                  {/* Card 5 — AVG WIN/LOSS TRADE */}
                   <div 
-                    onClick={() => navigate('/trading-logs?filter=needs_review')}
-                    className="p-[14px] px-[18px] cursor-pointer hover:border-orange-500/20 active:scale-[0.98] transition-all group relative overflow-hidden" 
-                    style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}
+                    style={{ 
+                      height: '130px', 
+                      display: 'flex', 
+                      flexDirection: 'column', 
+                      justifyContent: 'space-between', 
+                      backgroundColor: 'var(--card)', 
+                      border: '1px solid rgba(0, 0, 0, 0.06)', 
+                      borderRadius: '12px', 
+                      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
+                      padding: '12px'
+                    }}
                   >
-                    <div className="mb-1.5 flex items-center justify-between" style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                      <span>BROKER SYNC</span>
-                      {syncStatus === 'active' && (
-                        <span className="flex h-2 w-2 relative">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                          <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                        </span>
-                      )}
+                    <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      AVG WIN/LOSS TRADE
                     </div>
-                    <div className="leading-none flex items-baseline gap-2" style={{ color: 'var(--text)' }}>
-                      {syncStatus === 'idle' ? (
-                        <span className="text-zinc-500 text-xl font-semibold uppercase">Disconnected</span>
-                      ) : syncStatus === 'active' ? (
-                        <span className="text-[#22c55e] uppercase" style={{ fontSize: '18px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                          ● Live
-                        </span>
-                      ) : (
-                        <span className="text-amber-500 text-xl font-semibold uppercase">Inactive</span>
-                      )}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexGrow: 1 }}>
+                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text)', lineHeight: '1.1' }}>
+                        {stats.avgWinLossRatio === 999 ? '∞' : stats.avgWinLossRatio.toFixed(2)}:1
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }} className="flex-grow max-w-[100px]">
+                        {(() => {
+                          const avgWinForBar = stats.avgWin || 0;
+                          const avgLossForBar = stats.avgLoss || 0;
+                          const totalForBar = avgWinForBar + avgLossForBar;
+                          const winPctForBar = totalForBar > 0 ? (avgWinForBar / totalForBar) * 100 : 50;
+                          return (
+                            <>
+                              <div style={{ display: 'flex', height: '8px', width: '100%', borderRadius: '4px', overflow: 'hidden' }}>
+                                <div style={{ width: `${winPctForBar}%`, backgroundColor: '#22c55e' }} />
+                                <div style={{ width: `${100 - winPctForBar}%`, backgroundColor: '#ef4444' }} />
+                              </div>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', fontWeight: 500 }} className="font-mono">
+                                <span style={{ color: '#22c55e' }}>₹{Math.round(avgWinForBar).toLocaleString('en-IN')}</span>
+                                <span style={{ color: '#ef4444' }}>₹{Math.round(avgLossForBar).toLocaleString('en-IN')}</span>
+                              </div>
+                            </>
+                          );
+                        })()}
+                      </div>
                     </div>
-                    <div className="mt-1.5 flex items-center justify-between" style={{ color: 'var(--text-sub)', fontSize: '12px', fontWeight: 400 }}>
-                      <span>Synced: <b className="font-mono text-xs">{totalSyncedCount}</b></span>
-                      {needsReviewCount > 0 ? (
-                        <span style={{ color: '#f97316' }} className="font-bold flex items-center gap-0.5 animate-pulse">
-                          ⚠️ {needsReviewCount} review
-                        </span>
-                      ) : (
-                        <span className="text-[#22c55e] font-semibold">✓ Current</span>
-                      )}
-                    </div>
+                    <div style={{ height: '16px' }} />
                   </div>
                 </div>
 
