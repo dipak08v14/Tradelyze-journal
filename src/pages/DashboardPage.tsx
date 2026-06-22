@@ -1716,7 +1716,7 @@ export const DashboardPage: React.FC = () => {
                       </div>
 
                       {/* SCORE PROGRESS BARS */}
-                      <div className="mt-4 space-y-3">
+                      <div className="mt-4 space-y-3" style={{ display: 'none' }}>
                         {/* TECHNICAL */}
                         <div>
                           <div className="flex justify-between items-center mb-1">
