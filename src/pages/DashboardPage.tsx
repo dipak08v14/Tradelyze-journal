@@ -1727,10 +1727,10 @@ export const DashboardPage: React.FC = () => {
                   />
                 </div>
 
-                {/* NEW 2-COLUMN ROW: Dhan Live + Recent Trades (Left 40%) & Monthly Calendar (Right 60%) */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 40%) minmax(0, 60%)', gap: '16px', alignItems: 'stretch' }} className="grid grid-cols-1 lg:grid-cols-[minmax(0,_40%)_minmax(0,_60%)] gap-4 items-stretch">
-                  {/* Left Column (40%): Tabbed Info Card */}
-                  <div className="rounded-xl p-5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
+                {/* NEW 2-COLUMN ROW: Dhan Live + Recent Trades (Left 1/3) & Monthly Calendar (Right 2/3) */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', alignItems: 'stretch' }} className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
+                  {/* Left Column (33%): Tabbed Info Card */}
+                  <div className="rounded-xl p-5 flex flex-col justify-between lg:col-span-1" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', gridColumn: 'span 1' }}>
                     <div>
                       {/* Tab Bar */}
                       <div className="flex gap-4 border-b pb-2 mb-4" style={{ borderColor: 'var(--border)' }}>
@@ -1891,9 +1891,9 @@ export const DashboardPage: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Right Column (60%): Monthly Calendar */}
+                  {/* Right Column (2/3): Monthly Calendar */}
                   {/* ADDITION 4 — Monthly Calendar section */}
-                  <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%', minWidth: '0px', overflow: 'hidden', boxSizing: 'border-box' }}>
+                  <div className="rounded-xl p-5 lg:col-span-2" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%', minWidth: '0px', overflow: 'hidden', boxSizing: 'border-box', gridColumn: 'span 2' }}>
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                       <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
                         Monthly Calendar
