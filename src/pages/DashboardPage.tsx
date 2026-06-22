@@ -1138,7 +1138,7 @@ export const DashboardPage: React.FC = () => {
                 </div>
 
                 {/* SECTION 4: SIX DONUT CHARTS */}
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4" style={{ display: 'none' }}>
                   {/* DONUT 1: TRADING DAYS */}
                   <DonutChart
                     title="Trading Days"
@@ -1362,7 +1362,7 @@ export const DashboardPage: React.FC = () => {
                 </div>
 
                 {/* ADDITION 5 — Account Balance Section */}
-                <div className="rounded-xl p-5 mb-4" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
+                <div className="rounded-xl p-5 mb-4" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', display: 'none' }}>
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
                     <div>
                       <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
@@ -1490,7 +1490,7 @@ export const DashboardPage: React.FC = () => {
                 {/* SECTION 5: METRICS + STATS GRID */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                   {/* LEFT DETAILED STATS */}
-                  <div className="lg:col-span-2 rounded-xl p-5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                  <div className="lg:col-span-2 rounded-xl p-5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', display: 'none' }}>
                     <div>
                       <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
                         Statistics — {startDate} to {endDate}
@@ -1669,7 +1669,7 @@ export const DashboardPage: React.FC = () => {
                   </div>
 
                   {/* RIGHT METRICS RADAR */}
-                  <div className="rounded-xl p-5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                  <div className="lg:col-span-3 rounded-xl p-5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                     <div>
                       <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
                         Trading Metrics
@@ -1783,7 +1783,7 @@ export const DashboardPage: React.FC = () => {
                 </div>
 
                 {/* SECTION 6: CONSECUTIVE DAYS / STREAK CARD */}
-                <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
+                <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', display: 'none' }}>
                   <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5 mb-5" style={{ color: 'var(--text)' }}>
                     <Flame className="w-5 h-5 text-amber-500" />
                     Streak Analysis — {startDate} to {endDate}
@@ -1844,7 +1844,7 @@ export const DashboardPage: React.FC = () => {
                 </div>
 
                 {/* SECTION 7: VISUAL PATTERN DATABASE / LIBRARY STATS CARD */}
-                <div className="rounded-xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
+                <div className="rounded-xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', display: 'none' }}>
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                       <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5 font-display" style={{ color: 'var(--text)' }}>
