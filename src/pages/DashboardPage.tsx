@@ -1330,7 +1330,7 @@ export const DashboardPage: React.FC = () => {
                 {/* NEW 3-COLUMN ROW: Trading Metrics | Cumulative P&L | Daily P&L */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', alignItems: 'stretch' }} className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
                   {/* Column 1: Trading Metrics */}
-                  <div className="rounded-xl p-5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', height: '300px' }}>
+                  <div className="rounded-xl p-5 flex flex-col justify-between relative" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', height: '300px', position: 'relative' }}>
                     <div>
                       <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
                         Trading Metrics
@@ -1340,7 +1340,7 @@ export const DashboardPage: React.FC = () => {
                       </p>
 
                       {/* RADAR RECHARTS */}
-                      <div className="w-full h-[220px] mt-4 flex items-center justify-center">
+                      <div className="w-full h-[140px] mt-4 flex items-center justify-center">
                         <ResponsiveContainer width="100%" height="100%">
                           <RadarChart
                             cx="50%"
@@ -1429,7 +1429,7 @@ export const DashboardPage: React.FC = () => {
                     </div>
 
                     {/* OVERALL SUMMARY CENTER */}
-                    <div className="mt-5 pt-4 border-t text-center" style={{ borderColor: 'var(--border)' }}>
+                    <div className="pt-2 border-t text-center" style={{ borderColor: 'var(--border)', marginTop: '8px' }}>
                       <div className="text-[10px] uppercase tracking-widest font-mono" style={{ color: 'var(--text-muted)' }}>
                         YOUR SCORE
                       </div>
