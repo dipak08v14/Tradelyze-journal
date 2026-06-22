@@ -17,7 +17,10 @@ import {
   TrendingDown,
   Calendar,
   Sparkles,
-  X
+  X,
+  Bell,
+  ChevronDown,
+  RefreshCw
 } from 'lucide-react';
 import { getLibraryConfidenceMessage } from '../lib/clipEmbedder';
 import {
@@ -59,6 +62,24 @@ const formatDayHeaderDate = (dateStr: string) => {
   } catch {
     return dateStr;
   }
+};
+
+const getBrokerCode = (broker: any) => {
+  const name = (broker.broker_name || broker.broker_type || '').toLowerCase();
+  if (name.includes('dhan')) return 'DH';
+  if (name.includes('xm') || name.includes('global')) return 'XM';
+  if (name.includes('metatrader') || name.includes('mt')) return 'MT';
+  if (name.includes('zerodha')) return 'ZE';
+  if (name.includes('upstox')) return 'UP';
+  if (name.includes('angel') || name.includes('an')) return 'AN';
+  
+  // Generic fallback: first 2 letters
+  const clean = name.replace(/[^a-z]/g, '');
+  return clean.slice(0, 2).toUpperCase() || 'BR';
+};
+
+const getAccountNumber = (broker: any) => {
+  return broker.account_login || broker.account_id || broker.account_number || 'N/A';
 };
 
 export const DashboardPage: React.FC = () => {
@@ -114,6 +135,9 @@ export const DashboardPage: React.FC = () => {
   const [dhanPositions, setDhanPositions] = useState<any[]>([]);
   const [hasDhanConnection, setHasDhanConnection] = useState<boolean>(false);
   const [fetchingPositions, setFetchingPositions] = useState<boolean>(false);
+  const [brokerConnections, setBrokerConnections] = useState<any[]>([]);
+  const [selectedBroker, setSelectedBroker] = useState<any>(null);
+  const [isBrokerDropdownOpen, setIsBrokerDropdownOpen] = useState<boolean>(false);
 
   // Fetch Broker Sync Widget Data
   const fetchBrokerSyncData = async () => {
@@ -139,6 +163,17 @@ export const DashboardPage: React.FC = () => {
       }
 
       setHasDhanConnection(hasDhan);
+      setBrokerConnections(connections || []);
+      if (connections && connections.length > 0) {
+        setSelectedBroker((prev: any) => {
+          if (prev && connections.some((c: any) => c.id === prev.id)) {
+            return connections.find((c: any) => c.id === prev.id);
+          }
+          return connections[0];
+        });
+      } else {
+        setSelectedBroker(null);
+      }
 
       // Fetch open positions if user has Dhan connection
       if (hasDhan) {
@@ -239,6 +274,33 @@ export const DashboardPage: React.FC = () => {
   const confidence = useMemo(() => {
     return getLibraryConfidenceMessage(visualLibraryCount);
   }, [visualLibraryCount]);
+
+  const lastSyncedTime = useMemo(() => {
+    if (!brokerConnections || brokerConnections.length === 0) return 'Never';
+    const timestamps = brokerConnections
+      .map(c => c.last_sync_at)
+      .filter(Boolean)
+      .map(t => new Date(t).getTime());
+    
+    if (timestamps.length === 0) return 'Never';
+    const maxTimestamp = Math.max(...timestamps);
+    const date = new Date(maxTimestamp);
+    
+    // Format exactly as: "22 Jun 2026, 07:59 AM"
+    const day = date.getDate();
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const monthStr = months[date.getMonth()];
+    const year = date.getFullYear();
+    
+    let hours = date.getHours();
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    const hoursStr = String(hours).padStart(2, '0');
+    
+    return `${day} ${monthStr} ${year}, ${hoursStr}:${minutes} ${ampm}`;
+  }, [brokerConnections]);
 
   const [accentColorState, setAccentColorState] = useState('#06b6d4');
   useEffect(() => {
@@ -761,6 +823,7 @@ export const DashboardPage: React.FC = () => {
                 {!loading && trades.length > 0 && (
                   <div
                     style={{
+                      display: 'none',
                       backgroundColor: 'var(--accent-muted)',
                       color: 'var(--accent)',
                       border: '1px solid var(--accent)',
@@ -779,7 +842,151 @@ export const DashboardPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="border-b mt-5 mb-6" style={{ borderColor: 'var(--border)' }} />
+            {/* NEW HORIZONTAL INFO BAR directly below page header and above KPI stat cards */}
+            <div 
+              style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'space-between', 
+                padding: '12px 16px', 
+                backgroundColor: 'var(--card-bg, var(--bg-secondary, var(--card)))', 
+                borderBottom: '1px solid var(--border)',
+                marginBottom: '24px',
+                width: '100%'
+              }}
+              className="flex-wrap gap-4 rounded-lg items-center"
+            >
+              {/* Left side */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }} className="flex items-center">
+                {/* ELEMENT 1 — Bell icon with badge */}
+                <div className="relative p-1">
+                  <Bell className="w-5 h-5 text-zinc-500" style={{ color: 'var(--text-sub)' }} />
+                  {needsReviewCount > 0 && (
+                    <span 
+                      className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white"
+                      style={{ backgroundColor: '#ef4444' }}
+                    >
+                      {needsReviewCount}
+                    </span>
+                  )}
+                </div>
+
+                {/* ELEMENT 2 — Account selector dropdown */}
+                <div className="relative animate-fadeIn">
+                  <button
+                    onClick={() => setIsBrokerDropdownOpen(!isBrokerDropdownOpen)}
+                    style={{
+                      backgroundColor: 'var(--bg, var(--bar))',
+                      border: '1px solid var(--border)',
+                      borderRadius: '8px',
+                      color: 'var(--text)',
+                      padding: '6px 12px',
+                      fontSize: '13px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      cursor: 'pointer'
+                    }}
+                    className="hover:opacity-90 transition-all font-medium flex items-center"
+                  >
+                    {selectedBroker ? (
+                      <>
+                        <span className={`w-2 h-2 rounded-full inline-block ${selectedBroker.is_active ? 'bg-emerald-500' : 'bg-red-500'}`}></span>
+                        <span className="font-mono">{getBrokerCode(selectedBroker)} {getAccountNumber(selectedBroker)}</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="w-2 h-2 rounded-full inline-block bg-red-500"></span>
+                        <span className="font-mono">NO BROKERS</span>
+                      </>
+                    )}
+                    <ChevronDown className="w-3.5 h-3.5 text-zinc-500" />
+                  </button>
+
+                  {isBrokerDropdownOpen && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: 0,
+                        marginTop: '6px',
+                        backgroundColor: 'var(--card)',
+                        border: '1px solid var(--border)',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                        zIndex: 100,
+                        minWidth: '200px',
+                        padding: '6px 0'
+                      }}
+                    >
+                      {brokerConnections.length === 0 ? (
+                        <div className="px-4 py-2 text-xs text-[var(--text-muted)]" style={{ color: 'var(--text-muted)' }}>
+                          No connected brokers
+                        </div>
+                      ) : (
+                        brokerConnections.map((broker) => (
+                          <button
+                            key={broker.id}
+                            onClick={() => {
+                              setSelectedBroker(broker);
+                              setIsBrokerDropdownOpen(false);
+                            }}
+                            className="w-full text-left px-4 py-2 text-xs hover:bg-[rgba(0,0,0,0.03)] flex items-center gap-2 transition-all border-none"
+                            style={{ color: 'var(--text)', cursor: 'pointer', backgroundColor: 'transparent', padding: '8px 16px' }}
+                          >
+                            <span className={`w-2 h-2 rounded-full inline-block ${broker.is_active ? 'bg-emerald-500' : 'bg-red-500'}`}></span>
+                            <span className="font-mono">{getBrokerCode(broker)} {getAccountNumber(broker)}</span>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Right side */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginLeft: 'auto' }} className="flex items-center ml-auto flex-wrap sm:flex-nowrap">
+                {/* ELEMENT 3 — Last synced time */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--text-sub)' }} className="text-xs">
+                  <RefreshCw className="w-3.5 h-3.5 text-zinc-500" />
+                  <span>Last synced: <span className="font-mono font-semibold" style={{ color: 'var(--text)' }}>{lastSyncedTime}</span></span>
+                </div>
+
+                {/* ELEMENT 4 — Edit Widgets */}
+                <button
+                  style={{
+                    color: 'var(--text-muted)',
+                    fontSize: '12px',
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                    background: 'transparent',
+                    border: 'none',
+                    padding: '4px'
+                  }}
+                  className="hover:underline hover:opacity-80"
+                >
+                  Edit Widgets
+                </button>
+
+                {/* ELEMENT 5 — Import Trades button */}
+                <button
+                  onClick={() => navigate('/trade-entry')}
+                  style={{
+                    border: '1.5px solid var(--accent)',
+                    color: 'var(--accent)',
+                    backgroundColor: 'transparent',
+                    borderRadius: '8px',
+                    padding: '6px 14px',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                    cursor: 'pointer'
+                  }}
+                  className="hover:bg-[var(--accent-muted)] transition-all font-sans shrink-0"
+                >
+                  + Import Trades
+                </button>
+              </div>
+            </div>
 
             {/* SKELETON LOADER STATE */}
             {loading ? (
