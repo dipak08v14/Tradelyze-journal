@@ -954,7 +954,7 @@ export const DashboardPage: React.FC = () => {
                       <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
                         Trading Metrics
                       </h2>
-                      <p className="text-xs mt-0.5" style={{ color: 'var(--text-sub)' }}>
+                      <p className="text-xs mt-0.5" style={{ color: 'var(--text-sub)', display: 'none' }}>
                         Monthly averages across all trades
                       </p>
 
@@ -1055,7 +1055,7 @@ export const DashboardPage: React.FC = () => {
                       <div className={`text-5xl font-black tracking-tight mt-1 animate-pulse ${getScoreColorClass(stats.avgOverallScore)}`}>
                         {stats.avgOverallScore.toFixed(0)}%
                       </div>
-                      <div className="text-[10px] font-mono mt-1 uppercase" style={{ color: 'var(--text-muted)' }}>
+                      <div className="text-[10px] font-mono mt-1 uppercase" style={{ color: 'var(--text-muted)', display: 'none' }}>
                         {startDate} to {endDate}
                       </div>
                     </div>
@@ -1069,7 +1069,7 @@ export const DashboardPage: React.FC = () => {
                           <TrendingUp className="w-5 h-5" style={{ color: chartColor }} />
                           Cumulative P&L
                         </h2>
-                        <span style={{ fontSize: '13px', fontWeight: 400, color: 'var(--text-sub)', marginLeft: '26px' }} className="mt-0.5">
+                        <span style={{ fontSize: '13px', fontWeight: 400, color: 'var(--text-sub)', marginLeft: '26px', display: 'none' }} className="mt-0.5">
                           {startDate} to {endDate}
                         </span>
                       </div>
@@ -1081,7 +1081,7 @@ export const DashboardPage: React.FC = () => {
                             ? 'text-[#ef4444]'
                             : ''
                         }`}
-                        style={{ color: stats.totalPnl === 0 ? 'var(--text-sub)' : undefined }}
+                        style={{ display: 'none', color: stats.totalPnl === 0 ? 'var(--text-sub)' : undefined }}
                       >
                         {formatINR(stats.totalPnl)}
                       </span>
@@ -1357,9 +1357,9 @@ export const DashboardPage: React.FC = () => {
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
                             <h2 className="text-lg font-semibold tracking-tight flex items-center gap-2 font-display" style={{ color: 'var(--text)' }}>
                               <span className="w-2.5 h-2.5 rounded-full bg-[#06b6d4] inline-block animate-pulse"></span>
-                              Dhan Live Open Positions
+                              <span style={{ display: 'none' }}>Dhan Live </span>Open Positions
                             </h2>
-                            <span className="bg-cyan-500/12 text-cyan-400 border border-cyan-800/30 text-[10px] font-extrabold uppercase rounded-full px-2 py-0.5">
+                            <span className="bg-cyan-500/12 text-cyan-400 border border-cyan-800/30 text-[10px] font-extrabold uppercase rounded-full px-2 py-0.5" style={{ display: 'none' }}>
                               Synced Block
                             </span>
                           </div>
@@ -1429,7 +1429,7 @@ export const DashboardPage: React.FC = () => {
                       {/* SECTION 8: RECENT TRADES */}
                       <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
                         <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5 mb-4 font-display" style={{ color: 'var(--text)' }}>
-                          Recent Trades — {startDate} to {endDate}
+                          Recent Trades<span style={{ display: 'none' }}> — {startDate} to {endDate}</span>
                         </h2>
                         {trades.length === 0 ? (
                           <p className="text-xs" style={{ color: 'var(--text-muted)' }}>No logged trades found for this period.</p>
