@@ -65,51 +65,81 @@ const formatDayHeaderDate = (dateStr: string) => {
 };
 
 const SemicircleGauge: React.FC<{ percentage: number; wCount: number; beCount: number; lCount: number }> = ({ percentage, wCount, beCount, lCount }) => {
-  const val = Math.min(Math.max(percentage || 0, 0), 100);
-  const offset = 100 - val;
+  const total = wCount + beCount + lCount;
+  const pW = total > 0 ? (wCount / total) * 100 : 0;
+  const pBe = total > 0 ? (beCount / total) * 100 : 0;
+  const pL = total > 0 ? (lCount / total) * 100 : 0;
+
   return (
     <svg 
-      width="85" 
-      height="50" 
-      viewBox="0 0 120 70" 
+      width="90" 
+      height="65" 
+      viewBox="0 0 120 75" 
       className="overflow-visible inline-block"
       style={{ shapeRendering: 'geometricPrecision' }}
     >
-      {/* Background Arc */}
+      {/* Background Arc Track */}
       <path
-        d="M 10,56 A 50,50 0 0,1 110,56"
+        d="M 12,50 A 48,48 0 0,1 108,50"
         fill="none"
-        stroke="#ef4444"
-        strokeWidth="7"
+        stroke="var(--bar)"
+        strokeWidth="10"
         strokeLinecap="butt"
         vectorEffect="non-scaling-stroke"
         shapeRendering="geometricPrecision"
       />
-      {/* Colored Foreground Arc */}
+      {/* Green Wins Segment */}
       <path
-        d="M 10,56 A 50,50 0 0,1 110,56"
+        d="M 12,50 A 48,48 0 0,1 108,50"
         fill="none"
-        stroke="#22c55e"
-        strokeWidth="7"
+        stroke="#3AA986"
+        strokeWidth="10"
         strokeLinecap="butt"
         pathLength="100"
-        strokeDasharray="100 100"
-        strokeDashoffset={offset}
+        strokeDasharray={`${pW} 100`}
+        strokeDashoffset={0}
         vectorEffect="non-scaling-stroke"
         shapeRendering="geometricPrecision"
         className="transition-all duration-500 ease-out"
-        style={{ stroke: '#22c55e' }}
+      />
+      {/* Grey Breakeven Segment */}
+      <path
+        d="M 12,50 A 48,48 0 0,1 108,50"
+        fill="none"
+        stroke="var(--text-muted)"
+        strokeWidth="10"
+        strokeLinecap="butt"
+        pathLength="100"
+        strokeDasharray={`${pBe} 100`}
+        strokeDashoffset={-pW}
+        vectorEffect="non-scaling-stroke"
+        shapeRendering="geometricPrecision"
+        className="transition-all duration-500 ease-out"
+      />
+      {/* Red Losses Segment */}
+      <path
+        d="M 12,50 A 48,48 0 0,1 108,50"
+        fill="none"
+        stroke="#D96B6B"
+        strokeWidth="10"
+        strokeLinecap="butt"
+        pathLength="100"
+        strokeDasharray={`${pL} 100`}
+        strokeDashoffset={-(pW + pBe)}
+        vectorEffect="non-scaling-stroke"
+        shapeRendering="geometricPrecision"
+        className="transition-all duration-500 ease-out"
       />
       {/* W B L Labels centered below arc legs and center */}
-      <text x="10" y="68" textAnchor="middle" fill="#22c55e" fontSize="14" fontWeight="bold" className="font-mono">{wCount}</text>
-      <text x="60" y="68" textAnchor="middle" fill="var(--text-sub)" fontSize="14" fontWeight="bold" className="font-mono">{beCount}</text>
-      <text x="110" y="68" textAnchor="middle" fill="#ef4444" fontSize="14" fontWeight="bold" className="font-mono">{lCount}</text>
+      <text x="12" y="70" textAnchor="middle" fill="#3AA986" fontSize="13" fontWeight="bold" className="font-mono">{wCount}</text>
+      <text x="60" y="70" textAnchor="middle" fill="var(--text-sub)" fontSize="13" fontWeight="bold" className="font-mono">{beCount}</text>
+      <text x="108" y="70" textAnchor="middle" fill="#D96B6B" fontSize="13" fontWeight="bold" className="font-mono">{lCount}</text>
     </svg>
   );
 };
 
 const CircleGauge: React.FC<{ value: number }> = ({ value }) => {
-  const radius = 25;
+  const radius = 22;
   const val = Math.min(Math.max(value || 0, 0), 3.0);
   const percentage = (val / 3.0) * 100;
   const offset = 100 - percentage;
@@ -126,8 +156,8 @@ const CircleGauge: React.FC<{ value: number }> = ({ value }) => {
         cy="30"
         r={radius}
         fill="none"
-        stroke="#ef4444"
-        strokeWidth="7"
+        stroke="#D96B6B"
+        strokeWidth="10"
         vectorEffect="non-scaling-stroke"
         shapeRendering="geometricPrecision"
       />
@@ -136,8 +166,8 @@ const CircleGauge: React.FC<{ value: number }> = ({ value }) => {
         cy="30"
         r={radius}
         fill="none"
-        stroke="#22c55e"
-        strokeWidth="7"
+        stroke="#3AA986"
+        strokeWidth="10"
         strokeLinecap="round"
         pathLength="100"
         strokeDasharray="100 100"
@@ -146,7 +176,7 @@ const CircleGauge: React.FC<{ value: number }> = ({ value }) => {
         vectorEffect="non-scaling-stroke"
         shapeRendering="geometricPrecision"
         className="transition-all duration-500 ease-out"
-        style={{ stroke: '#22c55e' }}
+        style={{ stroke: '#3AA986' }}
       />
     </svg>
   );
@@ -1188,10 +1218,10 @@ export const DashboardPage: React.FC = () => {
                       padding: '8px 14px'
                     }}
                   >
-                    <div>
-                      <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
-                        NET P&L
-                      </div>
+                    <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      NET P&L
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
                       <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: stats.totalPnl > 0 ? '#22c55e' : stats.totalPnl < 0 ? '#ef4444' : 'var(--text)', lineHeight: '1.2' }}>
                         {formatPnlNoDecimals(stats.totalPnl)}
                       </div>
@@ -1311,13 +1341,13 @@ export const DashboardPage: React.FC = () => {
                           const winPctForBar = totalForBar > 0 ? (avgWinForBar / totalForBar) * 100 : 50;
                           return (
                             <>
-                              <div style={{ display: 'flex', height: '8px', width: '100%', borderRadius: '4px', overflow: 'hidden' }}>
-                                <div style={{ width: `${winPctForBar}%`, backgroundColor: '#22c55e' }} />
-                                <div style={{ width: `${100 - winPctForBar}%`, backgroundColor: '#ef4444' }} />
+                              <div style={{ display: 'flex', height: '10px', width: '100%', borderRadius: '5px', overflow: 'hidden' }}>
+                                <div style={{ width: `${winPctForBar}%`, backgroundColor: '#3AA986' }} />
+                                <div style={{ width: `${100 - winPctForBar}%`, backgroundColor: '#D96B6B' }} />
                               </div>
                               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', fontWeight: 500 }} className="font-mono">
-                                <span style={{ color: '#22c55e' }}>₹{Math.round(avgWinForBar).toLocaleString('en-IN')}</span>
-                                <span style={{ color: '#ef4444' }}>₹{Math.round(avgLossForBar).toLocaleString('en-IN')}</span>
+                                <span style={{ color: '#3AA986' }}>₹{Math.round(avgWinForBar).toLocaleString('en-IN')}</span>
+                                <span style={{ color: '#D96B6B' }}>₹{Math.round(avgLossForBar).toLocaleString('en-IN')}</span>
                               </div>
                             </>
                           );
