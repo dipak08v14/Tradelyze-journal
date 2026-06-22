@@ -946,194 +946,310 @@ export const DashboardPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* SECTION 3: EQUITY CURVE */}
-                <div className="p-5" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', paddingBottom: '16px', overflow: 'visible' }}>
-                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-4">
-                    <div className="flex flex-col">
-                      <h2 className="flex items-center gap-1.5" style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)' }}>
-                        <TrendingUp className="w-5 h-5" style={{ color: chartColor }} />
-                        Cumulative P&L
+                {/* NEW 3-COLUMN ROW: Trading Metrics | Cumulative P&L | Daily P&L */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', alignItems: 'stretch' }} className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
+                  {/* Column 1: Trading Metrics */}
+                  <div className="rounded-xl p-5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                    <div>
+                      <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
+                        Trading Metrics
                       </h2>
-                      <span style={{ fontSize: '13px', fontWeight: 400, color: 'var(--text-sub)', marginLeft: '26px' }} className="mt-0.5">
+                      <p className="text-xs mt-0.5" style={{ color: 'var(--text-sub)' }}>
+                        Monthly averages across all trades
+                      </p>
+
+                      {/* RADAR RECHARTS */}
+                      <div className="w-full h-[220px] mt-4 flex items-center justify-center">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <RadarChart
+                            cx="50%"
+                            cy="50%"
+                            outerRadius="65%"
+                            data={[
+                              { metric: 'Technical', score: parseFloat(stats.avgTechScore.toFixed(1)) },
+                              { metric: 'Psychology', score: parseFloat(stats.avgPsychScore.toFixed(1)) },
+                              { metric: 'Risk Mgmt', score: parseFloat(stats.avgRiskScore.toFixed(1)) }
+                            ]}
+                          >
+                            <PolarGrid stroke="var(--bar)" />
+                            <PolarAngleAxis
+                              dataKey="metric"
+                              tick={{ fill: 'var(--text-sub)', fontSize: 11, fontFamily: 'Inter' }}
+                            />
+                            <PolarRadiusAxis
+                              angle={90}
+                              domain={[0, 100]}
+                              tick={{ fill: '#4B5563', fontSize: 9 }}
+                              tickCount={4}
+                            />
+                            <Radar
+                              name="Avg Score"
+                              dataKey="score"
+                              stroke="var(--accent)"
+                              fill="var(--accent)"
+                              fillOpacity={0.18}
+                              strokeWidth={1.5}
+                              dot={{ fill: 'var(--accent)', r: 3, strokeWidth: 0 }}
+                            />
+                          </RadarChart>
+                        </ResponsiveContainer>
+                      </div>
+
+                      {/* SCORE PROGRESS BARS */}
+                      <div className="mt-4 space-y-3" style={{ display: 'none' }}>
+                        {/* TECHNICAL */}
+                        <div>
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>Technical (Rules)</span>
+                            <span className="text-xs font-mono font-bold" style={{ color: getPercentTextColor(stats.avgTechScore) }}>
+                              {stats.avgTechScore.toFixed(0)}%
+                            </span>
+                          </div>
+                          <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
+                            <div
+                              className="h-full rounded-full transition-all duration-500"
+                              style={{ width: `${stats.avgTechScore}%`, backgroundColor: 'var(--accent)' }}
+                            />
+                          </div>
+                        </div>
+
+                        {/* PSYCHOLOGY */}
+                        <div>
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>Psychology</span>
+                            <span className="text-xs font-mono font-bold" style={{ color: getPercentTextColor(stats.avgPsychScore) }}>
+                              {stats.avgPsychScore.toFixed(0)}%
+                            </span>
+                          </div>
+                          <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
+                            <div
+                              className="h-full rounded-full transition-all duration-500"
+                              style={{ width: `${stats.avgPsychScore}%`, backgroundColor: 'var(--accent)' }}
+                            />
+                          </div>
+                        </div>
+
+                        {/* RISK MANAGEMENT */}
+                        <div>
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>Risk Management</span>
+                            <span className="text-xs font-mono font-bold" style={{ color: getPercentTextColor(stats.avgRiskScore) }}>
+                              {stats.avgRiskScore.toFixed(0)}%
+                            </span>
+                          </div>
+                          <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
+                            <div
+                              className="h-full rounded-full transition-all duration-500"
+                              style={{ width: `${stats.avgRiskScore}%`, backgroundColor: 'var(--accent)' }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* OVERALL SUMMARY CENTER */}
+                    <div className="mt-5 pt-4 border-t text-center" style={{ borderColor: 'var(--border)' }}>
+                      <div className="text-[10px] uppercase tracking-widest font-mono" style={{ color: 'var(--text-muted)' }}>
+                        YOUR SCORE
+                      </div>
+                      <div className={`text-5xl font-black tracking-tight mt-1 animate-pulse ${getScoreColorClass(stats.avgOverallScore)}`}>
+                        {stats.avgOverallScore.toFixed(0)}%
+                      </div>
+                      <div className="text-[10px] font-mono mt-1 uppercase" style={{ color: 'var(--text-muted)' }}>
                         {startDate} to {endDate}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Column 2: Cumulative P&L */}
+                  <div className="p-5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', overflow: 'visible' }}>
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-4">
+                      <div className="flex flex-col">
+                        <h2 className="flex items-center gap-1.5" style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)' }}>
+                          <TrendingUp className="w-5 h-5" style={{ color: chartColor }} />
+                          Cumulative P&L
+                        </h2>
+                        <span style={{ fontSize: '13px', fontWeight: 400, color: 'var(--text-sub)', marginLeft: '26px' }} className="mt-0.5">
+                          {startDate} to {endDate}
+                        </span>
+                      </div>
+                      <span
+                        className={`font-mono font-extrabold text-sm ${
+                          stats.totalPnl > 0
+                            ? 'text-[#22c55e]'
+                            : stats.totalPnl < 0
+                            ? 'text-[#ef4444]'
+                            : ''
+                        }`}
+                        style={{ color: stats.totalPnl === 0 ? 'var(--text-sub)' : undefined }}
+                      >
+                        {formatINR(stats.totalPnl)}
                       </span>
                     </div>
-                    <span
-                      className={`font-mono font-extrabold text-sm ${
-                        stats.totalPnl > 0
-                          ? 'text-[#22c55e]'
-                          : stats.totalPnl < 0
-                          ? 'text-[#ef4444]'
-                          : ''
-                      }`}
-                      style={{ color: stats.totalPnl === 0 ? 'var(--text-sub)' : undefined }}
-                    >
-                      {formatINR(stats.totalPnl)}
-                    </span>
+
+                    <div style={{ width: '100%', height: 260 }}>
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart
+                          data={stats.equityCurveData}
+                          margin={{ top: 10, right: 20, left: 10, bottom: 30 }}
+                        >
+                          <defs>
+                            {/* Area fill gradient — green above zero, red below zero */}
+                            <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="#22c55e" stopOpacity={0.15} />
+                              <stop offset={`${zeroPercent}%`} stopColor="#22c55e" stopOpacity={0.08} />
+                              <stop offset={`${zeroPercent}%`} stopColor="#ef4444" stopOpacity={0.08} />
+                              <stop offset="100%" stopColor="#ef4444" stopOpacity={0.15} />
+                            </linearGradient>
+
+                            {/* Line stroke gradient — green above zero, red below zero */}
+                            <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="#22c55e" stopOpacity={1} />
+                              <stop offset={`${zeroPercent}%`} stopColor="#22c55e" stopOpacity={1} />
+                              <stop offset={`${zeroPercent}%`} stopColor="#ef4444" stopOpacity={1} />
+                              <stop offset="100%" stopColor="#ef4444" stopOpacity={1} />
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid strokeDasharray="3 3" stroke={gridLineColor} vertical={false} />
+                          <XAxis
+                            dataKey="day"
+                            tick={{ fontSize: 10, fill: tickColor }}
+                            tickLine={false}
+                            axisLine={{ stroke: 'var(--border)' }}
+                            label={{
+                              value: 'Day of Month',
+                              position: 'insideBottom',
+                              offset: -15,
+                              style: { fontSize: 10, fill: tickColor }
+                            }}
+                          />
+                          <YAxis
+                            tick={{ fontSize: 10, fill: tickColor }}
+                            tickLine={false}
+                            axisLine={false}
+                            tickFormatter={(v) => `₹${v.toLocaleString('en-IN')}`}
+                            width={80}
+                          />
+                          <ReferenceLine
+                            y={0}
+                            stroke="rgba(0,0,0,0.15)"
+                            strokeDasharray="4 4"
+                            strokeWidth={1}
+                          />
+                          <RechartsTooltip
+                            contentStyle={{
+                              backgroundColor: 'var(--card)',
+                              border: '0.5px solid var(--border)',
+                              borderRadius: '8px',
+                              color: 'var(--text)',
+                            }}
+                            formatter={(value: any, name: string) => {
+                              const decimalValue = Number(value) || 0;
+                              const isPositive = decimalValue >= 0;
+                              return [
+                                <span key="val" style={{ color: isPositive ? '#22c55e' : '#ef4444', fontWeight: 'bold' }}>
+                                  {'₹' + value.toLocaleString('en-IN')}
+                                </span>,
+                                name === 'cumPnl' ? 'Cumulative P&L' : 'Daily P&L',
+                              ];
+                            }}
+                            labelFormatter={(label) =>
+                              label === '0' ? 'Month Start' : `Day ${label}`
+                            }
+                          />
+                          <Area
+                            type="monotone"
+                            dataKey="cumPnl"
+                            stroke="url(#lineGradient)"
+                            strokeWidth={2}
+                            fill="url(#areaGradient)"
+                            dot={(props: any) => {
+                              const { cx, cy, payload } = props;
+                              const val = payload?.cumPnl ?? payload?.value ?? 0;
+                              const color = val >= 0 ? '#22c55e' : '#ef4444';
+                              return <circle key={`dot-${cx}-${cy}`} cx={cx} cy={cy} r={3} fill={color} strokeWidth={0} />;
+                            }}
+                            activeDot={(props: any) => {
+                              const { cx, cy, payload } = props;
+                              const val = payload?.cumPnl ?? payload?.value ?? 0;
+                              const color = val >= 0 ? '#22c55e' : '#ef4444';
+                              return <circle key={`active-dot-${cx}-${cy}`} cx={cx} cy={cy} r={5} fill={color} strokeWidth={0} />;
+                            }}
+                          />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </div>
                   </div>
 
-                  <div style={{ width: '100%', height: 260 }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart
-                        data={stats.equityCurveData}
-                        margin={{ top: 10, right: 20, left: 10, bottom: 30 }}
-                      >
-                        <defs>
-                          {/* Area fill gradient — green above zero, red below zero */}
-                          <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#22c55e" stopOpacity={0.15} />
-                            <stop offset={`${zeroPercent}%`} stopColor="#22c55e" stopOpacity={0.08} />
-                            <stop offset={`${zeroPercent}%`} stopColor="#ef4444" stopOpacity={0.08} />
-                            <stop offset="100%" stopColor="#ef4444" stopOpacity={0.15} />
-                          </linearGradient>
+                  {/* Column 3: Daily P&L */}
+                  <div className="p-5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
+                    <div className="flex items-center justify-between gap-2 mb-4">
+                      <h2 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)' }}>
+                        Daily P&L
+                      </h2>
+                    </div>
 
-                          {/* Line stroke gradient — green above zero, red below zero */}
-                          <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#22c55e" stopOpacity={1} />
-                            <stop offset={`${zeroPercent}%`} stopColor="#22c55e" stopOpacity={1} />
-                            <stop offset={`${zeroPercent}%`} stopColor="#ef4444" stopOpacity={1} />
-                            <stop offset="100%" stopColor="#ef4444" stopOpacity={1} />
-                          </linearGradient>
-                        </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke={gridLineColor} vertical={false} />
-                        <XAxis
-                          dataKey="day"
-                          tick={{ fontSize: 10, fill: tickColor }}
-                          tickLine={false}
-                          axisLine={{ stroke: 'var(--border)' }}
-                          label={{
-                            value: 'Day of Month',
-                            position: 'insideBottom',
-                            offset: -15,
-                            style: { fontSize: 10, fill: tickColor }
-                          }}
-                        />
-                        <YAxis
-                          tick={{ fontSize: 10, fill: tickColor }}
-                          tickLine={false}
-                          axisLine={false}
-                          tickFormatter={(v) => `₹${v.toLocaleString('en-IN')}`}
-                          width={80}
-                        />
-                        <ReferenceLine
-                          y={0}
-                          stroke="rgba(0,0,0,0.15)"
-                          strokeDasharray="4 4"
-                          strokeWidth={1}
-                        />
-                        <RechartsTooltip
-                          contentStyle={{
-                            backgroundColor: 'var(--card)',
-                            border: '0.5px solid var(--border)',
-                            borderRadius: '8px',
-                            color: 'var(--text)',
-                          }}
-                          formatter={(value: any, name: string) => {
-                            const decimalValue = Number(value) || 0;
-                            const isPositive = decimalValue >= 0;
-                            return [
-                              <span key="val" style={{ color: isPositive ? '#22c55e' : '#ef4444', fontWeight: 'bold' }}>
-                                {'₹' + value.toLocaleString('en-IN')}
-                              </span>,
-                              name === 'cumPnl' ? 'Cumulative P&L' : 'Daily P&L',
-                            ];
-                          }}
-                          labelFormatter={(label) =>
-                            label === '0' ? 'Month Start' : `Day ${label}`
-                          }
-                        />
-                        <Area
-                          type="monotone"
-                          dataKey="cumPnl"
-                          stroke="url(#lineGradient)"
-                          strokeWidth={2}
-                          fill="url(#areaGradient)"
-                          dot={(props: any) => {
-                            const { cx, cy, payload } = props;
-                            const val = payload?.cumPnl ?? payload?.value ?? 0;
-                            const color = val >= 0 ? '#22c55e' : '#ef4444';
-                            return <circle key={`dot-${cx}-${cy}`} cx={cx} cy={cy} r={3} fill={color} strokeWidth={0} />;
-                          }}
-                          activeDot={(props: any) => {
-                            const { cx, cy, payload } = props;
-                            const val = payload?.cumPnl ?? payload?.value ?? 0;
-                            const color = val >= 0 ? '#22c55e' : '#ef4444';
-                            return <circle key={`active-dot-${cx}-${cy}`} cx={cx} cy={cy} r={5} fill={color} strokeWidth={0} />;
-                          }}
-                        />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-
-                {/* ADDITION 3 — Daily P&L Bar Chart */}
-                <div className="p-5" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', paddingBottom: '16px' }}>
-                  <div className="flex items-center justify-between gap-2 mb-4">
-                    <h2 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)' }}>
-                      Daily P&L
-                    </h2>
-                  </div>
-
-                  <div style={{ width: '100%', height: 160 }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart
-                        data={stats.equityCurveData.filter(d => d.day !== '0').map(d => ({
-                          day: d.day,
-                          pnl: d.dailyPnl
-                        }))}
-                        margin={{ top: 10, right: 20, left: 10, bottom: 5 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" stroke={gridLineColor} vertical={false} />
-                        <XAxis
-                          dataKey="day"
-                          tick={{ fontSize: 10, fill: tickColor }}
-                          tickLine={false}
-                          axisLine={{ stroke: 'var(--border)' }}
-                        />
-                        <YAxis
-                          tick={{ fontSize: 10, fill: tickColor }}
-                          tickLine={false}
-                          axisLine={false}
-                          tickFormatter={(v) => `₹${v.toLocaleString('en-IN')}`}
-                          width={80}
-                        />
-                        <RechartsTooltip
-                          contentStyle={{
-                            backgroundColor: 'var(--card)',
-                            border: '0.5px solid var(--border)',
-                            borderRadius: '8px',
-                            color: 'var(--text)',
-                          }}
-                          formatter={(value: any) => {
-                            const decimalValue = Number(value) || 0;
-                            const isPositive = decimalValue >= 0;
-                            return [
-                              <span key="val" style={{ color: isPositive ? '#22c55e' : '#ef4444', fontWeight: 'bold' }}>
-                                {'₹' + value.toLocaleString('en-IN')}
-                              </span>,
-                              'Daily P&L'
-                            ];
-                          }}
-                        />
-                        <ReferenceLine
-                          y={0}
-                          stroke="rgba(0,0,0,0.15)"
-                          strokeDasharray="4 4"
-                          strokeWidth={1}
-                        />
-                        <Bar dataKey="pnl">
-                          {stats.equityCurveData.filter(d => d.day !== '0').map((d, index) => {
-                            const isPositive = d.dailyPnl >= 0;
-                            return (
-                              <Cell
-                                key={`cell-${index}`}
-                                fill={isPositive ? '#22c55e' : '#ef4444'}
-                              />
-                            );
-                          })}
-                        </Bar>
-                      </BarChart>
-                    </ResponsiveContainer>
+                    <div style={{ width: '100%', height: 260 }}>
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                          data={stats.equityCurveData.filter(d => d.day !== '0').map(d => ({
+                            day: d.day,
+                            pnl: d.dailyPnl
+                          }))}
+                          margin={{ top: 10, right: 20, left: 10, bottom: 5 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" stroke={gridLineColor} vertical={false} />
+                          <XAxis
+                            dataKey="day"
+                            tick={{ fontSize: 10, fill: tickColor }}
+                            tickLine={false}
+                            axisLine={{ stroke: 'var(--border)' }}
+                          />
+                          <YAxis
+                            tick={{ fontSize: 10, fill: tickColor }}
+                            tickLine={false}
+                            axisLine={false}
+                            tickFormatter={(v) => `₹${v.toLocaleString('en-IN')}`}
+                            width={80}
+                          />
+                          <RechartsTooltip
+                            contentStyle={{
+                              backgroundColor: 'var(--card)',
+                              border: '0.5px solid var(--border)',
+                              borderRadius: '8px',
+                              color: 'var(--text)',
+                            }}
+                            formatter={(value: any) => {
+                              const decimalValue = Number(value) || 0;
+                              const isPositive = decimalValue >= 0;
+                              return [
+                                <span key="val" style={{ color: isPositive ? '#22c55e' : '#ef4444', fontWeight: 'bold' }}>
+                                  {'₹' + value.toLocaleString('en-IN')}
+                                </span>,
+                                'Daily P&L'
+                              ];
+                            }}
+                          />
+                          <ReferenceLine
+                            y={0}
+                            stroke="rgba(0,0,0,0.15)"
+                            strokeDasharray="4 4"
+                            strokeWidth={1}
+                          />
+                          <Bar dataKey="pnl">
+                            {stats.equityCurveData.filter(d => d.day !== '0').map((d, index) => {
+                              const isPositive = d.dailyPnl >= 0;
+                              return (
+                                <Cell
+                                  key={`cell-${index}`}
+                                  fill={isPositive ? '#22c55e' : '#ef4444'}
+                                />
+                              );
+                            })}
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
                   </div>
                 </div>
 
@@ -1230,132 +1346,279 @@ export const DashboardPage: React.FC = () => {
                   />
                 </div>
 
-                {/* ADDITION 4 — Monthly Calendar section */}
-                <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-                    <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
-                      Monthly Calendar
-                    </h2>
-                    
-                    {/* Navigation */}
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={prevMonth}
-                        style={{
-                          backgroundColor: 'var(--bar)',
-                          border: '0.5px solid var(--border)',
-                          borderRadius: '6px',
-                          color: 'var(--text)',
-                          padding: '4px 8px',
-                          cursor: 'pointer'
-                        }}
-                        className="hover:opacity-85 text-xs font-bold"
-                      >
-                        &larr;
-                      </button>
-                      <span className="font-semibold text-sm min-w-[120px] text-center" style={{ color: 'var(--text)' }}>
-                        {CALENDAR_MONTH_NAMES[calMonth]} {calYear}
-                      </span>
-                      <button
-                        onClick={nextMonth}
-                        style={{
-                          backgroundColor: 'var(--bar)',
-                          border: '0.5px solid var(--border)',
-                          borderRadius: '6px',
-                          color: 'var(--text)',
-                          padding: '4px 8px',
-                          cursor: 'pointer'
-                        }}
-                        className="hover:opacity-85 text-xs font-bold"
-                      >
-                        &rarr;
-                      </button>
+                {/* NEW 2-COLUMN ROW: Dhan Live + Recent Trades (Left 40%) & Monthly Calendar (Right 60%) */}
+                <div style={{ display: 'grid', gridTemplateColumns: '40% 60%', gap: '16px', alignItems: 'stretch' }} className="grid grid-cols-1 lg:grid-cols-[40%_60%] gap-4 items-stretch">
+                  {/* Left Column (40%): Dhan Live Open Positions + Recent Trades */}
+                  <div className="flex flex-col gap-4 justify-between">
+                    <div className="flex flex-col gap-4">
+                      {/* SECTION: DHAN AUTO-SYNCED OPEN POSITIONS */}
+                      {hasDhanConnection && (
+                        <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                            <h2 className="text-lg font-semibold tracking-tight flex items-center gap-2 font-display" style={{ color: 'var(--text)' }}>
+                              <span className="w-2.5 h-2.5 rounded-full bg-[#06b6d4] inline-block animate-pulse"></span>
+                              Dhan Live Open Positions
+                            </h2>
+                            <span className="bg-cyan-500/12 text-cyan-400 border border-cyan-800/30 text-[10px] font-extrabold uppercase rounded-full px-2 py-0.5">
+                              Synced Block
+                            </span>
+                          </div>
+
+                          {fetchingPositions ? (
+                            <div className="flex justify-center items-center py-6">
+                              <div className="animate-spin w-5 h-5 rounded-full border-2 border-[var(--border)] border-t-[var(--accent)]" />
+                            </div>
+                          ) : dhanPositions.length === 0 ? (
+                            <div className="text-center py-8 border border-dashed border-[var(--border)] rounded-xl bg-[var(--bar)]">
+                              <p className="text-xs text-[var(--text-sub)]">No active open positions in Dhan.</p>
+                              <p className="text-[10px] text-[var(--text-muted)] mt-0.5">Real-time background position tracker is running.</p>
+                            </div>
+                          ) : (
+                            <div className="overflow-x-auto">
+                              <table className="w-full text-left border-collapse text-xs">
+                                <thead>
+                                  <tr className="border-b" style={{ borderColor: 'var(--border)' }}>
+                                    <th className="pb-3 font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Symbol</th>
+                                    <th className="pb-3 font-semibold uppercase tracking-wider text-center" style={{ color: 'var(--text-muted)' }}>Direction</th>
+                                    <th className="pb-3 font-semibold uppercase tracking-wider text-center" style={{ color: 'var(--text-muted)' }}>Product</th>
+                                    <th className="pb-3 font-semibold uppercase tracking-wider text-right" style={{ color: 'var(--text-muted)' }}>Qty</th>
+                                    <th className="pb-3 font-semibold uppercase tracking-wider text-right" style={{ color: 'var(--text-muted)' }}>Avg. Price</th>
+                                    <th className="pb-3 font-semibold uppercase tracking-wider text-right" style={{ color: 'var(--text-muted)' }}>Total Cost</th>
+                                  </tr>
+                                </thead>
+                                <tbody className="divide-y" style={{ borderColor: 'var(--border)' }}>
+                                  {dhanPositions.map((pos: any) => (
+                                    <tr
+                                      key={pos.id}
+                                      className="transition-colors hover:bg-[var(--row)]"
+                                    >
+                                      <td className="py-3 font-bold" style={{ color: 'var(--text)' }}>
+                                        <div className="flex flex-col">
+                                          <span>{pos.symbol}</span>
+                                          <span style={{ color: 'var(--text-muted)' }} className="text-[10px] font-mono font-medium">
+                                            {pos.exchange || 'NSE'} • {pos.instrument_type || 'EQUITY'}
+                                          </span>
+                                        </div>
+                                      </td>
+                                      <td className="py-3 text-center">
+                                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${pos.opening_direction === 'LONG' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
+                                          {pos.opening_direction}
+                                        </span>
+                                      </td>
+                                      <td className="py-3 text-center font-semibold text-[var(--text-sub)] uppercase text-[10px]">
+                                        {pos.product_type}
+                                      </td>
+                                      <td className="py-3 text-right font-mono font-bold text-[var(--text)]">
+                                        {pos.total_quantity}
+                                      </td>
+                                      <td className="py-3 text-right font-mono text-[var(--text)]">
+                                        {formatINR(pos.avg_entry_price)}
+                                      </td>
+                                      <td className="py-3 text-right font-mono font-bold text-[var(--text)]">
+                                        {formatINR(pos.total_investment)}
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* SECTION 8: RECENT TRADES */}
+                      <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
+                        <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5 mb-4 font-display" style={{ color: 'var(--text)' }}>
+                          Recent Trades — {startDate} to {endDate}
+                        </h2>
+                        {trades.length === 0 ? (
+                          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>No logged trades found for this period.</p>
+                        ) : (
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-left border-collapse text-xs">
+                              <thead>
+                                <tr style={{ background: 'rgba(0, 0, 0, 0.04)', borderBottom: '1px solid rgba(0, 0, 0, 0.08)' }}>
+                                  <th className="p-3 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Date</th>
+                                  <th className="p-3 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Symbol</th>
+                                  <th className="p-3 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Type</th>
+                                  <th className="p-3 text-right" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>P&L</th>
+                                </tr>
+                              </thead>
+                              <tbody style={{ borderColor: 'var(--border)' }}>
+                                {trades.slice().reverse().slice(0, 5).map((trade: any, index: number) => {
+                                  const isEven = index % 2 === 1;
+                                  const isLong = trade.direction === 'LONG' || trade.direction === 'BUY';
+                                  return (
+                                    <tr
+                                      key={trade.id}
+                                      className="transition-colors duration-120"
+                                      style={{
+                                        cursor: 'pointer',
+                                        borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
+                                        backgroundColor: isEven ? 'rgba(0, 0, 0, 0.018)' : 'transparent'
+                                      }}
+                                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.025)')}
+                                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = isEven ? 'rgba(0, 0, 0, 0.018)' : 'transparent')}
+                                    >
+                                      <td className="p-3 font-mono" style={{ color: 'var(--text)' }}>
+                                        {trade.trade_date ? new Date(trade.trade_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
+                                      </td>
+                                      <td className="p-3 font-bold" style={{ fontWeight: 600, color: 'var(--text)' }}>
+                                        {trade.symbol}
+                                      </td>
+                                      <td className="p-3 font-sans">
+                                        <span 
+                                          className="px-2 py-0.5 rounded text-[10px] font-bold uppercase"
+                                          style={{
+                                            backgroundColor: isLong ? '#dcfce7' : '#fee2e2',
+                                            color: isLong ? '#16a34a' : '#dc2626'
+                                          }}
+                                        >
+                                          {trade.direction}
+                                        </span>
+                                      </td>
+                                      <td className={`p-3 font-mono font-bold text-right ${trade.pnl > 0 ? 'text-[#22c55e]' : trade.pnl < 0 ? 'text-[#ef4444]' : ''}`} style={{ color: trade.pnl === 0 ? 'var(--text-sub)' : undefined }}>
+                                        {formatINR(trade.pnl)}
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
 
-                  <div className="overflow-x-auto">
-                    <div style={{ width: 'max-content' }} className="mx-auto select-none">
-                      {/* Weekday headers */}
-                      <div className="grid grid-cols-7 gap-1 mb-1">
-                        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-                          <div
-                            key={day}
-                            style={{ width: '80px', color: 'var(--text-muted)' }}
-                            className="text-center text-[10px] uppercase font-bold tracking-wider py-1"
-                          >
-                            {day}
-                          </div>
-                        ))}
+                  {/* Right Column (60%): Monthly Calendar */}
+                  {/* ADDITION 4 — Monthly Calendar section */}
+                  <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                      <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
+                        Monthly Calendar
+                      </h2>
+                      
+                      {/* Navigation */}
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={prevMonth}
+                          style={{
+                            backgroundColor: 'var(--bar)',
+                            border: '0.5px solid var(--border)',
+                            borderRadius: '6px',
+                            color: 'var(--text)',
+                            padding: '4px 8px',
+                            cursor: 'pointer'
+                          }}
+                          className="hover:opacity-85 text-xs font-bold"
+                        >
+                          &larr;
+                        </button>
+                        <span className="font-semibold text-sm min-w-[120px] text-center" style={{ color: 'var(--text)' }}>
+                          {CALENDAR_MONTH_NAMES[calMonth]} {calYear}
+                        </span>
+                        <button
+                          onClick={nextMonth}
+                          style={{
+                            backgroundColor: 'var(--bar)',
+                            border: '0.5px solid var(--border)',
+                            borderRadius: '6px',
+                            color: 'var(--text)',
+                            padding: '4px 8px',
+                            cursor: 'pointer'
+                          }}
+                          className="hover:opacity-85 text-xs font-bold"
+                        >
+                          &rarr;
+                        </button>
                       </div>
+                    </div>
 
-                      {/* Day cells */}
-                      <div className="grid grid-cols-7 gap-1">
-                        {/* Empty prefix cells */}
-                        {Array.from({ length: new Date(calYear, calMonth, 1).getDay() }).map((_, index) => (
-                          <div
-                            key={`empty-${index}`}
-                            style={{ width: '80px', height: '60px', backgroundColor: 'transparent', borderColor: 'transparent' }}
-                            className="border"
-                          />
-                        ))}
-
-                        {/* Active cells of the month */}
-                        {Array.from({ length: new Date(calYear, calMonth + 1, 0).getDate() }).map((_, index) => {
-                          const d = index + 1;
-                          const cellDateStr = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                          const tradesOnDay = trades.filter((t) => t.date === cellDateStr);
-                          const hasTrades = tradesOnDay.length > 0;
-                          const dayPnl = tradesOnDay.reduce((sum, t) => sum + (t.pnl || 0), 0);
-                          const tradeCount = tradesOnDay.length;
-                          const isProfitable = hasTrades && dayPnl > 0;
-                          const formattedDayPnl = dayPnl >= 0 
-                            ? `₹${Math.round(dayPnl).toLocaleString('en-IN')}` 
-                            : `-₹${Math.round(Math.abs(dayPnl)).toLocaleString('en-IN')}`;
-
-                          return (
+                    <div className="overflow-x-auto flex-1 flex items-center justify-center">
+                      <div style={{ width: 'max-content' }} className="mx-auto select-none">
+                        {/* Weekday headers */}
+                        <div className="grid grid-cols-7 gap-1 mb-1">
+                          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
                             <div
-                              key={`day-${d}`}
-                              onClick={() => {
-                                if (hasTrades) {
-                                  setSelectedCalendarDay(cellDateStr);
-                                  setIsDayModalOpen(true);
-                                }
-                              }}
-                              style={{
-                                width: '80px',
-                                height: '60px',
-                                backgroundColor: hasTrades 
-                                  ? (isProfitable ? 'rgba(34, 197, 94, 0.12)' : 'rgba(239, 68, 68, 0.12)')
-                                  : 'var(--card)',
-                                borderColor: 'var(--border)',
-                                cursor: hasTrades ? 'pointer' : 'default'
-                              }}
-                              className="border rounded flex flex-col justify-between p-1.5 transition-all hover:brightness-95"
+                              key={day}
+                              style={{ width: '80px', color: 'var(--text-muted)' }}
+                              className="text-center text-[10px] uppercase font-bold tracking-wider py-1"
                             >
-                              <div className="flex justify-between items-start">
-                                <span 
-                                  style={{ 
-                                    color: hasTrades ? (isProfitable ? '#22c55e' : '#ef4444') : 'var(--text-muted)',
-                                    fontWeight: '600',
-                                    fontSize: '11px'
-                                  }}
-                                >
-                                  {d}
-                                </span>
-                              </div>
-                              {hasTrades && (
-                                <div className="flex flex-col items-center justify-center flex-1 leading-none mt-1">
-                                  <span style={{ fontSize: '10px', color: isProfitable ? '#22c55e' : '#ef4444', fontWeight: 'bold' }}>
-                                    {formattedDayPnl}
-                                  </span>
-                                  <span style={{ fontSize: '9px', color: 'var(--text-sub)' }} className="mt-0.5">
-                                    {tradeCount} {tradeCount === 1 ? 'trade' : 'trades'}
+                              {day}
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Day cells */}
+                        <div className="grid grid-cols-7 gap-1">
+                          {/* Empty prefix cells */}
+                          {Array.from({ length: new Date(calYear, calMonth, 1).getDay() }).map((_, index) => (
+                            <div
+                              key={`empty-${index}`}
+                              style={{ width: '80px', height: '60px', backgroundColor: 'transparent', borderColor: 'transparent' }}
+                              className="border"
+                            />
+                          ))}
+
+                          {/* Active cells of the month */}
+                          {Array.from({ length: new Date(calYear, calMonth + 1, 0).getDate() }).map((_, index) => {
+                            const d = index + 1;
+                            const cellDateStr = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                            const tradesOnDay = trades.filter((t) => t.date === cellDateStr);
+                            const hasTrades = tradesOnDay.length > 0;
+                            const dayPnl = tradesOnDay.reduce((sum, t) => sum + (t.pnl || 0), 0);
+                            const tradeCount = tradesOnDay.length;
+                            const isProfitable = hasTrades && dayPnl > 0;
+                            const formattedDayPnl = dayPnl >= 0 
+                              ? `₹${Math.round(dayPnl).toLocaleString('en-IN')}` 
+                              : `-₹${Math.round(Math.abs(dayPnl)).toLocaleString('en-IN')}`;
+
+                            return (
+                              <div
+                                key={`day-${d}`}
+                                onClick={() => {
+                                  if (hasTrades) {
+                                    setSelectedCalendarDay(cellDateStr);
+                                    setIsDayModalOpen(true);
+                                  }
+                                }}
+                                style={{
+                                  width: '80px',
+                                  height: '60px',
+                                  backgroundColor: hasTrades 
+                                    ? (isProfitable ? 'rgba(34, 197, 94, 0.12)' : 'rgba(239, 68, 68, 0.12)')
+                                    : 'var(--card)',
+                                  borderColor: 'var(--border)',
+                                  cursor: hasTrades ? 'pointer' : 'default'
+                                }}
+                                className="border rounded flex flex-col justify-between p-1.5 transition-all hover:brightness-95"
+                              >
+                                <div className="flex justify-between items-start">
+                                  <span 
+                                    style={{ 
+                                      color: hasTrades ? (isProfitable ? '#22c55e' : '#ef4444') : 'var(--text-muted)',
+                                      fontWeight: '600',
+                                      fontSize: '11px'
+                                    }}
+                                  >
+                                    {d}
                                   </span>
                                 </div>
-                              )}
-                            </div>
-                          );
-                        })}
+                                {hasTrades && (
+                                  <div className="flex flex-col items-center justify-center flex-1 leading-none mt-1">
+                                    <span style={{ fontSize: '10px', color: isProfitable ? '#22c55e' : '#ef4444', fontWeight: 'bold' }}>
+                                      {formattedDayPnl}
+                                    </span>
+                                    <span style={{ fontSize: '9px', color: 'var(--text-sub)' }} className="mt-0.5">
+                                      {tradeCount} {tradeCount === 1 ? 'trade' : 'trades'}
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1488,7 +1751,7 @@ export const DashboardPage: React.FC = () => {
                 </div>
 
                 {/* SECTION 5: METRICS + STATS GRID */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4" style={{ display: 'none' }}>
                   {/* LEFT DETAILED STATS */}
                   <div className="lg:col-span-2 rounded-xl p-5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', display: 'none' }}>
                     <div>
@@ -1883,143 +2146,7 @@ export const DashboardPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* SECTION: DHAN AUTO-SYNCED OPEN POSITIONS */}
-                {hasDhanConnection && (
-                  <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
-                      <h2 className="text-lg font-semibold tracking-tight flex items-center gap-2 font-display" style={{ color: 'var(--text)' }}>
-                        <span className="w-2.5 h-2.5 rounded-full bg-[#06b6d4] inline-block animate-pulse"></span>
-                        Dhan Live Open Positions
-                      </h2>
-                      <span className="bg-cyan-500/12 text-cyan-400 border border-cyan-800/30 text-[10px] font-extrabold uppercase rounded-full px-2 py-0.5">
-                        Synced Block
-                      </span>
-                    </div>
-
-                    {fetchingPositions ? (
-                      <div className="flex justify-center items-center py-6">
-                        <div className="animate-spin w-5 h-5 rounded-full border-2 border-[var(--border)] border-t-[var(--accent)]" />
-                      </div>
-                    ) : dhanPositions.length === 0 ? (
-                      <div className="text-center py-8 border border-dashed border-[var(--border)] rounded-xl bg-[var(--bar)]">
-                        <p className="text-xs text-[var(--text-sub)]">No active open positions in Dhan.</p>
-                        <p className="text-[10px] text-[var(--text-muted)] mt-0.5">Real-time background position tracker is running.</p>
-                      </div>
-                    ) : (
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse text-xs">
-                          <thead>
-                            <tr className="border-b" style={{ borderColor: 'var(--border)' }}>
-                              <th className="pb-3 font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Symbol</th>
-                              <th className="pb-3 font-semibold uppercase tracking-wider text-center" style={{ color: 'var(--text-muted)' }}>Direction</th>
-                              <th className="pb-3 font-semibold uppercase tracking-wider text-center" style={{ color: 'var(--text-muted)' }}>Product</th>
-                              <th className="pb-3 font-semibold uppercase tracking-wider text-right" style={{ color: 'var(--text-muted)' }}>Qty</th>
-                              <th className="pb-3 font-semibold uppercase tracking-wider text-right" style={{ color: 'var(--text-muted)' }}>Avg. Price</th>
-                              <th className="pb-3 font-semibold uppercase tracking-wider text-right" style={{ color: 'var(--text-muted)' }}>Total Cost</th>
-                            </tr>
-                          </thead>
-                          <tbody className="divide-y" style={{ borderColor: 'var(--border)' }}>
-                            {dhanPositions.map((pos: any) => (
-                              <tr
-                                key={pos.id}
-                                className="transition-colors hover:bg-[var(--row)]"
-                              >
-                                <td className="py-3 font-bold" style={{ color: 'var(--text)' }}>
-                                  <div className="flex flex-col">
-                                    <span>{pos.symbol}</span>
-                                    <span style={{ color: 'var(--text-muted)' }} className="text-[10px] font-mono font-medium">
-                                      {pos.exchange || 'NSE'} • {pos.instrument_type || 'EQUITY'}
-                                    </span>
-                                  </div>
-                                </td>
-                                <td className="py-3 text-center">
-                                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${pos.opening_direction === 'LONG' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
-                                    {pos.opening_direction}
-                                  </span>
-                                </td>
-                                <td className="py-3 text-center font-semibold text-[var(--text-sub)] uppercase text-[10px]">
-                                  {pos.product_type}
-                                </td>
-                                <td className="py-3 text-right font-mono font-bold text-[var(--text)]">
-                                  {pos.total_quantity}
-                                </td>
-                                <td className="py-3 text-right font-mono text-[var(--text)]">
-                                  {formatINR(pos.avg_entry_price)}
-                                </td>
-                                <td className="py-3 text-right font-mono font-bold text-[var(--text)]">
-                                  {formatINR(pos.total_investment)}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* SECTION 8: RECENT TRADES */}
-                <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
-                  <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5 mb-4 font-display" style={{ color: 'var(--text)' }}>
-                    Recent Trades — {startDate} to {endDate}
-                  </h2>
-                  {trades.length === 0 ? (
-                    <p className="text-xs" style={{ color: 'var(--text-muted)' }}>No logged trades found for this period.</p>
-                  ) : (
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-left border-collapse text-xs">
-                        <thead>
-                          <tr style={{ background: 'rgba(0, 0, 0, 0.04)', borderBottom: '1px solid rgba(0, 0, 0, 0.08)' }}>
-                            <th className="p-3 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Date</th>
-                            <th className="p-3 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Symbol</th>
-                            <th className="p-3 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Type</th>
-                            <th className="p-3 text-right" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>P&L</th>
-                          </tr>
-                        </thead>
-                        <tbody style={{ borderColor: 'var(--border)' }}>
-                          {trades.slice().reverse().slice(0, 5).map((trade: any, index: number) => {
-                            const isEven = index % 2 === 1;
-                            const isLong = trade.direction === 'LONG' || trade.direction === 'BUY';
-                            return (
-                              <tr
-                                key={trade.id}
-                                className="transition-colors duration-120"
-                                style={{
-                                  cursor: 'pointer',
-                                  borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
-                                  backgroundColor: isEven ? 'rgba(0, 0, 0, 0.018)' : 'transparent'
-                                }}
-                                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.025)')}
-                                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = isEven ? 'rgba(0, 0, 0, 0.018)' : 'transparent')}
-                              >
-                                <td className="p-3 font-mono" style={{ color: 'var(--text)' }}>
-                                  {trade.trade_date ? new Date(trade.trade_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
-                                </td>
-                                <td className="p-3 font-bold" style={{ fontWeight: 600, color: 'var(--text)' }}>
-                                  {trade.symbol}
-                                </td>
-                                <td className="p-3 font-sans">
-                                  <span 
-                                    className="px-2 py-0.5 rounded text-[10px] font-bold uppercase"
-                                    style={{
-                                      backgroundColor: isLong ? '#dcfce7' : '#fee2e2',
-                                      color: isLong ? '#16a34a' : '#dc2626'
-                                    }}
-                                  >
-                                    {trade.direction}
-                                  </span>
-                                </td>
-                                <td className={`p-3 font-mono font-bold text-right ${trade.pnl > 0 ? 'text-[#22c55e]' : trade.pnl < 0 ? 'text-[#ef4444]' : ''}`} style={{ color: trade.pnl === 0 ? 'var(--text-sub)' : undefined }}>
-                                  {formatINR(trade.pnl)}
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-                </div>
+                {/* Old original elements removed and relocated inside 2-column row above */}
               </div>
             )}
           </div>
