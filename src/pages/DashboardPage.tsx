@@ -83,7 +83,7 @@ const SemicircleGauge: React.FC<{ percentage: number; wCount: number; beCount: n
         d="M 12,50 A 48,48 0 0,1 108,50"
         fill="none"
         stroke="var(--bar)"
-        strokeWidth="10"
+        strokeWidth="7"
         strokeLinecap="butt"
         vectorEffect="non-scaling-stroke"
         shapeRendering="geometricPrecision"
@@ -93,7 +93,7 @@ const SemicircleGauge: React.FC<{ percentage: number; wCount: number; beCount: n
         d="M 12,50 A 48,48 0 0,1 108,50"
         fill="none"
         stroke="#3AA986"
-        strokeWidth="10"
+        strokeWidth="7"
         strokeLinecap="butt"
         pathLength="100"
         strokeDasharray={`${pW} 100`}
@@ -107,7 +107,7 @@ const SemicircleGauge: React.FC<{ percentage: number; wCount: number; beCount: n
         d="M 12,50 A 48,48 0 0,1 108,50"
         fill="none"
         stroke="var(--text-muted)"
-        strokeWidth="10"
+        strokeWidth="7"
         strokeLinecap="butt"
         pathLength="100"
         strokeDasharray={`${pBe} 100`}
@@ -121,7 +121,7 @@ const SemicircleGauge: React.FC<{ percentage: number; wCount: number; beCount: n
         d="M 12,50 A 48,48 0 0,1 108,50"
         fill="none"
         stroke="#D96B6B"
-        strokeWidth="10"
+        strokeWidth="7"
         strokeLinecap="butt"
         pathLength="100"
         strokeDasharray={`${pL} 100`}
@@ -157,7 +157,7 @@ const CircleGauge: React.FC<{ value: number }> = ({ value }) => {
         r={radius}
         fill="none"
         stroke="#D96B6B"
-        strokeWidth="10"
+        strokeWidth="7"
         vectorEffect="non-scaling-stroke"
         shapeRendering="geometricPrecision"
       />
@@ -167,7 +167,7 @@ const CircleGauge: React.FC<{ value: number }> = ({ value }) => {
         r={radius}
         fill="none"
         stroke="#3AA986"
-        strokeWidth="10"
+        strokeWidth="7"
         strokeLinecap="round"
         pathLength="100"
         strokeDasharray="100 100"
@@ -1221,8 +1221,8 @@ export const DashboardPage: React.FC = () => {
                     <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       NET P&L
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: stats.totalPnl > 0 ? '#22c55e' : stats.totalPnl < 0 ? '#ef4444' : 'var(--text)', lineHeight: '1.2' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', flexGrow: 1, paddingTop: '10px' }}>
+                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: stats.totalPnl > 0 ? '#3AA986' : stats.totalPnl < 0 ? '#D96B6B' : 'var(--text)', lineHeight: '1.2' }}>
                         {formatPnlNoDecimals(stats.totalPnl)}
                       </div>
                     </div>
@@ -1341,7 +1341,7 @@ export const DashboardPage: React.FC = () => {
                           const winPctForBar = totalForBar > 0 ? (avgWinForBar / totalForBar) * 100 : 50;
                           return (
                             <>
-                              <div style={{ display: 'flex', height: '10px', width: '100%', borderRadius: '5px', overflow: 'hidden' }}>
+                              <div style={{ display: 'flex', height: '7px', width: '100%', borderRadius: '0px', overflow: 'hidden' }}>
                                 <div style={{ width: `${winPctForBar}%`, backgroundColor: '#3AA986' }} />
                                 <div style={{ width: `${100 - winPctForBar}%`, backgroundColor: '#D96B6B' }} />
                               </div>
