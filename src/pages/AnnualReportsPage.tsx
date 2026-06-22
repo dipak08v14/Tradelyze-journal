@@ -294,7 +294,7 @@ export const AnnualReportsPage: React.FC = () => {
         </header>
 
         {/* CONTAINER CONTENT */}
-        <main className="flex-1 overflow-y-auto px-4 pt-4 pb-8">
+        <main className="flex-1 overflow-y-auto">
           <div className="max-w-7xl mx-auto">
             {/* HEADER AREA */}
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">

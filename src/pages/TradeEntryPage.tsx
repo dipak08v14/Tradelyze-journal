@@ -1112,7 +1112,7 @@ export const TradeEntryPage: React.FC = () => {
         </header>
 
         {/* CONTAINER CONTENT */}
-        <main className="flex-1 overflow-y-auto px-4 pt-4 pb-8">
+        <main className="flex-1 overflow-y-auto">
           <form onSubmit={handleSaveTradeSubmit} className="max-w-6xl mx-auto">
             {/* PAGE HEADER */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

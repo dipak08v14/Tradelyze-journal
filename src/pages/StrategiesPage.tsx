@@ -521,7 +521,7 @@ export const StrategiesPage: React.FC = () => {
           </button>
         </header>
 
-        <main className="flex-1 overflow-y-auto px-4 pt-4 pb-8">
+        <main className="flex-1 overflow-y-auto">
           <div className="max-w-6xl mx-auto">
             
             {/* PAGE HEADER */}

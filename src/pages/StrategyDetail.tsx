@@ -585,7 +585,7 @@ export const StrategyDetail: React.FC = () => {
           </button>
         </header>
 
-        <main className="flex-1 overflow-y-auto px-4 pt-4 pb-8">
+        <main className="flex-1 overflow-y-auto">
           <div className="max-w-6xl mx-auto">
             {/* BREADCRUMB ROW */}
             <div className="flex flex-wrap items-center gap-1.5 text-xs text-zinc-500 font-mono mb-4 uppercase tracking-wider font-semibold">
