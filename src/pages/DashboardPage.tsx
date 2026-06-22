@@ -950,7 +950,7 @@ export const DashboardPage: React.FC = () => {
                 display: 'flex', 
                 alignItems: 'center', 
                 justifyContent: 'space-between', 
-                padding: '12px 16px', 
+                padding: '8px 16px', 
                 backgroundColor: 'var(--card-bg, var(--bg-secondary, var(--card)))', 
                 borderBottom: '1px solid var(--border)',
                 marginBottom: '24px',
