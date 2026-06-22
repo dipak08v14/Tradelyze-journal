@@ -1330,7 +1330,7 @@ export const DashboardPage: React.FC = () => {
                 {/* NEW 3-COLUMN ROW: Trading Metrics | Cumulative P&L | Daily P&L */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', alignItems: 'stretch' }} className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
                   {/* Column 1: Trading Metrics */}
-                  <div className="rounded-xl p-5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                  <div className="rounded-xl p-5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', height: '300px' }}>
                     <div>
                       <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
                         Trading Metrics
@@ -1443,7 +1443,7 @@ export const DashboardPage: React.FC = () => {
                   </div>
 
                   {/* Column 2: Cumulative P&L */}
-                  <div className="p-5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', overflow: 'visible' }}>
+                  <div className="p-5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', overflow: 'visible', height: '300px' }}>
                     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-4">
                       <div className="flex flex-col">
                         <h2 className="flex items-center gap-1.5" style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)' }}>
@@ -1563,7 +1563,7 @@ export const DashboardPage: React.FC = () => {
                   </div>
 
                   {/* Column 3: Daily P&L */}
-                  <div className="p-5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
+                  <div className="p-5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', height: '300px' }}>
                     <div className="flex items-center justify-between gap-2 mb-4">
                       <h2 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)' }}>
                         Daily P&L
