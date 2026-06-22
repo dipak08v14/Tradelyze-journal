@@ -1942,8 +1942,18 @@ export const DashboardPage: React.FC = () => {
                           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
                             <div
                               key={day}
-                              style={{ width: '100%', minWidth: '0px', overflow: 'hidden', boxSizing: 'border-box', color: 'var(--text-muted)' }}
-                              className="text-center text-[10px] uppercase font-bold tracking-wider py-1"
+                              style={{ 
+                                width: '100%', 
+                                minWidth: '0px', 
+                                overflow: 'hidden', 
+                                boxSizing: 'border-box', 
+                                color: 'var(--text-muted)',
+                                backgroundColor: 'var(--bg-secondary, var(--card-bg, var(--bg)))',
+                                padding: '8px 0',
+                                textAlign: 'center',
+                                borderRadius: '4px'
+                              }}
+                              className="text-center text-[10px] uppercase font-bold tracking-wider"
                             >
                               {day}
                             </div>
