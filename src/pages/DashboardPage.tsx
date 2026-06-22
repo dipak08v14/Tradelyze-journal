@@ -102,6 +102,7 @@ export const DashboardPage: React.FC = () => {
 
   const [loading, setLoading] = useState<boolean>(true);
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
+  const [bottomTab, setBottomTab] = useState<'positions' | 'trades'>('positions');
 
   // Broker Sync States
   const [syncStatus, setSyncStatus] = useState<'idle' | 'active' | 'inactive'>('idle');
@@ -1348,27 +1349,47 @@ export const DashboardPage: React.FC = () => {
 
                 {/* NEW 2-COLUMN ROW: Dhan Live + Recent Trades (Left 40%) & Monthly Calendar (Right 60%) */}
                 <div style={{ display: 'grid', gridTemplateColumns: '40% 60%', gap: '16px', alignItems: 'stretch' }} className="grid grid-cols-1 lg:grid-cols-[40%_60%] gap-4 items-stretch">
-                  {/* Left Column (40%): Dhan Live Open Positions + Recent Trades */}
-                  <div className="flex flex-col gap-4 justify-between">
-                    <div className="flex flex-col gap-4">
-                      {/* SECTION: DHAN AUTO-SYNCED OPEN POSITIONS */}
-                      {hasDhanConnection && (
-                        <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
-                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
-                            <h2 className="text-lg font-semibold tracking-tight flex items-center gap-2 font-display" style={{ color: 'var(--text)' }}>
-                              <span className="w-2.5 h-2.5 rounded-full bg-[#06b6d4] inline-block animate-pulse"></span>
-                              <span style={{ display: 'none' }}>Dhan Live </span>Open Positions
-                            </h2>
-                            <span className="bg-cyan-500/12 text-cyan-400 border border-cyan-800/30 text-[10px] font-extrabold uppercase rounded-full px-2 py-0.5" style={{ display: 'none' }}>
-                              Synced Block
-                            </span>
-                          </div>
+                  {/* Left Column (40%): Tabbed Info Card */}
+                  <div className="rounded-xl p-5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
+                    <div>
+                      {/* Tab Bar */}
+                      <div className="flex gap-4 border-b pb-2 mb-4" style={{ borderColor: 'var(--border)' }}>
+                        <button
+                          onClick={() => setBottomTab('positions')}
+                          style={{
+                            color: bottomTab === 'positions' ? 'var(--accent)' : 'var(--text-muted)',
+                            borderBottom: bottomTab === 'positions' ? '2px solid var(--accent)' : '2px solid transparent',
+                            background: 'transparent',
+                            fontWeight: bottomTab === 'positions' ? 600 : 400,
+                            cursor: 'pointer'
+                          }}
+                          className="px-4 py-1.5 text-sm transition-all relative -bottom-[10px]"
+                        >
+                          Open Positions
+                        </button>
+                        <button
+                          onClick={() => setBottomTab('trades')}
+                          style={{
+                            color: bottomTab === 'trades' ? 'var(--accent)' : 'var(--text-muted)',
+                            borderBottom: bottomTab === 'trades' ? '2px solid var(--accent)' : '2px solid transparent',
+                            background: 'transparent',
+                            fontWeight: bottomTab === 'trades' ? 600 : 400,
+                            cursor: 'pointer'
+                          }}
+                          className="px-4 py-1.5 text-sm transition-all relative -bottom-[10px]"
+                        >
+                          Recent Trades
+                        </button>
+                      </div>
 
+                      {/* Tab Content 1: Open Positions */}
+                      {bottomTab === 'positions' && (
+                        <div>
                           {fetchingPositions ? (
                             <div className="flex justify-center items-center py-6">
                               <div className="animate-spin w-5 h-5 rounded-full border-2 border-[var(--border)] border-t-[var(--accent)]" />
                             </div>
-                          ) : dhanPositions.length === 0 ? (
+                          ) : (!hasDhanConnection || dhanPositions.length === 0) ? (
                             <div className="text-center py-8 border border-dashed border-[var(--border)] rounded-xl bg-[var(--bar)]">
                               <p className="text-xs text-[var(--text-sub)]">No active open positions in Dhan.</p>
                               <p className="text-[10px] text-[var(--text-muted)] mt-0.5">Real-time background position tracker is running.</p>
@@ -1426,68 +1447,67 @@ export const DashboardPage: React.FC = () => {
                         </div>
                       )}
 
-                      {/* SECTION 8: RECENT TRADES */}
-                      <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
-                        <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5 mb-4 font-display" style={{ color: 'var(--text)' }}>
-                          Recent Trades<span style={{ display: 'none' }}> — {startDate} to {endDate}</span>
-                        </h2>
-                        {trades.length === 0 ? (
-                          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>No logged trades found for this period.</p>
-                        ) : (
-                          <div className="overflow-x-auto">
-                            <table className="w-full text-left border-collapse text-xs">
-                              <thead>
-                                <tr style={{ background: 'rgba(0, 0, 0, 0.04)', borderBottom: '1px solid rgba(0, 0, 0, 0.08)' }}>
-                                  <th className="p-3 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Date</th>
-                                  <th className="p-3 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Symbol</th>
-                                  <th className="p-3 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Type</th>
-                                  <th className="p-3 text-right" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>P&L</th>
-                                </tr>
-                              </thead>
-                              <tbody style={{ borderColor: 'var(--border)' }}>
-                                {trades.slice().reverse().slice(0, 5).map((trade: any, index: number) => {
-                                  const isEven = index % 2 === 1;
-                                  const isLong = trade.direction === 'LONG' || trade.direction === 'BUY';
-                                  return (
-                                    <tr
-                                      key={trade.id}
-                                      className="transition-colors duration-120"
-                                      style={{
-                                        cursor: 'pointer',
-                                        borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
-                                        backgroundColor: isEven ? 'rgba(0, 0, 0, 0.018)' : 'transparent'
-                                      }}
-                                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.025)')}
-                                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = isEven ? 'rgba(0, 0, 0, 0.018)' : 'transparent')}
-                                    >
-                                      <td className="p-3 font-mono" style={{ color: 'var(--text)' }}>
-                                        {trade.trade_date ? new Date(trade.trade_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
-                                      </td>
-                                      <td className="p-3 font-bold" style={{ fontWeight: 600, color: 'var(--text)' }}>
-                                        {trade.symbol}
-                                      </td>
-                                      <td className="p-3 font-sans">
-                                        <span 
-                                          className="px-2 py-0.5 rounded text-[10px] font-bold uppercase"
-                                          style={{
-                                            backgroundColor: isLong ? '#dcfce7' : '#fee2e2',
-                                            color: isLong ? '#16a34a' : '#dc2626'
-                                          }}
-                                        >
-                                          {trade.direction}
-                                        </span>
-                                      </td>
-                                      <td className={`p-3 font-mono font-bold text-right ${trade.pnl > 0 ? 'text-[#22c55e]' : trade.pnl < 0 ? 'text-[#ef4444]' : ''}`} style={{ color: trade.pnl === 0 ? 'var(--text-sub)' : undefined }}>
-                                        {formatINR(trade.pnl)}
-                                      </td>
-                                    </tr>
-                                  );
-                                })}
-                              </tbody>
-                            </table>
-                          </div>
-                        )}
-                      </div>
+                      {/* Tab Content 2: Recent Trades */}
+                      {bottomTab === 'trades' && (
+                        <div>
+                          {trades.length === 0 ? (
+                            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>No logged trades found for this period.</p>
+                          ) : (
+                            <div className="overflow-x-auto">
+                              <table className="w-full text-left border-collapse text-xs">
+                                <thead>
+                                  <tr style={{ background: 'rgba(0, 0, 0, 0.04)', borderBottom: '1px solid rgba(0, 0, 0, 0.08)' }}>
+                                    <th className="p-3 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Date</th>
+                                    <th className="p-3 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Symbol</th>
+                                    <th className="p-3 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Type</th>
+                                    <th className="p-3 text-right" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>P&L</th>
+                                  </tr>
+                                </thead>
+                                <tbody style={{ borderColor: 'var(--border)' }}>
+                                  {trades.slice().reverse().slice(0, 5).map((trade: any, index: number) => {
+                                    const isEven = index % 2 === 1;
+                                    const isLong = trade.direction === 'LONG' || trade.direction === 'BUY';
+                                    return (
+                                      <tr
+                                        key={trade.id}
+                                        className="transition-colors duration-120"
+                                        style={{
+                                          cursor: 'pointer',
+                                          borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
+                                          backgroundColor: isEven ? 'rgba(0, 0, 0, 0.018)' : 'transparent'
+                                        }}
+                                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.025)')}
+                                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = isEven ? 'rgba(0, 0, 0, 0.018)' : 'transparent')}
+                                      >
+                                        <td className="p-3 font-mono" style={{ color: 'var(--text)' }}>
+                                          {trade.trade_date ? new Date(trade.trade_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
+                                        </td>
+                                        <td className="p-3 font-bold" style={{ fontWeight: 600, color: 'var(--text)' }}>
+                                          {trade.symbol}
+                                        </td>
+                                        <td className="p-3 font-sans">
+                                          <span 
+                                            className="px-2 py-0.5 rounded text-[10px] font-bold uppercase"
+                                            style={{
+                                              backgroundColor: isLong ? '#dcfce7' : '#fee2e2',
+                                              color: isLong ? '#16a34a' : '#dc2626'
+                                            }}
+                                          >
+                                            {trade.direction}
+                                          </span>
+                                        </td>
+                                        <td className={`p-3 font-mono font-bold text-right ${trade.pnl > 0 ? 'text-[#22c55e]' : trade.pnl < 0 ? 'text-[#ef4444]' : ''}`} style={{ color: trade.pnl === 0 ? 'var(--text-sub)' : undefined }}>
+                                          {formatINR(trade.pnl)}
+                                        </td>
+                                      </tr>
+                                    );
+                                  })}
+                                </tbody>
+                              </table>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
 
