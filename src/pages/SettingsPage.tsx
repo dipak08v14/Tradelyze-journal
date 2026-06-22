@@ -882,7 +882,7 @@ export default function SettingsPage() {
       <Sidebar userEmail={user?.email || ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* MAIN SCREEN AREA */}
-      <main className="flex-1 overflow-y-auto w-full min-w-0 overflow-x-hidden">
+      <main className="flex-1 overflow-y-auto w-full min-w-0 overflow-x-hidden px-0">
         {/* TOP COMPONENT */}
         <div 
           className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 md:px-8 border-b border-[var(--border)]"

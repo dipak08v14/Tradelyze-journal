@@ -865,7 +865,7 @@ const TradeTrackingPageContent: React.FC = () => {
         </header>
 
         {/* PAGE BODY SCROLLER */}
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto px-0">
           <div className="max-w-6xl mx-auto">
             
             {/* BREADCRUMB ROW WITH TRADE NAVIGATION */}

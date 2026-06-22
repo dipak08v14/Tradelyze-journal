@@ -781,7 +781,7 @@ export const StrategyBuilderPage: React.FC = () => {
             </span>
           </div>
         ) : (
-          <main className="flex-1 overflow-y-auto">
+          <main className="flex-1 overflow-y-auto px-0">
             <div className="max-w-5xl mx-auto">
               
               {/* BREADCRUMB HEADER */}
