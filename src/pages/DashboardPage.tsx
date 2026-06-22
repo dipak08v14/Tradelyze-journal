@@ -951,7 +951,7 @@ export const DashboardPage: React.FC = () => {
                 backgroundColor: 'var(--card-bg, var(--bg-secondary, var(--card)))', 
                 borderBottom: '1px solid var(--border)',
                 marginTop: '10px',
-                marginBottom: '24px',
+                marginBottom: '10px',
                 width: '100%'
               }}
               className="flex-wrap gap-4 rounded-lg items-center"
