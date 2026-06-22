@@ -866,7 +866,7 @@ export const DashboardPage: React.FC = () => {
 
         {/* CONTAINER CONTENT */}
         <main className="flex-1 overflow-y-auto px-0">
-          <div className="max-w-7xl mx-auto pr-4 pb-4">
+          <div className="max-w-7xl mx-auto p-0">
             {/* PAGE HEADER */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
@@ -1730,7 +1730,7 @@ export const DashboardPage: React.FC = () => {
                 </div>
 
                 {/* NEW 2-COLUMN ROW: Dhan Live + Recent Trades (Left 40%) & Monthly Calendar (Right 60%) */}
-                <div style={{ display: 'grid', gridTemplateColumns: '40% 60%', gap: '16px', alignItems: 'stretch' }} className="grid grid-cols-1 lg:grid-cols-[40%_60%] gap-4 items-stretch">
+                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 40%) minmax(0, 60%)', gap: '16px', alignItems: 'stretch' }} className="grid grid-cols-1 lg:grid-cols-[minmax(0,_40%)_minmax(0,_60%)] gap-4 items-stretch">
                   {/* Left Column (40%): Tabbed Info Card */}
                   <div className="rounded-xl p-5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
                     <div>
@@ -1895,7 +1895,7 @@ export const DashboardPage: React.FC = () => {
 
                   {/* Right Column (60%): Monthly Calendar */}
                   {/* ADDITION 4 — Monthly Calendar section */}
-                  <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%', minWidth: '0px', overflow: 'hidden', boxSizing: 'border-box' }}>
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                       <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
                         Monthly Calendar
@@ -1936,15 +1936,15 @@ export const DashboardPage: React.FC = () => {
                         </button>
                       </div>
                     </div>
-
+ 
                     <div className="overflow-x-auto flex-1 flex items-center justify-center">
-                      <div style={{ width: 'max-content' }} className="mx-auto select-none">
+                      <div style={{ width: '100%', minWidth: '0px', overflow: 'hidden', boxSizing: 'border-box' }} className="mx-auto select-none">
                         {/* Weekday headers */}
-                        <div className="grid grid-cols-7 gap-1 mb-1">
+                        <div className="grid grid-cols-7 gap-1 mb-1" style={{ width: '100%', minWidth: '0px', overflow: 'hidden', boxSizing: 'border-box', display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))' }}>
                           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
                             <div
                               key={day}
-                              style={{ width: '80px', color: 'var(--text-muted)' }}
+                              style={{ width: '100%', minWidth: '0px', overflow: 'hidden', boxSizing: 'border-box', color: 'var(--text-muted)' }}
                               className="text-center text-[10px] uppercase font-bold tracking-wider py-1"
                             >
                               {day}
@@ -1953,12 +1953,12 @@ export const DashboardPage: React.FC = () => {
                         </div>
 
                         {/* Day cells */}
-                        <div className="grid grid-cols-7 gap-1">
+                        <div className="grid grid-cols-7 gap-1" style={{ width: '100%', minWidth: '0px', overflow: 'hidden', boxSizing: 'border-box', display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))' }}>
                           {/* Empty prefix cells */}
                           {Array.from({ length: new Date(calYear, calMonth, 1).getDay() }).map((_, index) => (
                             <div
                               key={`empty-${index}`}
-                              style={{ width: '80px', height: '60px', backgroundColor: 'transparent', borderColor: 'transparent' }}
+                              style={{ width: '100%', minWidth: '0px', overflow: 'hidden', boxSizing: 'border-box', height: '60px', backgroundColor: 'transparent', borderColor: 'transparent' }}
                               className="border"
                             />
                           ))}
@@ -1986,7 +1986,10 @@ export const DashboardPage: React.FC = () => {
                                   }
                                 }}
                                 style={{
-                                  width: '80px',
+                                  width: '100%',
+                                  minWidth: '0px',
+                                  overflow: 'hidden',
+                                  boxSizing: 'border-box',
                                   height: '60px',
                                   backgroundColor: hasTrades 
                                     ? (isProfitable ? 'rgba(34, 197, 94, 0.12)' : 'rgba(239, 68, 68, 0.12)')
