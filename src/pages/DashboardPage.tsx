@@ -873,9 +873,6 @@ export const DashboardPage: React.FC = () => {
                 <h1 className="font-display" style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }}>
                   Dashboard
                 </h1>
-                <p className="mt-1" style={{ fontSize: '13px', fontWeight: 400, color: 'var(--text-sub)' }}>
-                  Monthly performance overview — all calculated from your trade data.
-                </p>
               </div>
 
               {/* DATE RANGE PICKER */}
@@ -953,6 +950,7 @@ export const DashboardPage: React.FC = () => {
                 padding: '8px 16px', 
                 backgroundColor: 'var(--card-bg, var(--bg-secondary, var(--card)))', 
                 borderBottom: '1px solid var(--border)',
+                marginTop: '10px',
                 marginBottom: '24px',
                 width: '100%'
               }}
