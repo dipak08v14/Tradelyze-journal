@@ -64,19 +64,19 @@ const formatDayHeaderDate = (dateStr: string) => {
   }
 };
 
-const SemicircleGauge: React.FC<{ percentage: number }> = ({ percentage }) => {
+const SemicircleGauge: React.FC<{ percentage: number; wCount: number; beCount: number; lCount: number }> = ({ percentage, wCount, beCount, lCount }) => {
   const radius = 25;
   const pathLength = Math.PI * radius; // ~78.54
   const val = Math.min(Math.max(percentage, 0), 100);
   const offset = pathLength * (1 - val / 100);
   return (
-    <svg width="60" height="32" viewBox="0 0 60 32" className="overflow-visible inline-block">
+    <svg width="60" height="48" viewBox="0 0 60 48" className="overflow-visible inline-block">
       {/* Background Arc */}
       <path
         d="M 5,30 A 25,25 0 0,1 55,30"
         fill="none"
-        stroke="var(--border)"
-        strokeWidth="4"
+        stroke="#ef4444"
+        strokeWidth="8"
         strokeLinecap="round"
       />
       {/* Colored Foreground Arc */}
@@ -84,13 +84,17 @@ const SemicircleGauge: React.FC<{ percentage: number }> = ({ percentage }) => {
         d="M 5,30 A 25,25 0 0,1 55,30"
         fill="none"
         stroke="#22c55e"
-        strokeWidth="4"
+        strokeWidth="8"
         strokeLinecap="round"
         strokeDasharray={pathLength}
         strokeDashoffset={offset}
         className="transition-all duration-500 ease-out"
         style={{ stroke: '#22c55e' }}
       />
+      {/* W B L Labels centered below arc legs and center */}
+      <text x="5" y="44" textAnchor="middle" fill="#22c55e" fontSize="10" fontWeight="bold" className="font-mono">{wCount}</text>
+      <text x="30" y="44" textAnchor="middle" fill="var(--text-sub)" fontSize="10" fontWeight="bold" className="font-mono">{beCount}</text>
+      <text x="55" y="44" textAnchor="middle" fill="#ef4444" fontSize="10" fontWeight="bold" className="font-mono">{lCount}</text>
     </svg>
   );
 };
@@ -107,8 +111,8 @@ const CircleGauge: React.FC<{ value: number }> = ({ value }) => {
         cy="25"
         r={radius}
         fill="none"
-        stroke="var(--border)"
-        strokeWidth="3.5"
+        stroke="#ef4444"
+        strokeWidth="8"
       />
       <circle
         cx="25"
@@ -116,7 +120,7 @@ const CircleGauge: React.FC<{ value: number }> = ({ value }) => {
         r={radius}
         fill="none"
         stroke="#22c55e"
-        strokeWidth="3.5"
+        strokeWidth="8"
         strokeLinecap="round"
         strokeDasharray={circ}
         strokeDashoffset={offset}
@@ -1155,7 +1159,7 @@ export const DashboardPage: React.FC = () => {
                   {/* Card 1 — NET P&L */}
                   <div 
                     style={{ 
-                      height: '130px', 
+                      height: '115px', 
                       display: 'flex', 
                       flexDirection: 'column', 
                       justifyContent: 'space-between', 
@@ -1163,26 +1167,26 @@ export const DashboardPage: React.FC = () => {
                       border: '1px solid rgba(0, 0, 0, 0.06)', 
                       borderRadius: '12px', 
                       boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
-                      padding: '12px'
+                      padding: '10px 14px'
                     }}
                   >
                     <div>
-                      <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>
+                      <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
                         NET P&L
                       </div>
-                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: stats.totalPnl > 0 ? '#22c55e' : stats.totalPnl < 0 ? '#ef4444' : 'var(--text)', lineHeight: '1.2' }}>
+                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text)', lineHeight: '1.2' }}>
                         {formatPnlNoDecimals(stats.totalPnl)}
                       </div>
                     </div>
                     <div style={{ color: 'var(--text-sub)', fontSize: '11px', fontWeight: 400 }}>
-                      {stats.totalTrades} {stats.totalTrades === 1 ? 'trade' : 'trades'}
+                      {stats.totalTrades}
                     </div>
                   </div>
 
                   {/* Card 2 — TRADE WIN % */}
                   <div 
                     style={{ 
-                      height: '130px', 
+                      height: '115px', 
                       display: 'flex', 
                       flexDirection: 'column', 
                       justifyContent: 'space-between', 
@@ -1190,33 +1194,26 @@ export const DashboardPage: React.FC = () => {
                       border: '1px solid rgba(0, 0, 0, 0.06)', 
                       borderRadius: '12px', 
                       boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
-                      padding: '12px'
+                      padding: '10px 14px'
                     }}
                   >
                     <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       TRADE WIN %
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexGrow: 1 }}>
-                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--accent)', lineHeight: '1.1' }}>
+                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text)', lineHeight: '1.1' }}>
                         {stats.winRate.toFixed(2)}%
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <SemicircleGauge percentage={stats.winRate} />
+                        <SemicircleGauge percentage={stats.winRate} wCount={stats.wins.length} beCount={stats.breakevens.length} lCount={stats.losses.length} />
                       </div>
-                    </div>
-                    <div style={{ fontSize: '11px', fontWeight: 505, display: 'flex', gap: '4px' }} className="font-mono">
-                      <span style={{ color: '#22c55e' }}>{stats.wins.length}</span>
-                      <span style={{ color: 'var(--text-muted)' }}>|</span>
-                      <span style={{ color: 'var(--text-sub)' }}>{stats.breakevens.length}</span>
-                      <span style={{ color: 'var(--text-muted)' }}>|</span>
-                      <span style={{ color: '#ef4444' }}>{stats.losses.length}</span>
                     </div>
                   </div>
 
                   {/* Card 3 — PROFIT FACTOR */}
                   <div 
                     style={{ 
-                      height: '130px', 
+                      height: '115px', 
                       display: 'flex', 
                       flexDirection: 'column', 
                       justifyContent: 'space-between', 
@@ -1224,27 +1221,26 @@ export const DashboardPage: React.FC = () => {
                       border: '1px solid rgba(0, 0, 0, 0.06)', 
                       borderRadius: '12px', 
                       boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
-                      padding: '12px'
+                      padding: '10px 14px'
                     }}
                   >
                     <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       PROFIT FACTOR
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexGrow: 1 }}>
-                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--accent)', lineHeight: '1.1' }}>
+                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text)', lineHeight: '1.1' }}>
                         {stats.profitFactor === 999 ? '∞' : stats.profitFactor.toFixed(2)}
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <CircleGauge value={stats.profitFactor} />
                       </div>
                     </div>
-                    <div style={{ height: '16px' }} />
                   </div>
 
                   {/* Card 4 — DAY WIN % */}
                   <div 
                     style={{ 
-                      height: '130px', 
+                      height: '115px', 
                       display: 'flex', 
                       flexDirection: 'column', 
                       justifyContent: 'space-between', 
@@ -1252,33 +1248,26 @@ export const DashboardPage: React.FC = () => {
                       border: '1px solid rgba(0, 0, 0, 0.06)', 
                       borderRadius: '12px', 
                       boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
-                      padding: '12px'
+                      padding: '10px 14px'
                     }}
                   >
                     <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       DAY WIN %
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexGrow: 1 }}>
-                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--accent)', lineHeight: '1.1' }}>
+                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text)', lineHeight: '1.1' }}>
                         {stats.winDaysPct.toFixed(2)}%
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <SemicircleGauge percentage={stats.winDaysPct} />
+                        <SemicircleGauge percentage={stats.winDaysPct} wCount={stats.winDays} beCount={stats.beDays} lCount={stats.lossDays} />
                       </div>
-                    </div>
-                    <div style={{ fontSize: '11px', fontWeight: 505, display: 'flex', gap: '4px' }} className="font-mono">
-                      <span style={{ color: '#22c55e' }}>{stats.winDays}</span>
-                      <span style={{ color: 'var(--text-muted)' }}>|</span>
-                      <span style={{ color: 'var(--text-sub)' }}>{stats.beDays}</span>
-                      <span style={{ color: 'var(--text-muted)' }}>|</span>
-                      <span style={{ color: '#ef4444' }}>{stats.lossDays}</span>
                     </div>
                   </div>
 
                   {/* Card 5 — AVG WIN/LOSS TRADE */}
                   <div 
                     style={{ 
-                      height: '130px', 
+                      height: '115px', 
                       display: 'flex', 
                       flexDirection: 'column', 
                       justifyContent: 'space-between', 
@@ -1286,14 +1275,14 @@ export const DashboardPage: React.FC = () => {
                       border: '1px solid rgba(0, 0, 0, 0.06)', 
                       borderRadius: '12px', 
                       boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
-                      padding: '12px'
+                      padding: '10px 14px'
                     }}
                   >
                     <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       AVG WIN/LOSS TRADE
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexGrow: 1 }}>
-                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text)', lineHeight: '1.1' }}>
+                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text)', lineHeight: '1.2' }}>
                         {stats.avgWinLossRatio === 999 ? '∞' : stats.avgWinLossRatio.toFixed(2)}:1
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }} className="flex-grow max-w-[100px]">
@@ -1317,7 +1306,6 @@ export const DashboardPage: React.FC = () => {
                         })()}
                       </div>
                     </div>
-                    <div style={{ height: '16px' }} />
                   </div>
                 </div>
 
