@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
@@ -138,6 +138,20 @@ export const DashboardPage: React.FC = () => {
   const [brokerConnections, setBrokerConnections] = useState<any[]>([]);
   const [selectedBroker, setSelectedBroker] = useState<any>(null);
   const [isBrokerDropdownOpen, setIsBrokerDropdownOpen] = useState<boolean>(false);
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsBrokerDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   // Fetch Broker Sync Widget Data
   const fetchBrokerSyncData = async () => {
@@ -858,21 +872,44 @@ export const DashboardPage: React.FC = () => {
             >
               {/* Left side */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }} className="flex items-center">
-                {/* ELEMENT 1 — Bell icon with badge */}
-                <div className="relative p-1">
-                  <Bell className="w-5 h-5 text-zinc-500" style={{ color: 'var(--text-sub)' }} />
-                  {needsReviewCount > 0 && (
-                    <span 
-                      className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white"
-                      style={{ backgroundColor: '#ef4444' }}
-                    >
-                      {needsReviewCount}
-                    </span>
-                  )}
+                {/* ELEMENT 1 — Bell icon with badge inside a box container */}
+                <div 
+                  style={{
+                    backgroundColor: 'var(--bg, var(--bar))',
+                    border: '1px solid var(--border)',
+                    borderRadius: '8px',
+                    color: 'var(--text)',
+                    padding: '6px 12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    position: 'relative'
+                  }}
+                  className="relative"
+                >
+                  <div className="relative">
+                    <Bell className="w-5 h-5 text-zinc-500" style={{ color: 'var(--text-sub)' }} />
+                    {needsReviewCount > 0 && (
+                      <span 
+                        className="absolute -top-2.5 -right-2.5 flex items-center justify-center bg-red-500 font-bold text-white shadow-sm"
+                        style={{ 
+                          backgroundColor: '#ef4444',
+                          minWidth: '20px',
+                          minHeight: '20px',
+                          padding: '2px 5px',
+                          fontSize: '10px',
+                          borderRadius: '9999px',
+                          lineHeight: 1
+                        }}
+                      >
+                        {needsReviewCount}
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 {/* ELEMENT 2 — Account selector dropdown */}
-                <div className="relative animate-fadeIn">
+                <div ref={dropdownRef} className="relative animate-fadeIn">
                   <button
                     onClick={() => setIsBrokerDropdownOpen(!isBrokerDropdownOpen)}
                     style={{
@@ -952,18 +989,22 @@ export const DashboardPage: React.FC = () => {
                   <span>Last synced: <span className="font-mono font-semibold" style={{ color: 'var(--text)' }}>{lastSyncedTime}</span></span>
                 </div>
 
-                {/* ELEMENT 4 — Edit Widgets */}
+                {/* ELEMENT 4 — Edit Widgets in a box container matching dropdown and bell */}
                 <button
                   style={{
+                    backgroundColor: 'var(--bg, var(--bar))',
+                    border: '1px solid var(--border)',
+                    borderRadius: '8px',
                     color: 'var(--text-muted)',
+                    padding: '6px 12px',
                     fontSize: '12px',
                     fontWeight: 500,
                     cursor: 'pointer',
-                    background: 'transparent',
-                    border: 'none',
-                    padding: '4px'
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
                   }}
-                  className="hover:underline hover:opacity-80"
+                  className="hover:opacity-80 transition-all"
                 >
                   Edit Widgets
                 </button>
