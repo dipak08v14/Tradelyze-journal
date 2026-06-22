@@ -65,66 +65,86 @@ const formatDayHeaderDate = (dateStr: string) => {
 };
 
 const SemicircleGauge: React.FC<{ percentage: number; wCount: number; beCount: number; lCount: number }> = ({ percentage, wCount, beCount, lCount }) => {
-  const radius = 25;
-  const pathLength = Math.PI * radius; // ~78.54
-  const val = Math.min(Math.max(percentage, 0), 100);
-  const offset = pathLength * (1 - val / 100);
+  const val = Math.min(Math.max(percentage || 0, 0), 100);
+  const offset = 100 - val;
   return (
-    <svg width="60" height="48" viewBox="0 0 60 48" className="overflow-visible inline-block">
+    <svg 
+      width="85" 
+      height="50" 
+      viewBox="0 0 120 70" 
+      className="overflow-visible inline-block"
+      style={{ shapeRendering: 'geometricPrecision' }}
+    >
       {/* Background Arc */}
       <path
-        d="M 5,30 A 25,25 0 0,1 55,30"
+        d="M 10,56 A 50,50 0 0,1 110,56"
         fill="none"
         stroke="#ef4444"
-        strokeWidth="8"
-        strokeLinecap="round"
+        strokeWidth="7"
+        strokeLinecap="butt"
+        vectorEffect="non-scaling-stroke"
+        shapeRendering="geometricPrecision"
       />
       {/* Colored Foreground Arc */}
       <path
-        d="M 5,30 A 25,25 0 0,1 55,30"
+        d="M 10,56 A 50,50 0 0,1 110,56"
         fill="none"
         stroke="#22c55e"
-        strokeWidth="8"
-        strokeLinecap="round"
-        strokeDasharray={pathLength}
+        strokeWidth="7"
+        strokeLinecap="butt"
+        pathLength="100"
+        strokeDasharray="100 100"
         strokeDashoffset={offset}
+        vectorEffect="non-scaling-stroke"
+        shapeRendering="geometricPrecision"
         className="transition-all duration-500 ease-out"
         style={{ stroke: '#22c55e' }}
       />
       {/* W B L Labels centered below arc legs and center */}
-      <text x="5" y="44" textAnchor="middle" fill="#22c55e" fontSize="10" fontWeight="bold" className="font-mono">{wCount}</text>
-      <text x="30" y="44" textAnchor="middle" fill="var(--text-sub)" fontSize="10" fontWeight="bold" className="font-mono">{beCount}</text>
-      <text x="55" y="44" textAnchor="middle" fill="#ef4444" fontSize="10" fontWeight="bold" className="font-mono">{lCount}</text>
+      <text x="10" y="68" textAnchor="middle" fill="#22c55e" fontSize="14" fontWeight="bold" className="font-mono">{wCount}</text>
+      <text x="60" y="68" textAnchor="middle" fill="var(--text-sub)" fontSize="14" fontWeight="bold" className="font-mono">{beCount}</text>
+      <text x="110" y="68" textAnchor="middle" fill="#ef4444" fontSize="14" fontWeight="bold" className="font-mono">{lCount}</text>
     </svg>
   );
 };
 
 const CircleGauge: React.FC<{ value: number }> = ({ value }) => {
-  const radius = 21;
-  const circ = 2 * Math.PI * radius; // ~131.95
-  const cap = Math.min(Math.max(value, 0), 3.0);
-  const offset = circ * (1 - cap / 3.0);
+  const radius = 25;
+  const val = Math.min(Math.max(value || 0, 0), 3.0);
+  const percentage = (val / 3.0) * 100;
+  const offset = 100 - percentage;
   return (
-    <svg width="50" height="50" viewBox="0 0 50 50" className="overflow-visible inline-block">
+    <svg 
+      width="70" 
+      height="70" 
+      viewBox="0 0 60 60" 
+      className="overflow-visible inline-block"
+      style={{ shapeRendering: 'geometricPrecision' }}
+    >
       <circle
-        cx="25"
-        cy="25"
+        cx="30"
+        cy="30"
         r={radius}
         fill="none"
         stroke="#ef4444"
-        strokeWidth="8"
+        strokeWidth="7"
+        vectorEffect="non-scaling-stroke"
+        shapeRendering="geometricPrecision"
       />
       <circle
-        cx="25"
-        cy="25"
+        cx="30"
+        cy="30"
         r={radius}
         fill="none"
         stroke="#22c55e"
-        strokeWidth="8"
+        strokeWidth="7"
         strokeLinecap="round"
-        strokeDasharray={circ}
+        pathLength="100"
+        strokeDasharray="100 100"
         strokeDashoffset={offset}
-        transform="rotate(-90 25 25)"
+        transform="rotate(-90 30 30)"
+        vectorEffect="non-scaling-stroke"
+        shapeRendering="geometricPrecision"
         className="transition-all duration-500 ease-out"
         style={{ stroke: '#22c55e' }}
       />
@@ -1159,7 +1179,7 @@ export const DashboardPage: React.FC = () => {
                   {/* Card 1 — NET P&L */}
                   <div 
                     style={{ 
-                      height: '115px', 
+                      height: '105px', 
                       display: 'flex', 
                       flexDirection: 'column', 
                       justifyContent: 'space-between', 
@@ -1167,14 +1187,14 @@ export const DashboardPage: React.FC = () => {
                       border: '1px solid rgba(0, 0, 0, 0.06)', 
                       borderRadius: '12px', 
                       boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
-                      padding: '10px 14px'
+                      padding: '8px 14px'
                     }}
                   >
                     <div>
                       <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
                         NET P&L
                       </div>
-                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text)', lineHeight: '1.2' }}>
+                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: stats.totalPnl > 0 ? '#22c55e' : stats.totalPnl < 0 ? '#ef4444' : 'var(--text)', lineHeight: '1.2' }}>
                         {formatPnlNoDecimals(stats.totalPnl)}
                       </div>
                     </div>
@@ -1186,7 +1206,7 @@ export const DashboardPage: React.FC = () => {
                   {/* Card 2 — TRADE WIN % */}
                   <div 
                     style={{ 
-                      height: '115px', 
+                      height: '105px', 
                       display: 'flex', 
                       flexDirection: 'column', 
                       justifyContent: 'space-between', 
@@ -1194,7 +1214,7 @@ export const DashboardPage: React.FC = () => {
                       border: '1px solid rgba(0, 0, 0, 0.06)', 
                       borderRadius: '12px', 
                       boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
-                      padding: '10px 14px'
+                      padding: '8px 14px'
                     }}
                   >
                     <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
@@ -1213,7 +1233,7 @@ export const DashboardPage: React.FC = () => {
                   {/* Card 3 — PROFIT FACTOR */}
                   <div 
                     style={{ 
-                      height: '115px', 
+                      height: '105px', 
                       display: 'flex', 
                       flexDirection: 'column', 
                       justifyContent: 'space-between', 
@@ -1221,7 +1241,7 @@ export const DashboardPage: React.FC = () => {
                       border: '1px solid rgba(0, 0, 0, 0.06)', 
                       borderRadius: '12px', 
                       boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
-                      padding: '10px 14px'
+                      padding: '8px 14px'
                     }}
                   >
                     <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
@@ -1240,7 +1260,7 @@ export const DashboardPage: React.FC = () => {
                   {/* Card 4 — DAY WIN % */}
                   <div 
                     style={{ 
-                      height: '115px', 
+                      height: '105px', 
                       display: 'flex', 
                       flexDirection: 'column', 
                       justifyContent: 'space-between', 
@@ -1248,7 +1268,7 @@ export const DashboardPage: React.FC = () => {
                       border: '1px solid rgba(0, 0, 0, 0.06)', 
                       borderRadius: '12px', 
                       boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
-                      padding: '10px 14px'
+                      padding: '8px 14px'
                     }}
                   >
                     <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
@@ -1267,7 +1287,7 @@ export const DashboardPage: React.FC = () => {
                   {/* Card 5 — AVG WIN/LOSS TRADE */}
                   <div 
                     style={{ 
-                      height: '115px', 
+                      height: '105px', 
                       display: 'flex', 
                       flexDirection: 'column', 
                       justifyContent: 'space-between', 
@@ -1275,7 +1295,7 @@ export const DashboardPage: React.FC = () => {
                       border: '1px solid rgba(0, 0, 0, 0.06)', 
                       borderRadius: '12px', 
                       boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
-                      padding: '10px 14px'
+                      padding: '8px 14px'
                     }}
                   >
                     <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
