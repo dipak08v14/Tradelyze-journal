@@ -116,7 +116,7 @@ export default function SettingsPage() {
         setDhanOpenPositionsCount(data.positions?.length || 0);
       }
     } catch (err) {
-      console.error('Failed to fetch Dhan open positions count:', err);
+      console.warn('Failed to fetch Dhan open positions count:', err);
     }
   };
 

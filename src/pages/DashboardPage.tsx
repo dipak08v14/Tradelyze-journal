@@ -325,7 +325,7 @@ export const DashboardPage: React.FC = () => {
             }
           }
         } catch (err) {
-          console.error('Failed to fetch Dhan positions on dashboard:', err);
+          console.warn('Failed to fetch Dhan positions on dashboard:', err);
         } finally {
           setFetchingPositions(false);
         }
@@ -1360,114 +1360,112 @@ export const DashboardPage: React.FC = () => {
                 {/* NEW 3-COLUMN ROW: Trading Metrics | Cumulative P&L | Daily P&L */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', alignItems: 'stretch' }} className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
                   {/* Column 1: Trading Metrics */}
-                  <div className="rounded-xl p-5 flex flex-col justify-between relative" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', height: '300px', position: 'relative' }}>
-                    <div>
+                  <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', height: '300px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                    <div style={{ flexShrink: 0 }}>
                       <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
                         Trading Metrics
                       </h2>
                       <p className="text-xs mt-0.5" style={{ color: 'var(--text-sub)', display: 'none' }}>
                         Monthly averages across all trades
                       </p>
+                    </div>
 
-                      {/* RADAR RECHARTS */}
-                      <div className="w-full h-[140px] mt-4 flex items-center justify-center">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <RadarChart
-                            cx="50%"
-                            cy="50%"
-                            outerRadius="65%"
-                            data={[
-                              { metric: 'Technical', score: parseFloat(stats.avgTechScore.toFixed(1)) },
-                              { metric: 'Psychology', score: parseFloat(stats.avgPsychScore.toFixed(1)) },
-                              { metric: 'Risk Mgmt', score: parseFloat(stats.avgRiskScore.toFixed(1)) }
-                            ]}
-                          >
-                            <PolarGrid stroke="var(--bar)" />
-                            <PolarAngleAxis
-                              dataKey="metric"
-                              tick={{ fill: 'var(--text-sub)', fontSize: 11, fontFamily: 'Inter' }}
-                            />
-                            <PolarRadiusAxis
-                              angle={90}
-                              domain={[0, 100]}
-                              tick={{ fill: '#4B5563', fontSize: 9 }}
-                              tickCount={4}
-                            />
-                            <Radar
-                              name="Avg Score"
-                              dataKey="score"
-                              stroke="var(--accent)"
-                              fill="var(--accent)"
-                              fillOpacity={0.18}
-                              strokeWidth={1.5}
-                              dot={{ fill: 'var(--accent)', r: 3, strokeWidth: 0 }}
-                            />
-                          </RadarChart>
-                        </ResponsiveContainer>
+                    {/* RADAR RECHARTS */}
+                    <div className="w-full flex items-center justify-center mt-2" style={{ flex: 1, minHeight: 0 }}>
+                      <ResponsiveContainer width="100%" height="100%">
+                        <RadarChart
+                          cx="50%"
+                          cy="50%"
+                          outerRadius="65%"
+                          data={[
+                            { metric: 'Technical', score: parseFloat(stats.avgTechScore.toFixed(1)) },
+                            { metric: 'Psychology', score: parseFloat(stats.avgPsychScore.toFixed(1)) },
+                            { metric: 'Risk Mgmt', score: parseFloat(stats.avgRiskScore.toFixed(1)) }
+                          ]}
+                        >
+                          <PolarGrid stroke="var(--bar)" gridType="polygon" />
+                          <PolarAngleAxis
+                            dataKey="metric"
+                            tick={{ fill: 'var(--text-sub)', fontSize: 11, fontFamily: 'Inter' }}
+                          />
+                          <PolarRadiusAxis
+                            angle={90}
+                            domain={[0, 100]}
+                            tick={false}
+                            axisLine={false}
+                            tickCount={3}
+                          />
+                          <Radar
+                            name="Avg Score"
+                            dataKey="score"
+                            stroke="var(--accent)"
+                            fill="var(--accent)"
+                            fillOpacity={0.25}
+                            strokeWidth={2}
+                            dot={false}
+                          />
+                        </RadarChart>
+                      </ResponsiveContainer>
+                    </div>
+
+                    {/* SCORE PROGRESS BARS */}
+                    <div className="mt-4 space-y-3" style={{ display: 'none' }}>
+                      {/* TECHNICAL */}
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>Technical (Rules)</span>
+                          <span className="text-xs font-mono font-bold" style={{ color: getPercentTextColor(stats.avgTechScore) }}>
+                            {stats.avgTechScore.toFixed(0)}%
+                          </span>
+                        </div>
+                        <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
+                          <div
+                            className="h-full rounded-full transition-all duration-500"
+                            style={{ width: `${stats.avgTechScore}%`, backgroundColor: 'var(--accent)' }}
+                          />
+                        </div>
                       </div>
 
-                      {/* SCORE PROGRESS BARS */}
-                      <div className="mt-4 space-y-3" style={{ display: 'none' }}>
-                        {/* TECHNICAL */}
-                        <div>
-                          <div className="flex justify-between items-center mb-1">
-                            <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>Technical (Rules)</span>
-                            <span className="text-xs font-mono font-bold" style={{ color: getPercentTextColor(stats.avgTechScore) }}>
-                              {stats.avgTechScore.toFixed(0)}%
-                            </span>
-                          </div>
-                          <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
-                            <div
-                              className="h-full rounded-full transition-all duration-500"
-                              style={{ width: `${stats.avgTechScore}%`, backgroundColor: 'var(--accent)' }}
-                            />
-                          </div>
+                      {/* PSYCHOLOGY */}
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>Psychology</span>
+                          <span className="text-xs font-mono font-bold" style={{ color: getPercentTextColor(stats.avgPsychScore) }}>
+                            {stats.avgPsychScore.toFixed(0)}%
+                          </span>
                         </div>
-
-                        {/* PSYCHOLOGY */}
-                        <div>
-                          <div className="flex justify-between items-center mb-1">
-                            <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>Psychology</span>
-                            <span className="text-xs font-mono font-bold" style={{ color: getPercentTextColor(stats.avgPsychScore) }}>
-                              {stats.avgPsychScore.toFixed(0)}%
-                            </span>
-                          </div>
-                          <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
-                            <div
-                              className="h-full rounded-full transition-all duration-500"
-                              style={{ width: `${stats.avgPsychScore}%`, backgroundColor: 'var(--accent)' }}
-                            />
-                          </div>
+                        <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
+                          <div
+                            className="h-full rounded-full transition-all duration-500"
+                            style={{ width: `${stats.avgPsychScore}%`, backgroundColor: 'var(--accent)' }}
+                          />
                         </div>
+                      </div>
 
-                        {/* RISK MANAGEMENT */}
-                        <div>
-                          <div className="flex justify-between items-center mb-1">
-                            <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>Risk Management</span>
-                            <span className="text-xs font-mono font-bold" style={{ color: getPercentTextColor(stats.avgRiskScore) }}>
-                              {stats.avgRiskScore.toFixed(0)}%
-                            </span>
-                          </div>
-                          <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
-                            <div
-                              className="h-full rounded-full transition-all duration-500"
-                              style={{ width: `${stats.avgRiskScore}%`, backgroundColor: 'var(--accent)' }}
-                            />
-                          </div>
+                      {/* RISK MANAGEMENT */}
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>Risk Management</span>
+                          <span className="text-xs font-mono font-bold" style={{ color: getPercentTextColor(stats.avgRiskScore) }}>
+                            {stats.avgRiskScore.toFixed(0)}%
+                          </span>
+                        </div>
+                        <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
+                          <div
+                            className="h-full rounded-full transition-all duration-500"
+                            style={{ width: `${stats.avgRiskScore}%`, backgroundColor: 'var(--accent)' }}
+                          />
                         </div>
                       </div>
                     </div>
 
                     {/* OVERALL SUMMARY CENTER */}
-                    <div className="pt-2 border-t text-center" style={{ borderColor: 'var(--border)', marginTop: '8px' }}>
-                      <div className="text-[10px] uppercase tracking-widest font-mono" style={{ color: 'var(--text-muted)' }}>
+                    <div style={{ flexShrink: 0, padding: '8px 0', textAlign: 'center' }}>
+                      <div className="text-[10px] uppercase tracking-widest font-mono" style={{ color: 'var(--text-muted)', letterSpacing: '0.08em' }}>
                         YOUR SCORE
                       </div>
-                      <div className={`text-5xl font-black tracking-tight mt-1 animate-pulse ${getScoreColorClass(stats.avgOverallScore)}`}>
+                      <div className="animate-pulse" style={{ fontSize: '14px', fontWeight: 600, marginTop: '2px', color: 'var(--accent)' }}>
                         {stats.avgOverallScore.toFixed(0)}%
-                      </div>
-                      <div className="text-[10px] font-mono mt-1 uppercase" style={{ color: 'var(--text-muted)', display: 'none' }}>
-                        {startDate} to {endDate}
                       </div>
                     </div>
                   </div>
