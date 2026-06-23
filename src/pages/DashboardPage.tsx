@@ -1360,8 +1360,8 @@ export const DashboardPage: React.FC = () => {
                 {/* NEW 3-COLUMN ROW: Trading Metrics | Cumulative P&L | Daily P&L */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', alignItems: 'stretch' }} className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
                   {/* Column 1: Trading Metrics */}
-                  <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', height: '300px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                    <div style={{ flexShrink: 0 }}>
+                  <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', height: '300px', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ position: 'absolute', top: '16px', left: '16px', zIndex: 1, margin: 0, textAlign: 'left' }}>
                       <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
                         Trading Metrics
                       </h2>
@@ -1370,115 +1370,118 @@ export const DashboardPage: React.FC = () => {
                       </p>
                     </div>
 
-                    {/* RADAR RECHARTS */}
-                    <div className="w-full flex items-center justify-center mt-2" style={{ width: '100%', height: '230px', flex: 1, minHeight: 0 }}>
-                      <ResponsiveContainer width="100%" height={220}>
-                        <RadarChart
-                          cx="50%"
-                          cy="50%"
-                          outerRadius="88%"
-                          width={420}
-                          height={220}
-                          data={[
-                            { metric: 'Technical', score: parseFloat(stats.avgTechScore.toFixed(1)) },
-                            { metric: 'Psychology', score: parseFloat(stats.avgPsychScore.toFixed(1)) },
-                            { metric: 'Risk Mgmt', score: parseFloat(stats.avgRiskScore.toFixed(1)) }
-                          ]}
-                        >
-                          <PolarGrid
-                            gridType="polygon"
-                            stroke="#aaaaaa"
-                            strokeOpacity={0.35}
-                            strokeWidth={1}
-                          />
-                          <PolarAngleAxis
-                            dataKey="metric"
-                            tick={{ fill: 'var(--text-sub)', fontSize: 11, fontFamily: 'Inter' }}
-                          />
-                          <PolarRadiusAxis
-                            angle={90}
-                            domain={[0, 100]}
-                            tick={false}
-                            axisLine={false}
-                            tickCount={4}
-                          />
-                          <Radar
-                            name="Avg Score"
-                            dataKey="score"
-                            stroke="var(--accent)"
-                            fill="var(--accent)"
-                            fillOpacity={0.25}
-                            strokeWidth={2}
-                            strokeOpacity={1}
-                            dot={{
-                              r: 4,
-                              fill: 'var(--accent)',
-                              stroke: 'var(--accent)',
-                              strokeWidth: 1
-                            }}
-                          />
-                        </RadarChart>
-                      </ResponsiveContainer>
-                    </div>
+                    {/* CHART & SCORE WRAPPER CENTRED IN FULL CARD */}
+                    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+                      {/* RADAR RECHARTS */}
+                      <div className="w-full flex items-center justify-center mt-2" style={{ width: '100%', height: '220px', marginTop: '24px' }}>
+                        <ResponsiveContainer width="100%" height={220} style={{ marginTop: "28px" }}>
+                          <RadarChart
+                            cx="50%"
+                            cy="50%"
+                            outerRadius="88%"
+                            width={420}
+                            height={220}
+                            data={[
+                              { metric: 'Technical', score: parseFloat(stats.avgTechScore.toFixed(1)) },
+                              { metric: 'Psychology', score: parseFloat(stats.avgPsychScore.toFixed(1)) },
+                              { metric: 'Risk Mgmt', score: parseFloat(stats.avgRiskScore.toFixed(1)) }
+                            ]}
+                          >
+                            <PolarGrid
+                              gridType="polygon"
+                              stroke="var(--accent)"
+                              strokeOpacity={0.35}
+                              strokeWidth={1.5}
+                              fill="var(--accent)"
+                              fillOpacity={0.06}
+                            />
+                            <PolarAngleAxis
+                              dataKey="metric"
+                              tick={{ fill: 'var(--text-sub)', fontSize: 11, fontFamily: 'Inter' }}
+                            />
+                            <PolarRadiusAxis
+                              angle={90}
+                              domain={[0, 100]}
+                              tick={false}
+                              axisLine={false}
+                              tickCount={3}
+                            />
+                            <Radar
+                              name="Avg Score"
+                              dataKey="score"
+                              stroke="var(--accent)"
+                              fill="var(--accent)"
+                              fillOpacity={0.2}
+                              strokeWidth={2}
+                              strokeOpacity={1}
+                              dot={{
+                                r: 4,
+                                fill: 'var(--accent)',
+                                stroke: 'var(--accent)',
+                                strokeWidth: 1
+                              }}
+                            />
+                          </RadarChart>
+                        </ResponsiveContainer>
+                      </div>
 
-                    {/* SCORE PROGRESS BARS */}
-                    <div className="mt-4 space-y-3" style={{ display: 'none' }}>
-                      {/* TECHNICAL */}
-                      <div>
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>Technical (Rules)</span>
-                          <span className="text-xs font-mono font-bold" style={{ color: getPercentTextColor(stats.avgTechScore) }}>
-                            {stats.avgTechScore.toFixed(0)}%
-                          </span>
+                      {/* SCORE PROGRESS BARS (HIDDEN) */}
+                      <div className="mt-4 space-y-3" style={{ display: 'none' }}>
+                        {/* TECHNICAL */}
+                        <div>
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>Technical (Rules)</span>
+                            <span className="text-xs font-mono font-bold" style={{ color: getPercentTextColor(stats.avgTechScore) }}>
+                              {stats.avgTechScore.toFixed(0)}%
+                            </span>
+                          </div>
+                          <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
+                            <div
+                              className="h-full rounded-full transition-all duration-500"
+                              style={{ width: `${stats.avgTechScore}%`, backgroundColor: 'var(--accent)' }}
+                            />
+                          </div>
                         </div>
-                        <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
-                          <div
-                            className="h-full rounded-full transition-all duration-500"
-                            style={{ width: `${stats.avgTechScore}%`, backgroundColor: 'var(--accent)' }}
-                          />
+
+                        {/* PSYCHOLOGY */}
+                        <div>
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>Psychology</span>
+                            <span className="text-xs font-mono font-bold" style={{ color: getPercentTextColor(stats.avgPsychScore) }}>
+                              {stats.avgPsychScore.toFixed(0)}%
+                            </span>
+                          </div>
+                          <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
+                            <div
+                              className="h-full rounded-full transition-all duration-500"
+                              style={{ width: `${stats.avgPsychScore}%`, backgroundColor: 'var(--accent)' }}
+                            />
+                          </div>
+                        </div>
+
+                        {/* RISK MANAGEMENT */}
+                        <div>
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>Risk Management</span>
+                            <span className="text-xs font-mono font-bold" style={{ color: getPercentTextColor(stats.avgRiskScore) }}>
+                              {stats.avgRiskScore.toFixed(0)}%
+                            </span>
+                          </div>
+                          <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
+                            <div
+                              className="h-full rounded-full transition-all duration-500"
+                              style={{ width: `${stats.avgRiskScore}%`, backgroundColor: 'var(--accent)' }}
+                            />
+                          </div>
                         </div>
                       </div>
 
-                      {/* PSYCHOLOGY */}
-                      <div>
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>Psychology</span>
-                          <span className="text-xs font-mono font-bold" style={{ color: getPercentTextColor(stats.avgPsychScore) }}>
-                            {stats.avgPsychScore.toFixed(0)}%
-                          </span>
-                        </div>
-                        <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
-                          <div
-                            className="h-full rounded-full transition-all duration-500"
-                            style={{ width: `${stats.avgPsychScore}%`, backgroundColor: 'var(--accent)' }}
-                          />
-                        </div>
-                      </div>
-
-                      {/* RISK MANAGEMENT */}
-                      <div>
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>Risk Management</span>
-                          <span className="text-xs font-mono font-bold" style={{ color: getPercentTextColor(stats.avgRiskScore) }}>
-                            {stats.avgRiskScore.toFixed(0)}%
-                          </span>
-                        </div>
-                        <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
-                          <div
-                            className="h-full rounded-full transition-all duration-500"
-                            style={{ width: `${stats.avgRiskScore}%`, backgroundColor: 'var(--accent)' }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* OVERALL SUMMARY CENTER */}
-                    <div style={{ flexShrink: 0, padding: '8px 0', textAlign: 'center' }}>
-                      <div className="text-[10px] uppercase tracking-widest font-mono" style={{ color: 'var(--text-muted)', letterSpacing: '0.08em' }}>
-                        YOUR SCORE
-                      </div>
-                      <div className="animate-pulse" style={{ fontSize: '14px', fontWeight: 600, marginTop: '2px', color: 'var(--accent)' }}>
-                        {stats.avgOverallScore.toFixed(0)}%
+                      {/* OVERALL SUMMARY CENTER */}
+                      <div style={{ flexShrink: 0, padding: '4px 0', textAlign: 'center', marginTop: '2px' }}>
+                        <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Your Score: </span>
+                        <span className="animate-pulse" style={{ fontSize: '13px', fontWeight: 600, color: 'var(--accent)' }}>
+                          {stats.avgOverallScore.toFixed(0)}%
+                        </span>
                       </div>
                     </div>
                   </div>
