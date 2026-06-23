@@ -1361,6 +1361,12 @@ export const DashboardPage: React.FC = () => {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', alignItems: 'stretch' }} className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
                   {/* Column 1: Trading Metrics */}
                   <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', height: '300px', position: 'relative', overflow: 'hidden' }}>
+                    <style>{`
+                      .trading-metrics-radar .recharts-polar-grid-angle line {
+                        stroke-width: 1 !important;
+                        stroke-opacity: 0.3 !important;
+                      }
+                    `}</style>
                     <div style={{ position: 'absolute', top: '16px', left: '16px', zIndex: 1, margin: 0, textAlign: 'left' }}>
                       <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
                         Trading Metrics
@@ -1373,7 +1379,7 @@ export const DashboardPage: React.FC = () => {
                     {/* CHART & SCORE WRAPPER CENTRED IN FULL CARD */}
                     <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
                       {/* RADAR RECHARTS */}
-                      <div className="w-full flex items-center justify-center mt-2" style={{ width: '100%', height: '220px', marginTop: '24px' }}>
+                      <div className="w-full flex items-center justify-center mt-2 trading-metrics-radar" style={{ width: '100%', height: '220px', marginTop: '24px' }}>
                         <ResponsiveContainer width="100%" height={220} style={{ marginTop: "28px" }}>
                           <RadarChart
                             cx="50%"
