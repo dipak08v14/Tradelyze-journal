@@ -1380,7 +1380,7 @@ export const DashboardPage: React.FC = () => {
                     <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
                       {/* RADAR RECHARTS */}
                       <div className="w-full flex items-center justify-center mt-2 trading-metrics-radar" style={{ width: '100%', height: '220px', marginTop: '24px' }}>
-                        <ResponsiveContainer width="100%" height={220} style={{ marginTop: "28px" }}>
+                        <ResponsiveContainer width="100%" height={220} style={{ marginTop: "35px" }}>
                           <RadarChart
                             cx="50%"
                             cy="50%"
