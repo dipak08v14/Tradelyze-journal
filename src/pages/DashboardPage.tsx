@@ -1390,8 +1390,10 @@ export const DashboardPage: React.FC = () => {
                             <PolarGrid
                               gridType="polygon"
                               stroke="var(--accent)"
-                              strokeOpacity={0.35}
-                              strokeWidth={1.5}
+                              strokeOpacity={0.15}
+                              strokeWidth={10}
+                              strokeLinecap="round"
+                              style={{ strokeLinejoin: 'round' }}
                               fill="var(--accent)"
                               fillOpacity={0.06}
                             />
@@ -1411,7 +1413,7 @@ export const DashboardPage: React.FC = () => {
                               dataKey="score"
                               stroke="var(--accent)"
                               fill="var(--accent)"
-                              fillOpacity={0.2}
+                              fillOpacity={0.12}
                               strokeWidth={2}
                               strokeOpacity={1}
                               dot={{
