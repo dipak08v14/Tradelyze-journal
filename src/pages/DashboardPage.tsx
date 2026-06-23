@@ -1371,19 +1371,26 @@ export const DashboardPage: React.FC = () => {
                     </div>
 
                     {/* RADAR RECHARTS */}
-                    <div className="w-full flex items-center justify-center mt-2" style={{ flex: 1, minHeight: 0 }}>
-                      <ResponsiveContainer width="100%" height="100%">
+                    <div className="w-full flex items-center justify-center mt-2" style={{ width: '100%', height: '230px', flex: 1, minHeight: 0 }}>
+                      <ResponsiveContainer width="100%" height={220}>
                         <RadarChart
                           cx="50%"
                           cy="50%"
-                          outerRadius="65%"
+                          outerRadius="88%"
+                          width={420}
+                          height={220}
                           data={[
                             { metric: 'Technical', score: parseFloat(stats.avgTechScore.toFixed(1)) },
                             { metric: 'Psychology', score: parseFloat(stats.avgPsychScore.toFixed(1)) },
                             { metric: 'Risk Mgmt', score: parseFloat(stats.avgRiskScore.toFixed(1)) }
                           ]}
                         >
-                          <PolarGrid stroke="var(--bar)" gridType="polygon" />
+                          <PolarGrid
+                            gridType="polygon"
+                            stroke="#aaaaaa"
+                            strokeOpacity={0.35}
+                            strokeWidth={1}
+                          />
                           <PolarAngleAxis
                             dataKey="metric"
                             tick={{ fill: 'var(--text-sub)', fontSize: 11, fontFamily: 'Inter' }}
@@ -1393,7 +1400,7 @@ export const DashboardPage: React.FC = () => {
                             domain={[0, 100]}
                             tick={false}
                             axisLine={false}
-                            tickCount={3}
+                            tickCount={4}
                           />
                           <Radar
                             name="Avg Score"
@@ -1402,7 +1409,13 @@ export const DashboardPage: React.FC = () => {
                             fill="var(--accent)"
                             fillOpacity={0.25}
                             strokeWidth={2}
-                            dot={false}
+                            strokeOpacity={1}
+                            dot={{
+                              r: 4,
+                              fill: 'var(--accent)',
+                              stroke: 'var(--accent)',
+                              strokeWidth: 1
+                            }}
                           />
                         </RadarChart>
                       </ResponsiveContainer>
