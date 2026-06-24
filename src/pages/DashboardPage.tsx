@@ -860,6 +860,9 @@ export const DashboardPage: React.FC = () => {
   const gridLineColor = getComputedStyle(document.documentElement).getPropertyValue('--bar').trim() || 'rgba(0,0,0,0.05)';
   const tickColor = getComputedStyle(document.documentElement).getPropertyValue('--text-muted').trim() || '#a8a29e';
 
+  const GREEN = '#008F67';
+  const RED = '#DF1C30';
+
   // Determine chartColor based on final cumulative P&L
   const lastCurvePoint = stats.equityCurveData[stats.equityCurveData.length - 1];
   const finalPnl = lastCurvePoint ? lastCurvePoint.cumPnl : 0;
@@ -1521,96 +1524,96 @@ export const DashboardPage: React.FC = () => {
                     </div>
 
                     <div style={{ width: '100%', height: 260 }}>
-                      <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart
-                          data={stats.equityCurveData}
-                          margin={{ top: 10, right: 20, left: 10, bottom: 30 }}
-                        >
-                          <defs>
-                            {/* Area fill gradient — green above zero, red below zero */}
-                            <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="#22c55e" stopOpacity={0.15} />
-                              <stop offset={`${zeroPercent}%`} stopColor="#22c55e" stopOpacity={0.08} />
-                              <stop offset={`${zeroPercent}%`} stopColor="#ef4444" stopOpacity={0.08} />
-                              <stop offset="100%" stopColor="#ef4444" stopOpacity={0.15} />
-                            </linearGradient>
+                      {(() => {
+                        const data = stats.equityCurveData.map(d => ({
+                          day: d.day,
+                          pnl: d.cumPnl
+                        }));
+                        const maxVal = Math.max(...data.map(d => d.pnl), 0);
+                        const minVal = Math.min(...data.map(d => d.pnl), 0);
+                        const totalRange = maxVal - minVal;
+                        const zeroPercent = totalRange > 0 ? (maxVal / totalRange) * 100 : 100;
 
-                            {/* Line stroke gradient — green above zero, red below zero */}
-                            <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="#22c55e" stopOpacity={1} />
-                              <stop offset={`${zeroPercent}%`} stopColor="#22c55e" stopOpacity={1} />
-                              <stop offset={`${zeroPercent}%`} stopColor="#ef4444" stopOpacity={1} />
-                              <stop offset="100%" stopColor="#ef4444" stopOpacity={1} />
-                            </linearGradient>
-                          </defs>
-                          <CartesianGrid strokeDasharray="3 3" stroke={gridLineColor} vertical={false} />
-                          <XAxis
-                            dataKey="day"
-                            tick={{ fontSize: 10, fill: tickColor }}
-                            tickLine={false}
-                            axisLine={{ stroke: 'var(--border)' }}
-                            label={{
-                              value: 'Day of Month',
-                              position: 'insideBottom',
-                              offset: -15,
-                              style: { fontSize: 10, fill: tickColor }
-                            }}
-                          />
-                          <YAxis
-                            tick={{ fontSize: 10, fill: tickColor }}
-                            tickLine={false}
-                            axisLine={false}
-                            tickFormatter={(v) => `₹${v.toLocaleString('en-IN')}`}
-                            width={80}
-                          />
-                          <ReferenceLine
-                            y={0}
-                            stroke="rgba(0,0,0,0.15)"
-                            strokeDasharray="4 4"
-                            strokeWidth={1}
-                          />
-                          <RechartsTooltip
-                            contentStyle={{
-                              backgroundColor: 'var(--card)',
-                              border: '0.5px solid var(--border)',
-                              borderRadius: '8px',
-                              color: 'var(--text)',
-                            }}
-                            formatter={(value: any, name: string) => {
-                              const decimalValue = Number(value) || 0;
-                              const isPositive = decimalValue >= 0;
-                              return [
-                                <span key="val" style={{ color: isPositive ? '#22c55e' : '#ef4444', fontWeight: 'bold' }}>
-                                  {'₹' + value.toLocaleString('en-IN')}
-                                </span>,
-                                name === 'cumPnl' ? 'Cumulative P&L' : 'Daily P&L',
-                              ];
-                            }}
-                            labelFormatter={(label) =>
-                              label === '0' ? 'Month Start' : `Day ${label}`
-                            }
-                          />
-                          <Area
-                            type="monotone"
-                            dataKey="cumPnl"
-                            stroke="url(#lineGradient)"
-                            strokeWidth={2}
-                            fill="url(#areaGradient)"
-                            dot={(props: any) => {
-                              const { cx, cy, payload } = props;
-                              const val = payload?.cumPnl ?? payload?.value ?? 0;
-                              const color = val >= 0 ? '#22c55e' : '#ef4444';
-                              return <circle key={`dot-${cx}-${cy}`} cx={cx} cy={cy} r={3} fill={color} strokeWidth={0} />;
-                            }}
-                            activeDot={(props: any) => {
-                              const { cx, cy, payload } = props;
-                              const val = payload?.cumPnl ?? payload?.value ?? 0;
-                              const color = val >= 0 ? '#22c55e' : '#ef4444';
-                              return <circle key={`active-dot-${cx}-${cy}`} cx={cx} cy={cy} r={5} fill={color} strokeWidth={0} />;
-                            }}
-                          />
-                        </AreaChart>
-                      </ResponsiveContainer>
+                        return (
+                          <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart
+                              data={data}
+                              margin={{ top: 16, right: 16, bottom: 8, left: 8 }}
+                            >
+                              <defs>
+                                <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor={GREEN} stopOpacity={0.22} />
+                                  <stop offset={`${zeroPercent}%`} stopColor={GREEN} stopOpacity={0.01} />
+                                  <stop offset={`${zeroPercent}%`} stopColor={RED} stopOpacity={0.01} />
+                                  <stop offset="100%" stopColor={RED} stopOpacity={0.22} />
+                                </linearGradient>
+
+                                <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor={GREEN} stopOpacity={1} />
+                                  <stop offset={`${zeroPercent}%`} stopColor={GREEN} stopOpacity={1} />
+                                  <stop offset={`${zeroPercent}%`} stopColor={RED} stopOpacity={1} />
+                                  <stop offset="100%" stopColor={RED} stopOpacity={1} />
+                                </linearGradient>
+                              </defs>
+                              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-sm)" vertical={false} />
+                              <XAxis
+                                dataKey="day"
+                                tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
+                                tickLine={false}
+                                axisLine={{ stroke: 'var(--border)' }}
+                              />
+                              <YAxis
+                                tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
+                                tickLine={false}
+                                axisLine={false}
+                                tickFormatter={(v) => {
+                                  if (v === 0) return '₹0';
+                                  if (Math.abs(v) >= 1000) return `₹${(v/1000).toFixed(1)}K`;
+                                  return `₹${v}`;
+                                }}
+                                tickCount={5}
+                                domain={['auto', 'auto']}
+                                width={52}
+                              />
+                              <ReferenceLine y={0} stroke="var(--border)" strokeDasharray="3 3" />
+                              <RechartsTooltip
+                                cursor={{ stroke: 'rgba(0,0,0,0.06)', strokeWidth: 1 }}
+                                content={({ active, payload }) => {
+                                  if (!active || !payload?.length) return null;
+                                  const val = payload[0]?.value as number;
+                                  const isPos = val >= 0;
+                                  return (
+                                    <div 
+                                      className="px-2.5 py-1.5 text-xs font-semibold rounded-md border shadow-sm"
+                                      style={{
+                                        backgroundColor: 'var(--card)',
+                                        borderColor: 'var(--border)',
+                                        color: isPos ? GREEN : RED
+                                      }}
+                                    >
+                                      {isPos ? `+₹${val.toLocaleString('en-IN')}` : `-₹${Math.abs(val).toLocaleString('en-IN')}`}
+                                    </div>
+                                  );
+                                }}
+                              />
+                              <Area
+                                type="monotone"
+                                dataKey="pnl"
+                                stroke="url(#lineGradient)"
+                                strokeWidth={1.5}
+                                fill="url(#areaGradient)"
+                                dot={false}
+                                activeDot={{
+                                  r: 3,
+                                  fill: '#008F67',
+                                  stroke: 'white',
+                                  strokeWidth: 1
+                                }}
+                              />
+                            </AreaChart>
+                          </ResponsiveContainer>
+                        );
+                      })()}
                     </div>
                   </div>
 
@@ -1623,65 +1626,73 @@ export const DashboardPage: React.FC = () => {
                     </div>
 
                     <div style={{ width: '100%', height: 260 }}>
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart
-                          data={stats.equityCurveData.filter(d => d.day !== '0').map(d => ({
-                            day: d.day,
-                            pnl: d.dailyPnl
-                          }))}
-                          margin={{ top: 10, right: 20, left: 10, bottom: 5 }}
-                        >
-                          <CartesianGrid strokeDasharray="3 3" stroke={gridLineColor} vertical={false} />
-                          <XAxis
-                            dataKey="day"
-                            tick={{ fontSize: 10, fill: tickColor }}
-                            tickLine={false}
-                            axisLine={{ stroke: 'var(--border)' }}
-                          />
-                          <YAxis
-                            tick={{ fontSize: 10, fill: tickColor }}
-                            tickLine={false}
-                            axisLine={false}
-                            tickFormatter={(v) => `₹${v.toLocaleString('en-IN')}`}
-                            width={80}
-                          />
-                          <RechartsTooltip
-                            contentStyle={{
-                              backgroundColor: 'var(--card)',
-                              border: '0.5px solid var(--border)',
-                              borderRadius: '8px',
-                              color: 'var(--text)',
-                            }}
-                            formatter={(value: any) => {
-                              const decimalValue = Number(value) || 0;
-                              const isPositive = decimalValue >= 0;
-                              return [
-                                <span key="val" style={{ color: isPositive ? '#22c55e' : '#ef4444', fontWeight: 'bold' }}>
-                                  {'₹' + value.toLocaleString('en-IN')}
-                                </span>,
-                                'Daily P&L'
-                              ];
-                            }}
-                          />
-                          <ReferenceLine
-                            y={0}
-                            stroke="rgba(0,0,0,0.15)"
-                            strokeDasharray="4 4"
-                            strokeWidth={1}
-                          />
-                          <Bar dataKey="pnl">
-                            {stats.equityCurveData.filter(d => d.day !== '0').map((d, index) => {
-                              const isPositive = d.dailyPnl >= 0;
-                              return (
-                                <Cell
-                                  key={`cell-${index}`}
-                                  fill={isPositive ? '#22c55e' : '#ef4444'}
-                                />
-                              );
-                            })}
-                          </Bar>
-                        </BarChart>
-                      </ResponsiveContainer>
+                      {(() => {
+                        const data = stats.equityCurveData.filter(d => d.day !== '0').map(d => ({
+                          day: d.day,
+                          pnl: d.dailyPnl
+                        }));
+                        return (
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart
+                              data={data}
+                              margin={{ top: 16, right: 16, bottom: 8, left: 8 }}
+                              barCategoryGap="50%"
+                              barSize={14}
+                            >
+                              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-sm)" vertical={false} />
+                              <XAxis
+                                dataKey="day"
+                                tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
+                                tickLine={false}
+                                axisLine={{ stroke: 'var(--border)' }}
+                              />
+                              <YAxis
+                                tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
+                                tickLine={false}
+                                axisLine={false}
+                                tickFormatter={(v) => {
+                                  if (v === 0) return '₹0';
+                                  if (Math.abs(v) >= 1000) return `₹${(v/1000).toFixed(1)}K`;
+                                  return `₹${v}`;
+                                }}
+                                tickCount={5}
+                                domain={['auto', 'auto']}
+                                width={52}
+                              />
+                              <RechartsTooltip
+                                cursor={{ stroke: 'rgba(0,0,0,0.06)', strokeWidth: 1 }}
+                                content={({ active, payload }) => {
+                                  if (!active || !payload?.length) return null;
+                                  const val = payload[0]?.value as number;
+                                  const isPos = val >= 0;
+                                  return (
+                                    <div 
+                                      className="px-2.5 py-1.5 text-xs font-semibold rounded-md border shadow-sm"
+                                      style={{
+                                        backgroundColor: 'var(--card)',
+                                        borderColor: 'var(--border)',
+                                        color: isPos ? GREEN : RED
+                                      }}
+                                    >
+                                      {isPos ? `+₹${val.toLocaleString('en-IN')}` : `-₹${Math.abs(val).toLocaleString('en-IN')}`}
+                                    </div>
+                                  );
+                                }}
+                              />
+                              <ReferenceLine y={0} stroke="var(--border)" strokeDasharray="3 3" />
+                              <Bar dataKey="pnl">
+                                {data.map((entry, index) => (
+                                  <Cell
+                                    key={`cell-${index}`}
+                                    fill={entry.pnl >= 0 ? '#008F67' : '#DF1C30'}
+                                    fillOpacity={0.9}
+                                  />
+                                ))}
+                              </Bar>
+                            </BarChart>
+                          </ResponsiveContainer>
+                        );
+                      })()}
                     </div>
                   </div>
                 </div>
