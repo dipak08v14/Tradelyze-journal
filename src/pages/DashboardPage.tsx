@@ -1363,15 +1363,15 @@ export const DashboardPage: React.FC = () => {
                 {/* NEW 3-COLUMN ROW: Trading Metrics | Cumulative P&L | Daily P&L */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', alignItems: 'stretch' }} className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
                   {/* Column 1: Trading Metrics */}
-                  <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', height: '300px', position: 'relative', overflow: 'hidden' }}>
+                  <div className="rounded-xl px-5 pb-5 pt-2.5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', height: '300px', position: 'relative', overflow: 'hidden' }}>
                     <style>{`
                       .trading-metrics-radar .recharts-polar-grid-angle line {
                         stroke-width: 1 !important;
                         stroke-opacity: 0.3 !important;
                       }
                     `}</style>
-                    <div style={{ position: 'absolute', top: '16px', left: '16px', zIndex: 1, margin: 0, textAlign: 'left' }}>
-                      <h2 style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)', marginBottom: '4px' }}>
+                    <div style={{ position: 'absolute', top: '8px', left: '16px', zIndex: 1, margin: 0, textAlign: 'left', width: 'calc(100% - 32px)', paddingTop: '0px', borderBottom: '1px solid rgba(0,0,0,0.07)', paddingBottom: '10px', marginBottom: '8px' }}>
+                      <h2 style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-muted)', marginBottom: '4px' }}>
                         Trading Metrics
                       </h2>
                       <p className="text-xs mt-0.5" style={{ color: 'var(--text-sub)', display: 'none' }}>
@@ -1498,10 +1498,10 @@ export const DashboardPage: React.FC = () => {
                   </div>
 
                   {/* Column 2: Cumulative P&L */}
-                  <div className="p-5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', overflow: 'visible', height: '300px' }}>
-                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-4">
+                  <div className="px-5 pb-5 pt-2.5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', overflow: 'visible', height: '300px' }}>
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2" style={{ borderBottom: '1px solid rgba(0,0,0,0.07)', paddingBottom: '10px', marginBottom: '8px', paddingTop: '0px' }}>
                       <div className="flex flex-col">
-                        <h2 className="flex items-center gap-1.5" style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)', marginBottom: '4px' }}>
+                        <h2 className="flex items-center gap-1.5" style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-muted)', marginBottom: '4px' }}>
                           <TrendingUp className="w-4 h-4" style={{ color: chartColor }} />
                           Cumulative P&L
                         </h2>
@@ -1622,9 +1622,9 @@ export const DashboardPage: React.FC = () => {
                   </div>
 
                   {/* Column 3: Daily P&L */}
-                  <div className="p-5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', height: '300px' }}>
-                    <div className="flex items-center justify-between gap-2 mb-4">
-                      <h2 style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)', marginBottom: '4px' }}>
+                  <div className="px-5 pb-5 pt-2.5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', height: '300px' }}>
+                    <div className="flex items-center justify-between gap-2" style={{ borderBottom: '1px solid rgba(0,0,0,0.07)', paddingBottom: '10px', marginBottom: '8px', paddingTop: '0px' }}>
+                      <h2 style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-muted)', marginBottom: '4px' }}>
                         Daily P&L
                       </h2>
                     </div>
