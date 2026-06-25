@@ -1588,7 +1588,7 @@ export const DashboardPage: React.FC = () => {
                                   if (Math.abs(v) >= 1000) return `₹${(v/1000).toFixed(1)}K`;
                                   return `₹${v}`;
                                 }}
-                                tickCount={5}
+                                tickCount={8}
                                 domain={['auto', 'auto']}
                                 width={52}
                                 tickMargin={6}
@@ -1699,7 +1699,7 @@ export const DashboardPage: React.FC = () => {
                                   if (Math.abs(v) >= 1000) return `₹${(v/1000).toFixed(1)}K`;
                                   return `₹${v}`;
                                 }}
-                                tickCount={5}
+                                tickCount={8}
                                 domain={['auto', 'auto']}
                                 width={52}
                                 tickMargin={6}
