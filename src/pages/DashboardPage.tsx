@@ -64,11 +64,23 @@ const formatDayHeaderDate = (dateStr: string) => {
   }
 };
 
-const SemicircleGauge: React.FC<{ percentage: number; wCount: number; beCount: number; lCount: number }> = ({ percentage, wCount, beCount, lCount }) => {
-  const total = wCount + beCount + lCount;
-  const pW = total > 0 ? (wCount / total) * 100 : 0;
-  const pBe = total > 0 ? (beCount / total) * 100 : 0;
-  const pL = total > 0 ? (lCount / total) * 100 : 0;
+const SemicircleGauge: React.FC<{ percentage: number; wCount: number; beCount: number; lCount: number; isDayWin?: boolean }> = ({ percentage, wCount, beCount, lCount, isDayWin }) => {
+  let greenFraction = 0;
+
+  if (isDayWin) {
+    const winDays = wCount;
+    const lossDays = lCount;
+    greenFraction = (winDays + lossDays) > 0 ? winDays / (winDays + lossDays) : 0;
+  } else {
+    const winCount = wCount;
+    const lossCount = lCount;
+    greenFraction = (winCount + lossCount) > 0 ? winCount / (winCount + lossCount) : 0;
+  }
+
+  const pW = greenFraction * 100;
+  const pBe = 0;
+  const pL = (1 - greenFraction) * 100;
+  const halfCirc = Math.PI * 48;
 
   return (
     <svg 
@@ -95,8 +107,7 @@ const SemicircleGauge: React.FC<{ percentage: number; wCount: number; beCount: n
         stroke="#008F67"
         strokeWidth="7"
         strokeLinecap="butt"
-        pathLength="100"
-        strokeDasharray={`${pW} 100`}
+        strokeDasharray={`${(pW / 100) * halfCirc} ${halfCirc}`}
         strokeDashoffset={0}
         vectorEffect="non-scaling-stroke"
         shapeRendering="geometricPrecision"
@@ -109,9 +120,8 @@ const SemicircleGauge: React.FC<{ percentage: number; wCount: number; beCount: n
         stroke="var(--text-muted)"
         strokeWidth="7"
         strokeLinecap="butt"
-        pathLength="100"
-        strokeDasharray={`${pBe} 100`}
-        strokeDashoffset={-pW}
+        strokeDasharray={`${(pBe / 100) * halfCirc} ${halfCirc}`}
+        strokeDashoffset={-((pW / 100) * halfCirc)}
         vectorEffect="non-scaling-stroke"
         shapeRendering="geometricPrecision"
         className="transition-all duration-500 ease-out"
@@ -123,9 +133,8 @@ const SemicircleGauge: React.FC<{ percentage: number; wCount: number; beCount: n
         stroke="#DF1C30"
         strokeWidth="7"
         strokeLinecap="butt"
-        pathLength="100"
-        strokeDasharray={`${pL} 100`}
-        strokeDashoffset={-(pW + pBe)}
+        strokeDasharray={`${(pL / 100) * halfCirc} ${halfCirc}`}
+        strokeDashoffset={-(((pW + pBe) / 100) * halfCirc)}
         vectorEffect="non-scaling-stroke"
         shapeRendering="geometricPrecision"
         className="transition-all duration-500 ease-out"
@@ -140,9 +149,9 @@ const SemicircleGauge: React.FC<{ percentage: number; wCount: number; beCount: n
 
 const CircleGauge: React.FC<{ value: number }> = ({ value }) => {
   const radius = 22;
-  const val = Math.min(Math.max(value || 0, 0), 3.0);
-  const percentage = (val / 3.0) * 100;
-  const offset = 100 - percentage;
+  const profitFactorValue = value || 0;
+  const greenFraction = Math.min(profitFactorValue / 3, 1);
+  const fullCirc = 2 * Math.PI * radius;
   return (
     <svg 
       width="70" 
@@ -158,6 +167,7 @@ const CircleGauge: React.FC<{ value: number }> = ({ value }) => {
         fill="none"
         stroke="#DF1C30"
         strokeWidth="7"
+        strokeDasharray={`${fullCirc}`}
         vectorEffect="non-scaling-stroke"
         shapeRendering="geometricPrecision"
       />
@@ -169,9 +179,8 @@ const CircleGauge: React.FC<{ value: number }> = ({ value }) => {
         stroke="#008F67"
         strokeWidth="7"
         strokeLinecap="round"
-        pathLength="100"
-        strokeDasharray="100 100"
-        strokeDashoffset={offset}
+        strokeDasharray={`${greenFraction * fullCirc} ${fullCirc}`}
+        strokeDashoffset={fullCirc * 0.25}
         transform="rotate(-90 30 30)"
         vectorEffect="non-scaling-stroke"
         shapeRendering="geometricPrecision"
@@ -1310,7 +1319,7 @@ export const DashboardPage: React.FC = () => {
                         {stats.winDaysPct.toFixed(2)}%
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <SemicircleGauge percentage={stats.winDaysPct} wCount={stats.winDays} beCount={stats.beDays} lCount={stats.lossDays} />
+                        <SemicircleGauge percentage={stats.winDaysPct} wCount={stats.winDays} beCount={stats.beDays} lCount={stats.lossDays} isDayWin={true} />
                       </div>
                     </div>
                   </div>
@@ -1340,7 +1349,7 @@ export const DashboardPage: React.FC = () => {
                         {(() => {
                           const avgWinForBar = stats.avgWin || 0;
                           const avgLossForBar = stats.avgLoss || 0;
-                          const totalForBar = avgWinForBar + avgLossForBar;
+                          const totalForBar = avgWinForBar + Math.abs(avgLossForBar);
                           const winPctForBar = totalForBar > 0 ? (avgWinForBar / totalForBar) * 100 : 50;
                           return (
                             <>
