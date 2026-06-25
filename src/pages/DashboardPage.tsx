@@ -104,44 +104,27 @@ const SemicircleGauge: React.FC<{
 };
 
 const CircleGauge: React.FC<{ value: number }> = ({ value }) => {
-  const radius = 22;
-  const profitFactorValue = value || 0;
-  const greenFraction = Math.min(profitFactorValue / 3, 1);
-  const fullCirc = 2 * Math.PI * radius;
+  const fraction = Math.min(value / 3, 1);
+  const cx = 30, cy = 30, r = 22;
   return (
-    <svg 
-      width="70" 
-      height="70" 
-      viewBox="0 0 60 60" 
-      className="overflow-visible inline-block"
-      style={{ shapeRendering: 'geometricPrecision' }}
-    >
+    <svg width="60" height="60" viewBox="0 0 60 60">
       <circle
-        cx="30"
-        cy="30"
-        r={radius}
+        cx={cx} cy={cy} r={r}
         fill="none"
         stroke="#DF1C30"
-        strokeWidth="7"
-        strokeDasharray={`${fullCirc}`}
-        vectorEffect="non-scaling-stroke"
-        shapeRendering="geometricPrecision"
+        strokeWidth={7}
+        strokeLinecap="butt"
       />
       <circle
-        cx="30"
-        cy="30"
-        r={radius}
+        cx={cx} cy={cy} r={r}
         fill="none"
         stroke="#008F67"
-        strokeWidth="7"
-        strokeLinecap="round"
-        strokeDasharray={`${greenFraction * fullCirc} ${fullCirc}`}
-        strokeDashoffset={fullCirc * 0.25}
-        transform="rotate(-90 30 30)"
-        vectorEffect="non-scaling-stroke"
-        shapeRendering="geometricPrecision"
-        className="transition-all duration-500 ease-out"
-        style={{ stroke: '#008F67' }}
+        strokeWidth={7}
+        strokeLinecap="butt"
+        pathLength={1}
+        strokeDasharray={`${fraction} 1`}
+        strokeDashoffset={0}
+        transform={`rotate(-90 ${cx} ${cy})`}
       />
     </svg>
   );
