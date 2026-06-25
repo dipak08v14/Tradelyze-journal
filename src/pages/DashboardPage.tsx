@@ -1538,7 +1538,7 @@ export const DashboardPage: React.FC = () => {
                           <ResponsiveContainer width="100%" height="100%">
                             <AreaChart
                               data={data}
-                              margin={{ top: 16, right: 16, bottom: 8, left: 8 }}
+                              margin={{ top: 8, right: 8, bottom: 0, left: -16 }}
                             >
                               <defs>
                                 <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
@@ -1561,6 +1561,8 @@ export const DashboardPage: React.FC = () => {
                                 tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
                                 tickLine={false}
                                 axisLine={{ stroke: 'var(--border)' }}
+                                height={20}
+                                tickMargin={4}
                               />
                               <YAxis
                                 tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
@@ -1573,7 +1575,8 @@ export const DashboardPage: React.FC = () => {
                                 }}
                                 tickCount={5}
                                 domain={['auto', 'auto']}
-                                width={52}
+                                width={44}
+                                tickMargin={4}
                               />
                               <ReferenceLine y={0} stroke="var(--border)" strokeDasharray="3 3" />
                               <RechartsTooltip
@@ -1631,11 +1634,12 @@ export const DashboardPage: React.FC = () => {
                           day: d.day,
                           pnl: d.dailyPnl
                         }));
+                        const filteredData = data.filter(d => d.pnl !== 0 && d.pnl != null);
                         return (
                           <ResponsiveContainer width="100%" height="100%">
                             <BarChart
-                              data={data}
-                              margin={{ top: 16, right: 16, bottom: 8, left: 8 }}
+                              data={filteredData}
+                              margin={{ top: 8, right: 8, bottom: 0, left: -16 }}
                               barCategoryGap="50%"
                               barSize={14}
                             >
@@ -1645,6 +1649,8 @@ export const DashboardPage: React.FC = () => {
                                 tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
                                 tickLine={false}
                                 axisLine={{ stroke: 'var(--border)' }}
+                                height={20}
+                                tickMargin={4}
                               />
                               <YAxis
                                 tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
@@ -1657,7 +1663,8 @@ export const DashboardPage: React.FC = () => {
                                 }}
                                 tickCount={5}
                                 domain={['auto', 'auto']}
-                                width={52}
+                                width={44}
+                                tickMargin={4}
                               />
                               <RechartsTooltip
                                 cursor={{ stroke: 'rgba(0,0,0,0.06)', strokeWidth: 1 }}
@@ -1681,7 +1688,7 @@ export const DashboardPage: React.FC = () => {
                               />
                               <ReferenceLine y={0} stroke="var(--border)" strokeDasharray="3 3" />
                               <Bar dataKey="pnl">
-                                {data.map((entry, index) => (
+                                {filteredData.map((entry, index) => (
                                   <Cell
                                     key={`cell-${index}`}
                                     fill={entry.pnl >= 0 ? '#008F67' : '#DF1C30'}
