@@ -1965,8 +1965,8 @@ export const DashboardPage: React.FC = () => {
 
                   {/* Right Column (2/3): Monthly Calendar */}
                   {/* ADDITION 4 — Monthly Calendar section */}
-                  <div className="rounded-xl p-5 lg:col-span-2" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%', minWidth: '0px', overflow: 'hidden', boxSizing: 'border-box', gridColumn: 'span 2' }}>
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4" style={{ paddingTop: '10px', paddingBottom: '4px', borderBottom: '1px solid rgba(0,0,0,0.07)', marginBottom: '8px' }}>
+                  <div className="rounded-xl px-5 pb-5 pt-2.5 lg:col-span-2" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%', minWidth: '0px', overflow: 'hidden', boxSizing: 'border-box', gridColumn: 'span 2' }}>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4" style={{ paddingTop: '0px', paddingBottom: '4px', borderBottom: '1px solid rgba(0,0,0,0.07)', marginBottom: '8px' }}>
                       <h2 style={{ fontSize: '16px', fontWeight: 500, color: 'var(--text-muted)' }}>
                         Monthly Calendar
                       </h2>
