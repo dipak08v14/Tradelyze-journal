@@ -20,6 +20,8 @@ import {
   X,
   Bell,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   RefreshCw
 } from 'lucide-react';
 import { getLibraryConfidenceMessage } from '../lib/clipEmbedder';
@@ -165,6 +167,28 @@ const RadarTooltip = ({ active, payload }: any) => {
   return null;
 };
 
+const parseLocalDate = (dateStr: string) => {
+  const [year, month, day] = dateStr.split('-').map(Number);
+  return new Date(year, month - 1, day);
+};
+
+const formatLocalDate = (date: Date) => {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+};
+
+const formatDisplayDate = (dateStr: string) => {
+  if (!dateStr) return '';
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const dateObj = new Date(year, month - 1, day);
+  const dayStr = String(dateObj.getDate()).padStart(2, '0');
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const monthStr = monthNames[dateObj.getMonth()];
+  return `${dayStr} ${monthStr} ${year}`;
+};
+
 const getBrokerCode = (broker: any) => {
   const name = (broker.broker_name || broker.broker_type || '').toLowerCase();
   if (name.includes('dhan')) return 'DH';
@@ -197,6 +221,80 @@ export const DashboardPage: React.FC = () => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   });
+
+  // Header compact date range picker state
+  const [isHeaderDatePickerOpen, setIsHeaderDatePickerOpen] = useState(false);
+  const headerDatePickerRef = useRef<HTMLDivElement>(null);
+
+  const [headerPickerLeftMonth, setHeaderPickerLeftMonth] = useState<number>(() => parseLocalDate(startDate).getMonth());
+  const [headerPickerLeftYear, setHeaderPickerLeftYear] = useState<number>(() => parseLocalDate(startDate).getFullYear());
+
+  const [headerPickerRightMonth, setHeaderPickerRightMonth] = useState<number>(() => {
+    const s = parseLocalDate(startDate);
+    const e = parseLocalDate(endDate);
+    if (s.getMonth() === e.getMonth() && s.getFullYear() === e.getFullYear()) {
+      let m = s.getMonth() + 1;
+      if (m > 11) return 0;
+      return m;
+    }
+    return e.getMonth();
+  });
+  const [headerPickerRightYear, setHeaderPickerRightYear] = useState<number>(() => {
+    const s = parseLocalDate(startDate);
+    const e = parseLocalDate(endDate);
+    if (s.getMonth() === e.getMonth() && s.getFullYear() === e.getFullYear()) {
+      let m = s.getMonth() + 1;
+      let y = s.getFullYear();
+      if (m > 11) return y + 1;
+      return y;
+    }
+    return e.getFullYear();
+  });
+
+  const [headerPickerTempStart, setHeaderPickerTempStart] = useState<Date | null>(() => parseLocalDate(startDate));
+  const [headerPickerTempEnd, setHeaderPickerTempEnd] = useState<Date | null>(() => parseLocalDate(endDate));
+  const [headerPickerHoveredDate, setHeaderPickerHoveredDate] = useState<Date | null>(null);
+  const [isSelectingSecondDate, setIsSelectingSecondDate] = useState(false);
+
+  // Sync calendar views when picker is opened
+  useEffect(() => {
+    if (isHeaderDatePickerOpen) {
+      const s = parseLocalDate(startDate);
+      const e = parseLocalDate(endDate);
+      setHeaderPickerLeftMonth(s.getMonth());
+      setHeaderPickerLeftYear(s.getFullYear());
+      setHeaderPickerTempStart(s);
+      setHeaderPickerTempEnd(e);
+      setIsSelectingSecondDate(false);
+
+      if (s.getMonth() === e.getMonth() && s.getFullYear() === e.getFullYear()) {
+        let m = s.getMonth() + 1;
+        let y = s.getFullYear();
+        if (m > 11) {
+          m = 0;
+          y += 1;
+        }
+        setHeaderPickerRightMonth(m);
+        setHeaderPickerRightYear(y);
+      } else {
+        setHeaderPickerRightMonth(e.getMonth());
+        setHeaderPickerRightYear(e.getFullYear());
+      }
+    }
+  }, [isHeaderDatePickerOpen, startDate, endDate]);
+
+  // Handle click outside to close the dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (headerDatePickerRef.current && !headerDatePickerRef.current.contains(event.target as Node)) {
+        setIsHeaderDatePickerOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   // Monthly Calendar Navigation State
   const [calMonth, setCalMonth] = useState<number>(() => new Date().getMonth());
@@ -893,26 +991,685 @@ export const DashboardPage: React.FC = () => {
 
               {/* DATE RANGE PICKER */}
               <div className="flex flex-wrap items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-zinc-500" />
-                  
-                  <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500" style={{ color: 'var(--text-muted)' }}>From</span>
-                  <input
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text)', padding: '6px 10px', fontSize: '13px', fontFamily: 'inherit' }}
-                    className="focus:outline-none cursor-pointer transition-all font-medium"
-                  />
+                <div className="relative" ref={headerDatePickerRef}>
+                  {/* TRIGGER BUTTON */}
+                  <button
+                    onClick={() => setIsHeaderDatePickerOpen(!isHeaderDatePickerOpen)}
+                    style={{
+                      border: '1px solid var(--border)',
+                      backgroundColor: 'var(--card)',
+                      borderRadius: '8px',
+                      padding: '6px 12px',
+                      fontSize: '13px',
+                      color: 'var(--text)',
+                      cursor: 'pointer'
+                    }}
+                    className="flex items-center gap-2 hover:opacity-90 font-medium select-none"
+                  >
+                    <Calendar className="w-4 h-4 text-zinc-500" />
+                    <span>{formatDisplayDate(startDate)}</span>
+                    <span className="text-zinc-400">→</span>
+                    <span>{formatDisplayDate(endDate)}</span>
+                    <ChevronDown className="w-3.5 h-3.5 ml-1 text-zinc-400" />
+                  </button>
 
-                  <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500" style={{ color: 'var(--text-muted)' }}>To</span>
-                  <input
-                    type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text)', padding: '6px 10px', fontSize: '13px', fontFamily: 'inherit' }}
-                    className="focus:outline-none cursor-pointer transition-all font-medium"
-                  />
+                  {/* DROPDOWN PANEL */}
+                  {isHeaderDatePickerOpen && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        right: 0,
+                        top: 'calc(100% + 8px)',
+                        zIndex: 1000,
+                        backgroundColor: 'var(--card)',
+                        border: '1px solid var(--border)',
+                        borderRadius: '12px',
+                        boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+                        padding: '16px',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'flex-start',
+                        gap: '16px'
+                      }}
+                      className="select-none"
+                    >
+                      {/* LEFT CALENDAR COLUMN */}
+                      <div className="flex flex-col" style={{ padding: '0', minWidth: '0', flex: 'none' }}>
+                        <div className="flex items-center justify-between mb-3 px-1">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (headerPickerLeftMonth === 0) {
+                                setHeaderPickerLeftYear((y) => y - 1);
+                                setHeaderPickerLeftMonth(11);
+                              } else {
+                                setHeaderPickerLeftMonth((m) => m - 1);
+                              }
+                            }}
+                            className="p-1 hover:bg-[var(--bar)] rounded-full text-zinc-400 hover:text-[var(--text)] cursor-pointer"
+                          >
+                            <ChevronLeft className="w-4 h-4" />
+                          </button>
+                          
+                          <div className="flex items-center gap-1">
+                            <select
+                              value={headerPickerLeftMonth}
+                              onChange={(e) => setHeaderPickerLeftMonth(Number(e.target.value))}
+                              style={{
+                                background: 'transparent',
+                                border: 'none',
+                                color: 'var(--text)',
+                                fontSize: '13px',
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                appearance: 'auto',
+                                outline: 'none'
+                              }}
+                            >
+                              {["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"].map((m, idx) => (
+                                <option key={m} value={idx} style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}>
+                                  {m}
+                                </option>
+                              ))}
+                            </select>
+
+                            <select
+                              value={headerPickerLeftYear}
+                              onChange={(e) => setHeaderPickerLeftYear(Number(e.target.value))}
+                              style={{
+                                background: 'transparent',
+                                border: 'none',
+                                color: 'var(--text)',
+                                fontSize: '13px',
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                appearance: 'auto',
+                                outline: 'none'
+                              }}
+                            >
+                              {Array.from({ length: 11 }, (_, i) => new Date().getFullYear() - 5 + i).map((yr) => (
+                                <option key={yr} value={yr} style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}>
+                                  {yr}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (headerPickerLeftMonth === 11) {
+                                setHeaderPickerLeftYear((y) => y + 1);
+                                setHeaderPickerLeftMonth(0);
+                              } else {
+                                setHeaderPickerLeftMonth((m) => m + 1);
+                              }
+                            }}
+                            className="p-1 hover:bg-[var(--bar)] rounded-full text-zinc-400 hover:text-[var(--text)] cursor-pointer"
+                          >
+                            <ChevronRight className="w-4 h-4" />
+                          </button>
+                        </div>
+
+                        {/* Weekday Row */}
+                        <div
+                          style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(7, 30px)',
+                            gap: '2px',
+                            marginBottom: '4px'
+                          }}
+                          className="text-center"
+                        >
+                          {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((day) => (
+                            <span
+                              key={day}
+                              style={{
+                                width: '30px',
+                                textAlign: 'center',
+                                fontSize: '11px',
+                                fontWeight: 500,
+                                color: 'var(--text-muted)'
+                              }}
+                            >
+                              {day}
+                            </span>
+                          ))}
+                        </div>
+
+                        {/* Day Grid */}
+                        <div
+                          style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(7, 30px)',
+                            gap: '2px'
+                          }}
+                          className="text-center"
+                        >
+                          {(() => {
+                            const y = headerPickerLeftYear;
+                            const m = headerPickerLeftMonth;
+                            const firstDay = new Date(y, m, 1).getDay();
+                            const prevMonthNumDays = new Date(y, m, 0).getDate();
+                            const numDays = new Date(y, m + 1, 0).getDate();
+
+                            const days: { date: Date; isCurrentMonth: boolean }[] = [];
+
+                            // Prev month days
+                            for (let i = firstDay - 1; i >= 0; i--) {
+                              days.push({
+                                date: new Date(y, m - 1, prevMonthNumDays - i),
+                                isCurrentMonth: false
+                              });
+                            }
+
+                            // Current month days
+                            for (let i = 1; i <= numDays; i++) {
+                              days.push({
+                                date: new Date(y, m, i),
+                                isCurrentMonth: true
+                              });
+                            }
+
+                            // Next month days
+                            const remaining = 42 - days.length;
+                            for (let i = 1; i <= remaining; i++) {
+                              days.push({
+                                date: new Date(y, m + 1, i),
+                                isCurrentMonth: false
+                              });
+                            }
+
+                            return days.map(({ date, isCurrentMonth }, idx) => {
+                              const isToday = (() => {
+                                  const today = new Date();
+                                  return date.getDate() === today.getDate() &&
+                                         date.getMonth() === today.getMonth() &&
+                                         date.getFullYear() === today.getFullYear();
+                                })();
+
+                              const isSelectedStart = headerPickerTempStart &&
+                                date.getDate() === headerPickerTempStart.getDate() &&
+                                date.getMonth() === headerPickerTempStart.getMonth() &&
+                                date.getFullYear() === headerPickerTempStart.getFullYear();
+
+                              const isSelectedEnd = headerPickerTempEnd &&
+                                date.getDate() === headerPickerTempEnd.getDate() &&
+                                date.getMonth() === headerPickerTempEnd.getMonth() &&
+                                date.getFullYear() === headerPickerTempEnd.getFullYear();
+
+                              const isInRange = (() => {
+                                if (headerPickerTempStart && headerPickerTempEnd) {
+                                  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+                                  const s = new Date(headerPickerTempStart.getFullYear(), headerPickerTempStart.getMonth(), headerPickerTempStart.getDate());
+                                  const e = new Date(headerPickerTempEnd.getFullYear(), headerPickerTempEnd.getMonth(), headerPickerTempEnd.getDate());
+                                  return d > s && d < e;
+                                }
+                                if (headerPickerTempStart && headerPickerHoveredDate && isSelectingSecondDate) {
+                                  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+                                  const s = new Date(headerPickerTempStart.getFullYear(), headerPickerTempStart.getMonth(), headerPickerTempStart.getDate());
+                                  const h = new Date(headerPickerHoveredDate.getFullYear(), headerPickerHoveredDate.getMonth(), headerPickerHoveredDate.getDate());
+                                  return d > s && d < h;
+                                }
+                                return false;
+                              })();
+
+                              return (
+                                <button
+                                  key={idx}
+                                  type="button"
+                                  onClick={() => {
+                                    if (!headerPickerTempStart || (headerPickerTempStart && headerPickerTempEnd)) {
+                                      setHeaderPickerTempStart(date);
+                                      setHeaderPickerTempEnd(null);
+                                      setIsSelectingSecondDate(true);
+                                    } else {
+                                      if (date >= headerPickerTempStart) {
+                                        setHeaderPickerTempEnd(date);
+                                        setStartDate(formatLocalDate(headerPickerTempStart));
+                                        setEndDate(formatLocalDate(date));
+                                        setIsHeaderDatePickerOpen(false);
+                                      } else {
+                                        setHeaderPickerTempStart(date);
+                                        setHeaderPickerTempEnd(null);
+                                        setIsSelectingSecondDate(true);
+                                      }
+                                    }
+                                  }}
+                                  onMouseEnter={() => {
+                                    if (isSelectingSecondDate) {
+                                      setHeaderPickerHoveredDate(date);
+                                    }
+                                  }}
+                                  style={{
+                                    width: '30px',
+                                    height: '30px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '12px',
+                                    fontWeight: (isSelectedStart || isSelectedEnd) ? 600 : 400,
+                                    borderRadius: (isSelectedStart || isSelectedEnd) ? '50%' : isInRange ? '0px' : '50%',
+                                    backgroundColor: (isSelectedStart || isSelectedEnd)
+                                      ? 'var(--accent)'
+                                      : isInRange
+                                        ? 'rgba(6, 182, 212, 0.12)'
+                                        : 'transparent',
+                                    color: (isSelectedStart || isSelectedEnd)
+                                      ? '#ffffff'
+                                      : isCurrentMonth
+                                        ? 'var(--text)'
+                                        : 'var(--text-muted)',
+                                    opacity: isCurrentMonth ? 1 : 0.35,
+                                    cursor: 'pointer'
+                                  }}
+                                  className="flex items-center justify-center relative hover:bg-[var(--bar)] hover:rounded-full group transition-all"
+                                >
+                                  <span>{date.getDate()}</span>
+                                  {isToday && !isSelectedStart && !isSelectedEnd && (
+                                    <span
+                                      className="absolute bottom-[2px] left-1/2 -translate-x-1/2 w-1 h-1 rounded-full"
+                                      style={{ backgroundColor: 'var(--accent)' }}
+                                    />
+                                  )}
+                                </button>
+                              );
+                            });
+                          })()}
+                        </div>
+                      </div>
+
+                      {/* MIDDLE CALENDAR COLUMN */}
+                      <div className="flex flex-col" style={{ padding: '0', minWidth: '0', flex: 'none' }}>
+                        <div className="flex items-center justify-between mb-3 px-1">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (headerPickerRightMonth === 0) {
+                                setHeaderPickerRightYear((y) => y - 1);
+                                setHeaderPickerRightMonth(11);
+                              } else {
+                                setHeaderPickerRightMonth((m) => m - 1);
+                              }
+                            }}
+                            className="p-1 hover:bg-[var(--bar)] rounded-full text-zinc-400 hover:text-[var(--text)] cursor-pointer"
+                          >
+                            <ChevronLeft className="w-4 h-4" />
+                          </button>
+                          
+                          <div className="flex items-center gap-1">
+                            <select
+                              value={headerPickerRightMonth}
+                              onChange={(e) => setHeaderPickerRightMonth(Number(e.target.value))}
+                              style={{
+                                background: 'transparent',
+                                border: 'none',
+                                color: 'var(--text)',
+                                fontSize: '13px',
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                appearance: 'auto',
+                                outline: 'none'
+                              }}
+                            >
+                              {["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"].map((m, idx) => (
+                                <option key={m} value={idx} style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}>
+                                  {m}
+                                </option>
+                              ))}
+                            </select>
+
+                            <select
+                              value={headerPickerRightYear}
+                              onChange={(e) => setHeaderPickerRightYear(Number(e.target.value))}
+                              style={{
+                                background: 'transparent',
+                                border: 'none',
+                                color: 'var(--text)',
+                                fontSize: '13px',
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                appearance: 'auto',
+                                outline: 'none'
+                              }}
+                            >
+                              {Array.from({ length: 11 }, (_, i) => new Date().getFullYear() - 5 + i).map((yr) => (
+                                <option key={yr} value={yr} style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}>
+                                  {yr}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (headerPickerRightMonth === 11) {
+                                setHeaderPickerRightYear((y) => y + 1);
+                                setHeaderPickerRightMonth(0);
+                              } else {
+                                setHeaderPickerRightMonth((m) => m + 1);
+                              }
+                            }}
+                            className="p-1 hover:bg-[var(--bar)] rounded-full text-zinc-400 hover:text-[var(--text)] cursor-pointer"
+                          >
+                            <ChevronRight className="w-4 h-4" />
+                          </button>
+                        </div>
+
+                        {/* Weekday Row */}
+                        <div
+                          style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(7, 30px)',
+                            gap: '2px',
+                            marginBottom: '4px'
+                          }}
+                          className="text-center"
+                        >
+                          {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((day) => (
+                            <span
+                              key={day}
+                              style={{
+                                width: '30px',
+                                textAlign: 'center',
+                                fontSize: '11px',
+                                fontWeight: 500,
+                                color: 'var(--text-muted)'
+                              }}
+                            >
+                              {day}
+                            </span>
+                          ))}
+                        </div>
+
+                        {/* Day Grid */}
+                        <div
+                          style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(7, 30px)',
+                            gap: '2px'
+                          }}
+                          className="text-center"
+                        >
+                          {(() => {
+                            const y = headerPickerRightYear;
+                            const m = headerPickerRightMonth;
+                            const firstDay = new Date(y, m, 1).getDay();
+                            const prevMonthNumDays = new Date(y, m, 0).getDate();
+                            const numDays = new Date(y, m + 1, 0).getDate();
+
+                            const days: { date: Date; isCurrentMonth: boolean }[] = [];
+
+                            // Prev month days
+                            for (let i = firstDay - 1; i >= 0; i--) {
+                              days.push({
+                                date: new Date(y, m - 1, prevMonthNumDays - i),
+                                isCurrentMonth: false
+                              });
+                            }
+
+                            // Current month days
+                            for (let i = 1; i <= numDays; i++) {
+                              days.push({
+                                date: new Date(y, m, i),
+                                isCurrentMonth: true
+                              });
+                            }
+
+                            // Next month days
+                            const remaining = 42 - days.length;
+                            for (let i = 1; i <= remaining; i++) {
+                              days.push({
+                                date: new Date(y, m + 1, i),
+                                isCurrentMonth: false
+                              });
+                            }
+
+                            return days.map(({ date, isCurrentMonth }, idx) => {
+                              const isToday = (() => {
+                                  const today = new Date();
+                                  return date.getDate() === today.getDate() &&
+                                         date.getMonth() === today.getMonth() &&
+                                         date.getFullYear() === today.getFullYear();
+                                })();
+
+                              const isSelectedStart = headerPickerTempStart &&
+                                date.getDate() === headerPickerTempStart.getDate() &&
+                                date.getMonth() === headerPickerTempStart.getMonth() &&
+                                date.getFullYear() === headerPickerTempStart.getFullYear();
+
+                              const isSelectedEnd = headerPickerTempEnd &&
+                                date.getDate() === headerPickerTempEnd.getDate() &&
+                                date.getMonth() === headerPickerTempEnd.getMonth() &&
+                                date.getFullYear() === headerPickerTempEnd.getFullYear();
+
+                              const isInRange = (() => {
+                                if (headerPickerTempStart && headerPickerTempEnd) {
+                                  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+                                  const s = new Date(headerPickerTempStart.getFullYear(), headerPickerTempStart.getMonth(), headerPickerTempStart.getDate());
+                                  const e = new Date(headerPickerTempEnd.getFullYear(), headerPickerTempEnd.getMonth(), headerPickerTempEnd.getDate());
+                                  return d > s && d < e;
+                                }
+                                if (headerPickerTempStart && headerPickerHoveredDate && isSelectingSecondDate) {
+                                  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+                                  const s = new Date(headerPickerTempStart.getFullYear(), headerPickerTempStart.getMonth(), headerPickerTempStart.getDate());
+                                  const h = new Date(headerPickerHoveredDate.getFullYear(), headerPickerHoveredDate.getMonth(), headerPickerHoveredDate.getDate());
+                                  return d > s && d < h;
+                                }
+                                return false;
+                              })();
+
+                              return (
+                                <button
+                                  key={idx}
+                                  type="button"
+                                  onClick={() => {
+                                    if (!headerPickerTempStart || (headerPickerTempStart && headerPickerTempEnd)) {
+                                      setHeaderPickerTempStart(date);
+                                      setHeaderPickerTempEnd(null);
+                                      setIsSelectingSecondDate(true);
+                                    } else {
+                                      if (date >= headerPickerTempStart) {
+                                        setHeaderPickerTempEnd(date);
+                                        setStartDate(formatLocalDate(headerPickerTempStart));
+                                        setEndDate(formatLocalDate(date));
+                                        setIsHeaderDatePickerOpen(false);
+                                      } else {
+                                        setHeaderPickerTempStart(date);
+                                        setHeaderPickerTempEnd(null);
+                                        setIsSelectingSecondDate(true);
+                                      }
+                                    }
+                                  }}
+                                  onMouseEnter={() => {
+                                    if (isSelectingSecondDate) {
+                                      setHeaderPickerHoveredDate(date);
+                                    }
+                                  }}
+                                  style={{
+                                    width: '30px',
+                                    height: '30px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '12px',
+                                    fontWeight: (isSelectedStart || isSelectedEnd) ? 600 : 400,
+                                    borderRadius: (isSelectedStart || isSelectedEnd) ? '50%' : isInRange ? '0px' : '50%',
+                                    backgroundColor: (isSelectedStart || isSelectedEnd)
+                                      ? 'var(--accent)'
+                                      : isInRange
+                                        ? 'rgba(6, 182, 212, 0.12)'
+                                        : 'transparent',
+                                    color: (isSelectedStart || isSelectedEnd)
+                                      ? '#ffffff'
+                                      : isCurrentMonth
+                                        ? 'var(--text)'
+                                        : 'var(--text-muted)',
+                                    opacity: isCurrentMonth ? 1 : 0.35,
+                                    cursor: 'pointer'
+                                  }}
+                                  className="flex items-center justify-center relative hover:bg-[var(--bar)] hover:rounded-full group transition-all"
+                                >
+                                  <span>{date.getDate()}</span>
+                                  {isToday && !isSelectedStart && !isSelectedEnd && (
+                                    <span
+                                      className="absolute bottom-[2px] left-1/2 -translate-x-1/2 w-1 h-1 rounded-full"
+                                      style={{ backgroundColor: 'var(--accent)' }}
+                                    />
+                                  )}
+                                </button>
+                              );
+                            });
+                          })()}
+                        </div>
+                      </div>
+
+                      {/* PRESET COLUMN */}
+                      <div
+                        style={{
+                          padding: '0',
+                          minWidth: '110px',
+                          maxWidth: '130px',
+                          borderLeft: '1px solid var(--border)',
+                          paddingLeft: '16px'
+                        }}
+                        className="flex flex-col gap-1.5 justify-center"
+                      >
+                        {(() => {
+                          const presets = [
+                            'Today',
+                            'This Week',
+                            'This Month',
+                            'Last 30 Days',
+                            'Last Month',
+                            'This Quarter',
+                            'YTD'
+                          ];
+
+                          const handlePresetClick = (preset: string) => {
+                            const today = new Date();
+                            let start = new Date();
+                            let end = new Date();
+
+                            switch (preset) {
+                              case 'Today':
+                                start = today;
+                                end = today;
+                                break;
+                              case 'This Week': {
+                                const day = today.getDay();
+                                const diff = today.getDate() - day + (day === 0 ? -6 : 1);
+                                start = new Date(today.getFullYear(), today.getMonth(), diff);
+                                end = today;
+                                break;
+                              }
+                              case 'This Month':
+                                start = new Date(today.getFullYear(), today.getMonth(), 1);
+                                end = today;
+                                break;
+                              case 'Last 30 Days':
+                                start = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 29);
+                                end = today;
+                                break;
+                              case 'Last Month':
+                                start = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                                end = new Date(today.getFullYear(), today.getMonth(), 0);
+                                break;
+                              case 'This Quarter': {
+                                const qStartMonth = Math.floor(today.getMonth() / 3) * 3;
+                                start = new Date(today.getFullYear(), qStartMonth, 1);
+                                end = today;
+                                break;
+                              }
+                              case 'YTD':
+                                start = new Date(today.getFullYear(), 0, 1);
+                                end = today;
+                                break;
+                            }
+
+                            const startStr = formatLocalDate(start);
+                            const endStr = formatLocalDate(end);
+                            setStartDate(startStr);
+                            setEndDate(endStr);
+                            setHeaderPickerTempStart(start);
+                            setHeaderPickerTempEnd(end);
+                            setIsHeaderDatePickerOpen(false);
+                          };
+
+                          const isPresetActive = (preset: string) => {
+                            const today = new Date();
+                            let start = new Date();
+                            let end = new Date();
+
+                            switch (preset) {
+                              case 'Today':
+                                start = today;
+                                end = today;
+                                break;
+                              case 'This Week': {
+                                const day = today.getDay();
+                                const diff = today.getDate() - day + (day === 0 ? -6 : 1);
+                                start = new Date(today.getFullYear(), today.getMonth(), diff);
+                                end = today;
+                                break;
+                              }
+                              case 'This Month':
+                                start = new Date(today.getFullYear(), today.getMonth(), 1);
+                                end = today;
+                                break;
+                              case 'Last 30 Days':
+                                start = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 29);
+                                end = today;
+                                break;
+                              case 'Last Month':
+                                start = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                                end = new Date(today.getFullYear(), today.getMonth(), 0);
+                                break;
+                              case 'This Quarter': {
+                                const qStartMonth = Math.floor(today.getMonth() / 3) * 3;
+                                start = new Date(today.getFullYear(), qStartMonth, 1);
+                                end = today;
+                                break;
+                              }
+                              case 'YTD':
+                                start = new Date(today.getFullYear(), 0, 1);
+                                end = today;
+                                break;
+                            }
+
+                            return startDate === formatLocalDate(start) && endDate === formatLocalDate(end);
+                          };
+
+                          return presets.map((preset) => {
+                            const active = isPresetActive(preset);
+                            return (
+                              <button
+                                key={preset}
+                                type="button"
+                                onClick={() => handlePresetClick(preset)}
+                                style={{
+                                  width: '100%',
+                                  textAlign: 'left',
+                                  padding: '6px 8px',
+                                  fontSize: '13px',
+                                  backgroundColor: 'transparent',
+                                  border: 'none',
+                                  cursor: 'pointer',
+                                  borderRadius: '6px',
+                                  color: active ? 'var(--accent)' : 'var(--text-sub)',
+                                  fontWeight: active ? 600 : 400
+                                }}
+                                className="hover:bg-[var(--bar)] hover:text-[var(--text)] transition-all select-none"
+                              >
+                                {preset}
+                              </button>
+                            );
+                          });
+                        })()}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* ASK AI BUTTON */}
