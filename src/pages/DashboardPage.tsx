@@ -1542,10 +1542,10 @@ export const DashboardPage: React.FC = () => {
                             >
                               <defs>
                                 <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                                  <stop offset="0%" stopColor={GREEN} stopOpacity={0.22} />
-                                  <stop offset={`${zeroPercent}%`} stopColor={GREEN} stopOpacity={0.01} />
-                                  <stop offset={`${zeroPercent}%`} stopColor={RED} stopOpacity={0.01} />
-                                  <stop offset="100%" stopColor={RED} stopOpacity={0.22} />
+                                  <stop offset="0%" stopColor={GREEN} stopOpacity={0.55} />
+                                  <stop offset={`${zeroPercent}%`} stopColor={GREEN} stopOpacity={0.02} />
+                                  <stop offset={`${zeroPercent}%`} stopColor={RED} stopOpacity={0.02} />
+                                  <stop offset="100%" stopColor={RED} stopOpacity={0.55} />
                                 </linearGradient>
 
                                 <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
@@ -1607,6 +1607,7 @@ export const DashboardPage: React.FC = () => {
                                 strokeWidth={1.5}
                                 fill="url(#areaGradient)"
                                 dot={false}
+                                baseValue={0}
                                 activeDot={{
                                   r: 3,
                                   fill: '#008F67',
