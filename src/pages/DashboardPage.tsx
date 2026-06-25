@@ -1966,8 +1966,8 @@ export const DashboardPage: React.FC = () => {
                   {/* Right Column (2/3): Monthly Calendar */}
                   {/* ADDITION 4 — Monthly Calendar section */}
                   <div className="rounded-xl p-5 lg:col-span-2" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%', minWidth: '0px', overflow: 'hidden', boxSizing: 'border-box', gridColumn: 'span 2' }}>
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-                      <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4" style={{ paddingTop: '10px', paddingBottom: '4px', borderBottom: '1px solid rgba(0,0,0,0.07)', marginBottom: '8px' }}>
+                      <h2 style={{ fontSize: '16px', fontWeight: 500, color: 'var(--text-muted)' }}>
                         Monthly Calendar
                       </h2>
                       
