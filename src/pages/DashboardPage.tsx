@@ -1613,11 +1613,23 @@ export const DashboardPage: React.FC = () => {
                                 fill="url(#areaGradient)"
                                 dot={false}
                                 baseValue={0}
-                                activeDot={{
-                                  r: 3,
-                                  fill: '#008F67',
-                                  stroke: 'white',
-                                  strokeWidth: 1
+                                activeDot={(props: any) => {
+                                  if (!props) return null;
+                                  const { cx, cy, payload } = props;
+                                  if (cx === undefined || cy === undefined) return null;
+                                  const val = payload?.pnl ?? 0;
+                                  const isPos = val >= 0;
+                                  const dotColor = isPos ? '#008F67' : '#DF1C30';
+                                  return (
+                                    <circle
+                                      cx={cx}
+                                      cy={cy}
+                                      r={3}
+                                      fill={dotColor}
+                                      stroke={dotColor}
+                                      strokeWidth={1}
+                                    />
+                                  );
                                 }}
                               />
                             </AreaChart>
