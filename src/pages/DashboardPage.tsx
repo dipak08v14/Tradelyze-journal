@@ -77,10 +77,11 @@ const SemicircleGauge: React.FC<{ percentage: number; wCount: number; beCount: n
     greenFraction = (winCount + lossCount) > 0 ? winCount / (winCount + lossCount) : 0;
   }
 
-  const pW = greenFraction * 100;
-  const pBe = 0;
-  const pL = (1 - greenFraction) * 100;
-  const halfCirc = Math.PI * 48;
+  const cx = 60;
+  const cy = 50;
+  const R = 48;
+  const arcPath = `M ${cx - R},${cy} A ${R},${R} 0 0,1 ${cx + R},${cy}`;
+  const fraction = greenFraction;
 
   return (
     <svg 
@@ -90,51 +91,27 @@ const SemicircleGauge: React.FC<{ percentage: number; wCount: number; beCount: n
       className="overflow-visible inline-block"
       style={{ shapeRendering: 'geometricPrecision' }}
     >
-      {/* Background Arc Track */}
+      {/* RED arc — full background */}
       <path
-        d="M 12,50 A 48,48 0 0,1 108,50"
-        fill="none"
-        stroke="var(--bar)"
-        strokeWidth="7"
-        strokeLinecap="butt"
-        vectorEffect="non-scaling-stroke"
-        shapeRendering="geometricPrecision"
-      />
-      {/* Green Wins Segment */}
-      <path
-        d="M 12,50 A 48,48 0 0,1 108,50"
-        fill="none"
-        stroke="#008F67"
-        strokeWidth="7"
-        strokeLinecap="butt"
-        strokeDasharray={`${(pW / 100) * halfCirc} ${halfCirc}`}
-        strokeDashoffset={0}
-        vectorEffect="non-scaling-stroke"
-        shapeRendering="geometricPrecision"
-        className="transition-all duration-500 ease-out"
-      />
-      {/* Grey Breakeven Segment */}
-      <path
-        d="M 12,50 A 48,48 0 0,1 108,50"
-        fill="none"
-        stroke="var(--text-muted)"
-        strokeWidth="7"
-        strokeLinecap="butt"
-        strokeDasharray={`${(pBe / 100) * halfCirc} ${halfCirc}`}
-        strokeDashoffset={-((pW / 100) * halfCirc)}
-        vectorEffect="non-scaling-stroke"
-        shapeRendering="geometricPrecision"
-        className="transition-all duration-500 ease-out"
-      />
-      {/* Red Losses Segment */}
-      <path
-        d="M 12,50 A 48,48 0 0,1 108,50"
+        d={arcPath}
         fill="none"
         stroke="#DF1C30"
-        strokeWidth="7"
+        strokeWidth={7}
         strokeLinecap="butt"
-        strokeDasharray={`${(pL / 100) * halfCirc} ${halfCirc}`}
-        strokeDashoffset={-(((pW + pBe) / 100) * halfCirc)}
+        vectorEffect="non-scaling-stroke"
+        shapeRendering="geometricPrecision"
+      />
+
+      {/* GREEN arc — overlaid, pathLength=1 normalizes to 0-1 scale */}
+      <path
+        d={arcPath}
+        fill="none"
+        stroke="#008F67"
+        strokeWidth={7}
+        strokeLinecap="butt"
+        pathLength={1}
+        strokeDasharray={`${fraction} 1`}
+        strokeDashoffset={0}
         vectorEffect="non-scaling-stroke"
         shapeRendering="geometricPrecision"
         className="transition-all duration-500 ease-out"
