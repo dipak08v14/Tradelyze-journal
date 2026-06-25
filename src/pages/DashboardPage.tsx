@@ -106,6 +106,7 @@ const SemicircleGauge: React.FC<{
 const CircleGauge: React.FC<{ value: number }> = ({ value }) => {
   const fraction = Math.min(value / 3, 1);
   const cx = 30, cy = 30, r = 22;
+  const circ = 2 * Math.PI * r;
   return (
     <svg width="60" height="60" viewBox="0 0 60 60">
       <circle
@@ -121,9 +122,7 @@ const CircleGauge: React.FC<{ value: number }> = ({ value }) => {
         stroke="#008F67"
         strokeWidth={7}
         strokeLinecap="butt"
-        pathLength={1}
-        strokeDasharray={`${fraction} 1`}
-        strokeDashoffset={0}
+        strokeDasharray={`${fraction * circ} ${circ}`}
         transform={`rotate(-90 ${cx} ${cy})`}
       />
     </svg>
