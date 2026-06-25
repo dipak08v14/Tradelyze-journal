@@ -129,6 +129,42 @@ const CircleGauge: React.FC<{ value: number }> = ({ value }) => {
   );
 };
 
+const RadarTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    const item = payload[0];
+    return (
+      <div style={{
+        background: 'var(--card)',
+        border: '1px solid var(--border)',
+        borderRadius: '6px',
+        padding: '4px 8px',
+        boxShadow: '0 2px 6px rgba(0,0,0,0.12)',
+        minWidth: '0px',
+        whiteSpace: 'nowrap'
+      }}>
+        <div style={{
+          fontSize: '10px',
+          fontWeight: 500,
+          color: 'var(--text-muted)',
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em',
+          marginBottom: '1px'
+        }}>
+          {item.payload.subject}
+        </div>
+        <div style={{
+          fontSize: '13px',
+          fontWeight: 500,
+          color: 'var(--accent)'
+        }}>
+          {item.value}%
+        </div>
+      </div>
+    );
+  }
+  return null;
+};
+
 const getBrokerCode = (broker: any) => {
   const name = (broker.broker_name || broker.broker_type || '').toLowerCase();
   if (name.includes('dhan')) return 'DH';
@@ -1384,6 +1420,7 @@ export const DashboardPage: React.FC = () => {
                                 strokeWidth: 1
                               }}
                             />
+                            <RechartsTooltip content={<RadarTooltip />} />
                           </RadarChart>
                         </ResponsiveContainer>
                       </div>
@@ -2447,6 +2484,7 @@ export const DashboardPage: React.FC = () => {
                               strokeWidth={1.5}
                               dot={{ fill: 'var(--accent)', r: 3, strokeWidth: 0 }}
                             />
+                            <RechartsTooltip content={<RadarTooltip />} />
                           </RadarChart>
                         </ResponsiveContainer>
                       </div>
