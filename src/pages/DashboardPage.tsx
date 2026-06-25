@@ -1802,10 +1802,10 @@ export const DashboardPage: React.FC = () => {
                 {/* NEW 2-COLUMN ROW: Dhan Live + Recent Trades (Left 1/3) & Monthly Calendar (Right 2/3) */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', alignItems: 'stretch' }} className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
                   {/* Left Column (33%): Tabbed Info Card */}
-                  <div className="rounded-xl px-5 pb-5 pt-2.5 flex flex-col justify-between lg:col-span-1" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', gridColumn: 'span 1' }}>
+                  <div className="rounded-xl px-5 pb-5 pt-0 flex flex-col justify-between lg:col-span-1" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', gridColumn: 'span 1', paddingTop: '0px' }}>
                     <div>
                       {/* Tab Bar */}
-                      <div className="flex gap-4 border-b pb-2 mb-4" style={{ borderColor: 'var(--border)', paddingTop: '0px', marginTop: '0px' }}>
+                      <div className="flex gap-4 border-b pb-2 mb-4" style={{ borderColor: 'var(--border)', paddingTop: '10px', marginTop: '0px' }}>
                         <button
                           onClick={() => setBottomTab('positions')}
                           style={{
