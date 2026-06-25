@@ -1555,7 +1555,12 @@ export const DashboardPage: React.FC = () => {
                                   <stop offset="100%" stopColor={RED} stopOpacity={1} />
                                 </linearGradient>
                               </defs>
-                              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-sm)" vertical={false} />
+                              <CartesianGrid
+                                horizontal={true}
+                                vertical={false}
+                                stroke="rgba(0, 0, 0, 0.06)"
+                                strokeDasharray="3 4"
+                              />
                               <XAxis
                                 dataKey="day"
                                 tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
@@ -1645,7 +1650,12 @@ export const DashboardPage: React.FC = () => {
                               barCategoryGap="50%"
                               barSize={14}
                             >
-                              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-sm)" vertical={false} />
+                              <CartesianGrid
+                                horizontal={true}
+                                vertical={false}
+                                stroke="rgba(0, 0, 0, 0.06)"
+                                strokeDasharray="3 4"
+                              />
                               <XAxis
                                 dataKey="day"
                                 tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
@@ -1670,7 +1680,7 @@ export const DashboardPage: React.FC = () => {
                                 tickMargin={6}
                               />
                               <RechartsTooltip
-                                cursor={{ stroke: 'rgba(0,0,0,0.06)', strokeWidth: 1 }}
+                                cursor={false}
                                 content={({ active, payload }) => {
                                   if (!active || !payload?.length) return null;
                                   const val = payload[0]?.value as number;
