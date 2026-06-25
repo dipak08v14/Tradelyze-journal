@@ -64,45 +64,28 @@ const formatDayHeaderDate = (dateStr: string) => {
   }
 };
 
-const SemicircleGauge: React.FC<{ percentage: number; wCount: number; beCount: number; lCount: number; isDayWin?: boolean }> = ({ percentage, wCount, beCount, lCount, isDayWin }) => {
-  let greenFraction = 0;
-
-  if (isDayWin) {
-    const winDays = wCount;
-    const lossDays = lCount;
-    greenFraction = (winDays + lossDays) > 0 ? winDays / (winDays + lossDays) : 0;
-  } else {
-    const winCount = wCount;
-    const lossCount = lCount;
-    greenFraction = (winCount + lossCount) > 0 ? winCount / (winCount + lossCount) : 0;
-  }
-
-  const cx = 60;
-  const cy = 50;
-  const R = 48;
+const SemicircleGauge: React.FC<{
+  percentage: number;
+  wCount: number;
+  beCount: number;
+  lCount: number;
+  isDayWin?: boolean;
+}> = ({ wCount, beCount, lCount }) => {
+  const total = wCount + lCount;
+  const fraction = total > 0 ? wCount / total : 0;
+  const cx = 50, cy = 48, R = 38;
   const arcPath = `M ${cx - R},${cy} A ${R},${R} 0 0,1 ${cx + R},${cy}`;
-  const fraction = greenFraction;
-
   return (
-    <svg 
-      width="90" 
-      height="65" 
-      viewBox="0 0 120 75" 
-      className="overflow-visible inline-block"
-      style={{ shapeRendering: 'geometricPrecision' }}
-    >
-      {/* RED arc — full background */}
+    <svg width="100" height="62" viewBox="0 0 100 62">
+      {/* Full red arc: background */}
       <path
         d={arcPath}
         fill="none"
         stroke="#DF1C30"
         strokeWidth={7}
         strokeLinecap="butt"
-        vectorEffect="non-scaling-stroke"
-        shapeRendering="geometricPrecision"
       />
-
-      {/* GREEN arc — overlaid, pathLength=1 normalizes to 0-1 scale */}
+      {/* Green arc: pathLength=1 means strokeDasharray is in 0-to-1 scale */}
       <path
         d={arcPath}
         fill="none"
@@ -112,14 +95,10 @@ const SemicircleGauge: React.FC<{ percentage: number; wCount: number; beCount: n
         pathLength={1}
         strokeDasharray={`${fraction} 1`}
         strokeDashoffset={0}
-        vectorEffect="non-scaling-stroke"
-        shapeRendering="geometricPrecision"
-        className="transition-all duration-500 ease-out"
       />
-      {/* W B L Labels centered below arc legs and center */}
-      <text x="12" y="70" textAnchor="middle" fill="#008F67" fontSize="13" fontWeight="bold" className="font-mono">{wCount}</text>
-      <text x="60" y="70" textAnchor="middle" fill="var(--text-sub)" fontSize="13" fontWeight="bold" className="font-mono">{beCount}</text>
-      <text x="108" y="70" textAnchor="middle" fill="#DF1C30" fontSize="13" fontWeight="bold" className="font-mono">{lCount}</text>
+      <text x={cx - R - 2} y={cy + 13} textAnchor="end" fontSize="10" fill="#008F67" fontWeight="600">{wCount}</text>
+      <text x={cx} y={cy + 13} textAnchor="middle" fontSize="10" fill="#9ca3af">{beCount}</text>
+      <text x={cx + R + 2} y={cy + 13} textAnchor="start" fontSize="10" fill="#DF1C30" fontWeight="600">{lCount}</text>
     </svg>
   );
 };
