@@ -325,6 +325,27 @@ div.bg-zinc-900\/40 {
   border-radius: 6px;
 }
 
+/* Remove focus outline on all Recharts elements when clicked */
+svg:focus,
+svg:focus-visible,
+svg *:focus,
+svg *:focus-visible,
+.recharts-wrapper,
+.recharts-wrapper:focus,
+.recharts-wrapper:focus-visible,
+.recharts-wrapper *,
+.recharts-wrapper *:focus,
+.recharts-wrapper *:focus-visible,
+.recharts-layer,
+.recharts-layer:focus,
+.recharts-surface,
+.recharts-surface:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+
 
 
 

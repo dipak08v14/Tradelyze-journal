@@ -1382,7 +1382,12 @@ export const DashboardPage: React.FC = () => {
                     {/* CHART & SCORE WRAPPER CENTRED IN FULL CARD */}
                     <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
                       {/* RADAR RECHARTS */}
-                      <div className="w-full flex items-center justify-center mt-2 trading-metrics-radar" style={{ width: '100%', height: '220px', marginTop: '24px' }}>
+                      <div
+                        className="w-full flex items-center justify-center mt-2 trading-metrics-radar"
+                        tabIndex={-1}
+                        onMouseDown={(e) => e.preventDefault()}
+                        style={{ width: '100%', height: '220px', marginTop: '24px', outline: 'none', userSelect: 'none' }}
+                      >
                         <ResponsiveContainer width="100%" height={220} style={{ marginTop: "35px" }}>
                           <RadarChart
                             cx="50%"
@@ -1523,7 +1528,11 @@ export const DashboardPage: React.FC = () => {
                       </span>
                     </div>
 
-                    <div style={{ width: '100%', height: 260 }}>
+                    <div
+                      tabIndex={-1}
+                      onMouseDown={(e) => e.preventDefault()}
+                      style={{ width: '100%', height: 260, outline: 'none', userSelect: 'none' }}
+                    >
                       {(() => {
                         const data = stats.equityCurveData.map(d => ({
                           day: d.day,
@@ -1647,7 +1656,11 @@ export const DashboardPage: React.FC = () => {
                       </h2>
                     </div>
 
-                    <div style={{ width: '100%', height: 260 }}>
+                    <div
+                      tabIndex={-1}
+                      onMouseDown={(e) => e.preventDefault()}
+                      style={{ width: '100%', height: 260, outline: 'none', userSelect: 'none' }}
+                    >
                       {(() => {
                         const data = stats.equityCurveData.filter(d => d.day !== '0').map(d => ({
                           day: d.day,
@@ -2450,7 +2463,12 @@ export const DashboardPage: React.FC = () => {
                       </p>
 
                       {/* RADAR RECHARTS */}
-                      <div className="w-full h-[220px] mt-4 flex items-center justify-center">
+                      <div
+                        className="w-full h-[220px] mt-4 flex items-center justify-center"
+                        tabIndex={-1}
+                        onMouseDown={(e) => e.preventDefault()}
+                        style={{ outline: 'none', userSelect: 'none' }}
+                      >
                         <ResponsiveContainer width="100%" height="100%">
                           <RadarChart
                             cx="50%"
