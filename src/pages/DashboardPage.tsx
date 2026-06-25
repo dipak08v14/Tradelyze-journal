@@ -1225,7 +1225,7 @@ export const DashboardPage: React.FC = () => {
                       NET P&L
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', flexGrow: 1, paddingTop: '10px' }}>
-                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: stats.totalPnl > 0 ? '#008F67' : stats.totalPnl < 0 ? '#DF1C30' : 'var(--text)', lineHeight: '1.2' }}>
+                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 500, color: stats.totalPnl > 0 ? '#008F67' : stats.totalPnl < 0 ? '#DF1C30' : 'var(--text)', lineHeight: '1.2' }}>
                         {formatPnlNoDecimals(stats.totalPnl)}
                       </div>
                     </div>
@@ -1252,7 +1252,7 @@ export const DashboardPage: React.FC = () => {
                       TRADE WIN %
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexGrow: 1 }}>
-                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text)', lineHeight: '1.1' }}>
+                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 500, color: 'var(--text)', lineHeight: '1.1' }}>
                         {stats.winRate.toFixed(2)}%
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -1279,7 +1279,7 @@ export const DashboardPage: React.FC = () => {
                       PROFIT FACTOR
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexGrow: 1 }}>
-                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text)', lineHeight: '1.1' }}>
+                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 500, color: 'var(--text)', lineHeight: '1.1' }}>
                         {stats.profitFactor === 999 ? '∞' : stats.profitFactor.toFixed(2)}
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -1306,7 +1306,7 @@ export const DashboardPage: React.FC = () => {
                       DAY WIN %
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexGrow: 1 }}>
-                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text)', lineHeight: '1.1' }}>
+                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 500, color: 'var(--text)', lineHeight: '1.1' }}>
                         {stats.winDaysPct.toFixed(2)}%
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -1333,7 +1333,7 @@ export const DashboardPage: React.FC = () => {
                       AVG WIN/LOSS TRADE
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexGrow: 1 }}>
-                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text)', lineHeight: '1.2' }}>
+                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 500, color: 'var(--text)', lineHeight: '1.2' }}>
                         {stats.avgWinLossRatio === 999 ? '∞' : stats.avgWinLossRatio.toFixed(2)}:1
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }} className="flex-grow max-w-[100px]">
