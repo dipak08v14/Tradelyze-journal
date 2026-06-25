@@ -92,7 +92,7 @@ const SemicircleGauge: React.FC<{ percentage: number; wCount: number; beCount: n
       <path
         d="M 12,50 A 48,48 0 0,1 108,50"
         fill="none"
-        stroke="#3AA986"
+        stroke="#008F67"
         strokeWidth="7"
         strokeLinecap="butt"
         pathLength="100"
@@ -120,7 +120,7 @@ const SemicircleGauge: React.FC<{ percentage: number; wCount: number; beCount: n
       <path
         d="M 12,50 A 48,48 0 0,1 108,50"
         fill="none"
-        stroke="#D96B6B"
+        stroke="#DF1C30"
         strokeWidth="7"
         strokeLinecap="butt"
         pathLength="100"
@@ -131,9 +131,9 @@ const SemicircleGauge: React.FC<{ percentage: number; wCount: number; beCount: n
         className="transition-all duration-500 ease-out"
       />
       {/* W B L Labels centered below arc legs and center */}
-      <text x="12" y="70" textAnchor="middle" fill="#3AA986" fontSize="13" fontWeight="bold" className="font-mono">{wCount}</text>
+      <text x="12" y="70" textAnchor="middle" fill="#008F67" fontSize="13" fontWeight="bold" className="font-mono">{wCount}</text>
       <text x="60" y="70" textAnchor="middle" fill="var(--text-sub)" fontSize="13" fontWeight="bold" className="font-mono">{beCount}</text>
-      <text x="108" y="70" textAnchor="middle" fill="#D96B6B" fontSize="13" fontWeight="bold" className="font-mono">{lCount}</text>
+      <text x="108" y="70" textAnchor="middle" fill="#DF1C30" fontSize="13" fontWeight="bold" className="font-mono">{lCount}</text>
     </svg>
   );
 };
@@ -156,7 +156,7 @@ const CircleGauge: React.FC<{ value: number }> = ({ value }) => {
         cy="30"
         r={radius}
         fill="none"
-        stroke="#D96B6B"
+        stroke="#DF1C30"
         strokeWidth="7"
         vectorEffect="non-scaling-stroke"
         shapeRendering="geometricPrecision"
@@ -166,7 +166,7 @@ const CircleGauge: React.FC<{ value: number }> = ({ value }) => {
         cy="30"
         r={radius}
         fill="none"
-        stroke="#3AA986"
+        stroke="#008F67"
         strokeWidth="7"
         strokeLinecap="round"
         pathLength="100"
@@ -176,7 +176,7 @@ const CircleGauge: React.FC<{ value: number }> = ({ value }) => {
         vectorEffect="non-scaling-stroke"
         shapeRendering="geometricPrecision"
         className="transition-all duration-500 ease-out"
-        style={{ stroke: '#3AA986' }}
+        style={{ stroke: '#008F67' }}
       />
     </svg>
   );
@@ -1225,7 +1225,7 @@ export const DashboardPage: React.FC = () => {
                       NET P&L
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', flexGrow: 1, paddingTop: '10px' }}>
-                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: stats.totalPnl > 0 ? '#3AA986' : stats.totalPnl < 0 ? '#D96B6B' : 'var(--text)', lineHeight: '1.2' }}>
+                      <div className="font-sans" style={{ fontSize: '24px', fontWeight: 700, color: stats.totalPnl > 0 ? '#008F67' : stats.totalPnl < 0 ? '#DF1C30' : 'var(--text)', lineHeight: '1.2' }}>
                         {formatPnlNoDecimals(stats.totalPnl)}
                       </div>
                     </div>
@@ -1345,12 +1345,12 @@ export const DashboardPage: React.FC = () => {
                           return (
                             <>
                               <div style={{ display: 'flex', height: '7px', width: '100%', borderRadius: '0px', overflow: 'hidden' }}>
-                                <div style={{ width: `${winPctForBar}%`, backgroundColor: '#3AA986' }} />
-                                <div style={{ width: `${100 - winPctForBar}%`, backgroundColor: '#D96B6B' }} />
+                                <div style={{ width: `${winPctForBar}%`, backgroundColor: '#008F67' }} />
+                                <div style={{ width: `${100 - winPctForBar}%`, backgroundColor: '#DF1C30' }} />
                               </div>
                               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', fontWeight: 500 }} className="font-mono">
-                                <span style={{ color: '#3AA986' }}>₹{Math.round(avgWinForBar).toLocaleString('en-IN')}</span>
-                                <span style={{ color: '#D96B6B' }}>₹{Math.round(avgLossForBar).toLocaleString('en-IN')}</span>
+                                <span style={{ color: '#008F67' }}>₹{Math.round(avgWinForBar).toLocaleString('en-IN')}</span>
+                                <span style={{ color: '#DF1C30' }}>₹{Math.round(avgLossForBar).toLocaleString('en-IN')}</span>
                               </div>
                             </>
                           );
@@ -2072,7 +2072,7 @@ export const DashboardPage: React.FC = () => {
                                   boxSizing: 'border-box',
                                   height: '60px',
                                   backgroundColor: hasTrades 
-                                    ? (isProfitable ? 'rgba(34, 197, 94, 0.12)' : 'rgba(239, 68, 68, 0.12)')
+                                    ? (isProfitable ? 'rgba(0, 143, 103, 0.12)' : 'rgba(223, 28, 48, 0.12)')
                                     : 'var(--card)',
                                   borderColor: 'var(--border)',
                                   cursor: hasTrades ? 'pointer' : 'default'
@@ -2082,7 +2082,7 @@ export const DashboardPage: React.FC = () => {
                                 <div className="flex justify-between items-start">
                                   <span 
                                     style={{ 
-                                      color: hasTrades ? (isProfitable ? '#22c55e' : '#ef4444') : 'var(--text-muted)',
+                                      color: hasTrades ? (isProfitable ? '#008F67' : '#DF1C30') : 'var(--text-muted)',
                                       fontWeight: '600',
                                       fontSize: '11px'
                                     }}
@@ -2092,7 +2092,7 @@ export const DashboardPage: React.FC = () => {
                                 </div>
                                 {hasTrades && (
                                   <div className="flex flex-col items-center justify-center flex-1 leading-none mt-1">
-                                    <span style={{ fontSize: '10px', color: isProfitable ? '#22c55e' : '#ef4444', fontWeight: 'bold' }}>
+                                    <span style={{ fontSize: '10px', color: isProfitable ? '#008F67' : '#DF1C30', fontWeight: 'bold' }}>
                                       {formattedDayPnl}
                                     </span>
                                     <span style={{ fontSize: '9px', color: 'var(--text-sub)' }} className="mt-0.5">
