@@ -1371,7 +1371,7 @@ export const DashboardPage: React.FC = () => {
                       }
                     `}</style>
                     <div style={{ position: 'absolute', top: '16px', left: '16px', zIndex: 1, margin: 0, textAlign: 'left' }}>
-                      <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
+                      <h2 style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)', marginBottom: '4px' }}>
                         Trading Metrics
                       </h2>
                       <p className="text-xs mt-0.5" style={{ color: 'var(--text-sub)', display: 'none' }}>
@@ -1501,8 +1501,8 @@ export const DashboardPage: React.FC = () => {
                   <div className="p-5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', overflow: 'visible', height: '300px' }}>
                     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-4">
                       <div className="flex flex-col">
-                        <h2 className="flex items-center gap-1.5" style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)' }}>
-                          <TrendingUp className="w-5 h-5" style={{ color: chartColor }} />
+                        <h2 className="flex items-center gap-1.5" style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)', marginBottom: '4px' }}>
+                          <TrendingUp className="w-4 h-4" style={{ color: chartColor }} />
                           Cumulative P&L
                         </h2>
                         <span style={{ fontSize: '13px', fontWeight: 400, color: 'var(--text-sub)', marginLeft: '26px', display: 'none' }} className="mt-0.5">
@@ -1538,7 +1538,7 @@ export const DashboardPage: React.FC = () => {
                           <ResponsiveContainer width="100%" height="100%">
                             <AreaChart
                               data={data}
-                              margin={{ top: 8, right: 8, bottom: 0, left: -16 }}
+                              margin={{ top: 6, right: 6, bottom: 0, left: 4 }}
                             >
                               <defs>
                                 <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
@@ -1563,6 +1563,7 @@ export const DashboardPage: React.FC = () => {
                                 axisLine={{ stroke: 'var(--border)' }}
                                 height={20}
                                 tickMargin={4}
+                                padding={{ left: 4, right: 4 }}
                               />
                               <YAxis
                                 tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
@@ -1575,8 +1576,8 @@ export const DashboardPage: React.FC = () => {
                                 }}
                                 tickCount={5}
                                 domain={['auto', 'auto']}
-                                width={44}
-                                tickMargin={4}
+                                width={52}
+                                tickMargin={6}
                               />
                               <ReferenceLine y={0} stroke="var(--border)" strokeDasharray="3 3" />
                               <RechartsTooltip
@@ -1623,7 +1624,7 @@ export const DashboardPage: React.FC = () => {
                   {/* Column 3: Daily P&L */}
                   <div className="p-5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', height: '300px' }}>
                     <div className="flex items-center justify-between gap-2 mb-4">
-                      <h2 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)' }}>
+                      <h2 style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)', marginBottom: '4px' }}>
                         Daily P&L
                       </h2>
                     </div>
@@ -1639,7 +1640,7 @@ export const DashboardPage: React.FC = () => {
                           <ResponsiveContainer width="100%" height="100%">
                             <BarChart
                               data={filteredData}
-                              margin={{ top: 8, right: 8, bottom: 0, left: -16 }}
+                              margin={{ top: 6, right: 6, bottom: 0, left: 4 }}
                               barCategoryGap="50%"
                               barSize={14}
                             >
@@ -1651,6 +1652,7 @@ export const DashboardPage: React.FC = () => {
                                 axisLine={{ stroke: 'var(--border)' }}
                                 height={20}
                                 tickMargin={4}
+                                padding={{ left: 4, right: 4 }}
                               />
                               <YAxis
                                 tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
@@ -1663,8 +1665,8 @@ export const DashboardPage: React.FC = () => {
                                 }}
                                 tickCount={5}
                                 domain={['auto', 'auto']}
-                                width={44}
-                                tickMargin={4}
+                                width={52}
+                                tickMargin={6}
                               />
                               <RechartsTooltip
                                 cursor={{ stroke: 'rgba(0,0,0,0.06)', strokeWidth: 1 }}
