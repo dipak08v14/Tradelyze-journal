@@ -700,7 +700,7 @@ export const DailyJournal: React.FC = () => {
                           {/* CARD HEADER */}
                           <div
                             onClick={() => toggleDayCard(dateStr)}
-                            className="flex items-center justify-between p-4 cursor-pointer hover:bg-zinc-50/10 transition-colors select-none"
+                            className="flex items-center justify-between px-4 py-[10px] cursor-pointer hover:bg-zinc-50/10 transition-colors select-none"
                           >
                             <div className="flex items-center gap-3">
                               {/* Expand/collapse icon */}
