@@ -1133,14 +1133,14 @@ export const DailyJournal: React.FC = () => {
 
                         if (hasTrades) {
                           cellStyle.backgroundColor = isProfitable
-                            ? 'rgba(34, 197, 94, 0.12)'
+                            ? 'rgba(0, 143, 103, 0.15)'
                             : isLoss
-                            ? 'rgba(239, 68, 68, 0.12)'
+                            ? 'rgba(223, 28, 48, 0.15)'
                             : 'rgba(255, 255, 255, 0.08)';
                           cellStyle.color = isProfitable
-                            ? '#22c55e'
+                            ? '#008F67'
                             : isLoss
-                            ? '#ef4444'
+                            ? '#DF1C30'
                             : 'var(--text)';
                           cellStyle.fontWeight = 'bold';
                         } else {
@@ -1166,7 +1166,7 @@ export const DailyJournal: React.FC = () => {
                                   width: '3.5px',
                                   height: '3.5px',
                                   borderRadius: '999px',
-                                  backgroundColor: isProfitable ? '#22c55e' : isLoss ? '#ef4444' : '#a1a1aa',
+                                  backgroundColor: isProfitable ? '#008F67' : isLoss ? '#DF1C30' : '#a1a1aa',
                                 }}
                               />
                             )}
