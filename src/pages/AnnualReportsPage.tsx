@@ -297,15 +297,28 @@ export const AnnualReportsPage: React.FC = () => {
         <main className="flex-1 overflow-y-auto px-0">
           <div className="max-w-7xl mx-auto">
             {/* HEADER AREA */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div>
-                <h1 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }} className="font-display tracking-tight">
-                  Annual Reports
-                </h1>
-                <p style={{ fontSize: '13px', fontWeight: 400, color: 'var(--text-sub)' }} className="mt-1">
-                  Full year analysis — all calculations from your trade data.
-                </p>
-              </div>
+            <div
+              style={{
+                background: 'var(--card)',
+                width: 'calc(100% + 48px)',
+                marginLeft: '-24px',
+                marginRight: '-24px',
+                paddingTop: '3px',
+                paddingBottom: '3px',
+                paddingLeft: '24px',
+                paddingRight: '24px',
+                borderRadius: 0,
+                boxShadow: 'none',
+                border: 'none',
+                borderBottom: '1px solid var(--border)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}
+            >
+              <h1 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }} className="font-display tracking-tight">
+                Annual Reports
+              </h1>
 
               {/* YEAR SELECTOR */}
               <div className="flex items-center gap-2">
@@ -332,7 +345,7 @@ export const AnnualReportsPage: React.FC = () => {
               </div>
             </div>
 
-            <div style={{ borderColor: 'var(--border)' }} className="border-b mt-5 mb-6" />
+            <div className="mt-6" />
 
             {/* SKELETON DISPLAY STATE */}
             {loading ? (
