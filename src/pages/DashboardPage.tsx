@@ -1002,7 +1002,23 @@ export const DashboardPage: React.FC = () => {
         <main className="flex-1 overflow-y-auto px-0">
           <div className="max-w-7xl mx-auto p-0">
             {/* PAGE HEADER */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div 
+              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+              style={{
+                background: 'var(--card)',
+                width: 'calc(100% + 48px)',
+                paddingTop: '3px',
+                paddingBottom: '3px',
+                paddingLeft: '24px',
+                paddingRight: '24px',
+                marginLeft: '-24px',
+                marginRight: '-24px',
+                borderRadius: '0',
+                boxShadow: 'none',
+                border: 'none',
+                borderBottom: '1px solid var(--border)'
+              }}
+            >
               <div>
                 <h1 className="font-display" style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }}>
                   Dashboard
