@@ -756,7 +756,7 @@ export const DailyJournal: React.FC = () => {
 
                           {/* EXPANDED CONTENT AREA */}
                           {isExpanded && (
-                            <div className="border-t px-5 pb-6 pt-4" style={{ borderColor: 'var(--border)' }}>
+                            <div className="border-t px-5 pb-6 pt-[5px]" style={{ borderColor: 'var(--border)' }}>
                               {/* SECTION 1 — Mini equity curve chart */}
                               <div className="mb-6">
                                 <h4 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, textTransform: 'none' }} className="font-display mb-2">
