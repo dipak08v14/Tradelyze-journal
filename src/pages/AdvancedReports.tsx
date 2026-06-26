@@ -1461,15 +1461,28 @@ export const AdvancedReports: React.FC = () => {
         <main className="flex-1 overflow-y-auto px-0">
           <div className="max-w-7xl mx-auto">
             {/* PAGE HEADER & FILTERS */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-              <div>
-                <h1 className="text-3xl font-extrabold tracking-tight font-display" style={{ color: 'var(--text)' }}>
-                  Reports
-                </h1>
-                <p className="text-sm mt-1" style={{ color: 'var(--text-sub)' }}>
-                  Complete trading performance analytics.
-                </p>
-              </div>
+            <div
+              style={{
+                background: 'var(--card)',
+                width: 'calc(100% + 48px)',
+                marginLeft: '-24px',
+                marginRight: '-24px',
+                paddingTop: '3px',
+                paddingBottom: '3px',
+                paddingLeft: '24px',
+                paddingRight: '24px',
+                borderRadius: 0,
+                boxShadow: 'none',
+                border: 'none',
+                borderBottom: '1px solid var(--border)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}
+            >
+              <h1 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }} className="font-display tracking-tight">
+                Reports
+              </h1>
 
               {/* DATE RANGE FILTER inputs */}
               <div className="flex flex-wrap items-center gap-2">
@@ -1494,6 +1507,8 @@ export const AdvancedReports: React.FC = () => {
                 </div>
               </div>
             </div>
+
+            <div className="mt-6" />
 
             {/* TAB SELECTOR BAR */}
             <div className="flex overflow-x-auto gap-2 p-1 rounded-2xl mb-6 font-mono no-scrollbar" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
