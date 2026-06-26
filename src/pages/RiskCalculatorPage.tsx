@@ -114,8 +114,24 @@ export default function RiskCalculatorPage() {
         
         {/* HEADER */}
         <div 
-          className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 md:px-8 border-b border-[var(--border)]"
-          style={{ backgroundColor: 'var(--card)', backdropFilter: 'blur(10px)' }}
+          style={{
+            background: 'var(--card)',
+            width: 'calc(100% + 48px)',
+            marginLeft: '-24px',
+            marginRight: '-24px',
+            paddingTop: '3px',
+            paddingBottom: '3px',
+            paddingLeft: '24px',
+            paddingRight: '24px',
+            borderRadius: 0,
+            boxShadow: 'none',
+            border: 'none',
+            borderBottom: '1px solid var(--border)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}
+          className="sticky top-0 z-10"
         >
           <div className="flex items-center gap-3">
             <button
@@ -125,11 +141,9 @@ export default function RiskCalculatorPage() {
             >
               <Menu className="w-5 h-5" />
             </button>
-            <div>
-              <h1 className="tracking-tight" style={{ color: 'var(--text)', fontSize: '28px', fontWeight: 700, letterSpacing: '-0.3px' }}>Risk Calculator</h1>
-              <p className="mt-1" style={{ color: 'var(--text-sub)', fontSize: '13px', fontWeight: 400 }}>Determine precise lot sizing, R-multiple targets, and account exposure ratios.</p>
-            </div>
+            <h1 className="tracking-tight" style={{ color: 'var(--text)', fontSize: '28px', fontWeight: 700, letterSpacing: '-0.3px' }}>Risk Calculator</h1>
           </div>
+          <div />
         </div>
 
         {/* CONTAINER FOR SPACING */}
