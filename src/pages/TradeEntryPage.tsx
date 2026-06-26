@@ -1115,7 +1115,25 @@ export const TradeEntryPage: React.FC = () => {
         <main className="flex-1 overflow-y-auto px-0">
           <form onSubmit={handleSaveTradeSubmit} className="max-w-6xl mx-auto">
             {/* PAGE HEADER */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div
+              style={{
+                background: 'var(--card)',
+                width: 'calc(100% + 48px)',
+                marginLeft: '-24px',
+                marginRight: '-24px',
+                paddingTop: '3px',
+                paddingBottom: '3px',
+                paddingLeft: '24px',
+                paddingRight: '24px',
+                borderRadius: 0,
+                boxShadow: 'none',
+                border: 'none',
+                borderBottom: '1px solid var(--border)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}
+            >
               <div>
                 {isEditMode && (
                   <div className="flex items-center gap-2 text-xs font-mono font-medium text-zinc-500 mb-2">
@@ -1129,12 +1147,8 @@ export const TradeEntryPage: React.FC = () => {
                 <h1 className="font-display" style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }}>
                   {isEditMode ? 'Edit Trade' : 'Log Trade'}
                 </h1>
-                <p className="text-sm text-zinc-400 mt-1.5">
-                  {isEditMode 
-                    ? 'Modify transaction parameters, rules adherence, scores and media contents.' 
-                    : 'Record your complete trade — rules, psychology, execution, and media.'}
-                </p>
               </div>
+
               <div className="flex flex-col items-stretch sm:items-end gap-2 shrink-0">
                 <div className="flex items-center gap-3">
                   {isEditMode && (
@@ -1213,6 +1227,12 @@ export const TradeEntryPage: React.FC = () => {
                 )}
               </div>
             </div>
+
+            <p className="text-sm text-zinc-400 mt-4">
+              {isEditMode 
+                ? 'Modify transaction parameters, rules adherence, scores and media contents.' 
+                : 'Record your complete trade — rules, psychology, execution, and media.'}
+            </p>
 
             <div className="border-b border-zinc-800/80 mt-5 mb-8" />
 
