@@ -43,7 +43,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
     { icon: LayoutDashboard, label: 'Dashboard', route: '/dashboard' },
     { icon: BookOpen, label: 'Daily Journal', route: '/daily-journal' },
     { icon: Book, label: 'Notebook', route: '/notebook' },
-    { icon: PlusCircle, label: 'Trade Entry', route: '/trade-entry' },
     { icon: ScrollText, label: 'Trading Logs', route: '/trading-logs' },
     { icon: Target, label: 'Strategies', route: '/strategies' },
     { icon: TrendingUp, label: 'Reports', route: '/advanced-reports' },
@@ -104,8 +103,35 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
         )}
       </div>
 
+      {/* Prominent "+ Add Trade" CTA button */}
+      <button
+        onClick={() => {
+          navigate('/trade-entry');
+          setMobileOpen(false);
+        }}
+        style={{
+          width: 'calc(100% - 32px)',
+          height: '34px',
+          backgroundColor: 'var(--accent)',
+          color: '#ffffff',
+          fontSize: '14px',
+          fontWeight: 600,
+          borderRadius: '8px',
+          border: 'none',
+          cursor: 'pointer',
+          margin: '8px 16px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'all 120ms ease'
+        }}
+        className="hover:brightness-[0.92] shrink-0"
+      >
+        + Add Trade
+      </button>
+
       {/* Navigation items section */}
-      <nav className="flex-1 space-y-1 overflow-y-auto" style={{ padding: '8px' }}>
+      <nav className="flex-1 space-y-1 overflow-y-auto" style={{ padding: '0px 8px 8px 8px' }}>
         {menuItems.map((item) => {
           const isActive = location.pathname === item.route || 
             (item.route === '/strategies' && location.pathname.startsWith('/strategies')) ||
