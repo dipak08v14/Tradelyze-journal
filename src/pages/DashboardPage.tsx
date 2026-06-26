@@ -78,7 +78,7 @@ const SemicircleGauge: React.FC<{
   const cx = 50, cy = 48, R = 38;
   const arcPath = `M ${cx - R},${cy} A ${R},${R} 0 0,1 ${cx + R},${cy}`;
   return (
-    <svg width="100" height="62" viewBox="0 0 100 62">
+    <svg width="100" height="62" viewBox="0 0 100 62" overflow="visible">
       {/* Full red arc: background */}
       <path
         d={arcPath}
@@ -98,9 +98,29 @@ const SemicircleGauge: React.FC<{
         strokeDasharray={`${fraction} 1`}
         strokeDashoffset={0}
       />
-      <text x={cx - R - 2} y={cy + 13} textAnchor="end" fontSize="10" fill="#008F67" fontWeight="600">{wCount}</text>
-      <text x={cx} y={cy + 13} textAnchor="middle" fontSize="10" fill="#9ca3af">{beCount}</text>
-      <text x={cx + R + 2} y={cy + 13} textAnchor="start" fontSize="10" fill="#DF1C30" fontWeight="600">{lCount}</text>
+      <text
+        x={cx - R}
+        y={cy + 13}
+        textAnchor="middle"
+        fontSize="10"
+        fill="#008F67"
+        fontWeight="600"
+      >{wCount}</text>
+      <text
+        x={cx}
+        y={cy + 13}
+        textAnchor="middle"
+        fontSize="10"
+        fill="#9ca3af"
+      >{beCount}</text>
+      <text
+        x={cx + R}
+        y={cy + 13}
+        textAnchor="middle"
+        fontSize="10"
+        fill="#DF1C30"
+        fontWeight="600"
+      >{lCount}</text>
     </svg>
   );
 };
