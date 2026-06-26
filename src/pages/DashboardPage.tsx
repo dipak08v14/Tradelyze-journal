@@ -1741,13 +1741,15 @@ export const DashboardPage: React.FC = () => {
                 alignItems: 'center', 
                 justifyContent: 'space-between', 
                 padding: '8px 16px', 
-                backgroundColor: 'var(--card-bg, var(--bg-secondary, var(--card)))', 
-                borderBottom: '1px solid var(--border)',
+                background: 'transparent',
+                border: 'none',
+                borderRadius: '0',
+                boxShadow: 'none',
                 marginTop: '10px',
                 marginBottom: '10px',
                 width: '100%'
               }}
-              className="flex-wrap gap-4 rounded-lg items-center"
+              className="flex-wrap gap-4 items-center"
             >
               {/* Left side */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }} className="flex items-center">
