@@ -758,7 +758,7 @@ export const DailyJournal: React.FC = () => {
                           {isExpanded && (
                             <div className="border-t px-5 pb-6 pt-[5px]" style={{ borderColor: 'var(--border)' }}>
                               {/* SECTION 1 — Mini equity curve chart */}
-                              <div className="mb-6">
+                              <div className="mb-0">
                                 <h4 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, textTransform: 'none' }} className="font-display mb-2">
                                   Running Net P&L Trajectory
                                 </h4>
@@ -835,7 +835,7 @@ export const DailyJournal: React.FC = () => {
                               </div>
 
                               {/* SECTION 2 — Stats grid */}
-                              <div className="mb-6">
+                              <div className="mb-0" style={{ marginTop: '5px' }}>
                                 <h4 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, textTransform: 'none' }} className="font-display mb-2">
                                   Daily Summary
                                 </h4>
@@ -900,7 +900,7 @@ export const DailyJournal: React.FC = () => {
                               </div>
 
                               {/* SECTION 3 — Trade table */}
-                              <div>
+                              <div style={{ marginTop: '5px' }}>
                                 <h4 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, textTransform: 'none' }} className="font-display mb-2">
                                   Trade List
                                 </h4>
