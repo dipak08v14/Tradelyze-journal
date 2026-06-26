@@ -844,56 +844,56 @@ export const DailyJournal: React.FC = () => {
                                   <div>
                                     <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block">Total Trades</span>
                                     <p className="font-mono mt-0.5" style={{ fontSize: '22px', fontWeight: 700, color: 'var(--text)' }}>
-                                      {dayStats.totalTrades}
+                                      <span style={{ color: '#09090b', fontWeight: 'inherit', fontSize: 'inherit' }}>{dayStats.totalTrades}</span>
                                     </p>
                                   </div>
                                   {/* Winners */}
                                   <div>
                                     <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block">Winners</span>
                                     <p className="font-mono mt-0.5" style={{ fontSize: '22px', fontWeight: 700, color: 'var(--text)' }}>
-                                      {dayStats.winnersCount}
+                                      <span style={{ color: '#008F67', fontWeight: 'inherit', fontSize: 'inherit' }}>{dayStats.winnersCount}</span>
                                     </p>
                                   </div>
                                   {/* Gross P&L */}
                                   <div>
                                     <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block">Gross P&L</span>
                                     <p className="font-mono mt-0.5" style={{ fontSize: '22px', fontWeight: 700, color: dayStats.grossPnl >= 0 ? '#008F67' : '#DF1C30' }}>
-                                      {formatINR(dayStats.grossPnl)}
+                                      <span style={{ color: dayStats.grossPnl >= 0 ? '#008F67' : '#DF1C30', fontWeight: 'inherit', fontSize: 'inherit' }}>{formatINR(dayStats.grossPnl)}</span>
                                     </p>
                                   </div>
                                   {/* Commissions */}
                                   <div>
                                     <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block">Commissions</span>
                                     <p className="font-mono mt-0.5" style={{ fontSize: '22px', fontWeight: 700, color: dayStats.commissions > 0 ? '#ef4444' : 'var(--text)' }}>
-                                      {formatINR(dayStats.commissions)}
+                                      <span style={{ color: '#09090b', fontWeight: 'inherit', fontSize: 'inherit' }}>{formatINR(dayStats.commissions)}</span>
                                     </p>
                                   </div>
                                   {/* Win Rate */}
                                   <div>
                                     <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block">Win Rate</span>
                                     <p className="font-mono mt-0.5" style={{ fontSize: '22px', fontWeight: 700, color: 'var(--accent)' }}>
-                                      {dayStats.winRate}
+                                      <span style={{ color: '#09090b', fontWeight: 'inherit', fontSize: 'inherit' }}>{dayStats.winRate}</span>
                                     </p>
                                   </div>
                                   {/* Losers */}
                                   <div>
                                     <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block">Losers</span>
                                     <p className="font-mono mt-0.5" style={{ fontSize: '22px', fontWeight: 700, color: 'var(--text)' }}>
-                                      {dayStats.losersCount}
+                                      <span style={{ color: '#DF1C30', fontWeight: 'inherit', fontSize: 'inherit' }}>{dayStats.losersCount}</span>
                                     </p>
                                   </div>
                                   {/* Volume */}
                                   <div>
                                     <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block">Volume</span>
                                     <p className="font-mono mt-0.5" style={{ fontSize: '22px', fontWeight: 700, color: 'var(--text)' }}>
-                                      {dayStats.volume}
+                                      <span style={{ color: '#09090b', fontWeight: 'inherit', fontSize: 'inherit' }}>{dayStats.volume}</span>
                                     </p>
                                   </div>
                                   {/* Profit Factor */}
                                   <div>
                                     <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block">Profit Factor</span>
                                     <p className="font-mono mt-0.5" style={{ fontSize: '22px', fontWeight: 700, color: 'var(--text)' }}>
-                                      {dayStats.profitFactor}
+                                      <span style={{ color: '#09090b', fontWeight: 'inherit', fontSize: 'inherit' }}>{dayStats.profitFactor}</span>
                                     </p>
                                   </div>
                                 </div>
