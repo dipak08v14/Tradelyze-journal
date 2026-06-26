@@ -1228,46 +1228,7 @@ export const TradingLogsPage: React.FC = () => {
 
 
             {/* ERROR SKELETON OR DYNAMIC TABLES LAYOUT */}
-            {loading ? (
-              <div className="overflow-hidden animate-pulse" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}>
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="border-b select-none font-sans" style={{ backgroundColor: 'var(--row)', borderColor: 'var(--border)', color: 'var(--text-muted)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                      <th className="px-4 py-4 w-12 text-center">
-                        <div className="h-4 rounded w-4 mx-auto" style={{ backgroundColor: 'var(--row)' }} />
-                      </th>
-                      <th className="px-4 py-4 w-10 text-center">#</th>
-                      {ALL_COLUMNS_INFO.map((col) => {
-                        if (!selectedColumns[col.id]) return null;
-                        return (
-                          <th key={col.id} className="px-4 py-4">{col.label}</th>
-                        );
-                      })}
-                      <th className="px-4 py-4 w-12 text-center">AI</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[1, 2, 3, 4, 5, 6].map((idx) => (
-                      <tr key={idx} className="border-t animate-pulse opacity-60" style={{ borderColor: 'var(--border)' }}>
-                        <td className="px-4 py-4.5 w-12 text-center">
-                          <div className="h-4 rounded w-4 mx-auto" style={{ backgroundColor: 'var(--row)' }} />
-                        </td>
-                        <td className="px-4 py-4.5"><div className="h-4 rounded w-4" style={{ backgroundColor: 'var(--row)' }} /></td>
-                        {ALL_COLUMNS_INFO.map((col) => {
-                          if (!selectedColumns[col.id]) return null;
-                          return (
-                            <td key={col.id} className="px-4 py-4.5">
-                              <div className="h-4 rounded w-12" style={{ backgroundColor: 'var(--row)' }} />
-                            </td>
-                          );
-                        })}
-                        <td className="px-4 py-4.5 text-center"><div className="h-4 rounded w-8 mx-auto" style={{ backgroundColor: 'var(--row)' }} /></td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : allTrades.length === 0 ? (
+            {loading ? null : allTrades.length === 0 ? (
               /* EMPTY JOURNAL NO TRADES YET */
               <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                 <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 animate-pulse" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}>
