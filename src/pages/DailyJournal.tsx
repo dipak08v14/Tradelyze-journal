@@ -719,7 +719,7 @@ export const DailyJournal: React.FC = () => {
                               <span
                                 className="font-mono text-xs md:text-sm font-bold"
                                 style={{
-                                  color: dailyNetPnl > 0 ? '#22c55e' : dailyNetPnl < 0 ? '#ef4444' : 'var(--text-muted)',
+                                  color: dailyNetPnl >= 0 ? '#008F67' : '#DF1C30',
                                 }}
                               >
                                 {dailyNetPnl !== 0 ? formatINR(dailyNetPnl) : '—'}
@@ -767,23 +767,23 @@ export const DailyJournal: React.FC = () => {
                                     <AreaChart data={dayData} margin={{ top: 10, right: 10, left: 10, bottom: 5 }}>
                                       <defs>
                                         <linearGradient id={`strokeGrad_${daySuffix}`} x1="0" y1="0" x2="0" y2="1">
-                                          <stop offset="0%" stopColor="#22c55e" />
-                                          <stop offset={zeroOffset} stopColor="#22c55e" />
-                                          <stop offset={zeroOffset} stopColor="#ef4444" />
-                                          <stop offset="100%" stopColor="#ef4444" />
+                                          <stop offset="0%" stopColor="#008F67" />
+                                          <stop offset={zeroOffset} stopColor="#008F67" />
+                                          <stop offset={zeroOffset} stopColor="#DF1C30" />
+                                          <stop offset="100%" stopColor="#DF1C30" />
                                         </linearGradient>
 
                                         <linearGradient id={`fillGrad_${daySuffix}`} x1="0" y1="0" x2="0" y2="1">
-                                          <stop offset="0%" stopColor="#22c55e" stopOpacity={0.16} />
-                                          <stop offset={zeroOffset} stopColor="#22c55e" stopOpacity={0.16} />
-                                          <stop offset={zeroOffset} stopColor="#ef4444" stopOpacity={0.16} />
-                                          <stop offset="100%" stopColor="#ef4444" stopOpacity={0.16} />
+                                          <stop offset="0%" stopColor="#008F67" stopOpacity={0.16} />
+                                          <stop offset={zeroOffset} stopColor="#008F67" stopOpacity={0.16} />
+                                          <stop offset={zeroOffset} stopColor="#DF1C30" stopOpacity={0.16} />
+                                          <stop offset="100%" stopColor="#DF1C30" stopOpacity={0.16} />
                                         </linearGradient>
                                       </defs>
                                       <YAxis hide domain={[domainMin, domainMax]} />
                                       <Tooltip
                                         formatter={(value: any) => {
-                                          const color = value >= 0 ? '#22c55e' : '#ef4444';
+                                          const color = value >= 0 ? '#008F67' : '#DF1C30';
                                           return [
                                             <span style={{ color, fontWeight: 'bold' }}>
                                               ₹{Number(value).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
@@ -802,7 +802,7 @@ export const DailyJournal: React.FC = () => {
                                         strokeWidth={1.5}
                                         dot={(props: any) => {
                                           const val = props.payload[CUMULATIVE_FIELD] ?? 0;
-                                          const color = val >= 0 ? '#22c55e' : '#ef4444';
+                                          const color = val >= 0 ? '#008F67' : '#DF1C30';
                                           return (
                                             <circle
                                               cx={props.cx}
@@ -822,7 +822,7 @@ export const DailyJournal: React.FC = () => {
                                               cx={props.cx}
                                               cy={props.cy}
                                               r={5}
-                                              fill={isPositive ? '#22c55e' : '#ef4444'}
+                                              fill={isPositive ? '#008F67' : '#DF1C30'}
                                               stroke="var(--card)"
                                               strokeWidth={1.5}
                                             />
@@ -857,7 +857,7 @@ export const DailyJournal: React.FC = () => {
                                   {/* Gross P&L */}
                                   <div>
                                     <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block">Gross P&L</span>
-                                    <p className="font-mono mt-0.5" style={{ fontSize: '22px', fontWeight: 700, color: dayStats.grossPnl >= 0 ? '#22c55e' : '#ef4444' }}>
+                                    <p className="font-mono mt-0.5" style={{ fontSize: '22px', fontWeight: 700, color: dayStats.grossPnl >= 0 ? '#008F67' : '#DF1C30' }}>
                                       {formatINR(dayStats.grossPnl)}
                                     </p>
                                   </div>
@@ -942,8 +942,8 @@ export const DailyJournal: React.FC = () => {
                                             <td className="px-4 py-2.5 whitespace-nowrap">
                                               <span
                                                 style={{
-                                                  backgroundColor: t.direction === 'SHORT' ? 'rgba(239,68,68,0.12)' : 'rgba(34,197,94,0.12)',
-                                                  color: t.direction === 'SHORT' ? '#ef4444' : '#22c55e',
+                                                  backgroundColor: t.direction === 'SHORT' ? '#DF1C30' : '#008F67',
+                                                  color: '#ffffff',
                                                 }}
                                                 className="px-2 py-0.5 text-[10px] font-bold rounded"
                                               >
@@ -968,7 +968,7 @@ export const DailyJournal: React.FC = () => {
 
                                             {/* Column 6 - Net P&L */}
                                             <td className="px-4 py-2.5 font-mono">
-                                              <span style={{ color: (t.pnl || 0) >= 0 ? '#22c55e' : '#ef4444', fontWeight: 600 }}>
+                                              <span style={{ color: (t.pnl || 0) >= 0 ? '#008F67' : '#DF1C30', fontWeight: 600 }}>
                                                 {t.pnl !== null ? formatINR(t.pnl) : '—'}
                                               </span>
                                             </td>
@@ -976,7 +976,7 @@ export const DailyJournal: React.FC = () => {
                                             {/* Column 7 - R */}
                                             <td className="px-4 py-2.5 font-mono">
                                               {t.r_multiple !== null && t.r_multiple !== undefined ? (
-                                                <span style={{ color: t.r_multiple >= 0 ? '#22c55e' : '#ef4444', fontWeight: 600 }}>
+                                                <span style={{ color: t.r_multiple >= 0 ? '#008F67' : '#DF1C30', fontWeight: 600 }}>
                                                   {t.r_multiple >= 0 ? '+' : ''}
                                                   {t.r_multiple.toFixed(1)}R
                                                 </span>
@@ -991,25 +991,19 @@ export const DailyJournal: React.FC = () => {
                                                 <span
                                                   style={{
                                                     backgroundColor:
-                                                      t.execution_status === 'BEST TRADE'
-                                                        ? 'rgba(34,197,94,0.12)'
-                                                        : t.execution_status === 'GOOD TRADE'
-                                                        ? 'rgba(20,184,166,0.12)'
+                                                      (t.execution_status === 'BEST TRADE' || t.execution_status === 'GOOD TRADE')
+                                                        ? '#008F67'
+                                                        : (t.execution_status === 'POOR TRADE' || t.execution_status === 'BAD TRADE')
+                                                        ? '#DF1C30'
                                                         : t.execution_status === 'AVERAGE TRADE'
                                                         ? 'rgba(234,179,8,0.12)'
-                                                        : t.execution_status === 'POOR TRADE'
-                                                        ? 'rgba(249,115,22,0.12)'
-                                                        : 'rgba(239,68,68,0.12)',
+                                                        : '#DF1C30',
                                                     color:
-                                                      t.execution_status === 'BEST TRADE'
-                                                        ? '#22c55e'
-                                                        : t.execution_status === 'GOOD TRADE'
-                                                        ? '#14b8a6'
+                                                      (t.execution_status === 'BEST TRADE' || t.execution_status === 'GOOD TRADE' || t.execution_status === 'POOR TRADE' || t.execution_status === 'BAD TRADE')
+                                                        ? '#ffffff'
                                                         : t.execution_status === 'AVERAGE TRADE'
                                                         ? '#ca8a04'
-                                                        : t.execution_status === 'POOR TRADE'
-                                                        ? '#f97316'
-                                                        : '#ef4444',
+                                                        : '#ffffff',
                                                   }}
                                                   className="px-1.5 py-0.5 text-[9px] uppercase font-mono tracking-wide font-extrabold rounded-md inline-block"
                                                 >
@@ -1028,12 +1022,12 @@ export const DailyJournal: React.FC = () => {
                                             {/* Column 10 - Result */}
                                             <td className="px-4 py-2.5">
                                               {t.status === 'Win' && (
-                                                <span style={{ backgroundColor: 'rgba(34,197,94,0.12)', color: '#22c55e' }} className="px-2 py-0.5 text-[10px] font-extrabold rounded">
+                                                <span style={{ backgroundColor: '#008F67', color: '#ffffff' }} className="px-2 py-0.5 text-[10px] font-extrabold rounded">
                                                   WIN
                                                 </span>
                                               )}
                                               {t.status === 'Loss' && (
-                                                <span style={{ backgroundColor: 'rgba(239,68,68,0.12)', color: '#ef4444' }} className="px-2 py-0.5 text-[10px] font-extrabold rounded">
+                                                <span style={{ backgroundColor: '#DF1C30', color: '#ffffff' }} className="px-2 py-0.5 text-[10px] font-extrabold rounded">
                                                   LOSS
                                                 </span>
                                               )}
