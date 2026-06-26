@@ -542,17 +542,30 @@ export const AiTeacherPage: React.FC = () => {
         {/* CONTAINER CONTENT */}
         <div className="flex-1 flex flex-col h-full max-h-screen overflow-hidden">
           {/* HEADER ROW WITH COUNTER */}
-          <header style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg)' }} className="px-6 py-5 border-b w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-            <div>
-              <div className="flex items-center gap-2">
-                <Brain style={{ color: 'var(--accent)' }} className="w-6 h-6 animate-pulse" />
-                <h1 style={{ color: 'var(--text)', fontSize: '28px', fontWeight: 700, letterSpacing: '-0.3px' }} className="tracking-tight font-display">
-                  AI Teacher
-                </h1>
-              </div>
-              <p style={{ color: 'var(--text-sub)', fontSize: '13px', fontWeight: 400 }} className="mt-1">
-                On-demand Claude AI performance coaching aligned with ICT frameworks.
-              </p>
+          <header 
+            style={{
+              background: 'var(--card)',
+              width: 'calc(100% + 48px)',
+              marginLeft: '-24px',
+              marginRight: '-24px',
+              paddingTop: '3px',
+              paddingBottom: '3px',
+              paddingLeft: '24px',
+              paddingRight: '24px',
+              borderRadius: 0,
+              boxShadow: 'none',
+              border: 'none',
+              borderBottom: '1px solid var(--border)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between'
+            }}
+          >
+            <div className="flex items-center gap-2">
+              <Brain style={{ color: 'var(--accent)' }} className="w-6 h-6 animate-pulse" />
+              <h1 style={{ color: 'var(--text)', fontSize: '28px', fontWeight: 700, letterSpacing: '-0.3px' }} className="tracking-tight font-display">
+                AI Teacher
+              </h1>
             </div>
 
             {/* TOKEN & COST STAT COUNTER PILL */}
@@ -577,6 +590,12 @@ export const AiTeacherPage: React.FC = () => {
               </button>
             </div>
           </header>
+
+          <div className="px-6 py-2 shrink-0">
+            <p style={{ color: 'var(--text-sub)', fontSize: '13px', fontWeight: 400 }}>
+              On-demand Claude AI performance coaching aligned with ICT frameworks.
+            </p>
+          </div>
 
           {/* MAIN COLUMN SPLIT VIEW */}
           <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
