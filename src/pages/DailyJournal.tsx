@@ -920,13 +920,14 @@ export const DailyJournal: React.FC = () => {
                                         <th className="px-4 py-2.5" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Result</th>
                                       </tr>
                                     </thead>
-                                    <tbody className="divide-y" style={{ borderColor: 'var(--border)' }}>
+                                    <tbody>
                                       {dayTrades.map((t) => {
                                         return (
                                           <tr
                                             key={t.id}
                                             onClick={() => navigate(`/trade/${t.id}`)}
                                             className="hover:bg-[rgba(0,0,0,0.025)] transition-colors cursor-pointer"
+                                            style={{ borderBottom: '1px solid var(--border)' }}
                                           >
                                             {/* Column 1 - Time */}
                                             <td className="px-4 py-2.5 font-mono" style={{ color: 'var(--text)' }}>
