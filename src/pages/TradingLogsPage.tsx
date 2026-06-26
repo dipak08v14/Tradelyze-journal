@@ -891,15 +891,28 @@ export const TradingLogsPage: React.FC = () => {
         <main className="flex-1 overflow-y-auto px-0">
           <div className="max-w-7xl mx-auto">
             {/* PAGE HEADER */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div>
-                <h1 className="font-display" style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }}>
-                  Trading Logs
-                </h1>
-                <p className="text-sm mt-1.5" style={{ color: 'var(--text-sub)' }}>
-                  Your complete trade history.
-                </p>
-              </div>
+            <div
+              style={{
+                background: 'var(--card)',
+                width: 'calc(100% + 48px)',
+                marginLeft: '-24px',
+                marginRight: '-24px',
+                paddingTop: '3px',
+                paddingBottom: '3px',
+                paddingLeft: '24px',
+                paddingRight: '24px',
+                borderRadius: 0,
+                boxShadow: 'none',
+                border: 'none',
+                borderBottom: '1px solid var(--border)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}
+            >
+              <h1 className="font-display" style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }}>
+                Trading Logs
+              </h1>
               <div>
                 <Link
                   to="/trade-entry"
@@ -924,10 +937,8 @@ export const TradingLogsPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="border-b mt-4 mb-6" style={{ borderColor: 'var(--border)' }} />
-
             {/* FILTER BAR SECTION CARD */}
-            <div className="p-5 mb-5" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
+            <div className="p-5 mb-5 mt-6" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
               {/* Row 1 Filter Fields */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {/* Month Dropdown */}
