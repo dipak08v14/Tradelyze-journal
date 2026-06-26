@@ -525,17 +525,53 @@ export const StrategiesPage: React.FC = () => {
           <div className="max-w-6xl mx-auto">
             
             {/* PAGE HEADER */}
-            <div className="mb-6">
+            <div
+              style={{
+                background: 'var(--card)',
+                width: 'calc(100% + 48px)',
+                marginLeft: '-24px',
+                marginRight: '-24px',
+                paddingTop: '3px',
+                paddingBottom: '3px',
+                paddingLeft: '24px',
+                paddingRight: '24px',
+                borderRadius: 0,
+                boxShadow: 'none',
+                border: 'none',
+                borderBottom: '1px solid var(--border)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}
+            >
               <h1 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }} className="font-display tracking-tight">
                 Strategies
               </h1>
-              <p style={{ fontSize: '13px', fontWeight: 400, color: 'var(--text-sub)' }} className="mt-1">
-                Develop, evaluate, and scale your personal edge setup playbook.
-              </p>
+              <div>
+                <Link
+                  to="/strategies/new"
+                  style={{
+                    backgroundColor: 'var(--accent)',
+                    color: '#ffffff',
+                    fontWeight: 700,
+                    borderRadius: '10px',
+                    padding: '10px 20px',
+                    fontSize: '14px',
+                    border: 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px'
+                  }}
+                  className="shadow-md hover:brightness-105 transition-all cursor-pointer font-sans"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Add New Strategy</span>
+                </Link>
+              </div>
             </div>
 
             {/* NEW PAGE HEADER ROW */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 pb-2">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 pb-2 mt-6">
               {/* LEFT SIDE TABS */}
               <div className="flex items-center border-b border-zinc-800 sm:border-0 w-fit">
                 <button
@@ -739,26 +775,6 @@ export const StrategiesPage: React.FC = () => {
                   </button>
                 </div>
 
-                {/* ADD NEW STRATEGY */}
-                <Link
-                  to="/strategies/new"
-                  style={{
-                    backgroundColor: 'var(--accent)',
-                    color: '#ffffff',
-                    fontWeight: 700,
-                    borderRadius: '10px',
-                    padding: '10px 20px',
-                    fontSize: '14px',
-                    border: 'none',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '6px'
-                  }}
-                  className="shadow-md hover:brightness-105 transition-all cursor-pointer font-sans"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Add New Strategy</span>
-                </Link>
               </div>
             </div>
 
