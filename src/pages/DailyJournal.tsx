@@ -621,7 +621,7 @@ export const DailyJournal: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-6">
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-3">
                 {/* LEFT MAIN AREA (~75%): COLLAPSIBLE CARDS LIST */}
                 <div className="lg:col-span-3 space-y-4">
                   {/* EXPAND / COLLAPSE ALL ACTIONS */}
