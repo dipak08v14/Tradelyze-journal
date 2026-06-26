@@ -626,7 +626,7 @@ export const DailyJournal: React.FC = () => {
                 <div className="lg:col-span-3 space-y-4">
                   {/* EXPAND / COLLAPSE ALL ACTIONS */}
                   {sortedDates.length > 0 && (
-                    <div className="flex gap-2 justify-start pb-2">
+                    <div className="flex gap-2 justify-start pb-2" style={{ marginBottom: '10px' }}>
                       <button
                         onClick={handleExpandAll}
                         style={{ border: '0.5px solid var(--border)', backgroundColor: 'var(--card)', color: 'var(--text-sub)' }}
