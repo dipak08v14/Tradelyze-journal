@@ -545,15 +545,28 @@ export const DailyJournal: React.FC = () => {
         <main className="flex-1 overflow-y-auto px-0">
           <div className="max-w-7xl mx-auto">
             {/* PAGE HEADER */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b" style={{ borderColor: 'var(--border)' }}>
-              <div>
-                <h1 className="font-display" style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }}>
-                  Daily Journal
-                </h1>
-                <p className="mt-1.5" style={{ fontSize: '13px', fontWeight: 400, color: 'var(--text-sub)' }}>
-                  Interactive day-by-day catalog of your trade histories.
-                </p>
-              </div>
+            <div
+              style={{
+                background: 'var(--card)',
+                width: 'calc(100% + 48px)',
+                marginLeft: '-24px',
+                marginRight: '-24px',
+                paddingTop: '3px',
+                paddingBottom: '3px',
+                paddingLeft: '24px',
+                paddingRight: '24px',
+                borderRadius: 0,
+                boxShadow: 'none',
+                border: 'none',
+                borderBottom: '1px solid var(--border)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}
+            >
+              <h1 className="font-display" style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }}>
+                Daily Journal
+              </h1>
 
               {/* MONTH/YEAR SELECTS */}
               <div className="flex items-center gap-2">
