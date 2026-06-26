@@ -920,7 +920,10 @@ export const TradingLogsPage: React.FC = () => {
                     backgroundColor: 'var(--accent)',
                     color: '#ffffff',
                     border: 'none',
-                    padding: '10px 20px',
+                    paddingTop: '6px',
+                    paddingBottom: '6px',
+                    paddingLeft: '20px',
+                    paddingRight: '20px',
                     borderRadius: '8px',
                     fontSize: '13px',
                     fontWeight: 600,
@@ -938,7 +941,7 @@ export const TradingLogsPage: React.FC = () => {
             </div>
 
             {/* FILTER BAR SECTION CARD */}
-            <div className="p-5 mb-5 mt-6" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
+            <div className="px-5 pt-4 pb-5 mb-5" style={{ marginTop: '16px', backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
               {/* Row 1 Filter Fields */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {/* Month Dropdown */}
