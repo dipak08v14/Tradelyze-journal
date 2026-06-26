@@ -1868,26 +1868,6 @@ export const DashboardPage: React.FC = () => {
                   <span>Last synced: <span className="font-mono font-semibold" style={{ color: 'var(--text)' }}>{lastSyncedTime}</span></span>
                 </div>
 
-                {/* ELEMENT 4 — Edit Widgets in a box container matching dropdown and bell */}
-                <button
-                  style={{
-                    backgroundColor: 'var(--bg, var(--bar))',
-                    border: '1px solid var(--border)',
-                    borderRadius: '8px',
-                    color: 'var(--text-muted)',
-                    padding: '6px 12px',
-                    fontSize: '12px',
-                    fontWeight: 500,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                  className="hover:opacity-80 transition-all"
-                >
-                  Edit Widgets
-                </button>
-
                 {/* ELEMENT 5 — Import Trades button */}
                 <button
                   onClick={() => navigate('/trade-entry')}
