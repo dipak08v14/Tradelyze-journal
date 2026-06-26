@@ -1708,6 +1708,41 @@ export const DashboardPage: React.FC = () => {
                   )}
                 </div>
 
+                {/* NOTIFICATION BELL */}
+                <button
+                  id="dashboard-header-bell"
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    backgroundColor: 'var(--card)',
+                    border: '1px solid var(--border)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    position: 'relative',
+                    cursor: 'pointer',
+                    padding: 0
+                  }}
+                  className="hover:opacity-80 transition-all shrink-0"
+                  title="Notifications"
+                >
+                  <Bell className="w-4 h-4 text-zinc-500" style={{ width: '16px', height: '16px', color: 'var(--text-sub)' }} />
+                  {needsReviewCount > 0 && (
+                    <span 
+                      style={{ 
+                        position: 'absolute',
+                        top: '4px',
+                        right: '4px',
+                        width: '6px',
+                        height: '6px',
+                        backgroundColor: '#DF1C30',
+                        borderRadius: '50%'
+                      }}
+                    />
+                  )}
+                </button>
+
                 {/* ASK AI BUTTON */}
                 <button
                   id="dashboard-header-ask-ai"
@@ -1772,48 +1807,12 @@ export const DashboardPage: React.FC = () => {
             >
               {/* Left side */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }} className="flex items-center">
-                {/* ELEMENT 1 — Bell icon with badge inside a box container */}
-                <div 
-                  style={{
-                    backgroundColor: 'var(--bg, var(--bar))',
-                    border: '1px solid var(--border)',
-                    borderRadius: '8px',
-                    color: 'var(--text)',
-                    padding: '6px 12px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    position: 'relative'
-                  }}
-                  className="relative"
-                >
-                  <div className="relative">
-                    <Bell className="w-5 h-5 text-zinc-500" style={{ color: 'var(--text-sub)' }} />
-                    {needsReviewCount > 0 && (
-                      <span 
-                        className="absolute -top-2.5 -right-2.5 flex items-center justify-center bg-red-500 font-bold text-white shadow-sm"
-                        style={{ 
-                          backgroundColor: '#ef4444',
-                          minWidth: '20px',
-                          minHeight: '20px',
-                          padding: '2px 5px',
-                          fontSize: '10px',
-                          borderRadius: '9999px',
-                          lineHeight: 1
-                        }}
-                      >
-                        {needsReviewCount}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
                 {/* ELEMENT 2 — Account selector dropdown */}
                 <div ref={dropdownRef} className="relative animate-fadeIn">
                   <button
                     onClick={() => setIsBrokerDropdownOpen(!isBrokerDropdownOpen)}
                     style={{
-                      backgroundColor: 'var(--bg, var(--bar))',
+                      background: 'var(--card)',
                       border: '1px solid var(--border)',
                       borderRadius: '8px',
                       color: 'var(--text)',
@@ -1893,16 +1892,16 @@ export const DashboardPage: React.FC = () => {
                 <button
                   onClick={() => navigate('/trade-entry')}
                   style={{
-                    border: '1.5px solid var(--accent)',
-                    color: 'var(--accent)',
-                    backgroundColor: 'transparent',
+                    background: 'var(--accent)',
+                    color: 'white',
+                    border: 'none',
                     borderRadius: '8px',
-                    padding: '6px 14px',
-                    fontSize: '12px',
+                    padding: '7px 16px',
                     fontWeight: 600,
+                    fontSize: '13px',
                     cursor: 'pointer'
                   }}
-                  className="hover:bg-[var(--accent-muted)] transition-all font-sans shrink-0"
+                  className="hover:opacity-90 transition-all font-sans shrink-0"
                 >
                   + Import Trades
                 </button>
