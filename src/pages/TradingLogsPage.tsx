@@ -163,6 +163,30 @@ export const TradingLogsPage: React.FC = () => {
   const [filterExecution, setFilterExecution] = useState<string>('All');
   const [filterMistakeType, setFilterMistakeType] = useState<string>('All');
 
+  // Pending States for Filter Parameters
+  const [pendingMonth, setPendingMonth] = useState<string>('All');
+  const [pendingYear, setPendingYear] = useState<string>('All');
+  const [pendingSymbol, setPendingSymbol] = useState<string>('');
+  const [pendingSetup, setPendingSetup] = useState<string>('All');
+  const [pendingStatus, setPendingStatus] = useState<string>('All');
+  const [pendingExecution, setPendingExecution] = useState<string>('All');
+  const [pendingMistakeType, setPendingMistakeType] = useState<string>('All');
+  const [pendingNeedsReview, setPendingNeedsReview] = useState<boolean>(false);
+
+  // Sync pending filter state when the filters panel is opened
+  useEffect(() => {
+    if (showFiltersPanel) {
+      setPendingMonth(filterMonth);
+      setPendingYear(filterYear);
+      setPendingSymbol(filterSymbol);
+      setPendingSetup(filterSetup);
+      setPendingStatus(filterStatus);
+      setPendingExecution(filterExecution);
+      setPendingMistakeType(filterMistakeType);
+      setPendingNeedsReview(filterNeedsReview);
+    }
+  }, [showFiltersPanel, filterMonth, filterYear, filterSymbol, filterSetup, filterStatus, filterExecution, filterMistakeType, filterNeedsReview]);
+
   // Sorting State
   const [sortColumn, setSortColumn] = useState<string>('date');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -171,7 +195,6 @@ export const TradingLogsPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [tradesPerPage, setTradesPerPage] = useState<number>(50);
   const [isColumnModalOpen, setIsColumnModalOpen] = useState<boolean>(false);
-  const [tempSelectedColumns, setTempSelectedColumns] = useState<Record<string, boolean>>({});
 
   const [selectedColumns, setSelectedColumns] = useState<Record<string, boolean>>(() => {
     const saved = localStorage.getItem('tl-log-columns');
@@ -201,6 +224,15 @@ export const TradingLogsPage: React.FC = () => {
       sync_source: false
     };
   });
+
+  const [pendingColumns, setPendingColumns] = useState<Record<string, boolean>>(selectedColumns);
+
+  // Sync pending column state when the columns panel is opened
+  useEffect(() => {
+    if (isColumnModalOpen) {
+      setPendingColumns({ ...selectedColumns });
+    }
+  }, [isColumnModalOpen, selectedColumns]);
 
   const [calculatedStats, setCalculatedStats] = useState({
     totalCount: 0,
@@ -515,6 +547,31 @@ export const TradingLogsPage: React.FC = () => {
     setFilterNeedsReview(false);
     setSearchParams({});
     setCurrentPage(1);
+  };
+
+  // Reset PENDING filters inside the panel (does not apply to actual filters immediately)
+  const handleResetPendingFilters = () => {
+    setPendingMonth('All');
+    setPendingYear('All');
+    setPendingSymbol('');
+    setPendingSetup('All');
+    setPendingStatus('All');
+    setPendingExecution('All');
+    setPendingMistakeType('All');
+    setPendingNeedsReview(false);
+  };
+
+  // Apply all pending filters to actual filters
+  const handleApplyPendingFilters = () => {
+    setFilterMonth(pendingMonth);
+    setFilterYear(pendingYear);
+    setFilterSymbol(pendingSymbol);
+    setFilterSetup(pendingSetup);
+    setFilterStatus(pendingStatus);
+    setFilterExecution(pendingExecution);
+    setFilterMistakeType(pendingMistakeType);
+    setFilterNeedsReview(pendingNeedsReview);
+    setShowFiltersPanel(false);
   };
 
   // Perform filtering / sorting adaptation layers
@@ -986,6 +1043,8 @@ export const TradingLogsPage: React.FC = () => {
 
                   {showFiltersPanel && (
                     <div
+                      onClick={(e) => e.stopPropagation()}
+                      onMouseLeave={() => setShowFiltersPanel(false)}
                       style={{
                         backgroundColor: 'var(--card)',
                         border: '1px solid var(--border)',
@@ -1008,8 +1067,8 @@ export const TradingLogsPage: React.FC = () => {
                             Month
                           </label>
                           <select
-                            value={filterMonth}
-                            onChange={(e) => setFilterMonth(e.target.value)}
+                            value={pendingMonth}
+                            onChange={(e) => setPendingMonth(e.target.value)}
                             style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
                             className="w-full focus:border-indigo-500 focus:outline-none cursor-pointer"
                           >
@@ -1028,8 +1087,8 @@ export const TradingLogsPage: React.FC = () => {
                             Year
                           </label>
                           <select
-                            value={filterYear}
-                            onChange={(e) => setFilterYear(e.target.value)}
+                            value={pendingYear}
+                            onChange={(e) => setPendingYear(e.target.value)}
                             style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
                             className="w-full focus:border-indigo-500 focus:outline-none cursor-pointer"
                           >
@@ -1050,16 +1109,16 @@ export const TradingLogsPage: React.FC = () => {
                           <div className="relative">
                             <input
                               type="text"
-                              value={filterSymbol}
-                              onChange={(e) => setFilterSymbol(e.target.value.toUpperCase())}
+                              value={pendingSymbol}
+                              onChange={(e) => setPendingSymbol(e.target.value.toUpperCase())}
                               placeholder="e.g. BTC"
                               style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
                               className="placeholder-zinc-500 w-full focus:border-indigo-500 focus:outline-none font-mono text-xs"
                             />
-                            {filterSymbol && (
+                            {pendingSymbol && (
                               <button
                                 type="button"
-                                onClick={() => setFilterSymbol('')}
+                                onClick={() => setPendingSymbol('')}
                                 style={{ color: 'var(--text-muted)' }}
                                 className="absolute right-2 top-1/2 -translate-y-1/2 hover:opacity-80 cursor-pointer"
                               >
@@ -1075,8 +1134,8 @@ export const TradingLogsPage: React.FC = () => {
                             Setup
                           </label>
                           <select
-                            value={filterSetup}
-                            onChange={(e) => setFilterSetup(e.target.value)}
+                            value={pendingSetup}
+                            onChange={(e) => setPendingSetup(e.target.value)}
                             style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
                             className="w-full focus:border-indigo-500 focus:outline-none cursor-pointer text-xs"
                           >
@@ -1098,8 +1157,8 @@ export const TradingLogsPage: React.FC = () => {
                             Execution
                           </label>
                           <select
-                            value={filterExecution}
-                            onChange={(e) => setFilterExecution(e.target.value)}
+                            value={pendingExecution}
+                            onChange={(e) => setPendingExecution(e.target.value)}
                             style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
                             className="w-full focus:border-indigo-500 focus:outline-none cursor-pointer"
                           >
@@ -1118,8 +1177,8 @@ export const TradingLogsPage: React.FC = () => {
                             Mistake
                           </label>
                           <select
-                            value={filterMistakeType}
-                            onChange={(e) => setFilterMistakeType(e.target.value)}
+                            value={pendingMistakeType}
+                            onChange={(e) => setPendingMistakeType(e.target.value)}
                             style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
                             className="w-full focus:border-indigo-500 focus:outline-none cursor-pointer"
                           >
@@ -1150,12 +1209,12 @@ export const TradingLogsPage: React.FC = () => {
                         </div>
                         <div className="flex flex-wrap items-center gap-1.5">
                           {['All', 'Win', 'Loss', 'Breakeven'].map((st) => {
-                            const isActive = filterStatus === st;
+                            const isActive = pendingStatus === st;
                             return (
                               <button
                                 key={st}
                                 type="button"
-                                onClick={() => setFilterStatus(st)}
+                                onClick={() => setPendingStatus(st)}
                                 style={{
                                   backgroundColor: isActive ? 'var(--accent-muted)' : 'transparent',
                                   border: isActive ? '0.5px solid var(--accent)' : '0.5px solid var(--border)',
@@ -1175,18 +1234,18 @@ export const TradingLogsPage: React.FC = () => {
 
                           <button
                             type="button"
-                            onClick={() => setFilterNeedsReview(prev => !prev)}
+                            onClick={() => setPendingNeedsReview(prev => !prev)}
                             style={{
-                              backgroundColor: filterNeedsReview ? 'rgba(249,115,22,0.12)' : 'transparent',
-                              border: filterNeedsReview ? '1px solid #f97316' : '0.5px solid var(--border)',
-                              color: filterNeedsReview ? '#f97316' : 'var(--text-sub)',
+                              backgroundColor: pendingNeedsReview ? 'rgba(249,115,22,0.12)' : 'transparent',
+                              border: pendingNeedsReview ? '1px solid #f97316' : '0.5px solid var(--border)',
+                              color: pendingNeedsReview ? '#f97316' : 'var(--text-sub)',
                               padding: '5px 14px',
                               borderRadius: '999px',
                               fontSize: '12px',
-                              fontWeight: filterNeedsReview ? 600 : 500,
+                              fontWeight: pendingNeedsReview ? 600 : 500,
                               cursor: 'pointer',
                             }}
-                            className={filterNeedsReview ? 'transition-all font-semibold' : 'hover:bg-[var(--bar)] transition-all'}
+                            className={pendingNeedsReview ? 'transition-all font-semibold' : 'hover:bg-[var(--bar)] transition-all'}
                           >
                             ⚠️ Needs Review
                           </button>
@@ -1197,7 +1256,7 @@ export const TradingLogsPage: React.FC = () => {
                       <div className="flex items-center justify-between border-t pt-3" style={{ marginTop: '12px', borderColor: 'var(--border)' }}>
                         <button
                           type="button"
-                          onClick={handleResetFilters}
+                          onClick={handleResetPendingFilters}
                           style={{ color: 'var(--accent)', border: 'none', background: 'none', fontSize: '13px' }}
                           className="font-semibold hover:underline cursor-pointer p-0"
                         >
@@ -1205,7 +1264,7 @@ export const TradingLogsPage: React.FC = () => {
                         </button>
                         <button
                           type="button"
-                          onClick={() => setShowFiltersPanel(false)}
+                          onClick={handleApplyPendingFilters}
                           style={{ backgroundColor: 'var(--accent)', color: '#ffffff', padding: '6px 16px', borderRadius: '6px' }}
                           className="text-xs font-semibold hover:opacity-90 transition-all cursor-pointer"
                         >
@@ -1220,7 +1279,7 @@ export const TradingLogsPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    setTempSelectedColumns({ ...selectedColumns });
+                    setPendingColumns({ ...selectedColumns });
                     setIsColumnModalOpen(true);
                   }}
                   style={{
@@ -1822,7 +1881,15 @@ export const TradingLogsPage: React.FC = () => {
 
         {/* COLUMN SELECTOR MODAL */}
         {isColumnModalOpen && (
-          <div id="column-selector-modal" className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+          <div 
+            id="column-selector-modal" 
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                setIsColumnModalOpen(false);
+              }
+            }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
+          >
             <div 
               style={{ backgroundColor: 'var(--card)', border: '1.5px solid var(--border)', borderRadius: '16px' }}
               className="w-full max-w-md overflow-hidden shadow-2xl flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
@@ -1848,7 +1915,7 @@ export const TradingLogsPage: React.FC = () => {
                 </p>
                 <div className="grid grid-cols-2 gap-3 text-xs">
                   {ALL_COLUMNS_INFO.map((col) => {
-                    const isChecked = !!tempSelectedColumns[col.id];
+                    const isChecked = !!pendingColumns[col.id];
                     return (
                       <label
                         key={col.id}
@@ -1862,7 +1929,7 @@ export const TradingLogsPage: React.FC = () => {
                           type="checkbox"
                           checked={isChecked}
                           onChange={() => {
-                            setTempSelectedColumns((prev) => ({
+                            setPendingColumns((prev) => ({
                               ...prev,
                               [col.id]: !prev[col.id],
                             }));
@@ -1891,8 +1958,8 @@ export const TradingLogsPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    setSelectedColumns(tempSelectedColumns);
-                    localStorage.setItem('tl-log-columns', JSON.stringify(tempSelectedColumns));
+                    setSelectedColumns(pendingColumns);
+                    localStorage.setItem('tl-log-columns', JSON.stringify(pendingColumns));
                     setIsColumnModalOpen(false);
                   }}
                   className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer transition-all shadow-md shadow-indigo-600/10"
