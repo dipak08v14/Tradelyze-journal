@@ -1393,10 +1393,10 @@ export const TradingLogsPage: React.FC = () => {
             )}
 
             {/* ADDITION 1 — SUMMARY STATS BAR */}
-            <div className="grid gap-4 md:grid animate-in fade-in duration-200" style={{ gridTemplateColumns: 'repeat(5, 1fr)', marginTop: '8px', marginBottom: '0px' }}>
+            <div className="grid gap-4 md:grid animate-in fade-in duration-200" style={{ gridTemplateColumns: 'repeat(5, 1fr)', marginTop: '8px', marginBottom: '12px' }}>
               {/* Card 1: TOTAL TRADES */}
               <div 
-                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '6px', paddingBottom: '6px' }}
+                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '20px', paddingBottom: '20px' }}
                 className="px-4"
               >
                 <div style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>
@@ -1416,7 +1416,7 @@ export const TradingLogsPage: React.FC = () => {
 
               {/* Card 2: NET P&L */}
               <div 
-                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '6px', paddingBottom: '6px' }}
+                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '20px', paddingBottom: '20px' }}
                 className="px-4"
               >
                 <div style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>
@@ -1432,7 +1432,7 @@ export const TradingLogsPage: React.FC = () => {
 
               {/* Card 3: PROFIT FACTOR */}
               <div 
-                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '6px', paddingBottom: '6px' }}
+                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '20px', paddingBottom: '20px' }}
                 className="px-4"
               >
                 <div style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>
@@ -1448,7 +1448,7 @@ export const TradingLogsPage: React.FC = () => {
 
               {/* Card 4: WIN RATE */}
               <div 
-                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '6px', paddingBottom: '6px' }}
+                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '20px', paddingBottom: '20px' }}
                 className="px-4"
               >
                 <div style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>
@@ -1461,7 +1461,7 @@ export const TradingLogsPage: React.FC = () => {
 
               {/* Card 5: AVG R */}
               <div 
-                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '6px', paddingBottom: '6px' }}
+                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '20px', paddingBottom: '20px' }}
                 className="px-4"
               >
                 <div style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>
