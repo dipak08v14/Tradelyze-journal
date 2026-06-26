@@ -2104,7 +2104,7 @@ export const DashboardPage: React.FC = () => {
                           const winPctForBar = totalForBar > 0 ? (avgWinForBar / totalForBar) * 100 : 50;
                           return (
                             <>
-                              <div style={{ display: 'flex', height: '7px', width: '100%', borderRadius: '0px', overflow: 'hidden' }}>
+                              <div style={{ display: 'flex', height: '8px', width: '100%', borderRadius: '0px', overflow: 'hidden' }}>
                                 <div style={{ width: `${winPctForBar}%`, backgroundColor: '#008F67' }} />
                                 <div style={{ width: `${100 - winPctForBar}%`, backgroundColor: '#DF1C30' }} />
                               </div>
