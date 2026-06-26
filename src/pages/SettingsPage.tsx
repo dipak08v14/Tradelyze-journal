@@ -885,8 +885,24 @@ export default function SettingsPage() {
       <main className="flex-1 overflow-y-auto w-full min-w-0 overflow-x-hidden px-0">
         {/* TOP COMPONENT */}
         <div 
-          className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 md:px-8 border-b border-[var(--border)]"
-          style={{ backgroundColor: 'var(--card)', backdropFilter: 'blur(10px)' }}
+          style={{
+            background: 'var(--card)',
+            width: 'calc(100% + 48px)',
+            marginLeft: '-24px',
+            marginRight: '-24px',
+            paddingTop: '3px',
+            paddingBottom: '3px',
+            paddingLeft: '24px',
+            paddingRight: '24px',
+            borderRadius: 0,
+            boxShadow: 'none',
+            border: 'none',
+            borderBottom: '1px solid var(--border)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}
+          className="sticky top-0 z-10"
         >
           <div className="flex items-center gap-3">
             <button
@@ -896,11 +912,11 @@ export default function SettingsPage() {
             >
               <Menu className="w-5 h-5" />
             </button>
-            <div>
-              <h1 className="text-xl font-bold tracking-tight">Settings</h1>
-              <p className="text-xs text-[var(--text-sub)]">Manage your personal profile, workspace theme, and plan.</p>
-            </div>
+            <h1 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }} className="font-display tracking-tight">
+              Settings
+            </h1>
           </div>
+          <div />
         </div>
 
         {/* CONTAINER WITH SPACING */}
