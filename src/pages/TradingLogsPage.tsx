@@ -137,6 +137,23 @@ export const TradingLogsPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
 
+  // Floating filters panel and pin status bar states
+  const [showFiltersPanel, setShowFiltersPanel] = useState<boolean>(false);
+  const [pinStatusBar, setPinStatusBar] = useState<boolean>(false);
+  const filtersPanelRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (filtersPanelRef.current && !filtersPanelRef.current.contains(event.target as Node)) {
+        setShowFiltersPanel(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   // States for Filter Parameters
   const [filterMonth, setFilterMonth] = useState<string>('All');
   const [filterYear, setFilterYear] = useState<string>('All');
@@ -453,6 +470,28 @@ export const TradingLogsPage: React.FC = () => {
       filterMistakeType !== 'All' ||
       filterNeedsReview
     );
+  }, [
+    filterMonth,
+    filterYear,
+    filterSymbol,
+    filterSetup,
+    filterStatus,
+    filterExecution,
+    filterMistakeType,
+    filterNeedsReview
+  ]);
+
+  const activeFiltersCount = useMemo(() => {
+    let count = 0;
+    if (filterMonth !== 'All' && filterMonth !== '') count++;
+    if (filterYear !== 'All' && filterYear !== '') count++;
+    if (filterSymbol.trim() !== '') count++;
+    if (filterSetup !== 'All' && filterSetup !== '') count++;
+    if (filterStatus !== 'All' && filterStatus !== '') count++;
+    if (filterExecution !== 'All' && filterExecution !== '') count++;
+    if (filterMistakeType !== 'All' && filterMistakeType !== '') count++;
+    if (filterNeedsReview) count++;
+    return count;
   }, [
     filterMonth,
     filterYear,
@@ -913,7 +952,295 @@ export const TradingLogsPage: React.FC = () => {
               <h1 className="font-display" style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }}>
                 Trading Logs
               </h1>
-              <div>
+
+              {/* RIGHT SIDE ACTIONS: FILTERS, COLUMNS & ADD TRADE */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }} className="relative">
+                {/* 1. Filters Button & Dropdown */}
+                <div className="relative" ref={filtersPanelRef}>
+                  <button
+                    type="button"
+                    onClick={() => setShowFiltersPanel(prev => !prev)}
+                    style={{
+                      border: '1px solid var(--border)',
+                      background: 'var(--card)',
+                      padding: '6px 12px',
+                      borderRadius: '6px',
+                      fontSize: '13px',
+                      color: 'var(--text-sub)',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px'
+                    }}
+                    className="hover:opacity-80 transition-all font-semibold cursor-pointer"
+                  >
+                    <span>⚙ Filters</span>
+                    {activeFiltersCount > 0 && (
+                      <span
+                        style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
+                        className="px-1.5 py-0.5 text-[10px] font-bold rounded-full min-w-[18px] text-center"
+                      >
+                        {activeFiltersCount}
+                      </span>
+                    )}
+                  </button>
+
+                  {showFiltersPanel && (
+                    <div
+                      style={{
+                        backgroundColor: 'var(--card)',
+                        border: '1px solid var(--border)',
+                        borderRadius: '10px',
+                        boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
+                        padding: '16px',
+                        minWidth: '520px',
+                        position: 'absolute',
+                        top: 'calc(100% + 8px)',
+                        right: 0,
+                        zIndex: 50
+                      }}
+                      className="animate-in fade-in slide-in-from-top-1 duration-150"
+                    >
+                      {/* ROW 1 — Filter dropdowns (4-column grid) */}
+                      <div className="grid grid-cols-4 gap-3">
+                        {/* Month Dropdown */}
+                        <div className="text-left">
+                          <label className="block text-[11px] font-bold uppercase tracking-wider mb-1.5 font-mono" style={{ color: 'var(--text-muted)' }}>
+                            Month
+                          </label>
+                          <select
+                            value={filterMonth}
+                            onChange={(e) => setFilterMonth(e.target.value)}
+                            style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
+                            className="w-full focus:border-indigo-500 focus:outline-none cursor-pointer"
+                          >
+                            <option value="All">All Months</option>
+                            {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((m) => (
+                              <option key={m} value={m}>
+                                {m}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        {/* Year Dropdown */}
+                        <div className="text-left">
+                          <label className="block text-[11px] font-bold uppercase tracking-wider mb-1.5 font-mono" style={{ color: 'var(--text-muted)' }}>
+                            Year
+                          </label>
+                          <select
+                            value={filterYear}
+                            onChange={(e) => setFilterYear(e.target.value)}
+                            style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
+                            className="w-full focus:border-indigo-500 focus:outline-none cursor-pointer"
+                          >
+                            <option value="All">All Years</option>
+                            {uniqueYears.map((y) => (
+                              <option key={y} value={y.toString()}>
+                                {y}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        {/* Symbol Input */}
+                        <div className="text-left">
+                          <label className="block text-[11px] font-bold uppercase tracking-wider mb-1.5 font-mono" style={{ color: 'var(--text-muted)' }}>
+                            Symbol
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="text"
+                              value={filterSymbol}
+                              onChange={(e) => setFilterSymbol(e.target.value.toUpperCase())}
+                              placeholder="e.g. BTC"
+                              style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
+                              className="placeholder-zinc-500 w-full focus:border-indigo-500 focus:outline-none font-mono text-xs"
+                            />
+                            {filterSymbol && (
+                              <button
+                                type="button"
+                                onClick={() => setFilterSymbol('')}
+                                style={{ color: 'var(--text-muted)' }}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 hover:opacity-80 cursor-pointer"
+                              >
+                                <X className="w-3 h-3" />
+                              </button>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Setup Dropdown */}
+                        <div className="text-left">
+                          <label className="block text-[11px] font-bold uppercase tracking-wider mb-1.5 font-mono" style={{ color: 'var(--text-muted)' }}>
+                            Setup
+                          </label>
+                          <select
+                            value={filterSetup}
+                            onChange={(e) => setFilterSetup(e.target.value)}
+                            style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
+                            className="w-full focus:border-indigo-500 focus:outline-none cursor-pointer text-xs"
+                          >
+                            <option value="All">All Setups</option>
+                            {uniqueSetups.map((setupName) => (
+                              <option key={setupName} value={setupName}>
+                                {setupName}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* ROW 2 — Execution filters (2-column grid) */}
+                      <div className="grid grid-cols-2 gap-3" style={{ marginTop: '12px' }}>
+                        {/* Executions */}
+                        <div className="text-left">
+                          <label className="block text-[11px] font-bold uppercase tracking-wider mb-1.5 font-mono" style={{ color: 'var(--text-muted)' }}>
+                            Execution
+                          </label>
+                          <select
+                            value={filterExecution}
+                            onChange={(e) => setFilterExecution(e.target.value)}
+                            style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
+                            className="w-full focus:border-indigo-500 focus:outline-none cursor-pointer"
+                          >
+                            <option value="All">All Executions</option>
+                            <option value="BEST TRADE">BEST TRADE</option>
+                            <option value="GOOD TRADE">GOOD TRADE</option>
+                            <option value="AVERAGE TRADE">AVERAGE TRADE</option>
+                            <option value="POOR TRADE">POOR TRADE</option>
+                            <option value="BAD TRADE">BAD TRADE</option>
+                          </select>
+                        </div>
+
+                        {/* Mistakes */}
+                        <div className="text-left">
+                          <label className="block text-[11px] font-bold uppercase tracking-wider mb-1.5 font-mono" style={{ color: 'var(--text-muted)' }}>
+                            Mistake
+                          </label>
+                          <select
+                            value={filterMistakeType}
+                            onChange={(e) => setFilterMistakeType(e.target.value)}
+                            style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
+                            className="w-full focus:border-indigo-500 focus:outline-none cursor-pointer"
+                          >
+                            <option value="All">All Mistakes</option>
+                            <option value="Technical">Technical</option>
+                            <option value="Psychological">Psychological</option>
+                            <option value="Risk Management">Risk Management</option>
+                            <option value="No Mistake">No Mistake</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* ROW 3 — STATUS section */}
+                      <div className="text-left" style={{ marginTop: '12px' }}>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-[11px] font-bold uppercase tracking-wider font-mono" style={{ color: 'var(--text-muted)' }}>
+                            STATUS
+                          </span>
+                          <label className="flex items-center gap-2 text-xs font-semibold cursor-pointer" style={{ color: 'var(--text-sub)' }}>
+                            <input
+                              type="checkbox"
+                              checked={pinStatusBar}
+                              onChange={(e) => setPinStatusBar(e.target.checked)}
+                              className="cursor-pointer rounded border-zinc-700"
+                            />
+                            <span>📌 Pin Status Bar</span>
+                          </label>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          {['All', 'Win', 'Loss', 'Breakeven'].map((st) => {
+                            const isActive = filterStatus === st;
+                            return (
+                              <button
+                                key={st}
+                                type="button"
+                                onClick={() => setFilterStatus(st)}
+                                style={{
+                                  backgroundColor: isActive ? 'var(--accent-muted)' : 'transparent',
+                                  border: isActive ? '0.5px solid var(--accent)' : '0.5px solid var(--border)',
+                                  color: isActive ? 'var(--accent)' : 'var(--text-sub)',
+                                  padding: '5px 14px',
+                                  borderRadius: '999px',
+                                  fontSize: '12px',
+                                  fontWeight: isActive ? 600 : 500,
+                                  cursor: 'pointer',
+                                }}
+                                className={isActive ? 'transition-all' : 'hover:bg-[var(--bar)] transition-all'}
+                              >
+                                {st}
+                              </button>
+                            );
+                          })}
+
+                          <button
+                            type="button"
+                            onClick={() => setFilterNeedsReview(prev => !prev)}
+                            style={{
+                              backgroundColor: filterNeedsReview ? 'rgba(249,115,22,0.12)' : 'transparent',
+                              border: filterNeedsReview ? '1px solid #f97316' : '0.5px solid var(--border)',
+                              color: filterNeedsReview ? '#f97316' : 'var(--text-sub)',
+                              padding: '5px 14px',
+                              borderRadius: '999px',
+                              fontSize: '12px',
+                              fontWeight: filterNeedsReview ? 600 : 500,
+                              cursor: 'pointer',
+                            }}
+                            className={filterNeedsReview ? 'transition-all font-semibold' : 'hover:bg-[var(--bar)] transition-all'}
+                          >
+                            ⚠️ Needs Review
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* ROW 4 — Bottom row */}
+                      <div className="flex items-center justify-between border-t pt-3" style={{ marginTop: '12px', borderColor: 'var(--border)' }}>
+                        <button
+                          type="button"
+                          onClick={handleResetFilters}
+                          style={{ color: 'var(--accent)', border: 'none', background: 'none', fontSize: '13px' }}
+                          className="font-semibold hover:underline cursor-pointer p-0"
+                        >
+                          Reset Filters
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setShowFiltersPanel(false)}
+                          style={{ backgroundColor: 'var(--accent)', color: '#ffffff', padding: '6px 16px', borderRadius: '6px' }}
+                          className="text-xs font-semibold hover:opacity-90 transition-all cursor-pointer"
+                        >
+                          Done
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* 2. Columns Button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTempSelectedColumns({ ...selectedColumns });
+                    setIsColumnModalOpen(true);
+                  }}
+                  style={{
+                    border: '1px solid var(--border)',
+                    background: 'var(--card)',
+                    padding: '6px 12px',
+                    borderRadius: '6px',
+                    fontSize: '13px',
+                    color: 'var(--text-sub)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px'
+                  }}
+                  className="hover:opacity-80 transition-all font-semibold cursor-pointer"
+                >
+                  <Settings2 className="w-3.5 h-3.5" />
+                  <span>Columns</span>
+                </button>
+
+                {/* 3. Log New Trade Button */}
                 <Link
                   to="/trade-entry"
                   style={{
@@ -940,212 +1267,74 @@ export const TradingLogsPage: React.FC = () => {
               </div>
             </div>
 
-            {/* FILTER BAR SECTION CARD */}
-            <div className="px-5 pt-4 pb-5 mb-5" style={{ marginTop: '16px', backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
-              {/* Row 1 Filter Fields */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {/* Month Dropdown */}
-                <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider mb-2 font-mono" style={{ color: 'var(--text-muted)' }}>
-                    Month
-                  </label>
-                  <select
-                    value={filterMonth}
-                    onChange={(e) => setFilterMonth(e.target.value)}
-                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
-                    className="w-full focus:border-indigo-500 focus:outline-none cursor-pointer"
-                  >
-                    <option value="All">All Months</option>
-                    {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((m) => (
-                      <option key={m} value={m}>
-                        {m}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Year Dropdown */}
-                <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider mb-2 font-mono" style={{ color: 'var(--text-muted)' }}>
-                    Year
-                  </label>
-                  <select
-                    value={filterYear}
-                    onChange={(e) => setFilterYear(e.target.value)}
-                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
-                    className="w-full focus:border-indigo-500 focus:outline-none cursor-pointer"
-                  >
-                    <option value="All">All Years</option>
-                    {uniqueYears.map((y) => (
-                      <option key={y} value={y.toString()}>
-                        {y}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Symbol Filter Text Input with absolute clearing button X */}
-                <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider mb-2 font-mono" style={{ color: 'var(--text-muted)' }}>
-                    Symbol
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value={filterSymbol}
-                      onChange={(e) => setFilterSymbol(e.target.value.toUpperCase())}
-                      placeholder="e.g. BTCUSDT"
-                      style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
-                      className="placeholder-zinc-500 w-full focus:border-indigo-500 focus:outline-none font-mono"
-                    />
-                    {filterSymbol && (
-                      <button
-                        type="button"
-                        onClick={() => setFilterSymbol('')}
-                        style={{ color: 'var(--text-muted)' }}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 hover:opacity-80 cursor-pointer"
-                      >
-                        <X className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                {/* Setup Dropdown */}
-                <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider mb-2 font-mono" style={{ color: 'var(--text-muted)' }}>
-                    Setup
-                  </label>
-                  <select
-                    value={filterSetup}
-                    onChange={(e) => setFilterSetup(e.target.value)}
-                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
-                    className="w-full focus:border-indigo-500 focus:outline-none cursor-pointer"
-                  >
-                    <option value="All">All Setups</option>
-                    {uniqueSetups.map((setupName) => (
-                      <option key={setupName} value={setupName}>
-                        {setupName}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Row 2 Filter Fields */}
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mt-5 pt-4 border-t" style={{ borderColor: 'var(--border)' }}>
-                {/* Status Pills */}
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <span className="text-[10px] font-bold uppercase tracking-wider mr-1.5 font-mono" style={{ color: 'var(--text-muted)' }}>
-                    Status:
-                  </span>
-                  {['All', 'Win', 'Loss', 'Breakeven'].map((st) => {
-                    const isActive = filterStatus === st;
-                    return (
-                      <button
-                        key={st}
-                        type="button"
-                        onClick={() => setFilterStatus(st)}
-                        style={{
-                          backgroundColor: isActive ? 'var(--accent-muted)' : 'transparent',
-                          border: isActive ? '0.5px solid var(--accent)' : '0.5px solid var(--border)',
-                          color: isActive ? 'var(--accent)' : 'var(--text-sub)',
-                          padding: '5px 14px',
-                          borderRadius: '999px',
-                          fontSize: '12px',
-                          fontWeight: isActive ? 600 : 500,
-                          cursor: 'pointer',
-                        }}
-                        className={isActive ? 'transition-all' : 'hover:bg-[var(--bar)] transition-all'}
-                      >
-                        {st}
-                      </button>
-                    );
-                  })}
-
-                  {/* Needs Review Filter Toggle Pill */}
-                  <button
-                    type="button"
-                    onClick={() => setFilterNeedsReview(prev => !prev)}
-                    style={{
-                      backgroundColor: filterNeedsReview ? 'rgba(249,115,22,0.12)' : 'transparent',
-                      border: filterNeedsReview ? '1px solid #f97316' : '0.5px solid var(--border)',
-                      color: filterNeedsReview ? '#f97316' : 'var(--text-sub)',
-                      padding: '5px 14px',
-                      borderRadius: '999px',
-                      fontSize: '12px',
-                      fontWeight: filterNeedsReview ? 600 : 500,
-                      cursor: 'pointer',
-                      marginLeft: '8px'
-                    }}
-                    className={filterNeedsReview ? 'transition-all font-semibold' : 'hover:bg-[var(--bar)] transition-all'}
-                  >
-                    ⚠️ Needs Review
-                  </button>
-                </div>
-
-                {/* Executions, Mistakes & Columns selectors */}
-                <div className="flex flex-wrap items-center gap-3">
-                  {/* Executions */}
-                  <select
-                    value={filterExecution}
-                    onChange={(e) => setFilterExecution(e.target.value)}
-                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
-                    className="w-auto focus:border-indigo-500 focus:outline-none cursor-pointer"
-                  >
-                    <option value="All">All Executions</option>
-                    <option value="BEST TRADE">BEST TRADE</option>
-                    <option value="GOOD TRADE">GOOD TRADE</option>
-                    <option value="AVERAGE TRADE">AVERAGE TRADE</option>
-                    <option value="POOR TRADE">POOR TRADE</option>
-                    <option value="BAD TRADE">BAD TRADE</option>
-                  </select>
-
-                  {/* Mistakes dropdown */}
-                  <select
-                    value={filterMistakeType}
-                    onChange={(e) => setFilterMistakeType(e.target.value)}
-                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
-                    className="w-auto focus:border-indigo-500 focus:outline-none cursor-pointer"
-                  >
-                    <option value="All">All Mistakes</option>
-                    <option value="Technical">Technical</option>
-                    <option value="Psychological">Psychological</option>
-                    <option value="Risk Management">Risk Management</option>
-                    <option value="No Mistake">No Mistake</option>
-                  </select>
-
-                  {/* Columns selector trigger button */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setTempSelectedColumns({ ...selectedColumns });
-                      setIsColumnModalOpen(true);
-                    }}
-                    style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text-sub)' }}
-                    className="rounded-xl px-3 py-2 text-xs font-semibold cursor-pointer transition-all flex items-center gap-1.5 hover:opacity-80"
-                  >
-                    <Settings2 className="w-3.5 h-3.5" />
-                    <span>Columns</span>
-                  </button>
-
-                  {/* Reset Filters button */}
-                  {isFilterActive && (
+            {/* PINNED STATUS BAR (WHEN PINNED AND TRUE) */}
+            {pinStatusBar && (
+              <div
+                style={{
+                  background: 'var(--card)',
+                  borderBottom: '1px solid var(--border)',
+                  width: 'calc(100% + 48px)',
+                  marginLeft: '-24px',
+                  paddingLeft: '24px',
+                  paddingRight: '24px',
+                  paddingTop: '8px',
+                  paddingBottom: '8px',
+                  display: 'flex',
+                  gap: '8px',
+                  alignItems: 'center',
+                  marginTop: '12px'
+                }}
+                className="sticky top-0 z-10 animate-in fade-in duration-200 mb-5"
+              >
+                <span className="text-[10px] font-bold uppercase tracking-wider mr-1.5 font-mono" style={{ color: 'var(--text-muted)' }}>
+                  Status:
+                </span>
+                {['All', 'Win', 'Loss', 'Breakeven'].map((st) => {
+                  const isActive = filterStatus === st;
+                  return (
                     <button
+                      key={st}
                       type="button"
-                      onClick={handleResetFilters}
-                      className="px-3.5 py-2 text-xs font-semibold text-zinc-400 border border-zinc-800 hover:text-white rounded-xl hover:bg-zinc-850 cursor-pointer transition-all flex items-center gap-1.5"
+                      onClick={() => setFilterStatus(st)}
+                      style={{
+                        backgroundColor: isActive ? 'var(--accent-muted)' : 'transparent',
+                        border: isActive ? '0.5px solid var(--accent)' : '0.5px solid var(--border)',
+                        color: isActive ? 'var(--accent)' : 'var(--text-sub)',
+                        padding: '5px 14px',
+                        borderRadius: '999px',
+                        fontSize: '12px',
+                        fontWeight: isActive ? 600 : 500,
+                        cursor: 'pointer',
+                      }}
+                      className={isActive ? 'transition-all' : 'hover:bg-[var(--bar)] transition-all'}
                     >
-                      <RotateCcw className="w-3 h-3" />
-                      <span>Reset</span>
+                      {st}
                     </button>
-                  )}
-                </div>
+                  );
+                })}
+
+                <button
+                  type="button"
+                  onClick={() => setFilterNeedsReview(prev => !prev)}
+                  style={{
+                    backgroundColor: filterNeedsReview ? 'rgba(249,115,22,0.12)' : 'transparent',
+                    border: filterNeedsReview ? '1px solid #f97316' : '0.5px solid var(--border)',
+                    color: filterNeedsReview ? '#f97316' : 'var(--text-sub)',
+                    padding: '5px 14px',
+                    borderRadius: '999px',
+                    fontSize: '12px',
+                    fontWeight: filterNeedsReview ? 600 : 500,
+                    cursor: 'pointer',
+                  }}
+                  className={filterNeedsReview ? 'transition-all font-semibold' : 'hover:bg-[var(--bar)] transition-all'}
+                >
+                  ⚠️ Needs Review
+                </button>
               </div>
-            </div>
+            )}
 
             {/* ADDITION 1 — SUMMARY STATS BAR */}
-            <div className="grid gap-4 mb-5 md:grid animate-in fade-in duration-200" style={{ gridTemplateColumns: 'repeat(5, 1fr)' }}>
+            <div className="grid gap-4 mb-5 md:grid animate-in fade-in duration-200" style={{ gridTemplateColumns: 'repeat(5, 1fr)', marginTop: '16px' }}>
               {/* Card 1: TOTAL TRADES */}
               <div 
                 style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}
