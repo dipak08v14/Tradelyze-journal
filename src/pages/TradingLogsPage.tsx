@@ -1393,31 +1393,31 @@ export const TradingLogsPage: React.FC = () => {
             )}
 
             {/* ADDITION 1 — SUMMARY STATS BAR */}
-            <div className="grid gap-4 mb-5 md:grid animate-in fade-in duration-200" style={{ gridTemplateColumns: 'repeat(5, 1fr)', marginTop: '16px' }}>
+            <div className="grid gap-4 md:grid animate-in fade-in duration-200" style={{ gridTemplateColumns: 'repeat(5, 1fr)', marginTop: '8px', marginBottom: '0px' }}>
               {/* Card 1: TOTAL TRADES */}
               <div 
-                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}
-                className="p-4"
+                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '6px', paddingBottom: '6px' }}
+                className="px-4"
               >
                 <div style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>
                   TOTAL TRADES
                 </div>
-                <div className="mt-1 font-mono" style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text)' }}>
-                  {calculatedStats.totalCount}
-                </div>
-                <div className="text-[10px] font-mono mt-1 flex flex-wrap items-center gap-1" style={{ color: 'var(--text-sub)' }}>
-                  <span className="text-green-500 font-bold">W: {calculatedStats.winCount}</span>
-                  <span className="text-zinc-600">·</span>
-                  <span className="text-red-500 font-bold">L: {calculatedStats.lossCount}</span>
-                  <span className="text-zinc-600">·</span>
-                  <span className="text-zinc-500 font-bold">BE: {calculatedStats.breakEvenCount}</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginTop: '0px' }}>
+                  <div className="font-mono" style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text)' }}>
+                    {calculatedStats.totalCount}
+                  </div>
+                  <div className="font-mono" style={{ display: 'flex', flexDirection: 'column', gap: '1px', fontSize: '11px', textAlign: 'right', alignSelf: 'flex-start', marginTop: '0px', paddingTop: '0px' }}>
+                    <span style={{ color: '#008F67', fontWeight: 700 }}>W: {calculatedStats.winCount}</span>
+                    <span style={{ color: '#DF1C30', fontWeight: 700 }}>L: {calculatedStats.lossCount}</span>
+                    <span style={{ color: 'var(--text-muted)', fontWeight: 700 }}>BE: {calculatedStats.breakEvenCount}</span>
+                  </div>
                 </div>
               </div>
 
               {/* Card 2: NET P&L */}
               <div 
-                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}
-                className="p-4"
+                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '6px', paddingBottom: '6px' }}
+                className="px-4"
               >
                 <div style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>
                   NET P&L
@@ -1432,8 +1432,8 @@ export const TradingLogsPage: React.FC = () => {
 
               {/* Card 3: PROFIT FACTOR */}
               <div 
-                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}
-                className="p-4"
+                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '6px', paddingBottom: '6px' }}
+                className="px-4"
               >
                 <div style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>
                   PROFIT FACTOR
@@ -1448,8 +1448,8 @@ export const TradingLogsPage: React.FC = () => {
 
               {/* Card 4: WIN RATE */}
               <div 
-                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}
-                className="p-4"
+                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '6px', paddingBottom: '6px' }}
+                className="px-4"
               >
                 <div style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>
                   WIN RATE
@@ -1461,8 +1461,8 @@ export const TradingLogsPage: React.FC = () => {
 
               {/* Card 5: AVG R */}
               <div 
-                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}
-                className="p-4"
+                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '6px', paddingBottom: '6px' }}
+                className="px-4"
               >
                 <div style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>
                   AVG R
