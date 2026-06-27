@@ -33,6 +33,7 @@ export const TradingLogsPage: React.FC = () => {
   const [selectedStrategyId, setSelectedStrategyId] = useState<string>('');
   const [bulkLoading, setBulkLoading] = useState<boolean>(false);
   const [isTableHovered, setIsTableHovered] = useState<boolean>(false);
+  const [hoveredRowId, setHoveredRowId] = useState<string | null>(null);
 
   // Fetch Strategies for bulk assign list
   const fetchStrategiesList = async () => {
@@ -255,6 +256,7 @@ export const TradingLogsPage: React.FC = () => {
   const ALL_COLUMNS_INFO = [
     { id: 'date', label: 'Date' },
     { id: 'symbol', label: 'Symbol' },
+    { id: 'needs_review', label: 'Needs Review' },
     { id: 'direction', label: 'Direction' },
     { id: 'option_type', label: 'Option Type' },
     { id: 'strategies', label: 'Setup' },
@@ -267,7 +269,6 @@ export const TradingLogsPage: React.FC = () => {
     { id: 'roi', label: 'ROI' },
     { id: 'notes', label: 'Notes' },
     { id: 'month', label: 'Month' },
-    { id: 'needs_review', label: 'Needs Review' },
     { id: 'sync_source', label: 'Sync Source' },
   ];
 
@@ -668,19 +669,9 @@ export const TradingLogsPage: React.FC = () => {
       label: 'Symbol',
       sortField: 'symbol',
       renderCell: (item) => (
-        <div className="flex items-center gap-2">
-          <span className="font-mono tracking-wide" style={{ color: 'var(--text)', fontWeight: 600 }}>
-            {item.symbol}
-          </span>
-          {item.needs_review && (
-            <span 
-              style={{ backgroundColor: 'rgba(249,115,22,0.15)', color: '#f97316', border: '0.5px solid #f97316' }}
-              className="px-1.5 py-0.5 text-[9px] font-black uppercase rounded tracking-wider whitespace-nowrap"
-            >
-              Needs Review
-            </span>
-          )}
-        </div>
+        <span className="font-mono tracking-wide" style={{ color: 'var(--text)', fontWeight: 600 }}>
+          {item.symbol}
+        </span>
       )
     },
     direction: {
@@ -1682,10 +1673,17 @@ export const TradingLogsPage: React.FC = () => {
                             style={{ 
                               borderBottom: '1px solid rgba(0, 0, 0, 0.05)', 
                               color: 'var(--text)',
-                              backgroundColor: isEven ? 'rgba(0, 0, 0, 0.018)' : 'transparent'
+                              backgroundColor: isEven ? 'rgba(0, 0, 0, 0.018)' : 'transparent',
+                              position: 'relative'
                             }}
-                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.025)')}
-                            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = isEven ? 'rgba(0, 0, 0, 0.018)' : 'transparent')}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.025)';
+                              if (item.id) setHoveredRowId(item.id);
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.backgroundColor = isEven ? 'rgba(0, 0, 0, 0.018)' : 'transparent';
+                              setHoveredRowId(null);
+                            }}
                           >
                             {/* Row Checkbox Column */}
                             <td 
