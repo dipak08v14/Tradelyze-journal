@@ -984,8 +984,8 @@ export const TradingLogsPage: React.FC = () => {
         </header>
 
         {/* CONTAINER CONTENT */}
-        <main className="flex-1 overflow-y-auto px-0">
-          <div className="max-w-7xl mx-auto" style={{ overflowX: 'hidden' }}>
+        <main className="flex-1 overflow-y-auto px-0" style={{ overflowX: 'hidden' }}>
+          <div className="max-w-7xl mx-auto">
             {/* PAGE HEADER */}
             <div
               style={{
@@ -997,7 +997,7 @@ export const TradingLogsPage: React.FC = () => {
                 paddingBottom: '3px',
                 paddingLeft: '24px',
                 paddingRight: '24px',
-                borderRadius: 0,
+                borderRadius: '0',
                 boxShadow: 'none',
                 border: 'none',
                 borderBottom: '1px solid var(--border)',
