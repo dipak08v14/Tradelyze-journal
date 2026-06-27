@@ -618,16 +618,6 @@ export const TradingLogsPage: React.FC = () => {
   const getDateDisplay = (dateStr: string) => {
     if (!dateStr) return { label: '—', isHighlight: false };
     try {
-      const today = new Date().toISOString().split('T')[0];
-      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-
-      if (dateStr === today) {
-        return { label: 'Today', isHighlight: true };
-      }
-      if (dateStr === yesterday) {
-        return { label: 'Yesterday', isHighlight: false };
-      }
-
       const d = new Date(dateStr);
       const day = d.getDate();
       const month = d.toLocaleString('en-US', { month: 'short' });
@@ -669,25 +659,7 @@ export const TradingLogsPage: React.FC = () => {
         const dateTagStr = getDateDisplay(item.date);
         return (
           <span className="font-mono text-xs font-semibold flex items-center gap-1" style={{ color: 'var(--text-sub)' }}>
-            {dateTagStr.label === 'Today' || dateTagStr.label === 'Yesterday' ? (
-              <span
-                style={{
-                  backgroundColor: 'var(--accent-muted)',
-                  color: 'var(--accent)',
-                  border: '0.5px solid var(--accent)',
-                  borderRadius: '999px',
-                  padding: '2px 8px',
-                  fontSize: '10px',
-                  fontWeight: 700,
-                  letterSpacing: '0.3px',
-                }}
-                className="uppercase font-sans font-bold"
-              >
-                {dateTagStr.label}
-              </span>
-            ) : (
-              <span>{dateTagStr.label}</span>
-            )}
+            <span>{dateTagStr.label}</span>
           </span>
         );
       }
