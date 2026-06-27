@@ -2724,7 +2724,7 @@ export const AdvancedReports: React.FC = () => {
                 </div>
               </div>
             ) : activeTab === 'MARKET_BEHAVIOR' ? (
-              <div className="space-y-6 animate-in fade-in duration-300">
+              <div className="space-y-3 animate-in fade-in duration-300">
                 {/* DATA QUALITY NOTE BANNER */}
                 {showMarketBehaviorDataQualityBanner && (
                   <div className="flex items-start gap-3 p-4 rounded-xl border border-cyan-500/20 text-xs shadow-sm bg-cyan-950/10 text-cyan-200">
@@ -2738,7 +2738,7 @@ export const AdvancedReports: React.FC = () => {
                 )}
 
                 {/* SUB-FILTER PILLS ROW */}
-                <div className="flex overflow-x-auto gap-1.5 p-1 rounded-xl font-mono no-scrollbar" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', maxWidth: 'max-content' }}>
+                <div className="flex overflow-x-auto gap-1.5 p-1 rounded-lg font-mono no-scrollbar" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', maxWidth: 'max-content' }}>
                   {[
                     { id: 'OPENING_CONDITION', label: 'OPENING CONDITION' },
                     { id: 'HOURLY_TREND', label: 'HOURLY TREND' },
@@ -2775,10 +2775,10 @@ export const AdvancedReports: React.FC = () => {
                 ) : (
                   <>
                     {/* CHARTS ROW */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                       {/* Left: Trade Distribution horizontal bar chart */}
                       <div className="rounded-2xl p-3 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
-                        <h3 className="text-xs font-bold font-mono tracking-wider mb-4 text-zinc-350 uppercase">
+                        <h3 className="text-xs font-bold font-mono tracking-wider mb-2 text-zinc-350 uppercase">
                           {marketBehaviorSubFilter === 'OPENING_CONDITION' && 'TRADE DISTRIBUTION BY OPENING CONDITION'}
                           {marketBehaviorSubFilter === 'HOURLY_TREND' && 'TRADE DISTRIBUTION BY HOURLY TREND'}
                           {marketBehaviorSubFilter === 'PHASE_PO3' && 'TRADE DISTRIBUTION BY PHASE (PO3)'}
@@ -2789,21 +2789,33 @@ export const AdvancedReports: React.FC = () => {
                             <BarChart
                               data={marketBehaviorDataAndInsights.data}
                               layout="vertical"
-                              margin={{ top: 10, right: 10, left: 10, bottom: 5 }}
+                              margin={{ top: 4, right: 8, left: 0, bottom: 0 }}
                             >
-                              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
-                              <XAxis type="number" stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" allowDecimals={false} />
+                              <CartesianGrid horizontal={false} vertical={true} strokeDasharray="3 3" stroke="var(--border)" />
+                              <XAxis type="number" stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" allowDecimals={false} tickCount={10} tick={{ fill: 'var(--text-sub)' }} axisLine={{ stroke: 'rgba(0,0,0,0.25)' }} tickLine={false} />
                               <YAxis
                                 dataKey="name"
                                 type="category"
-                                stroke="var(--text-muted)"
+                                stroke="var(--text-sub)"
                                 fontSize={11}
                                 fontFamily="monospace"
                                 width={110}
+                                tick={{ fill: 'var(--text-sub)' }}
+                                axisLine={{ stroke: 'rgba(0,0,0,0.25)' }}
+                                tickLine={false}
                               />
                               <RechartsTooltip
-                                cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
-                                contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text)', fontSize: '11px', fontFamily: 'monospace' }}
+                                cursor={{ fill: 'transparent' }}
+                                content={({ active, payload, label }: any) => {
+                                  if (!active || !payload?.length) return null;
+                                  return (
+                                    <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '6px 10px', fontSize: '11px', fontFamily: 'monospace' }}>
+                                      <div style={{ color: 'var(--text-sub)', marginBottom: '2px' }}>{label}</div>
+                                      <span style={{ color: 'var(--text)' }}>Count : </span>
+                                      <span style={{ color: 'var(--accent)', fontWeight: 600 }}>{payload[0]?.value}</span>
+                                    </div>
+                                  );
+                                }}
                               />
                               <Bar dataKey="count" fill="#06b6d4" radius={[0, 4, 4, 0]} />
                             </BarChart>
@@ -2843,7 +2855,7 @@ export const AdvancedReports: React.FC = () => {
 
                       {/* Right: Performance horizontal bar chart */}
                       <div className="rounded-2xl p-3 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
-                        <h3 className="text-xs font-bold font-mono tracking-wider mb-4 text-zinc-350 uppercase">
+                        <h3 className="text-xs font-bold font-mono tracking-wider mb-2 text-zinc-350 uppercase">
                           {marketBehaviorSubFilter === 'OPENING_CONDITION' && 'PERFORMANCE BY OPENING CONDITION'}
                           {marketBehaviorSubFilter === 'HOURLY_TREND' && 'PERFORMANCE BY HOURLY TREND'}
                           {marketBehaviorSubFilter === 'PHASE_PO3' && 'PERFORMANCE BY PHASE (PO3)'}
@@ -2854,26 +2866,38 @@ export const AdvancedReports: React.FC = () => {
                             <BarChart
                               data={marketBehaviorDataAndInsights.data}
                               layout="vertical"
-                              margin={{ top: 10, right: 10, left: 10, bottom: 5 }}
+                              margin={{ top: 4, right: 8, left: 0, bottom: 0 }}
                             >
-                              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
-                              <XAxis type="number" stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" />
+                              <CartesianGrid horizontal={false} vertical={true} strokeDasharray="3 3" stroke="var(--border)" />
+                              <XAxis type="number" stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" tickCount={10} tick={{ fill: 'var(--text-sub)' }} axisLine={{ stroke: 'rgba(0,0,0,0.25)' }} tickLine={false} />
                               <YAxis
                                 dataKey="name"
                                 type="category"
-                                stroke="var(--text-muted)"
+                                stroke="var(--text-sub)"
                                 fontSize={11}
                                 fontFamily="monospace"
                                 width={110}
+                                tick={{ fill: 'var(--text-sub)' }}
+                                axisLine={{ stroke: 'rgba(0,0,0,0.25)' }}
+                                tickLine={false}
                               />
                               <RechartsTooltip
-                                cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
-                                formatter={(value: any) => [formatINR(value), 'Net P&L']}
-                                contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text)', fontSize: '11px', fontFamily: 'monospace' }}
+                                cursor={{ fill: 'transparent' }}
+                                content={({ active, payload, label }: any) => {
+                                  if (!active || !payload?.length) return null;
+                                  const val = payload[0]?.value as number;
+                                  return (
+                                    <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '6px 10px', fontSize: '11px', fontFamily: 'monospace' }}>
+                                      <div style={{ color: 'var(--text-sub)', marginBottom: '2px' }}>{label}</div>
+                                      <span style={{ color: 'var(--text)' }}>Net P&L : </span>
+                                      <span style={{ color: val >= 0 ? '#008F67' : '#DF1C30', fontWeight: 600 }}>{formatINR(val)}</span>
+                                    </div>
+                                  );
+                                }}
                               />
                               <Bar dataKey="netPnl" radius={[0, 4, 4, 0]}>
                                 {marketBehaviorDataAndInsights.data.map((entry, index) => (
-                                  <Cell key={`cell-${index}`} fill={entry.netPnl >= 0 ? '#22c55e' : '#ef4444'} />
+                                  <Cell key={`cell-${index}`} fill={entry.netPnl >= 0 ? '#008F67' : '#DF1C30'} />
                                 ))}
                               </Bar>
                               <ReferenceLine x={0} stroke="var(--border)" strokeDasharray="3 3" />
@@ -2907,23 +2931,23 @@ export const AdvancedReports: React.FC = () => {
                                   } hover:bg-zinc-800/10 dark:hover:bg-zinc-100/10 transition-colors text-xs font-sans`}
                                 >
                                   {/* Category */}
-                                  <td className="py-3.5 px-4 font-semibold text-zinc-200">
+                                  <td className="py-2 px-4 font-semibold" style={{ color: 'var(--text)' }}>
                                     {row.name}
                                   </td>
 
                                   {/* Net Profits */}
-                                  <td className={`py-3.5 px-4 text-right font-mono font-bold ${row.netPnl > 0 ? 'text-green-500' : row.netPnl < 0 ? 'text-red-500' : 'text-zinc-200'}`}>
+                                  <td className="py-2 px-4 text-right font-mono font-bold" style={{ color: row.netPnl > 0 ? '#008F67' : row.netPnl < 0 ? '#DF1C30' : 'var(--text-muted)' }}>
                                     {formatINR(row.netPnl)}
                                   </td>
 
                                   {/* Win % with custom split progress bar */}
-                                  <td className="py-3.5 px-4">
+                                  <td className="py-2 px-4">
                                     <div className="flex items-center justify-center gap-2 max-w-[150px] mx-auto">
                                       {row.count > 0 ? (
                                         <>
                                           <div className="w-16 h-2 rounded bg-zinc-700/30 flex overflow-hidden">
-                                            <div className="bg-green-500 h-full" style={{ width: `${row.winPct}%` }} />
-                                            <div className="bg-red-500 h-full" style={{ width: `${100 - row.winPct}%` }} />
+                                            <div className="h-full" style={{ width: `${row.winPct}%`, backgroundColor: '#008F67' }} />
+                                            <div className="h-full" style={{ width: `${100 - row.winPct}%`, backgroundColor: '#DF1C30' }} />
                                           </div>
                                           <span className="font-mono font-bold text-zinc-350 text-xs">{row.winPct.toFixed(1)}%</span>
                                         </>
@@ -2934,17 +2958,17 @@ export const AdvancedReports: React.FC = () => {
                                   </td>
 
                                   {/* Total Profits */}
-                                  <td className="py-3.5 px-4 text-right font-mono font-bold text-green-500 bg-green-500/5">
+                                  <td className="py-2 px-4 text-right font-mono font-bold bg-green-500/5" style={{ color: '#008F67' }}>
                                     {formatINR(row.totalProfit)}
                                   </td>
 
                                   {/* Total Loss */}
-                                  <td className="py-3.5 px-4 text-right font-mono font-bold text-red-500 bg-red-500/5">
+                                  <td className="py-2 px-4 text-right font-mono font-bold bg-red-500/5" style={{ color: '#DF1C30' }}>
                                     {formatINR(row.totalLoss)}
                                   </td>
 
                                   {/* Trades */}
-                                  <td className="py-3.5 px-4 text-center font-mono font-bold text-zinc-300">
+                                  <td className="py-2 px-4 text-center font-mono" style={{ color: 'var(--text)' }}>
                                     {row.count}
                                   </td>
                                 </tr>
