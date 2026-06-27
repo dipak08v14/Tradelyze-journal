@@ -1546,9 +1546,9 @@ export const AdvancedReports: React.FC = () => {
                 <p className="text-xs text-zinc-500 mt-3 font-mono">Querying portfolio statistics...</p>
               </div>
             ) : activeTab === 'OVERVIEW' ? (
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {/* SECTION A: Three Summary cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   {/* Card 1: BEST MONTH */}
                   <div className="px-5 py-2 rounded-2xl shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                     <div className="text-[10px] font-bold uppercase tracking-wider font-mono text-zinc-400">
@@ -1590,7 +1590,7 @@ export const AdvancedReports: React.FC = () => {
                 </div>
 
                 {/* SECTION B: Stats table side-by-side */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   {/* Left Column — Trade Stats */}
                   <div className="rounded-2xl p-4 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                     <div className="flex items-center gap-2 pb-3 mb-3 border-b" style={{ borderColor: 'var(--border)' }}>
@@ -1807,7 +1807,7 @@ export const AdvancedReports: React.FC = () => {
                 </div>
 
                 {/* SECTION C: Two Bar Charts */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   {/* Chart 1: Monthly P&L */}
                   <div className="rounded-2xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                     <h3 className="text-sm font-bold font-mono tracking-wider mb-4 text-zinc-200">Monthly P&L</h3>
