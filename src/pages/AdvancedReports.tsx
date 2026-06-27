@@ -2606,8 +2606,8 @@ export const AdvancedReports: React.FC = () => {
                 </div>
 
                 {/* Time of Day Comparison Chart */}
-                <div className="rounded-2xl p-5 shadow-sm border border-[var(--border)]" style={{ backgroundColor: 'var(--card)' }}>
-                  <h3 className="text-xs font-bold font-mono tracking-wider mb-4 text-zinc-350 uppercase">
+                <div className="rounded-2xl p-3 shadow-sm border border-[var(--border)]" style={{ backgroundColor: 'var(--card)' }}>
+                  <h3 className="text-xs font-bold font-mono tracking-wider mb-2 text-zinc-350 uppercase">
                     WINS VS LOSSES BY TIME OF DAY
                   </h3>
                   <div className="h-[300px] w-full">
@@ -2619,18 +2619,31 @@ export const AdvancedReports: React.FC = () => {
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart
                           data={winsLossesByTime}
-                          margin={{ top: 10, right: 10, left: 10, bottom: 5 }}
+                          margin={{ top: 4, right: 10, left: 0, bottom: 5 }}
                         >
-                          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
-                          <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" />
-                          <YAxis stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" allowDecimals={false} />
+                          <CartesianGrid horizontal={true} vertical={false} strokeDasharray="3 3" stroke="var(--border)" />
+                          <XAxis dataKey="name" stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" tick={{ fill: 'var(--text-sub)' }} axisLine={{ stroke: 'rgba(0,0,0,0.2)' }} tickLine={false} />
+                          <YAxis stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" allowDecimals={false} tickCount={8} tick={{ fill: 'var(--text-sub)' }} axisLine={false} tickLine={false} width={28} />
                           <RechartsTooltip
-                            cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
-                            contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text)', fontSize: '11px', fontFamily: 'monospace' }}
+                            cursor={{ fill: 'transparent' }}
+                            content={({ active, payload, label }: any) => {
+                              if (!active || !payload?.length) return null;
+                              return (
+                                <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '6px 10px', fontSize: '11px', fontFamily: 'monospace' }}>
+                                  <div style={{ color: 'var(--text-sub)', marginBottom: '4px' }}>{label}</div>
+                                  {payload.map((p: any) => (
+                                    <div key={p.dataKey}>
+                                      <span style={{ color: 'var(--text)' }}>{p.name} : </span>
+                                      <span style={{ color: p.dataKey === 'wins' ? '#008F67' : '#DF1C30', fontWeight: 600 }}>{p.value}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              );
+                            }}
                           />
-                          <Legend wrapperStyle={{ fontSize: '11px', fontFamily: 'monospace', paddingTop: '10px' }} />
-                          <Bar dataKey="wins" name="Wins" fill="#22c55e" radius={[4, 4, 0, 0]} />
-                          <Bar dataKey="losses" name="Losses" fill="#ef4444" radius={[4, 4, 0, 0]} />
+                          <Legend verticalAlign="top" align="right" wrapperStyle={{ fontSize: '11px', fontFamily: 'monospace', paddingBottom: '8px' }} />
+                          <Bar dataKey="wins" name="Wins" fill="#008F67" radius={[4, 4, 0, 0]} />
+                          <Bar dataKey="losses" name="Losses" fill="#DF1C30" radius={[4, 4, 0, 0]} />
                         </BarChart>
                       </ResponsiveContainer>
                     )}
@@ -2677,28 +2690,28 @@ export const AdvancedReports: React.FC = () => {
                                   index % 2 === 1 ? 'bg-zinc-800/5 dark:bg-zinc-100/5' : 'bg-transparent'
                                 } hover:bg-zinc-800/10 dark:hover:bg-zinc-100/10 transition-colors text-xs font-sans`}
                               >
-                                <td className="py-3.5 px-4 font-semibold text-zinc-200">
+                                <td className="py-2 px-4 font-semibold" style={{ color: 'var(--text)' }}>
                                   {row.name}
                                 </td>
-                                <td className="py-3.5 px-4 text-center font-mono font-bold text-zinc-300">
+                                <td className="py-2 px-4 text-center font-mono" style={{ color: 'var(--text)' }}>
                                   {row.trades}
                                 </td>
-                                <td className="py-3.5 px-4 text-center font-mono font-bold text-green-500 bg-green-500/5">
+                                <td className="py-2 px-4 text-center font-mono bg-green-500/5" style={{ color: '#008F67' }}>
                                   {row.wins}
                                 </td>
-                                <td className="py-3.5 px-4 text-center font-mono font-bold text-red-500 bg-red-500/5">
+                                <td className="py-2 px-4 text-center font-mono bg-red-500/5" style={{ color: '#DF1C30' }}>
                                   {row.losses}
                                 </td>
-                                <td className={`py-3.5 px-4 text-center font-mono font-bold ${row.winRate >= 50 ? 'text-green-500' : 'text-red-500'}`}>
+                                <td className="py-2 px-4 text-center font-mono" style={{ color: row.winRate >= 50 ? '#008F67' : '#DF1C30' }}>
                                   {row.winRate.toFixed(1)}%
                                 </td>
-                                <td className="py-3.5 px-4 text-right font-mono font-bold text-green-500 bg-green-500/10">
+                                <td className="py-2 px-4 text-right font-mono bg-green-500/10" style={{ color: '#008F67' }}>
                                   {formatINR(row.avgWin)}
                                 </td>
-                                <td className="py-3.5 px-4 text-right font-mono font-bold text-red-500 bg-red-500/10">
+                                <td className="py-2 px-4 text-right font-mono bg-red-500/10" style={{ color: '#DF1C30' }}>
                                   {formatINR(row.avgLoss)}
                                 </td>
-                                <td className={`py-3.5 px-4 text-right font-mono font-bold ${row.netPnl > 0 ? 'text-green-500' : row.netPnl < 0 ? 'text-red-500' : 'text-zinc-200'}`}>
+                                <td className="py-2 px-4 text-right font-mono" style={{ color: row.netPnl > 0 ? '#008F67' : row.netPnl < 0 ? '#DF1C30' : 'var(--text-muted)' }}>
                                   {formatINR(row.netPnl)}
                                 </td>
                               </tr>
