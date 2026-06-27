@@ -985,7 +985,7 @@ export const TradingLogsPage: React.FC = () => {
 
         {/* CONTAINER CONTENT */}
         <main className="flex-1 overflow-y-auto px-0">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-7xl mx-auto" style={{ overflowX: 'hidden' }}>
             {/* PAGE HEADER */}
             <div
               style={{
@@ -1607,7 +1607,7 @@ export const TradingLogsPage: React.FC = () => {
                       className="w-full text-left border-collapse"
                     >
                     <thead>
-                      <tr className="border-b select-none font-sans" style={{ background: 'rgba(0, 0, 0, 0.04)', borderColor: 'rgba(0, 0, 0, 0.08)', color: 'var(--text-muted)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      <tr className="border-b select-none font-sans" style={{ backgroundColor: 'var(--row)', borderBottom: '1px solid var(--border)', color: 'var(--text-muted)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                         {/* SELECT ALL CHECKBOX */}
                         <th className="px-4 py-4 w-12 text-center">
                           <div 
@@ -1717,7 +1717,7 @@ export const TradingLogsPage: React.FC = () => {
                           >
                             {/* Row Checkbox Column */}
                             <td 
-                              style={{ padding: '10px 16px' }} 
+                              style={{ padding: '8px 16px' }} 
                               className="text-center w-12 shrink-0"
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -1764,7 +1764,7 @@ export const TradingLogsPage: React.FC = () => {
                             </td>
 
                             {/* Counter Index */}
-                            <td style={{ padding: '10px 16px', color: 'var(--text-muted)', fontSize: '13px' }} className="text-center font-bold w-10">
+                            <td style={{ padding: '8px 16px', color: 'var(--text-muted)', fontSize: '13px' }} className="text-center font-bold w-10">
                               {(currentPage - 1) * tradesPerPage + index + 1}
                             </td>
 
@@ -1772,14 +1772,14 @@ export const TradingLogsPage: React.FC = () => {
                             {ALL_COLUMNS_INFO.map((col) => {
                               if (!selectedColumns[col.id]) return null;
                               return (
-                                <td key={col.id} style={{ padding: '10px 16px', fontSize: '13px', color: 'var(--text)' }} className="whitespace-nowrap font-sans">
+                                <td key={col.id} style={{ padding: '8px 16px', fontSize: '13px', color: 'var(--text)' }} className="whitespace-nowrap font-sans">
                                   {colDefinitions[col.id].renderCell(item)}
                                 </td>
                               );
                             })}
 
                             {/* AI Action column */}
-                            <td style={{ padding: '10px 16px', fontSize: '13px', color: 'var(--text)' }} className="whitespace-nowrap text-center font-sans">
+                            <td style={{ padding: '8px 16px', fontSize: '13px', color: 'var(--text)' }} className="whitespace-nowrap text-center font-sans">
                               <button
                                 id={`logs-table-ask-ai-${item.id}`}
                                 onClick={(e) => {
