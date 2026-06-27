@@ -2751,7 +2751,7 @@ export const AdvancedReports: React.FC = () => {
                         key={sf.id}
                         type="button"
                         onClick={() => setMarketBehaviorSubFilter(sf.id as any)}
-                        className="px-3.5 py-1.5 text-[10px] font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap"
+                        className="px-3.5 py-1.5 text-[10px] font-bold rounded transition-all cursor-pointer whitespace-nowrap"
                         style={{
                           backgroundColor: isActive ? 'var(--card)' : 'transparent',
                           color: isActive ? 'var(--accent)' : 'var(--text-sub)',
