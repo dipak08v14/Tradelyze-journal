@@ -2476,44 +2476,44 @@ export const AdvancedReports: React.FC = () => {
                   </div>
                   <div className="text-sm">
                     <div className="grid grid-cols-3 py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
-                      <div className="font-mono whitespace-nowrap" style={{ color: '#008F67' }}>{winsLossesStats.totalCountWins}</div>
+                      <div className="font-sans whitespace-nowrap" style={{ color: '#008F67' }}>{winsLossesStats.totalCountWins}</div>
                       <div className="text-center text-zinc-400 font-mono text-[11px] uppercase tracking-wider">Total Count</div>
-                      <div className="font-mono text-right whitespace-nowrap" style={{ color: '#DF1C30' }}>{winsLossesStats.totalCountLosses}</div>
+                      <div className="font-sans text-right whitespace-nowrap" style={{ color: '#DF1C30' }}>{winsLossesStats.totalCountLosses}</div>
                     </div>
                     <div className="grid grid-cols-3 py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
-                      <div className="font-mono whitespace-nowrap" style={{ color: '#008F67' }}>{formatINR(winsLossesStats.totalPnlWins)}</div>
+                      <div className="font-sans whitespace-nowrap" style={{ color: '#008F67' }}>{formatINR(winsLossesStats.totalPnlWins)}</div>
                       <div className="text-center text-zinc-400 font-mono text-[11px] uppercase tracking-wider">Total P&L</div>
-                      <div className="font-mono text-right whitespace-nowrap" style={{ color: '#DF1C30' }}>{formatINR(winsLossesStats.totalPnlLosses)}</div>
+                      <div className="font-sans text-right whitespace-nowrap" style={{ color: '#DF1C30' }}>{formatINR(winsLossesStats.totalPnlLosses)}</div>
                     </div>
                     <div className="grid grid-cols-3 py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
-                      <div className="font-mono whitespace-nowrap" style={{ color: '#008F67' }}>{formatINR(winsLossesStats.avgPnlWins)}</div>
+                      <div className="font-sans whitespace-nowrap" style={{ color: '#008F67' }}>{formatINR(winsLossesStats.avgPnlWins)}</div>
                       <div className="text-center text-zinc-400 font-mono text-[11px] uppercase tracking-wider">Average Per Trade</div>
-                      <div className="font-mono text-right whitespace-nowrap" style={{ color: '#DF1C30' }}>{formatINR(winsLossesStats.avgPnlLosses)}</div>
+                      <div className="font-sans text-right whitespace-nowrap" style={{ color: '#DF1C30' }}>{formatINR(winsLossesStats.avgPnlLosses)}</div>
                     </div>
                     <div className="grid grid-cols-3 py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
-                      <div className="font-mono whitespace-nowrap" style={{ color: '#008F67' }}>{winsLossesStats.avgRMultipleWins !== null ? `+${winsLossesStats.avgRMultipleWins.toFixed(2)}R` : '—'}</div>
+                      <div className="font-sans whitespace-nowrap" style={{ color: '#008F67' }}>{winsLossesStats.avgRMultipleWins !== null ? `+${winsLossesStats.avgRMultipleWins.toFixed(2)}R` : '—'}</div>
                       <div className="text-center text-zinc-400 font-mono text-[11px] uppercase tracking-wider">Average R-Multiple</div>
-                      <div className="font-mono text-right whitespace-nowrap" style={{ color: '#DF1C30' }}>{winsLossesStats.avgRMultipleLosses !== null ? `${winsLossesStats.avgRMultipleLosses.toFixed(2)}R` : '—'}</div>
+                      <div className="font-sans text-right whitespace-nowrap" style={{ color: '#DF1C30' }}>{winsLossesStats.avgRMultipleLosses !== null ? `${winsLossesStats.avgRMultipleLosses.toFixed(2)}R` : '—'}</div>
                     </div>
                     <div className="grid grid-cols-3 py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
-                      <div className="font-mono whitespace-nowrap" style={{ color: '#008F67' }}>{formatMins(winsLossesStats.avgHoldWins)}</div>
+                      <div className="font-sans whitespace-nowrap" style={{ color: '#008F67' }}>{formatMins(winsLossesStats.avgHoldWins)}</div>
                       <div className="text-center text-zinc-400 font-mono text-[11px] uppercase tracking-wider">Average Hold Time</div>
-                      <div className="font-mono text-right whitespace-nowrap" style={{ color: '#DF1C30' }}>{formatMins(winsLossesStats.avgHoldLosses)}</div>
+                      <div className="font-sans text-right whitespace-nowrap" style={{ color: '#DF1C30' }}>{formatMins(winsLossesStats.avgHoldLosses)}</div>
                     </div>
                     <div className="grid grid-cols-3 py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
-                      <div className="font-mono whitespace-nowrap" style={{ color: '#008F67' }}>{formatINR(winsLossesStats.largestWin)}</div>
+                      <div className="font-sans whitespace-nowrap" style={{ color: '#008F67' }}>{formatINR(winsLossesStats.largestWin)}</div>
                       <div className="text-center text-zinc-400 font-mono text-[11px] uppercase tracking-wider">Largest</div>
-                      <div className="font-mono text-right whitespace-nowrap" style={{ color: '#DF1C30' }}>{formatINR(winsLossesStats.largestLoss)}</div>
+                      <div className="font-sans text-right whitespace-nowrap" style={{ color: '#DF1C30' }}>{formatINR(winsLossesStats.largestLoss)}</div>
                     </div>
                     <div className="grid grid-cols-3 py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
-                      <div className="font-mono truncate pr-2" style={{ color: 'var(--text)' }} title={winsLossesStats.topWinSetup}>{winsLossesStats.topWinSetup}</div>
+                      <div className="font-sans truncate pr-2" style={{ color: 'var(--text)' }} title={winsLossesStats.topWinSetup}>{winsLossesStats.topWinSetup}</div>
                       <div className="text-center text-zinc-400 font-mono text-[11px] uppercase tracking-wider">Most Common Setup</div>
-                      <div className="font-mono text-right truncate pl-2" style={{ color: 'var(--text)' }} title={winsLossesStats.topLossSetup}>{winsLossesStats.topLossSetup}</div>
+                      <div className="font-sans text-right truncate pl-2" style={{ color: 'var(--text)' }} title={winsLossesStats.topLossSetup}>{winsLossesStats.topLossSetup}</div>
                     </div>
                     <div className="grid grid-cols-3 py-2 items-center">
-                      <div className="font-mono truncate pr-2" style={{ color: 'var(--text)' }} title={winsLossesStats.topWinMistake}>{winsLossesStats.topWinMistake}</div>
+                      <div className="font-sans truncate pr-2" style={{ color: 'var(--text)' }} title={winsLossesStats.topWinMistake}>{winsLossesStats.topWinMistake}</div>
                       <div className="text-center text-zinc-400 font-mono text-[11px] uppercase tracking-wider">Most Common Mistake</div>
-                      <div className="font-mono text-right truncate pl-2" style={{ color: 'var(--text)' }} title={winsLossesStats.topLossMistake}>{winsLossesStats.topLossMistake}</div>
+                      <div className="font-sans text-right truncate pl-2" style={{ color: 'var(--text)' }} title={winsLossesStats.topLossMistake}>{winsLossesStats.topLossMistake}</div>
                     </div>
                   </div>
                 </div>
