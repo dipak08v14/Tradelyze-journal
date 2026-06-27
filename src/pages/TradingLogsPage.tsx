@@ -680,8 +680,8 @@ export const TradingLogsPage: React.FC = () => {
       renderCell: (item) => item.direction ? (
         <span
           style={{
-            backgroundColor: item.direction === 'LONG' ? '#dcfce7' : '#fee2e2',
-            color: item.direction === 'LONG' ? '#16a34a' : '#dc2626',
+            backgroundColor: item.direction === 'LONG' ? 'rgba(0,143,103,0.12)' : 'rgba(223,28,48,0.12)',
+            color: item.direction === 'LONG' ? '#008F67' : '#DF1C30',
             borderRadius: '6px',
             padding: '2px 8px',
             fontSize: '11px',
@@ -748,7 +748,7 @@ export const TradingLogsPage: React.FC = () => {
         return (
           <span
             style={{
-              color: hasProfit ? '#22c55e' : hasLoss ? '#ef4444' : 'var(--text-muted)',
+              color: hasProfit ? '#008F67' : hasLoss ? '#DF1C30' : 'var(--text-muted)',
               fontWeight: 600
             }}
             className="font-mono text-sm"
@@ -763,9 +763,8 @@ export const TradingLogsPage: React.FC = () => {
       sortField: 'r_multiple',
       renderCell: (item) => item.r_multiple !== null ? (
         <span
-          className={`font-mono font-bold text-xs ${
-            item.r_multiple > 0 ? 'text-green-500' : 'text-red-500'
-          }`}
+          className="font-mono font-bold text-xs"
+          style={{ color: item.r_multiple > 0 ? '#008F67' : '#DF1C30' }}
         >
           {item.r_multiple > 0 ? '+' : ''}
           {item.r_multiple.toFixed(2)}R
@@ -780,12 +779,12 @@ export const TradingLogsPage: React.FC = () => {
       renderCell: (item) => (
         <>
           {item.status === 'Win' && (
-            <span style={{ backgroundColor: '#dcfce7', color: '#16a34a', border: '1px solid #bbf7d0', borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px' }} className="inline-block">
+            <span style={{ backgroundColor: 'rgba(0,143,103,0.12)', color: '#008F67', border: '1px solid rgba(0,143,103,0.2)', borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px' }} className="inline-block">
               WIN
             </span>
           )}
           {item.status === 'Loss' && (
-            <span style={{ backgroundColor: '#fee2e2', color: '#dc2626', border: '1px solid #fecaca', borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px' }} className="inline-block">
+            <span style={{ backgroundColor: 'rgba(223,28,48,0.12)', color: '#DF1C30', border: '1px solid rgba(223,28,48,0.2)', borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px' }} className="inline-block">
               LOSS
             </span>
           )}
@@ -1387,7 +1386,7 @@ export const TradingLogsPage: React.FC = () => {
                 </div>
                 <div 
                   className="mt-1 font-mono"
-                  style={{ fontSize: '20px', fontWeight: 700, color: calculatedStats.totalPnl > 0 ? '#22c55e' : calculatedStats.totalPnl < 0 ? '#ef4444' : 'var(--text)' }}
+                  style={{ fontSize: '20px', fontWeight: 700, color: calculatedStats.totalPnl > 0 ? '#008F67' : calculatedStats.totalPnl < 0 ? '#DF1C30' : 'var(--text)' }}
                 >
                   {formatINRStat(calculatedStats.totalPnl)}
                 </div>
