@@ -2020,7 +2020,7 @@ export const AdvancedReports: React.FC = () => {
             ) : activeTab === 'DETAILED' ? (
               <div className="space-y-6 animate-in fade-in duration-350">
                 {/* SUB-FILTER PILLS ROW */}
-                <div className="flex overflow-x-auto gap-1.5 p-1 rounded-xl font-mono no-scrollbar" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', maxWidth: 'max-content' }}>
+                <div className="flex overflow-x-auto gap-1.5 p-1 rounded-lg font-mono no-scrollbar" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', maxWidth: 'max-content' }}>
                   {[
                     { id: 'DAYS', label: 'DAYS' },
                     { id: 'MONTHS', label: 'MONTHS' },
@@ -2036,7 +2036,7 @@ export const AdvancedReports: React.FC = () => {
                         key={sf.id}
                         type="button"
                         onClick={() => setDetailedSubFilter(sf.id as any)}
-                        className="px-3.5 py-1.5 text-[10px] font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap"
+                        className="px-3.5 py-1.5 text-[10px] font-bold rounded transition-all cursor-pointer whitespace-nowrap"
                         style={{
                           backgroundColor: isActive ? 'var(--card)' : 'transparent',
                           color: isActive ? 'var(--accent)' : 'var(--text-sub)',
