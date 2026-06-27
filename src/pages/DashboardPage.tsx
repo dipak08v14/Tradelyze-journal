@@ -2173,7 +2173,7 @@ export const DashboardPage: React.FC = () => {
                             />
                             <PolarAngleAxis
                               dataKey="metric"
-                              tick={{ fill: 'var(--text-sub)', fontSize: 11, fontFamily: 'Inter' }}
+                              tick={{ fill: 'var(--text)', fontSize: 11, fontFamily: 'Inter' }}
                             />
                             <PolarRadiusAxis
                               angle={90}
@@ -2255,7 +2255,7 @@ export const DashboardPage: React.FC = () => {
 
                       {/* OVERALL SUMMARY CENTER */}
                       <div style={{ flexShrink: 0, padding: '4px 0', textAlign: 'center', marginTop: '2px' }}>
-                        <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Your Score: </span>
+                        <span style={{ fontSize: '13px', color: 'var(--text-sub)' }}>Your Score: </span>
                         <span className="animate-pulse" style={{ fontSize: '13px', fontWeight: 600, color: 'var(--accent)' }}>
                           {stats.avgOverallScore.toFixed(0)}%
                         </span>
@@ -2328,20 +2328,20 @@ export const DashboardPage: React.FC = () => {
                               <CartesianGrid
                                 horizontal={true}
                                 vertical={false}
-                                stroke="rgba(0, 0, 0, 0.06)"
+                                stroke="var(--border)"
                                 strokeDasharray="3 4"
                               />
                               <XAxis
                                 dataKey="day"
-                                tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
+                                tick={{ fontSize: 10, fill: 'var(--text-sub)' }}
                                 tickLine={false}
-                                axisLine={{ stroke: 'var(--border)' }}
+                                axisLine={{ stroke: 'var(--text-muted)' }}
                                 height={20}
                                 tickMargin={4}
                                 padding={{ left: 4, right: 4 }}
                               />
                               <YAxis
-                                tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
+                                tick={{ fontSize: 10, fill: 'var(--text-sub)' }}
                                 tickLine={false}
                                 axisLine={false}
                                 tickFormatter={(v) => {
@@ -2432,20 +2432,20 @@ export const DashboardPage: React.FC = () => {
                               <CartesianGrid
                                 horizontal={true}
                                 vertical={false}
-                                stroke="rgba(0, 0, 0, 0.06)"
+                                stroke="var(--border)"
                                 strokeDasharray="3 4"
                               />
                               <XAxis
                                 dataKey="day"
-                                tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
+                                tick={{ fontSize: 10, fill: 'var(--text-sub)' }}
                                 tickLine={false}
-                                axisLine={{ stroke: 'var(--border)' }}
+                                axisLine={{ stroke: 'var(--text-muted)' }}
                                 height={20}
                                 tickMargin={4}
                                 padding={{ left: 4, right: 4 }}
                               />
                               <YAxis
-                                tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
+                                tick={{ fontSize: 10, fill: 'var(--text-sub)' }}
                                 tickLine={false}
                                 axisLine={false}
                                 tickFormatter={(v) => {
@@ -2797,18 +2797,20 @@ export const DashboardPage: React.FC = () => {
                           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
                             <div
                               key={day}
-                              style={{ 
-                                width: '100%', 
-                                minWidth: '0px', 
-                                overflow: 'hidden', 
-                                boxSizing: 'border-box', 
-                                color: 'var(--text-muted)',
-                                backgroundColor: 'var(--bg-secondary, var(--card-bg, var(--bg)))',
-                                padding: '8px 0',
-                                textAlign: 'center',
-                                borderRadius: '4px'
+                              className="text-center text-[10px] uppercase font-bold tracking-wider" style={{ color: 'var(--text-sub)' }}
+                              {...{
+                                style: { 
+                                  width: '100%', 
+                                  minWidth: '0px', 
+                                  overflow: 'hidden', 
+                                  boxSizing: 'border-box', 
+                                  color: 'var(--text-sub)',
+                                  backgroundColor: 'var(--bg-secondary, var(--card-bg, var(--bg)))',
+                                  padding: '8px 0',
+                                  textAlign: 'center',
+                                  borderRadius: '4px'
+                                }
                               }}
-                              className="text-center text-[10px] uppercase font-bold tracking-wider"
                             >
                               {day}
                             </div>
@@ -3230,7 +3232,7 @@ export const DashboardPage: React.FC = () => {
                             <PolarGrid stroke="var(--bar)" />
                             <PolarAngleAxis
                               dataKey="metric"
-                              tick={{ fill: 'var(--text-sub)', fontSize: 11, fontFamily: 'Inter' }}
+                              tick={{ fill: 'var(--text)', fontSize: 11, fontFamily: 'Inter' }}
                             />
                             <PolarRadiusAxis
                               angle={90}
