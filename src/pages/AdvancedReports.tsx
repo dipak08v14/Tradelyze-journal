@@ -2127,19 +2127,22 @@ export const AdvancedReports: React.FC = () => {
                               layout="vertical"
                               margin={{ top: 4, right: 8, left: 0, bottom: 0 }}
                             >
-                              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
-                              <XAxis type="number" stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" allowDecimals={false} />
-                              <YAxis
-                                dataKey="name"
-                                type="category"
-                                stroke="var(--text-muted)"
-                                fontSize={11}
-                                fontFamily="monospace"
-                                width={detailedSubFilter === 'MISTAKES' || detailedSubFilter === 'SETUPS' || detailedSubFilter === 'SYMBOL' ? 120 : 80}
-                              />
+                              <CartesianGrid horizontal={false} vertical={true} strokeDasharray="3 3" stroke="var(--border)" />
+                              <XAxis type="number" stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" allowDecimals={false} tickCount={10} tick={{ fill: 'var(--text-sub)' }} />
+                              <YAxis dataKey="name" type="category" stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" tick={{ fill: 'var(--text-sub)' }} width={detailedSubFilter === 'MISTAKES' || detailedSubFilter === 'SETUPS' || detailedSubFilter === 'SYMBOL' ? 120 : 80} />
                               <RechartsTooltip
-                                cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
-                                contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text)', fontSize: '11px', fontFamily: 'monospace' }}
+                                cursor={{ fill: 'rgba(0,0,0,0.03)' }}
+                                content={({ active, payload, label }: any) => {
+                                  if (!active || !payload?.length) return null;
+                                  const val = payload[0]?.value;
+                                  return (
+                                    <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '6px 10px', fontSize: '11px', fontFamily: 'monospace' }}>
+                                      <div style={{ color: 'var(--text-sub)', marginBottom: '2px' }}>{label}</div>
+                                      <span style={{ color: 'var(--text)' }}>Count : </span>
+                                      <span style={{ color: 'var(--accent)', fontWeight: 600 }}>{val}</span>
+                                    </div>
+                                  );
+                                }}
                               />
                               <Bar dataKey="count" fill="#06b6d4" radius={[0, 4, 4, 0]} />
                             </BarChart>
@@ -2165,24 +2168,26 @@ export const AdvancedReports: React.FC = () => {
                               layout="vertical"
                               margin={{ top: 4, right: 8, left: 0, bottom: 0 }}
                             >
-                              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
-                              <XAxis type="number" stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" />
-                              <YAxis
-                                dataKey="name"
-                                type="category"
-                                stroke="var(--text-muted)"
-                                fontSize={11}
-                                fontFamily="monospace"
-                                width={detailedSubFilter === 'MISTAKES' || detailedSubFilter === 'SETUPS' || detailedSubFilter === 'SYMBOL' ? 120 : 80}
-                              />
+                              <CartesianGrid horizontal={false} vertical={true} strokeDasharray="3 3" stroke="var(--border)" />
+                              <XAxis type="number" stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" tickCount={10} tick={{ fill: 'var(--text-sub)' }} />
+                              <YAxis dataKey="name" type="category" stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" tick={{ fill: 'var(--text-sub)' }} width={detailedSubFilter === 'MISTAKES' || detailedSubFilter === 'SETUPS' || detailedSubFilter === 'SYMBOL' ? 120 : 80} />
                               <RechartsTooltip
-                                cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
-                                formatter={(value: any) => [formatINR(value), 'Net P&L']}
-                                contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text)', fontSize: '11px', fontFamily: 'monospace' }}
+                                cursor={{ fill: 'rgba(0,0,0,0.03)' }}
+                                content={({ active, payload, label }: any) => {
+                                  if (!active || !payload?.length) return null;
+                                  const val = payload[0]?.value as number;
+                                  return (
+                                    <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '6px 10px', fontSize: '11px', fontFamily: 'monospace' }}>
+                                      <div style={{ color: 'var(--text-sub)', marginBottom: '2px' }}>{label}</div>
+                                      <span style={{ color: 'var(--text)' }}>Net P&L : </span>
+                                      <span style={{ color: val >= 0 ? '#008F67' : '#DF1C30', fontWeight: 600 }}>{formatINR(val)}</span>
+                                    </div>
+                                  );
+                                }}
                               />
                               <Bar dataKey="netPnl" radius={[0, 4, 4, 0]}>
                                 {detailedData.map((entry, index) => (
-                                  <Cell key={`cell-${index}`} fill={entry.netPnl >= 0 ? '#22c55e' : '#ef4444'} />
+                                  <Cell key={`cell-${index}`} fill={entry.netPnl >= 0 ? '#008F67' : '#DF1C30'} />
                                 ))}
                               </Bar>
                               <ReferenceLine x={0} stroke="var(--border)" strokeDasharray="3 3" />
