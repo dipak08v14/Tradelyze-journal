@@ -1363,7 +1363,7 @@ export const AdvancedReports: React.FC = () => {
     }
 
     return (
-      <div key={monthIdx} className="p-4 rounded-2xl shadow-sm transition-all hover:shadow duration-200" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+      <div key={monthIdx} className="p-3 rounded-xl shadow-sm transition-all hover:shadow duration-200" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
         <h3 className="text-xs font-bold mb-3 text-center uppercase tracking-wider font-mono" style={{ color: 'var(--text-sub)' }}>
           {MONTH_NAMES[monthIdx]}
         </h3>
@@ -1886,9 +1886,9 @@ export const AdvancedReports: React.FC = () => {
                 </div>
               </div>
             ) : activeTab === 'CALENDAR' ? (
-              <div className="space-y-6">
+              <div className="space-y-3">
                 {/* CALENDAR HEADER & NAVIGATION */}
-                <div className="flex items-center justify-between p-4 rounded-2xl" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                <div className="flex items-center justify-between px-1 py-0">
                   <div className="text-sm font-bold font-mono" style={{ color: 'var(--text-sub)' }}>
                     YEAR WORKSPACE
                   </div>
@@ -1939,7 +1939,7 @@ export const AdvancedReports: React.FC = () => {
                 </div>
 
                 {/* 12 Months Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3">
                   {Array.from({ length: 12 }).map((_, monthIdx) => renderMonthCalendar(monthIdx))}
                 </div>
 
