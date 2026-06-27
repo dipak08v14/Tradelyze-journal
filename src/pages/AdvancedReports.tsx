@@ -2131,7 +2131,7 @@ export const AdvancedReports: React.FC = () => {
                               <XAxis type="number" stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" allowDecimals={false} tickCount={10} tick={{ fill: 'var(--text-sub)' }} />
                               <YAxis dataKey="name" type="category" stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" tick={{ fill: 'var(--text-sub)' }} width={detailedSubFilter === 'MISTAKES' || detailedSubFilter === 'SETUPS' || detailedSubFilter === 'SYMBOL' ? 120 : 80} />
                               <RechartsTooltip
-                                cursor={{ fill: 'rgba(0,0,0,0.03)' }}
+                                cursor={{ fill: 'transparent' }}
                                 content={({ active, payload, label }: any) => {
                                   if (!active || !payload?.length) return null;
                                   const val = payload[0]?.value;
@@ -2172,7 +2172,7 @@ export const AdvancedReports: React.FC = () => {
                               <XAxis type="number" stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" tickCount={10} tick={{ fill: 'var(--text-sub)' }} />
                               <YAxis dataKey="name" type="category" stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" tick={{ fill: 'var(--text-sub)' }} width={detailedSubFilter === 'MISTAKES' || detailedSubFilter === 'SETUPS' || detailedSubFilter === 'SYMBOL' ? 120 : 80} />
                               <RechartsTooltip
-                                cursor={{ fill: 'rgba(0,0,0,0.03)' }}
+                                cursor={{ fill: 'transparent' }}
                                 content={({ active, payload, label }: any) => {
                                   if (!active || !payload?.length) return null;
                                   const val = payload[0]?.value as number;
@@ -2209,12 +2209,12 @@ export const AdvancedReports: React.FC = () => {
                         <table className="w-full text-left border-collapse">
                           <thead>
                             <tr style={{ borderBottom: '1px solid var(--border)' }} className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 bg-zinc-800/10 dark:bg-zinc-100/5">
-                              <th className="py-3 px-4 font-bold">Category</th>
-                              <th className="py-3 px-4 font-bold text-right">Net Profits</th>
-                              <th className="py-3 px-4 font-bold text-center">Win %</th>
-                              <th className="py-3 px-4 font-bold text-right bg-green-500/5">Total Profits</th>
-                              <th className="py-3 px-4 font-bold text-right bg-red-500/5">Total Loss</th>
-                              <th className="py-3 px-4 font-bold text-center">Trades</th>
+                              <th className="py-2 px-4 font-bold">Category</th>
+                              <th className="py-2 px-4 font-bold text-right">Net Profits</th>
+                              <th className="py-2 px-4 font-bold text-center">Win %</th>
+                              <th className="py-2 px-4 font-bold text-right bg-green-500/5">Total Profits</th>
+                              <th className="py-2 px-4 font-bold text-right bg-red-500/5">Total Loss</th>
+                              <th className="py-2 px-4 font-bold text-center">Trades</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-[var(--border)]">
@@ -2227,23 +2227,23 @@ export const AdvancedReports: React.FC = () => {
                                   } hover:bg-zinc-800/10 dark:hover:bg-zinc-100/10 transition-colors text-xs font-sans`}
                                 >
                                   {/* Category */}
-                                  <td className="py-3.5 px-4 font-semibold text-zinc-200">
+                                  <td className="py-2 px-4 font-semibold text-zinc-200">
                                     {row.name}
                                   </td>
 
                                   {/* Net Profits */}
-                                  <td className={`py-3.5 px-4 text-right font-mono font-bold ${row.netPnl > 0 ? 'text-green-500' : row.netPnl < 0 ? 'text-red-500' : 'text-zinc-255'}`}>
+                                  <td className="py-2 px-4 text-right font-mono font-bold" style={{ color: row.netPnl > 0 ? '#008F67' : row.netPnl < 0 ? '#DF1C30' : 'var(--text-muted)' }}>
                                     {formatINR(row.netPnl)}
                                   </td>
 
                                   {/* Win % with custom split progress bar */}
-                                  <td className="py-3.5 px-4">
+                                  <td className="py-2 px-4">
                                     <div className="flex items-center justify-center gap-2 max-w-[150px] mx-auto">
                                       {row.count > 0 ? (
                                         <>
                                           <div className="w-16 h-2 rounded bg-zinc-700/30 flex overflow-hidden">
-                                            <div className="bg-green-500 h-full" style={{ width: `${row.winPct}%` }} />
-                                            <div className="bg-red-500 h-full" style={{ width: `${100 - row.winPct}%` }} />
+                                            <div className="h-full" style={{ width: `${row.winPct}%`, backgroundColor: '#008F67' }} />
+                                            <div className="h-full" style={{ width: `${100 - row.winPct}%`, backgroundColor: '#DF1C30' }} />
                                           </div>
                                           <span className="font-mono font-bold text-zinc-350 text-xs">{row.winPct.toFixed(1)}%</span>
                                         </>
@@ -2254,17 +2254,17 @@ export const AdvancedReports: React.FC = () => {
                                   </td>
 
                                   {/* Total Profits */}
-                                  <td className="py-3.5 px-4 text-right font-mono font-bold text-green-500 bg-green-500/5">
+                                  <td className="py-2 px-4 text-right font-mono font-bold bg-green-500/5" style={{ color: '#008F67' }}>
                                     {formatINR(row.totalProfit)}
                                   </td>
 
                                   {/* Total Loss */}
-                                  <td className="py-3.5 px-4 text-right font-mono font-bold text-red-500 bg-red-500/5">
+                                  <td className="py-2 px-4 text-right font-mono font-bold bg-red-500/5" style={{ color: '#DF1C30' }}>
                                     {formatINR(row.totalLoss)}
                                   </td>
 
                                   {/* Trades */}
-                                  <td className="py-3.5 px-4 text-center font-mono font-bold text-zinc-300">
+                                  <td className="py-2 px-4 text-center font-mono font-bold text-zinc-300">
                                     {row.count}
                                   </td>
                                 </tr>
