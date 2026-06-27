@@ -2357,20 +2357,13 @@ export const DashboardPage: React.FC = () => {
                               <ReferenceLine y={0} stroke="var(--border)" strokeDasharray="3 3" />
                               <RechartsTooltip
                                 cursor={{ stroke: 'rgba(0,0,0,0.06)', strokeWidth: 1 }}
-                                content={({ active, payload }) => {
+                                content={({ active, payload }: any) => {
                                   if (!active || !payload?.length) return null;
                                   const val = payload[0]?.value as number;
-                                  const isPos = val >= 0;
                                   return (
-                                    <div 
-                                      className="px-2.5 py-1.5 text-xs font-semibold rounded-md border shadow-sm"
-                                      style={{
-                                        backgroundColor: 'var(--card)',
-                                        borderColor: 'var(--border)',
-                                        color: isPos ? GREEN : RED
-                                      }}
-                                    >
-                                      {isPos ? `+₹${val.toLocaleString('en-IN')}` : `-₹${Math.abs(val).toLocaleString('en-IN')}`}
+                                    <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '5px 10px', fontSize: '11px', fontFamily: 'monospace' }}>
+                                      <span style={{ color: 'var(--text)' }}>Net P&L : </span>
+                                      <span style={{ color: val >= 0 ? '#008F67' : '#DF1C30', fontWeight: 600 }}>{val >= 0 ? '+' : ''}₹{Math.abs(val).toLocaleString('en-IN')}</span>
                                     </div>
                                   );
                                 }}
@@ -2467,20 +2460,13 @@ export const DashboardPage: React.FC = () => {
                               />
                               <RechartsTooltip
                                 cursor={false}
-                                content={({ active, payload }) => {
+                                content={({ active, payload }: any) => {
                                   if (!active || !payload?.length) return null;
                                   const val = payload[0]?.value as number;
-                                  const isPos = val >= 0;
                                   return (
-                                    <div 
-                                      className="px-2.5 py-1.5 text-xs font-semibold rounded-md border shadow-sm"
-                                      style={{
-                                        backgroundColor: 'var(--card)',
-                                        borderColor: 'var(--border)',
-                                        color: isPos ? GREEN : RED
-                                      }}
-                                    >
-                                      {isPos ? `+₹${val.toLocaleString('en-IN')}` : `-₹${Math.abs(val).toLocaleString('en-IN')}`}
+                                    <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '5px 10px', fontSize: '11px', fontFamily: 'monospace' }}>
+                                      <span style={{ color: 'var(--text)' }}>Net P&L : </span>
+                                      <span style={{ color: val >= 0 ? '#008F67' : '#DF1C30', fontWeight: 600 }}>{val >= 0 ? '+' : ''}₹{Math.abs(val).toLocaleString('en-IN')}</span>
                                     </div>
                                   );
                                 }}
