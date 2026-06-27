@@ -1366,7 +1366,7 @@ export const TradingLogsPage: React.FC = () => {
                   TOTAL TRADES
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginTop: '0px' }}>
-                  <div className="font-mono" style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text)' }}>
+                  <div className="font-mono" style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text)', marginTop: '4px' }}>
                     {calculatedStats.totalCount}
                   </div>
                   <div className="font-mono" style={{ position: 'absolute', top: '8px', right: '12px', display: 'flex', flexDirection: 'column', gap: '1px', fontSize: '11px', textAlign: 'right' }}>
@@ -1403,7 +1403,7 @@ export const TradingLogsPage: React.FC = () => {
                 </div>
                 <div 
                   className="mt-1 font-mono" 
-                  style={{ fontSize: '20px', fontWeight: 700, color: calculatedStats.profitFactor >= 1.0 ? 'var(--accent)' : '#ef4444' }}
+                  style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text)' }}
                 >
                   {calculatedStats.profitFactor === Infinity ? 'MAX' : calculatedStats.profitFactor === 0 ? '--' : calculatedStats.profitFactor.toFixed(2)}
                 </div>
@@ -1417,7 +1417,7 @@ export const TradingLogsPage: React.FC = () => {
                 <div style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>
                   WIN RATE
                 </div>
-                <div className="mt-1 font-mono" style={{ fontSize: '20px', fontWeight: 700, color: 'var(--accent)' }}>
+                <div className="mt-1 font-mono" style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text)' }}>
                   {calculatedStats.winRate.toFixed(1)}%
                 </div>
               </div>
@@ -1432,7 +1432,7 @@ export const TradingLogsPage: React.FC = () => {
                 </div>
                 <div 
                   className="mt-1 font-mono"
-                  style={{ fontSize: '20px', fontWeight: 700, color: calculatedStats.avgR >= 0 ? 'var(--accent)' : '#ef4444' }}
+                  style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text)' }}
                 >
                   {calculatedStats.avgR > 0 ? '+' : ''}{calculatedStats.avgR.toFixed(2)}R
                 </div>
