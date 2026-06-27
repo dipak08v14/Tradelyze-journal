@@ -1396,7 +1396,7 @@ export const TradingLogsPage: React.FC = () => {
             <div className="grid gap-4 md:grid animate-in fade-in duration-200" style={{ gridTemplateColumns: 'repeat(5, 1fr)', marginTop: '16px', marginBottom: '16px' }}>
               {/* Card 1: TOTAL TRADES */}
               <div 
-                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '20px', paddingBottom: '20px' }}
+                style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '20px', paddingBottom: '20px', position: 'relative' }}
                 className="px-4"
               >
                 <div style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>
@@ -1406,7 +1406,7 @@ export const TradingLogsPage: React.FC = () => {
                   <div className="font-mono" style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text)' }}>
                     {calculatedStats.totalCount}
                   </div>
-                  <div className="font-mono" style={{ display: 'flex', flexDirection: 'column', gap: '1px', fontSize: '11px', textAlign: 'right', alignSelf: 'flex-start', marginTop: '0px', paddingTop: '0px' }}>
+                  <div className="font-mono" style={{ position: 'absolute', top: '8px', right: '12px', display: 'flex', flexDirection: 'column', gap: '1px', fontSize: '11px', textAlign: 'right' }}>
                     <span style={{ color: '#008F67', fontWeight: 700 }}>W: {calculatedStats.winCount}</span>
                     <span style={{ color: '#DF1C30', fontWeight: 700 }}>L: {calculatedStats.lossCount}</span>
                     <span style={{ color: 'var(--text-muted)', fontWeight: 700 }}>BE: {calculatedStats.breakEvenCount}</span>
