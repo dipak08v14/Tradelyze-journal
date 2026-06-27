@@ -1600,94 +1600,94 @@ export const AdvancedReports: React.FC = () => {
 
                     <div className="space-y-px text-sm">
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Total P&L</span>
+                        <span className="text-sm text-zinc-400">Total P&L</span>
                         <span className={`font-mono font-bold ${overviewStats.totalPnl > 0 ? 'text-green-500' : overviewStats.totalPnl < 0 ? 'text-red-500' : 'text-zinc-200'}`}>
                           {formatINR(overviewStats.totalPnl)}
                         </span>
                       </div>
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Average Winning Trade</span>
+                        <span className="text-sm text-zinc-400">Average Winning Trade</span>
                         <span className="font-mono font-bold text-green-500">{formatINR(overviewStats.avgWin)}</span>
                       </div>
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Average Losing Trade</span>
+                        <span className="text-sm text-zinc-400">Average Losing Trade</span>
                         <span className="font-mono font-bold text-red-500">{formatINR(overviewStats.avgLoss)}</span>
                       </div>
 
                       <div className="my-1.5 border-t border-dashed" style={{ borderColor: 'var(--border)' }} />
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Total Trades</span>
+                        <span className="text-sm text-zinc-400">Total Trades</span>
                         <span className="font-mono font-bold text-zinc-200">{overviewStats.totalTrades}</span>
                       </div>
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Winning Trades</span>
+                        <span className="text-sm text-zinc-400">Winning Trades</span>
                         <span className="font-mono font-bold text-green-500">{overviewStats.winTradesCount}</span>
                       </div>
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Losing Trades</span>
+                        <span className="text-sm text-zinc-400">Losing Trades</span>
                         <span className="font-mono font-bold text-red-500">{overviewStats.lossTradesCount}</span>
                       </div>
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Breakeven Trades</span>
+                        <span className="text-sm text-zinc-400">Breakeven Trades</span>
                         <span className="font-mono font-bold text-zinc-400">{overviewStats.beTradesCount}</span>
                       </div>
 
                       <div className="my-1.5 border-t border-dashed" style={{ borderColor: 'var(--border)' }} />
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Max Consecutive Wins</span>
+                        <span className="text-sm text-zinc-400">Max Consecutive Wins</span>
                         <span className="font-mono font-bold text-green-500">+{overviewStats.maxConsecWins}</span>
                       </div>
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Max Consecutive Losses</span>
+                        <span className="text-sm text-zinc-400">Max Consecutive Losses</span>
                         <span className="font-mono font-bold text-red-500">-{overviewStats.maxConsecLosses}</span>
                       </div>
 
                       <div className="my-1.5 border-t border-dashed" style={{ borderColor: 'var(--border)' }} />
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Total Fees</span>
+                        <span className="text-sm text-zinc-400">Total Fees</span>
                         <span className="font-mono font-bold text-zinc-200">{formatINR(overviewStats.totalFees)}</span>
                       </div>
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Total Swap</span>
+                        <span className="text-sm text-zinc-400">Total Swap</span>
                         <span className="font-mono font-bold text-zinc-200">{formatINR(overviewStats.totalSwap)}</span>
                       </div>
 
                       <div className="my-1.5 border-t border-dashed" style={{ borderColor: 'var(--border)' }} />
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Largest Single Profit</span>
+                        <span className="text-sm text-zinc-400">Largest Single Profit</span>
                         <span className="font-mono font-bold text-green-500">{formatINR(overviewStats.largestWin)}</span>
                       </div>
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Largest Single Loss</span>
+                        <span className="text-sm text-zinc-400">Largest Single Loss</span>
                         <span className="font-mono font-bold text-red-500">{formatINR(overviewStats.largestLoss)}</span>
                       </div>
 
                       <div className="my-1.5 border-t border-dashed" style={{ borderColor: 'var(--border)' }} />
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Avg Hold Time (All)</span>
+                        <span className="text-sm text-zinc-400">Avg Hold Time (All)</span>
                         <span className="font-mono font-bold text-zinc-200">{formatMins(overviewStats.avgHoldTimeAll)}</span>
                       </div>
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Avg Hold Time (Wins)</span>
+                        <span className="text-sm text-zinc-400">Avg Hold Time (Wins)</span>
                         <span className="font-mono font-bold text-green-500">{formatMins(overviewStats.avgHoldTimeWins)}</span>
                       </div>
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Avg Hold Time (Losses)</span>
+                        <span className="text-sm text-zinc-400">Avg Hold Time (Losses)</span>
                         <span className="font-mono font-bold text-red-500">{formatMins(overviewStats.avgHoldTimeLosses)}</span>
                       </div>
                     </div>
@@ -1702,102 +1702,102 @@ export const AdvancedReports: React.FC = () => {
 
                     <div className="space-y-px text-sm">
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Profit Factor</span>
+                        <span className="text-sm text-zinc-400">Profit Factor</span>
                         <span className={`font-mono font-bold ${parseFloat(overviewStats.profitFactor) >= 1.5 ? 'text-green-500' : parseFloat(overviewStats.profitFactor) >= 1.0 ? 'text-zinc-200' : 'text-red-500'}`}>
                           {overviewStats.profitFactor}
                         </span>
                       </div>
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Average Trade P&L</span>
+                        <span className="text-sm text-zinc-400">Average Trade P&L</span>
                         <span className={`font-mono font-bold ${overviewStats.avgTradePnl > 0 ? 'text-green-500' : overviewStats.avgTradePnl < 0 ? 'text-red-500' : 'text-zinc-200'}`}>
                           {formatINR(overviewStats.avgTradePnl)}
                         </span>
                       </div>
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Average R-Multiple</span>
+                        <span className="text-sm text-zinc-400">Average R-Multiple</span>
                         <span className={`font-mono font-bold ${overviewStats.avgR >= 0 ? 'text-green-500' : 'text-red-500'}`}>
                           {overviewStats.avgR >= 0 ? '+' : ''}{overviewStats.avgR.toFixed(2)}R
                         </span>
                       </div>
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Trade Expectancy</span>
+                        <span className="text-sm text-zinc-400">Trade Expectancy</span>
                         <span className={`font-mono font-bold ${overviewStats.expectancy > 0 ? 'text-green-500' : overviewStats.expectancy < 0 ? 'text-red-500' : 'text-zinc-200'}`}>
                           {formatINR(overviewStats.expectancy)}
                         </span>
                       </div>
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Win Rate</span>
+                        <span className="text-sm text-zinc-400">Win Rate</span>
                         <span className="font-mono font-bold text-zinc-200">{overviewStats.winRate}</span>
                       </div>
 
                       <div className="my-1.5 border-t border-dashed" style={{ borderColor: 'var(--border)' }} />
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Total Trading Days</span>
+                        <span className="text-sm text-zinc-400">Total Trading Days</span>
                         <span className="font-mono font-bold text-zinc-200">{overviewStats.totalDays}</span>
                       </div>
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Winning Days</span>
+                        <span className="text-sm text-zinc-400">Winning Days</span>
                         <span className="font-mono font-bold text-green-500">{overviewStats.winDaysCount}</span>
                       </div>
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Losing Days</span>
+                        <span className="text-sm text-zinc-400">Losing Days</span>
                         <span className="font-mono font-bold text-red-500">{overviewStats.lossDaysCount}</span>
                       </div>
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Breakeven Days</span>
+                        <span className="text-sm text-zinc-400">Breakeven Days</span>
                         <span className="font-mono font-bold text-zinc-400">{overviewStats.beDaysCount}</span>
                       </div>
 
                       <div className="my-1.5 border-t border-dashed" style={{ borderColor: 'var(--border)' }} />
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Max Consecutive Win Days</span>
+                        <span className="text-sm text-zinc-400">Max Consecutive Win Days</span>
                         <span className="font-mono font-bold text-green-500">+{overviewStats.maxConsecWinDays} days</span>
                       </div>
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Max Consecutive Loss Days</span>
+                        <span className="text-sm text-zinc-400">Max Consecutive Loss Days</span>
                         <span className="font-mono font-bold text-red-500">-{overviewStats.maxConsecLossDays} days</span>
                       </div>
 
                       <div className="my-1.5 border-t border-dashed" style={{ borderColor: 'var(--border)' }} />
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Avg Daily P&L</span>
+                        <span className="text-sm text-zinc-400">Avg Daily P&L</span>
                         <span className={`font-mono font-bold ${overviewStats.avgDailyPnl > 0 ? 'text-green-500' : overviewStats.avgDailyPnl < 0 ? 'text-red-500' : 'text-zinc-200'}`}>
                           {formatINR(overviewStats.avgDailyPnl)}
                         </span>
                       </div>
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Largest Winning Day</span>
+                        <span className="text-sm text-zinc-400">Largest Winning Day</span>
                         <span className="font-mono font-bold text-green-500">{formatINR(overviewStats.largestWinDay)}</span>
                       </div>
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Largest Losing Day</span>
+                        <span className="text-sm text-zinc-400">Largest Losing Day</span>
                         <span className="font-mono font-bold text-red-500">{formatINR(overviewStats.largestLossDay)}</span>
                       </div>
 
                       <div className="my-1.5 border-t border-dashed" style={{ borderColor: 'var(--border)' }} />
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Best Setup</span>
+                        <span className="text-sm text-zinc-400">Best Setup</span>
                         <span className="font-sans font-bold text-indigo-400 truncate max-w-[150px]" title={overviewStats.bestSetup}>
                           {overviewStats.bestSetup}
                         </span>
                       </div>
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
-                        <span className="text-xs text-zinc-400">Most Common Mistake</span>
+                        <span className="text-sm text-zinc-400">Most Common Mistake</span>
                         <span className="font-sans font-bold text-zinc-300 truncate max-w-[150px]" title={overviewStats.mostCommonMistake}>
                           {overviewStats.mostCommonMistake}
                         </span>
