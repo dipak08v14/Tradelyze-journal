@@ -1818,8 +1818,9 @@ export const AdvancedReports: React.FC = () => {
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart data={monthlyChartData} margin={{ top: 10, right: 10, left: 0, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
+                            <CartesianGrid horizontal={true} vertical={false} strokeDasharray="3 3" stroke="var(--border)" />
                             <XAxis dataKey="name" stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" tick={{ fill: 'var(--text-sub)' }} />
-                            <YAxis stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" tick={{ fill: 'var(--text-sub)' }} />
+                            <YAxis stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" tick={{ fill: 'var(--text-sub)' }} tickCount={8} />
                             <RechartsTooltip
                               cursor={{ fill: 'transparent' }}
                               content={({ active, payload, label }: any) => {
@@ -1857,8 +1858,9 @@ export const AdvancedReports: React.FC = () => {
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart data={monthlyChartData} margin={{ top: 10, right: 10, left: 0, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
+                            <CartesianGrid horizontal={true} vertical={false} strokeDasharray="3 3" stroke="var(--border)" />
                             <XAxis dataKey="name" stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" tick={{ fill: 'var(--text-sub)' }} />
-                            <YAxis stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" allowDecimals={false} tick={{ fill: 'var(--text-sub)' }} />
+                            <YAxis stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" allowDecimals={false} tick={{ fill: 'var(--text-sub)' }} tickCount={8} />
                             <RechartsTooltip
                               cursor={{ fill: 'transparent' }}
                               content={({ active, payload, label }: any) => {
