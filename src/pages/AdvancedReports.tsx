@@ -1818,15 +1818,27 @@ export const AdvancedReports: React.FC = () => {
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart data={monthlyChartData} margin={{ top: 10, right: 10, left: 0, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
-                            <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" />
-                            <YAxis stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" />
+                            <XAxis dataKey="name" stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" tick={{ fill: 'var(--text-sub)' }} />
+                            <YAxis stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" tick={{ fill: 'var(--text-sub)' }} />
                             <RechartsTooltip
-                              formatter={(value: any) => [formatINR(value), 'Net P&L']}
-                              contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text)', fontSize: '11px', fontFamily: 'monospace' }}
+                              cursor={{ fill: 'transparent' }}
+                              content={({ active, payload, label }: any) => {
+                                if (active && payload && payload.length) {
+                                  const value = payload[0].value as number;
+                                  return (
+                                    <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '6px 10px', fontSize: '11px', fontFamily: 'monospace' }}>
+                                      <div style={{ color: 'var(--text-sub)', marginBottom: '2px' }}>{label}</div>
+                                      <span style={{ color: 'var(--text)' }}>Net P&L : </span>
+                                      <span style={{ color: value >= 0 ? '#008F67' : '#DF1C30', fontWeight: 600 }}>{formatINR(value)}</span>
+                                    </div>
+                                  );
+                                }
+                                return null;
+                              }}
                             />
                             <Bar dataKey="pnl">
                               {monthlyChartData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={entry.pnl >= 0 ? '#22c55e' : '#ef4444'} />
+                                <Cell key={`cell-${index}`} fill={entry.pnl >= 0 ? '#008F67' : '#DF1C30'} />
                               ))}
                             </Bar>
                           </BarChart>
@@ -1845,11 +1857,23 @@ export const AdvancedReports: React.FC = () => {
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart data={monthlyChartData} margin={{ top: 10, right: 10, left: 0, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
-                            <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" />
-                            <YAxis stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" allowDecimals={false} />
+                            <XAxis dataKey="name" stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" tick={{ fill: 'var(--text-sub)' }} />
+                            <YAxis stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" allowDecimals={false} tick={{ fill: 'var(--text-sub)' }} />
                             <RechartsTooltip
-                              formatter={(value: any) => [value, 'Trades Count']}
-                              contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text)', fontSize: '11px', fontFamily: 'monospace' }}
+                              cursor={{ fill: 'transparent' }}
+                              content={({ active, payload, label }: any) => {
+                                if (active && payload && payload.length) {
+                                  const value = payload[0].value;
+                                  return (
+                                    <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '6px 10px', fontSize: '11px', fontFamily: 'monospace' }}>
+                                      <div style={{ color: 'var(--text-sub)', marginBottom: '2px' }}>{label}</div>
+                                      <span style={{ color: 'var(--text)' }}>Trades Count : </span>
+                                      <span style={{ color: 'var(--accent)', fontWeight: 600 }}>{value}</span>
+                                    </div>
+                                  );
+                                }
+                                return null;
+                              }}
                             />
                             <Bar dataKey="count" fill="var(--accent)" radius={[4, 4, 0, 0]} />
                           </BarChart>
