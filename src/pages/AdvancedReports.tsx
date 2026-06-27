@@ -1398,11 +1398,11 @@ export const AdvancedReports: React.FC = () => {
 
             if (hasTrades) {
               if (netPnl > 0) {
-                bgStyle = { backgroundColor: 'rgba(34, 197, 94, 0.15)' };
-                textStyle = { color: '#22c55e', fontWeight: 'bold' };
+                bgStyle = { backgroundColor: 'rgba(0, 143, 103, 0.15)' };
+                textStyle = { color: '#008F67', fontWeight: 'bold' };
               } else if (netPnl < 0) {
-                bgStyle = { backgroundColor: 'rgba(239, 68, 68, 0.15)' };
-                textStyle = { color: '#ef4444', fontWeight: 'bold' };
+                bgStyle = { backgroundColor: 'rgba(223, 28, 48, 0.15)' };
+                textStyle = { color: '#DF1C30', fontWeight: 'bold' };
               } else {
                 bgStyle = { backgroundColor: 'rgba(113, 113, 122, 0.15)' };
                 textStyle = { color: 'var(--text-sub)' };
@@ -1987,22 +1987,16 @@ export const AdvancedReports: React.FC = () => {
                               >
                                 <td className="py-3 px-3 font-semibold text-zinc-200">{trade.symbol}</td>
                                 <td className="py-3 px-3">
-                                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold font-mono ${
-                                    trade.direction === 'LONG' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'
-                                  }`}>
+                                  <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono" style={{ backgroundColor: trade.direction === 'LONG' ? 'rgba(0,143,103,0.12)' : 'rgba(223,28,48,0.12)', color: trade.direction === 'LONG' ? '#008F67' : '#DF1C30' }}>
                                     {trade.direction || '—'}
                                   </span>
                                 </td>
                                 <td className="py-3 px-3 text-zinc-400">{trade.strategies?.name || '—'}</td>
-                                <td className={`py-3 px-3 text-right font-mono font-bold ${
-                                  pnlVal > 0 ? 'text-green-500' : pnlVal < 0 ? 'text-red-500' : 'text-zinc-200'
-                                }`}>
+                                <td className="py-3 px-3 text-right font-mono font-bold" style={{ color: pnlVal > 0 ? '#008F67' : pnlVal < 0 ? '#DF1C30' : 'var(--text-muted)' }}>
                                   {formatINR(pnlVal)}
                                 </td>
                                 <td className="py-3 px-3 text-center">
-                                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold font-mono ${
-                                    isWin ? 'bg-green-500/10 text-green-500' : isLoss ? 'bg-red-500/10 text-red-500' : 'bg-zinc-500/10 text-zinc-400'
-                                  }`}>
+                                  <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono" style={{ backgroundColor: isWin ? 'rgba(0,143,103,0.12)' : isLoss ? 'rgba(223,28,48,0.12)' : 'rgba(113,113,122,0.12)', color: isWin ? '#008F67' : isLoss ? '#DF1C30' : 'var(--text-muted)' }}>
                                     {trade.status || '—'}
                                   </span>
                                 </td>
