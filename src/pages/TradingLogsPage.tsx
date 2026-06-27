@@ -1393,7 +1393,7 @@ export const TradingLogsPage: React.FC = () => {
             )}
 
             {/* ADDITION 1 — SUMMARY STATS BAR */}
-            <div className="grid gap-4 md:grid animate-in fade-in duration-200" style={{ gridTemplateColumns: 'repeat(5, 1fr)', marginTop: '8px', marginBottom: '12px' }}>
+            <div className="grid gap-4 md:grid animate-in fade-in duration-200" style={{ gridTemplateColumns: 'repeat(5, 1fr)', marginTop: '16px', marginBottom: '16px' }}>
               {/* Card 1: TOTAL TRADES */}
               <div 
                 style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '20px', paddingBottom: '20px' }}
