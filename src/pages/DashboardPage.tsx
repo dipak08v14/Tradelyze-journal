@@ -1975,13 +1975,13 @@ export const DashboardPage: React.FC = () => {
                       flexDirection: 'column', 
                       justifyContent: 'space-between', 
                       backgroundColor: 'var(--card)', 
-                      border: '1px solid rgba(0, 0, 0, 0.06)', 
+                      border: '1px solid var(--border)', 
                       borderRadius: '12px', 
                       boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
                       padding: '8px 14px'
                     }}
                   >
-                    <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    <div style={{ color: 'var(--text-sub)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       NET P&L
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', flexGrow: 1, paddingTop: '10px' }}>
@@ -2002,13 +2002,13 @@ export const DashboardPage: React.FC = () => {
                       flexDirection: 'column', 
                       justifyContent: 'space-between', 
                       backgroundColor: 'var(--card)', 
-                      border: '1px solid rgba(0, 0, 0, 0.06)', 
+                      border: '1px solid var(--border)', 
                       borderRadius: '12px', 
                       boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
                       padding: '8px 14px'
                     }}
                   >
-                    <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    <div style={{ color: 'var(--text-sub)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       TRADE WIN %
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexGrow: 1 }}>
@@ -2029,13 +2029,13 @@ export const DashboardPage: React.FC = () => {
                       flexDirection: 'column', 
                       justifyContent: 'space-between', 
                       backgroundColor: 'var(--card)', 
-                      border: '1px solid rgba(0, 0, 0, 0.06)', 
+                      border: '1px solid var(--border)', 
                       borderRadius: '12px', 
                       boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
                       padding: '8px 14px'
                     }}
                   >
-                    <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    <div style={{ color: 'var(--text-sub)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       PROFIT FACTOR
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexGrow: 1 }}>
@@ -2056,13 +2056,13 @@ export const DashboardPage: React.FC = () => {
                       flexDirection: 'column', 
                       justifyContent: 'space-between', 
                       backgroundColor: 'var(--card)', 
-                      border: '1px solid rgba(0, 0, 0, 0.06)', 
+                      border: '1px solid var(--border)', 
                       borderRadius: '12px', 
                       boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
                       padding: '8px 14px'
                     }}
                   >
-                    <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    <div style={{ color: 'var(--text-sub)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       DAY WIN %
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexGrow: 1 }}>
@@ -2083,13 +2083,13 @@ export const DashboardPage: React.FC = () => {
                       flexDirection: 'column', 
                       justifyContent: 'space-between', 
                       backgroundColor: 'var(--card)', 
-                      border: '1px solid rgba(0, 0, 0, 0.06)', 
+                      border: '1px solid var(--border)', 
                       borderRadius: '12px', 
                       boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
                       padding: '8px 14px'
                     }}
                   >
-                    <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    <div style={{ color: 'var(--text-sub)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       AVG WIN/LOSS TRADE
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexGrow: 1 }}>
@@ -2335,7 +2335,7 @@ export const DashboardPage: React.FC = () => {
                                 dataKey="day"
                                 tick={{ fontSize: 10, fill: 'var(--text-sub)' }}
                                 tickLine={false}
-                                axisLine={{ stroke: 'var(--text-muted)' }}
+                                axisLine={{ stroke: 'var(--border)', strokeDasharray: '3 4' }}
                                 height={20}
                                 tickMargin={4}
                                 padding={{ left: 4, right: 4 }}
@@ -2439,7 +2439,7 @@ export const DashboardPage: React.FC = () => {
                                 dataKey="day"
                                 tick={{ fontSize: 10, fill: 'var(--text-sub)' }}
                                 tickLine={false}
-                                axisLine={{ stroke: 'var(--text-muted)' }}
+                                axisLine={{ stroke: 'var(--border)', strokeDasharray: '3 4' }}
                                 height={20}
                                 tickMargin={4}
                                 padding={{ left: 4, right: 4 }}
