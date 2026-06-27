@@ -782,17 +782,19 @@ export const DailyJournal: React.FC = () => {
                                       </defs>
                                       <YAxis hide domain={[domainMin, domainMax]} />
                                       <Tooltip
-                                        formatter={(value: any) => {
-                                          const color = value >= 0 ? '#008F67' : '#DF1C30';
-                                          return [
-                                            <span style={{ color, fontWeight: 'bold' }}>
-                                              ₹{Number(value).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                                            </span>,
-                                            'Cumulative Net P&L'
-                                          ];
+                                        content={({ active, payload, label }: any) => {
+                                          if (!active || !payload?.length) return null;
+                                          const val = Number(payload[0]?.value);
+                                          return (
+                                            <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '6px 10px', fontSize: '11px', fontFamily: 'monospace', color: 'var(--text)' }}>
+                                              <div style={{ color: 'var(--text-sub)', marginBottom: '2px' }}>Trade #{label}</div>
+                                              <span style={{ color: 'var(--text)' }}>Cumulative Net P&L : </span>
+                                              <span style={{ color: val >= 0 ? '#008F67' : '#DF1C30', fontWeight: 'bold' }}>
+                                                ₹{val.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                              </span>
+                                            </div>
+                                          );
                                         }}
-                                        labelFormatter={(label) => `Trade #${label}`}
-                                        contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text)', fontFamily: 'monospace', fontSize: '11px' }}
                                       />
                                       <Area
                                         type="monotone"
