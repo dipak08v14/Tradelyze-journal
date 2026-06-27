@@ -1914,8 +1914,6 @@ export const AdvancedReports: React.FC = () => {
                       <ArrowRight className="w-4 h-4" />
                     </button>
                   </div>
-
-                  <div className="w-24 hidden sm:block" /> {/* Spacing balance */}
                 </div>
 
                 {/* Legend */}
