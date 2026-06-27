@@ -1550,11 +1550,11 @@ export const AdvancedReports: React.FC = () => {
                 {/* SECTION A: Three Summary cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                   {/* Card 1: BEST MONTH */}
-                  <div className="px-5 py-4 rounded-2xl shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                  <div className="px-5 py-2 rounded-2xl shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                     <div className="text-[10px] font-bold uppercase tracking-wider font-mono text-zinc-400">
                       BEST MONTH
                     </div>
-                    <div className="text-2xl font-bold mt-1 font-mono text-green-500">
+                    <div className="text-2xl font-bold mt-1 font-mono" style={{ color: '#008F67' }}>
                       {formatINR(overviewStats.bestMonth.sum)}
                     </div>
                     <div className="text-xs text-zinc-500 mt-1 font-sans">
@@ -1563,11 +1563,11 @@ export const AdvancedReports: React.FC = () => {
                   </div>
 
                   {/* Card 2: WORST MONTH */}
-                  <div className="px-5 py-4 rounded-2xl shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                  <div className="px-5 py-2 rounded-2xl shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                     <div className="text-[10px] font-bold uppercase tracking-wider font-mono text-zinc-400">
                       WORST MONTH
                     </div>
-                    <div className={`text-2xl font-bold mt-1 font-mono ${overviewStats.worstMonth.sum < 0 ? 'text-red-500' : 'text-zinc-100'}`}>
+                    <div className="text-2xl font-bold mt-1 font-mono" style={{ color: overviewStats.worstMonth.sum < 0 ? '#DF1C30' : '#008F67' }}>
                       {formatINR(overviewStats.worstMonth.sum)}
                     </div>
                     <div className="text-xs text-zinc-500 mt-1 font-sans">
@@ -1576,11 +1576,11 @@ export const AdvancedReports: React.FC = () => {
                   </div>
 
                   {/* Card 3: MONTHLY AVERAGE */}
-                  <div className="px-5 py-4 rounded-2xl shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                  <div className="px-5 py-2 rounded-2xl shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                     <div className="text-[10px] font-bold uppercase tracking-wider font-mono text-zinc-400">
                       AVG PER MONTH
                     </div>
-                    <div className={`text-2xl font-bold mt-1 font-mono ${overviewStats.monthlyAvg > 0 ? 'text-green-500' : overviewStats.monthlyAvg < 0 ? 'text-red-500' : 'text-zinc-100'}`}>
+                    <div className="text-2xl font-bold mt-1 font-mono" style={{ color: overviewStats.monthlyAvg > 0 ? '#008F67' : overviewStats.monthlyAvg < 0 ? '#DF1C30' : 'var(--text-muted)' }}>
                       {formatINR(overviewStats.monthlyAvg)}
                     </div>
                     <div className="text-xs text-zinc-500 mt-1 font-sans">
