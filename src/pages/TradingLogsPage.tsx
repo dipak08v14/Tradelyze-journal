@@ -1483,7 +1483,7 @@ export const TradingLogsPage: React.FC = () => {
             ) : (
               /* MAIN INTERACTIVE SORTABLE DATATABLE */
               <div className="flex flex-col animate-in fade-in duration-200">
-                <div id="trading-logs-datatable-container" className="overflow-hidden" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderBottom: 'none', borderTopLeftRadius: '12px', borderTopRightRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}>
+                <div id="trading-logs-datatable-container" className="overflow-hidden" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderBottom: 'none', borderTopLeftRadius: '12px', borderTopRightRadius: '12px', boxShadow: '0 1px 4px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.05)' }}>
                   {/* BULK ACTION BAR */}
                   {selectedTradeIds.length > 0 && (
                     <div 
@@ -1673,7 +1673,7 @@ export const TradingLogsPage: React.FC = () => {
                             style={{ 
                               borderBottom: '1px solid rgba(0, 0, 0, 0.05)', 
                               color: 'var(--text)',
-                              backgroundColor: isEven ? 'rgba(0, 0, 0, 0.018)' : 'transparent',
+                              backgroundColor: isEven ? 'var(--bar)' : 'transparent',
                               position: 'relative'
                             }}
                             onMouseEnter={(e) => {
@@ -1681,7 +1681,7 @@ export const TradingLogsPage: React.FC = () => {
                               if (item.id) setHoveredRowId(item.id);
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.backgroundColor = isEven ? 'rgba(0, 0, 0, 0.018)' : 'transparent';
+                              e.currentTarget.style.backgroundColor = isEven ? 'var(--bar)' : 'transparent';
                               setHoveredRowId(null);
                             }}
                           >
