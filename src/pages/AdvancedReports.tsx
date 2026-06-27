@@ -1511,7 +1511,7 @@ export const AdvancedReports: React.FC = () => {
             <div className="mt-6" />
 
             {/* TAB SELECTOR BAR */}
-            <div className="flex overflow-x-auto gap-2 p-1 rounded-2xl mb-6 font-mono no-scrollbar" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
+            <div className="flex overflow-x-auto gap-2 p-1 rounded-lg mb-6 font-mono no-scrollbar" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
               {[
                 { id: 'OVERVIEW', label: 'OVERVIEW' },
                 { id: 'DETAILED', label: 'DETAILED' },
@@ -1525,11 +1525,12 @@ export const AdvancedReports: React.FC = () => {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as any)}
-                    className="px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer whitespace-nowrap"
+                    className={`px-4 py-2 text-xs font-bold ${isActive ? 'rounded' : 'rounded-xl'} transition-all cursor-pointer whitespace-nowrap`}
                     style={{
                       backgroundColor: isActive ? 'var(--card)' : 'transparent',
                       color: isActive ? 'var(--accent)' : 'var(--text-sub)',
-                      border: isActive ? '0.5px solid var(--border)' : '0.5px solid transparent'
+                      border: isActive ? '0.5px solid var(--border)' : '0.5px solid transparent',
+                      borderRadius: isActive ? '6px' : undefined
                     }}
                   >
                     {tab.label}
