@@ -1458,8 +1458,8 @@ export const AdvancedReports: React.FC = () => {
         </header>
 
         {/* WORKSPACE MAIN */}
-        <main className="flex-1 overflow-y-auto px-0">
-          <div className="max-w-7xl mx-auto">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden px-0">
+          <div className="max-w-7xl mx-auto" style={{ paddingBottom: '16px' }}>
             {/* PAGE HEADER & FILTERS */}
             <div
               style={{
@@ -2018,7 +2018,7 @@ export const AdvancedReports: React.FC = () => {
                 )}
               </div>
             ) : activeTab === 'DETAILED' ? (
-              <div className="space-y-6 animate-in fade-in duration-350">
+              <div className="space-y-3 animate-in fade-in duration-350">
                 {/* SUB-FILTER PILLS ROW */}
                 <div className="flex overflow-x-auto gap-1.5 p-1 rounded-lg font-mono no-scrollbar" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', maxWidth: 'max-content' }}>
                   {[
@@ -2108,7 +2108,7 @@ export const AdvancedReports: React.FC = () => {
                 ) : (
                   <>
                     {/* CHARTS ROW */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                       {/* Left card: Trade Distribution */}
                       <div className="rounded-2xl p-3 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                         <h3 className="text-xs font-bold font-mono tracking-wider mb-2 text-zinc-350">
