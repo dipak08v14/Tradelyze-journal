@@ -1511,7 +1511,7 @@ export const AdvancedReports: React.FC = () => {
             <div className="mt-6" />
 
             {/* TAB SELECTOR BAR */}
-            <div className="flex overflow-x-auto gap-2 p-1 rounded-lg mb-6 font-mono no-scrollbar" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
+            <div className="flex overflow-x-auto gap-2 px-1 pt-1 pb-1 rounded-lg mb-3 font-mono no-scrollbar" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
               {[
                 { id: 'OVERVIEW', label: 'OVERVIEW' },
                 { id: 'DETAILED', label: 'DETAILED' },
@@ -1550,11 +1550,11 @@ export const AdvancedReports: React.FC = () => {
                 {/* SECTION A: Three Summary cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                   {/* Card 1: BEST MONTH */}
-                  <div className="p-5 rounded-2xl shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                  <div className="px-5 py-4 rounded-2xl shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                     <div className="text-[10px] font-bold uppercase tracking-wider font-mono text-zinc-400">
                       BEST MONTH
                     </div>
-                    <div className="text-2xl font-bold mt-1.5 font-mono text-green-500">
+                    <div className="text-2xl font-bold mt-1 font-mono text-green-500">
                       {formatINR(overviewStats.bestMonth.sum)}
                     </div>
                     <div className="text-xs text-zinc-500 mt-1 font-sans">
@@ -1563,11 +1563,11 @@ export const AdvancedReports: React.FC = () => {
                   </div>
 
                   {/* Card 2: WORST MONTH */}
-                  <div className="p-5 rounded-2xl shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                  <div className="px-5 py-4 rounded-2xl shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                     <div className="text-[10px] font-bold uppercase tracking-wider font-mono text-zinc-400">
                       WORST MONTH
                     </div>
-                    <div className={`text-2xl font-bold mt-1.5 font-mono ${overviewStats.worstMonth.sum < 0 ? 'text-red-500' : 'text-zinc-100'}`}>
+                    <div className={`text-2xl font-bold mt-1 font-mono ${overviewStats.worstMonth.sum < 0 ? 'text-red-500' : 'text-zinc-100'}`}>
                       {formatINR(overviewStats.worstMonth.sum)}
                     </div>
                     <div className="text-xs text-zinc-500 mt-1 font-sans">
@@ -1576,11 +1576,11 @@ export const AdvancedReports: React.FC = () => {
                   </div>
 
                   {/* Card 3: MONTHLY AVERAGE */}
-                  <div className="p-5 rounded-2xl shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                  <div className="px-5 py-4 rounded-2xl shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                     <div className="text-[10px] font-bold uppercase tracking-wider font-mono text-zinc-400">
                       AVG PER MONTH
                     </div>
-                    <div className={`text-2xl font-bold mt-1.5 font-mono ${overviewStats.monthlyAvg > 0 ? 'text-green-500' : overviewStats.monthlyAvg < 0 ? 'text-red-500' : 'text-zinc-100'}`}>
+                    <div className={`text-2xl font-bold mt-1 font-mono ${overviewStats.monthlyAvg > 0 ? 'text-green-500' : overviewStats.monthlyAvg < 0 ? 'text-red-500' : 'text-zinc-100'}`}>
                       {formatINR(overviewStats.monthlyAvg)}
                     </div>
                     <div className="text-xs text-zinc-500 mt-1 font-sans">
