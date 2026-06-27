@@ -1809,14 +1809,14 @@ export const AdvancedReports: React.FC = () => {
                 {/* SECTION C: Two Bar Charts */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   {/* Chart 1: Monthly P&L */}
-                  <div className="rounded-2xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                  <div className="rounded-2xl p-3 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                     <h3 className="text-sm font-bold font-mono tracking-wider mb-4 text-zinc-200">Monthly P&L</h3>
                     <div className="h-[260px] w-full">
                       {monthlyChartData.length === 0 ? (
                         <div className="h-full flex items-center justify-center text-xs text-zinc-500 font-mono">No data available for date range</div>
                       ) : (
                         <ResponsiveContainer width="100%" height="100%">
-                          <BarChart data={monthlyChartData} margin={{ top: 10, right: 10, left: 0, bottom: 5 }}>
+                          <BarChart data={monthlyChartData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
                             <CartesianGrid horizontal={true} vertical={false} strokeDasharray="3 3" stroke="var(--border)" />
                             <XAxis dataKey="name" stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" tick={{ fill: 'var(--text-sub)' }} />
@@ -1849,14 +1849,14 @@ export const AdvancedReports: React.FC = () => {
                   </div>
 
                   {/* Chart 2: Trade Count */}
-                  <div className="rounded-2xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                  <div className="rounded-2xl p-3 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                     <h3 className="text-sm font-bold font-mono tracking-wider mb-4 text-zinc-200">Trade Frequency</h3>
                     <div className="h-[260px] w-full">
                       {monthlyChartData.length === 0 ? (
                         <div className="h-full flex items-center justify-center text-xs text-zinc-500 font-mono">No data available for date range</div>
                       ) : (
                         <ResponsiveContainer width="100%" height="100%">
-                          <BarChart data={monthlyChartData} margin={{ top: 10, right: 10, left: 0, bottom: 5 }}>
+                          <BarChart data={monthlyChartData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
                             <CartesianGrid horizontal={true} vertical={false} strokeDasharray="3 3" stroke="var(--border)" />
                             <XAxis dataKey="name" stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" tick={{ fill: 'var(--text-sub)' }} />
@@ -2110,8 +2110,8 @@ export const AdvancedReports: React.FC = () => {
                     {/* CHARTS ROW */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                       {/* Left card: Trade Distribution */}
-                      <div className="rounded-2xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
-                        <h3 className="text-xs font-bold font-mono tracking-wider mb-4 text-zinc-350">
+                      <div className="rounded-2xl p-3 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                        <h3 className="text-xs font-bold font-mono tracking-wider mb-2 text-zinc-350">
                           {detailedSubFilter === 'DAYS' && 'TRADE DISTRIBUTION BY DAY OF WEEK'}
                           {detailedSubFilter === 'MONTHS' && 'TRADE DISTRIBUTION BY MONTH'}
                           {detailedSubFilter === 'TIME' && 'TRADE DISTRIBUTION BY TIME'}
@@ -2125,7 +2125,7 @@ export const AdvancedReports: React.FC = () => {
                             <BarChart
                               data={detailedData}
                               layout="vertical"
-                              margin={{ top: 10, right: 10, left: 0, bottom: 5 }}
+                              margin={{ top: 4, right: 8, left: 0, bottom: 0 }}
                             >
                               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
                               <XAxis type="number" stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" allowDecimals={false} />
@@ -2148,8 +2148,8 @@ export const AdvancedReports: React.FC = () => {
                       </div>
 
                       {/* Right card: Performance */}
-                      <div className="rounded-2xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
-                        <h3 className="text-xs font-bold font-mono tracking-wider mb-4 text-zinc-350">
+                      <div className="rounded-2xl p-3 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                        <h3 className="text-xs font-bold font-mono tracking-wider mb-2 text-zinc-350">
                           {detailedSubFilter === 'DAYS' && 'PERFORMANCE BY DAY OF WEEK'}
                           {detailedSubFilter === 'MONTHS' && 'PERFORMANCE BY MONTH'}
                           {detailedSubFilter === 'TIME' && 'PERFORMANCE BY TIME'}
@@ -2163,7 +2163,7 @@ export const AdvancedReports: React.FC = () => {
                             <BarChart
                               data={detailedData}
                               layout="vertical"
-                              margin={{ top: 10, right: 10, left: 0, bottom: 5 }}
+                              margin={{ top: 4, right: 8, left: 0, bottom: 0 }}
                             >
                               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
                               <XAxis type="number" stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" />
@@ -2309,7 +2309,7 @@ export const AdvancedReports: React.FC = () => {
                     {/* CHARTS ROW */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                       {/* Left chart: Trade Distribution */}
-                      <div className="rounded-2xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                      <div className="rounded-2xl p-3 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                         <h3 className="text-xs font-bold font-mono tracking-wider mb-4 text-zinc-350 uppercase">
                           {riskSubFilter === 'R-MULTIPLE' ? 'TRADE DISTRIBUTION BY R-MULTIPLE' : 'TRADE DISTRIBUTION BY POSITION SIZE'}
                         </h3>
@@ -2341,7 +2341,7 @@ export const AdvancedReports: React.FC = () => {
                       </div>
 
                       {/* Right chart: Performance */}
-                      <div className="rounded-2xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                      <div className="rounded-2xl p-3 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                         <h3 className="text-xs font-bold font-mono tracking-wider mb-4 text-zinc-350 uppercase">
                           {riskSubFilter === 'R-MULTIPLE' ? 'PERFORMANCE BY R-MULTIPLE' : 'PERFORMANCE BY POSITION SIZE'}
                         </h3>
@@ -2748,7 +2748,7 @@ export const AdvancedReports: React.FC = () => {
                     {/* CHARTS ROW */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                       {/* Left: Trade Distribution horizontal bar chart */}
-                      <div className="rounded-2xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                      <div className="rounded-2xl p-3 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                         <h3 className="text-xs font-bold font-mono tracking-wider mb-4 text-zinc-350 uppercase">
                           {marketBehaviorSubFilter === 'OPENING_CONDITION' && 'TRADE DISTRIBUTION BY OPENING CONDITION'}
                           {marketBehaviorSubFilter === 'HOURLY_TREND' && 'TRADE DISTRIBUTION BY HOURLY TREND'}
@@ -2813,7 +2813,7 @@ export const AdvancedReports: React.FC = () => {
                       </div>
 
                       {/* Right: Performance horizontal bar chart */}
-                      <div className="rounded-2xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                      <div className="rounded-2xl p-3 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                         <h3 className="text-xs font-bold font-mono tracking-wider mb-4 text-zinc-350 uppercase">
                           {marketBehaviorSubFilter === 'OPENING_CONDITION' && 'PERFORMANCE BY OPENING CONDITION'}
                           {marketBehaviorSubFilter === 'HOURLY_TREND' && 'PERFORMANCE BY HOURLY TREND'}
