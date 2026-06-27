@@ -2466,7 +2466,7 @@ export const AdvancedReports: React.FC = () => {
                 )}
               </div>
             ) : activeTab === 'WINS_LOSSES' ? (
-              <div className="space-y-6 animate-in fade-in duration-300">
+              <div className="space-y-3 animate-in fade-in duration-300">
                 {/* HEAD TO HEAD STAT CARDS */}
                 <div className="rounded-2xl px-4 py-2 shadow-sm border border-[var(--border)]" style={{ backgroundColor: 'var(--card)' }}>
                   <div className="grid grid-cols-3 py-2 border-b items-center text-sm" style={{ borderColor: 'var(--border)' }}>
@@ -2519,10 +2519,10 @@ export const AdvancedReports: React.FC = () => {
                 </div>
 
                 {/* VISUAL CHARTS ROW */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                   {/* Setup Comparison Chart */}
-                  <div className="rounded-2xl p-5 shadow-sm border border-[var(--border)]" style={{ backgroundColor: 'var(--card)' }}>
-                    <h3 className="text-xs font-bold font-mono tracking-wider mb-4 text-zinc-350 uppercase">
+                  <div className="rounded-2xl p-3 shadow-sm border border-[var(--border)]" style={{ backgroundColor: 'var(--card)' }}>
+                    <h3 className="text-xs font-bold font-mono tracking-wider mb-2 text-zinc-350 uppercase">
                       WINS VS LOSSES BY SETUP
                     </h3>
                     <div className="h-[300px] w-full">
@@ -2534,18 +2534,31 @@ export const AdvancedReports: React.FC = () => {
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart
                             data={winsLossesBySetup}
-                            margin={{ top: 10, right: 10, left: 10, bottom: 5 }}
+                            margin={{ top: 4, right: 10, left: 0, bottom: 5 }}
                           >
-                            <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
-                            <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" />
-                            <YAxis stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" allowDecimals={false} />
+                            <CartesianGrid horizontal={true} vertical={false} strokeDasharray="3 3" stroke="var(--border)" />
+                            <XAxis dataKey="name" stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" tick={{ fill: 'var(--text-sub)' }} axisLine={{ stroke: 'rgba(0,0,0,0.2)' }} tickLine={false} />
+                            <YAxis stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" allowDecimals={false} tickCount={8} tick={{ fill: 'var(--text-sub)' }} axisLine={false} tickLine={false} width={28} />
                             <RechartsTooltip
-                              cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
-                              contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text)', fontSize: '11px', fontFamily: 'monospace' }}
+                              cursor={{ fill: 'transparent' }}
+                              content={({ active, payload, label }: any) => {
+                                if (!active || !payload?.length) return null;
+                                return (
+                                  <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '6px 10px', fontSize: '11px', fontFamily: 'monospace' }}>
+                                    <div style={{ color: 'var(--text-sub)', marginBottom: '4px' }}>{label}</div>
+                                    {payload.map((p: any) => (
+                                      <div key={p.dataKey}>
+                                        <span style={{ color: 'var(--text)' }}>{p.name} : </span>
+                                        <span style={{ color: p.dataKey === 'wins' ? '#008F67' : '#DF1C30', fontWeight: 600 }}>{p.value}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                );
+                              }}
                             />
-                            <Legend wrapperStyle={{ fontSize: '11px', fontFamily: 'monospace', paddingTop: '10px' }} />
-                            <Bar dataKey="wins" name="Wins" fill="#22c55e" radius={[4, 4, 0, 0]} />
-                            <Bar dataKey="losses" name="Losses" fill="#ef4444" radius={[4, 4, 0, 0]} />
+                            <Legend verticalAlign="top" align="right" wrapperStyle={{ fontSize: '11px', fontFamily: 'monospace', paddingBottom: '8px' }} />
+                            <Bar dataKey="wins" name="Wins" fill="#008F67" radius={[4, 4, 0, 0]} />
+                            <Bar dataKey="losses" name="Losses" fill="#DF1C30" radius={[4, 4, 0, 0]} />
                           </BarChart>
                         </ResponsiveContainer>
                       )}
@@ -2553,26 +2566,39 @@ export const AdvancedReports: React.FC = () => {
                   </div>
 
                   {/* Day of Week Comparison Chart */}
-                  <div className="rounded-2xl p-5 shadow-sm border border-[var(--border)]" style={{ backgroundColor: 'var(--card)' }}>
-                    <h3 className="text-xs font-bold font-mono tracking-wider mb-4 text-zinc-350 uppercase">
+                  <div className="rounded-2xl p-3 shadow-sm border border-[var(--border)]" style={{ backgroundColor: 'var(--card)' }}>
+                    <h3 className="text-xs font-bold font-mono tracking-wider mb-2 text-zinc-350 uppercase">
                       WINS VS LOSSES BY DAY OF WEEK
                     </h3>
                     <div className="h-[300px] w-full">
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart
                           data={winsLossesByDay}
-                          margin={{ top: 10, right: 10, left: 10, bottom: 5 }}
+                          margin={{ top: 4, right: 10, left: 0, bottom: 5 }}
                         >
-                          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
-                          <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" />
-                          <YAxis stroke="var(--text-muted)" fontSize={11} fontFamily="monospace" allowDecimals={false} />
+                          <CartesianGrid horizontal={true} vertical={false} strokeDasharray="3 3" stroke="var(--border)" />
+                          <XAxis dataKey="name" stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" tick={{ fill: 'var(--text-sub)' }} axisLine={{ stroke: 'rgba(0,0,0,0.2)' }} tickLine={false} />
+                          <YAxis stroke="var(--text-sub)" fontSize={11} fontFamily="monospace" allowDecimals={false} tickCount={8} tick={{ fill: 'var(--text-sub)' }} axisLine={false} tickLine={false} width={28} />
                           <RechartsTooltip
-                            cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
-                            contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text)', fontSize: '11px', fontFamily: 'monospace' }}
+                            cursor={{ fill: 'transparent' }}
+                            content={({ active, payload, label }: any) => {
+                              if (!active || !payload?.length) return null;
+                              return (
+                                <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '6px 10px', fontSize: '11px', fontFamily: 'monospace' }}>
+                                  <div style={{ color: 'var(--text-sub)', marginBottom: '4px' }}>{label}</div>
+                                  {payload.map((p: any) => (
+                                    <div key={p.dataKey}>
+                                      <span style={{ color: 'var(--text)' }}>{p.name} : </span>
+                                      <span style={{ color: p.dataKey === 'wins' ? '#008F67' : '#DF1C30', fontWeight: 600 }}>{p.value}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              );
+                            }}
                           />
-                          <Legend wrapperStyle={{ fontSize: '11px', fontFamily: 'monospace', paddingTop: '10px' }} />
-                          <Bar dataKey="wins" name="Wins" fill="#22c55e" radius={[4, 4, 0, 0]} />
-                          <Bar dataKey="losses" name="Losses" fill="#ef4444" radius={[4, 4, 0, 0]} />
+                          <Legend verticalAlign="top" align="right" wrapperStyle={{ fontSize: '11px', fontFamily: 'monospace', paddingBottom: '8px' }} />
+                          <Bar dataKey="wins" name="Wins" fill="#008F67" radius={[4, 4, 0, 0]} />
+                          <Bar dataKey="losses" name="Losses" fill="#DF1C30" radius={[4, 4, 0, 0]} />
                         </BarChart>
                       </ResponsiveContainer>
                     </div>
