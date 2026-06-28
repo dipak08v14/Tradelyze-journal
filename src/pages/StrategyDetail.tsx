@@ -554,7 +554,7 @@ export const StrategyDetail: React.FC = () => {
 
 
 
-  if (!user) {
+  if (!authLoading && !user) {
     return <Navigate to="/login" replace />;
   }
 

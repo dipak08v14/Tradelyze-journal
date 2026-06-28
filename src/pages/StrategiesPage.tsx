@@ -323,7 +323,7 @@ export const StrategiesPage: React.FC = () => {
   // React Rules of Hooks Guard (Early Returns placed below all React callables)
 
 
-  if (!user) {
+  if (!authLoading && !user) {
     return <Navigate to="/login" replace />;
   }
 

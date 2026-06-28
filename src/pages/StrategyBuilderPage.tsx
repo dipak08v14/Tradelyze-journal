@@ -208,7 +208,7 @@ export const StrategyBuilderPage: React.FC = () => {
 
 
 
-  if (!user) {
+  if (!authLoading && !user) {
     return <Navigate to="/login" replace />;
   }
 
