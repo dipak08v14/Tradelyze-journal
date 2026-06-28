@@ -182,21 +182,20 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
       />
 
       {/* User and Sign out section */}
-      <div className="px-5 py-4 mt-auto" style={{ borderTop: '0.5px solid var(--border)' }}>
-        <div style={{ fontSize: '11px', color: 'var(--text-muted)' }} className="truncate" title={userEmail || ''}>
-          {userEmail || 'trader@tradelyze.in'}
+      <div className="px-4 py-3 mt-auto" style={{ borderTop: '0.5px solid var(--border)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ width: '34px', height: '34px', borderRadius: '50%', backgroundColor: 'var(--accent-muted)', color: 'var(--accent)', fontSize: '13px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            {(userEmail || 'T')[0].toUpperCase()}
+          </div>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontSize: '12px', color: 'var(--text)', fontWeight: 500 }} className="truncate" title={userEmail || ''}>
+              {userEmail || 'trader@tradelyze.in'}
+            </div>
+            <button onClick={handleSignOut} className="bg-transparent border-none p-0 cursor-pointer text-left hover:opacity-70 transition-opacity" style={{ fontSize: '11px', color: 'var(--text-sub)', display: 'block', marginTop: '1px' }}>
+              Logout
+            </button>
+          </div>
         </div>
-        <button
-          onClick={handleSignOut}
-          className="bg-transparent border-none p-0 mt-2 cursor-pointer text-left font-medium hover:opacity-80 transition-opacity sidebar-nav-link"
-          style={{ 
-            fontSize: '11px', 
-            color: 'var(--text-muted)',
-            display: 'block'
-          }}
-        >
-          Logout
-        </button>
       </div>
     </div>
   );
