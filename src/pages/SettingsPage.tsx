@@ -862,13 +862,7 @@ export default function SettingsPage() {
     showSuccess('Alert threshold settings saved! ✓');
   };
 
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center font-mono text-sm" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
-        <div className="animate-spin w-8 h-8 rounded-full border-4 border-[var(--border)] border-t-[var(--accent)]" />
-      </div>
-    );
-  }
+
 
   const formatTrialDate = (dateStr: string) => {
     if (!dateStr) return '';

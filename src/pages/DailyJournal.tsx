@@ -52,7 +52,7 @@ export const DailyJournal: React.FC = () => {
   const [searchParams] = useSearchParams();
 
   // State
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
   const [hasNoTradesEver, setHasNoTradesEver] = useState<boolean>(false);
   
@@ -508,13 +508,7 @@ export const DailyJournal: React.FC = () => {
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
   }, []);
 
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
-        <div className="w-8 h-8 border-4 rounded-full animate-spin" style={{ borderColor: 'var(--border-md)', borderTopColor: 'var(--accent)' }} />
-      </div>
-    );
-  }
+
 
   if (!user) return null;
 

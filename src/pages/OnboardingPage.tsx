@@ -127,13 +127,7 @@ export default function OnboardingPage() {
     }
   };
 
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center font-sans" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
-        <div className="w-8 h-8 border-4 border-[var(--border)] border-t-[var(--accent)] rounded-full animate-spin" />
-      </div>
-    );
-  }
+
 
   const progressPct = Math.round((step / 4) * 100);
 
