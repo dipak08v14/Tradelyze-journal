@@ -31,7 +31,13 @@ import {
   ReferenceLine,
   Legend
 } from 'recharts';
-import { formatINR, MONTH_NAMES } from '../lib/calculations';
+import { formatINR, MONTH_NAMES, calcScoreAverages } from '../lib/calculations';
+
+function getScoreColor(v: number): string {
+  if (v >= 70) return '#008F67';
+  if (v >= 50) return '#f59e0b';
+  return '#DF1C30';
+}
 
 function getDayChartConfig(dayChartData: any[]) {
   const CUMULATIVE_FIELD = 'pnl';
@@ -189,6 +195,9 @@ export const AdvancedReports: React.FC = () => {
   const [strategies, setStrategies] = useState<any[]>([]);
   const [calendarTrades, setCalendarTrades] = useState<any[]>([]);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [psychologyData, setPsychologyData] = useState<any[]>([]);
+  const [complianceRiskData, setComplianceRiskData] = useState<any[]>([]);
+  const [rulesData, setRulesData] = useState<any[]>([]);
 
   // Detailed tab sub-filters state
   const [detailedSubFilter, setDetailedSubFilter] = useState<'DAYS' | 'MONTHS' | 'TIME' | 'DURATION' | 'SYMBOL' | 'SETUPS' | 'MISTAKES'>('DAYS');
@@ -235,7 +244,40 @@ export const AdvancedReports: React.FC = () => {
           .order('date', { ascending: true });
 
         if (error) throw error;
-        setTrades(data || []);
+        
+        const fetchedTrades = data || [];
+        setTrades(fetchedTrades);
+
+        if (fetchedTrades.length === 0) {
+          setPsychologyData([]);
+          setComplianceRiskData([]);
+          setRulesData([]);
+          return;
+        }
+
+        const tradeIds = fetchedTrades.map((t: any) => t.id);
+
+        const [psychRes, riskRes, rulesRes] = await Promise.all([
+          supabase
+            .from('trade_psychology')
+            .select('trade_id, psychological_condition_pct')
+            .in('trade_id', tradeIds)
+            .eq('user_id', userId),
+          supabase
+            .from('trade_risk_management')
+            .select('trade_id, followed_risk_rules_pct')
+            .in('trade_id', tradeIds)
+            .eq('user_id', userId),
+          supabase
+            .from('trade_rule_adherence')
+            .select('trade_id, followed')
+            .in('trade_id', tradeIds)
+            .eq('user_id', userId)
+        ]);
+
+        setPsychologyData(psychRes.data || []);
+        setComplianceRiskData(riskRes.data || []);
+        setRulesData(rulesRes.data || []);
       } catch (err: any) {
         console.error('Error fetching advanced report trades:', err);
         showError(err.message || 'Failed to sync your advanced report trades.');
@@ -268,6 +310,12 @@ export const AdvancedReports: React.FC = () => {
 
     fetchCalendarData();
   }, [userId, calendarYear]);
+
+  // Scores calculation
+  const scores = useMemo(() => {
+    const tradeIds = trades.map((t: any) => t.id);
+    return calcScoreAverages(tradeIds, psychologyData, complianceRiskData, rulesData);
+  }, [trades, psychologyData, complianceRiskData, rulesData]);
 
   // JavaScript calculations for active tab = OVERVIEW
   const overviewStats = useMemo(() => {
@@ -1585,6 +1633,71 @@ export const AdvancedReports: React.FC = () => {
                     </div>
                     <div className="text-xs text-zinc-500 mt-1 font-sans">
                       per month average
+                    </div>
+                  </div>
+                </div>
+
+                {/* Avg Trade Scores Card */}
+                <div className="rounded-2xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                  <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', borderBottom: '1px solid var(--border)' }} className="pb-2 text-transform-none">
+                    Avg Trade Scores
+                  </h3>
+
+                  <div className="space-y-4 mt-4">
+                    {/* Overall Compliance */}
+                    <div className="flex justify-between items-end border-b pb-2" style={{ borderColor: 'var(--border)' }}>
+                      <span className="text-sm font-semibold" style={{ color: 'var(--text-sub)' }}>Overall Compliance</span>
+                      <span className="text-xl font-extrabold font-mono" style={{ color: getScoreColor(scores.avgOverall) }}>
+                        {scores.avgOverall.toFixed(0)}%
+                      </span>
+                    </div>
+
+                    {/* Technical adherence */}
+                    <div className="space-y-1.5">
+                      <div className="flex justify-between text-xs">
+                        <span className="font-medium" style={{ color: 'var(--text-sub)' }}>Technical Setup Score</span>
+                        <span className="font-bold font-mono" style={{ color: getScoreColor(scores.avgTech) }}>
+                          {scores.avgTech.toFixed(0)}%
+                        </span>
+                      </div>
+                      <div className="w-full h-2 rounded-full overflow-hidden border" style={{ backgroundColor: 'var(--row)', borderColor: 'var(--border)' }}>
+                        <div
+                          className="h-full transition-all duration-500"
+                          style={{ width: `${scores.avgTech}%`, backgroundColor: 'var(--accent)' }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Psychology rating */}
+                    <div className="space-y-1.5">
+                      <div className="flex justify-between text-xs">
+                        <span className="font-medium" style={{ color: 'var(--text-sub)' }}>Psychological Control</span>
+                        <span className="font-bold font-mono" style={{ color: getScoreColor(scores.avgPsych) }}>
+                          {scores.avgPsych.toFixed(0)}%
+                        </span>
+                      </div>
+                      <div className="w-full h-2 rounded-full overflow-hidden border" style={{ backgroundColor: 'var(--row)', borderColor: 'var(--border)' }}>
+                        <div
+                          className="h-full transition-all duration-500"
+                          style={{ width: `${scores.avgPsych}%`, backgroundColor: 'var(--accent)' }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Risk Management rating */}
+                    <div className="space-y-1.5">
+                      <div className="flex justify-between text-xs">
+                        <span className="font-medium" style={{ color: 'var(--text-sub)' }}>Risk Mgmt Discipline</span>
+                        <span className="font-bold font-mono" style={{ color: getScoreColor(scores.avgRisk) }}>
+                          {scores.avgRisk.toFixed(0)}%
+                        </span>
+                      </div>
+                      <div className="w-full h-2 rounded-full overflow-hidden border" style={{ backgroundColor: 'var(--row)', borderColor: 'var(--border)' }}>
+                        <div
+                          className="h-full transition-all duration-500"
+                          style={{ width: `${scores.avgRisk}%`, backgroundColor: 'var(--accent)' }}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
