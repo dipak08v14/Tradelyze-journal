@@ -176,7 +176,7 @@ export const AdvancedReports: React.FC = () => {
   const { showError } = useToast();
   const navigate = useNavigate();
 
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'DETAILED' | 'RISK' | 'WINS_LOSSES' | 'MARKET_BEHAVIOR' | 'CALENDAR'>('OVERVIEW');
 

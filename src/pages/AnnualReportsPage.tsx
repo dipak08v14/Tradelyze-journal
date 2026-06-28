@@ -43,7 +43,7 @@ export const AnnualReportsPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [selectedYear, setSelectedYear] = useState<number>(() => new Date().getFullYear());
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
 
   const [trades, setTrades] = useState<any[]>([]);
