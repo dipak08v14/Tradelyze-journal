@@ -506,7 +506,13 @@ export const AiTeacherPage: React.FC = () => {
     }
   };
 
-
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+        <div className="w-8 h-8 border-4 rounded-full animate-spin" style={{ borderColor: 'var(--border-md)', borderTopColor: 'var(--accent)' }}></div>
+      </div>
+    );
+  }
 
   if (!user) return null;
 

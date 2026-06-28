@@ -813,7 +813,7 @@ const TradeTrackingPageContent: React.FC = () => {
     );
   }
 
-  if (loading) {
+  if (authLoading || loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
         <div className="w-9 h-9 border-4 rounded-full animate-spin mb-3" style={{ borderColor: 'var(--border-md)', borderTopColor: 'var(--accent)' }} />

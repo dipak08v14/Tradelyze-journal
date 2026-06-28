@@ -176,7 +176,16 @@ export const AdvancedReports: React.FC = () => {
   const { showError } = useToast();
   const navigate = useNavigate();
 
-  const [loading, setLoading] = useState<boolean>(false);
+  const selectedAsset = "";
+  const selectedStatus = "";
+  const selectedDirection = "";
+  const selectedStrategy = "";
+  const selectedSession = "";
+  const selectedAccount = "";
+  const minR = "";
+  const maxR = "";
+
+  const [loading, setLoading] = useState<boolean>(true);
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'DETAILED' | 'RISK' | 'WINS_LOSSES' | 'MARKET_BEHAVIOR' | 'CALENDAR'>('OVERVIEW');
 
@@ -286,7 +295,19 @@ export const AdvancedReports: React.FC = () => {
     };
 
     fetchReportData();
-  }, [userId, fromDate, toDate, showError]);
+  }, [
+    userId,
+    fromDate,
+    toDate,
+    selectedAsset,
+    selectedStatus,
+    selectedDirection,
+    selectedStrategy,
+    selectedSession,
+    selectedAccount,
+    minR,
+    maxR
+  ]);
 
   // Fetch Year Trades for Calendar
   useEffect(() => {

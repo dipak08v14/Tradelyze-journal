@@ -41,7 +41,7 @@ export const TradingReportsPage: React.FC = () => {
     return new Date().getFullYear();
   });
 
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
 
   // Database States

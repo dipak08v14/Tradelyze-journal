@@ -552,9 +552,15 @@ export const StrategyDetail: React.FC = () => {
     }
   };
 
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center animate-pulse" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+        <div className="w-8 h-8 border-4 border-t-cyan-500 border-zinc-700 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
-
-  if (!authLoading && !user) {
+  if (!user) {
     return <Navigate to="/login" replace />;
   }
 

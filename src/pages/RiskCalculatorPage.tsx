@@ -94,7 +94,13 @@ export default function RiskCalculatorPage() {
     }, 2000);
   };
 
-
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center font-mono text-sm" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+        <div className="animate-spin w-8 h-8 rounded-full border-4 border-[var(--border)] border-t-[var(--accent)]" />
+      </div>
+    );
+  }
 
   const activeInst = INSTRUMENTS.find((inst) => inst.name === selectedInstName) || INSTRUMENTS[0];
 
