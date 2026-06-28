@@ -235,49 +235,48 @@ export const AdvancedReports: React.FC = () => {
       try {
         setLoading(true);
 
-        const { data, error } = await supabase
-          .from('trades')
-          .select('*, strategies(name, type_of_strategy)')
-          .eq('user_id', userId)
-          .gte('date', fromDate)
-          .lte('date', toDate)
-          .order('date', { ascending: true });
-
-        if (error) throw error;
-        
-        const fetchedTrades = data || [];
-        setTrades(fetchedTrades);
-
-        if (fetchedTrades.length === 0) {
-          setPsychologyData([]);
-          setComplianceRiskData([]);
-          setRulesData([]);
-          return;
-        }
-
-        const tradeIds = fetchedTrades.map((t: any) => t.id);
-
-        const [psychRes, riskRes, rulesRes] = await Promise.all([
+        const [tradesRes, psychRes, riskRes, rulesRes] = await Promise.all([
+          supabase
+            .from('trades')
+            .select('*, strategies(name, type_of_strategy)')
+            .eq('user_id', userId)
+            .gte('date', fromDate)
+            .lte('date', toDate)
+            .order('date', { ascending: true }),
           supabase
             .from('trade_psychology')
             .select('trade_id, psychological_condition_pct')
-            .in('trade_id', tradeIds)
-            .eq('user_id', userId),
+            .eq('user_id', userId)
+            .gte('date', fromDate)
+            .lte('date', toDate),
           supabase
             .from('trade_risk_management')
             .select('trade_id, followed_risk_rules_pct')
-            .in('trade_id', tradeIds)
-            .eq('user_id', userId),
+            .eq('user_id', userId)
+            .gte('date', fromDate)
+            .lte('date', toDate),
           supabase
             .from('trade_rule_adherence')
             .select('trade_id, followed')
-            .in('trade_id', tradeIds)
             .eq('user_id', userId)
+            .gte('date', fromDate)
+            .lte('date', toDate)
         ]);
 
-        setPsychologyData(psychRes.data || []);
-        setComplianceRiskData(riskRes.data || []);
-        setRulesData(rulesRes.data || []);
+        if (tradesRes.error) throw tradesRes.error;
+        
+        const fetchedTrades = tradesRes.data || [];
+        if (fetchedTrades.length === 0) {
+          setTrades([]);
+          setPsychologyData([]);
+          setComplianceRiskData([]);
+          setRulesData([]);
+        } else {
+          setTrades(fetchedTrades);
+          setPsychologyData(psychRes.data || []);
+          setComplianceRiskData(riskRes.data || []);
+          setRulesData(rulesRes.data || []);
+        }
       } catch (err: any) {
         console.error('Error fetching advanced report trades:', err);
         showError(err.message || 'Failed to sync your advanced report trades.');
