@@ -804,6 +804,7 @@ export const TradeEntryPage: React.FC = () => {
         ...entryRules.map((r) => ({
           trade_id: targetTradeId,
           user_id: userId,
+          date: date,
           rule_id: r.rule_id || r.id,
           rule_type: 'entry',
           rule_order: r.rule_order,
@@ -813,6 +814,7 @@ export const TradeEntryPage: React.FC = () => {
         ...exitRules.map((r) => ({
           trade_id: targetTradeId,
           user_id: userId,
+          date: date,
           rule_id: r.rule_id || r.id,
           rule_type: 'exit',
           rule_order: r.rule_order,
@@ -870,6 +872,7 @@ export const TradeEntryPage: React.FC = () => {
         .upsert({
           trade_id: targetTradeId,
           user_id: userId,
+          date: date,
           external_stress_pct: externalStress,
           price_action_reading_pct: priceActionReading,
           confidence_pct: confidence,
@@ -889,6 +892,7 @@ export const TradeEntryPage: React.FC = () => {
         .upsert({
           trade_id: targetTradeId,
           user_id: userId,
+          date: date,
           decided_risk: parsedDecidedRisk,
           followed_risk_rules_pct: followedRiskRulesPct
         }, {
