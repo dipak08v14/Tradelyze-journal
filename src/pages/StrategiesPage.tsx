@@ -854,7 +854,7 @@ export const StrategiesPage: React.FC = () => {
                       return (
                         <tr
                           key={strat.id}
-                          className="transition-colors cursor-pointer h-[52px]"
+                          className="transition-colors cursor-pointer"
                           style={{ 
                             borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
                             backgroundColor: isEven ? 'var(--bar)' : 'transparent',
@@ -864,13 +864,13 @@ export const StrategiesPage: React.FC = () => {
                           onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.025)')}
                           onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = isEven ? 'rgba(0, 0, 0, 0.018)' : 'transparent')}
                         >
-                          <td className="py-2.5 px-4 text-center text-xs font-mono" style={{ width: '40px', whiteSpace: 'nowrap', color: 'var(--text-muted)' }}>
+                          <td className="text-center text-xs font-mono" style={{ padding: '6px 16px', width: '40px', whiteSpace: 'nowrap', color: 'var(--text-muted)' }}>
                             {(currentPage - 1) * itemsPerPage + index + 1}
                           </td>
-                          <td className="py-2.5 px-4 animate-fade-in" style={{ maxWidth: '220px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          <td className="animate-fade-in" style={{ padding: '6px 16px', maxWidth: '220px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             <span className="transition-colors text-sm hover:text-[var(--accent)]" style={{ fontWeight: 600, color: 'var(--text)' }}>{strat.name}</span>
                           </td>
-                          <td className="py-2.5 px-4 text-center" style={{ width: '100px', whiteSpace: 'nowrap' }}>
+                          <td className="text-center" style={{ padding: '6px 16px', width: '100px', whiteSpace: 'nowrap' }}>
                             {(() => {
                               const strategyType = (strat.type_of_strategy || 'Neutral').trim();
                               const lower = strategyType.toLowerCase();
@@ -903,23 +903,23 @@ export const StrategiesPage: React.FC = () => {
                               );
                             })()}
                           </td>
-                          <td className="py-2.5 px-4 text-center text-xs font-mono font-medium text-zinc-300" style={{ whiteSpace: 'nowrap' }}>{stats.totalTrades}</td>
-                          <td className={`py-2.5 px-4 text-center text-xs font-mono font-bold ${isPnlPositive ? 'text-emerald-400' : 'text-red-400'}`} style={{ whiteSpace: 'nowrap' }}>
+                          <td className="text-center text-xs font-mono font-medium text-zinc-300" style={{ padding: '6px 16px', whiteSpace: 'nowrap' }}>{stats.totalTrades}</td>
+                          <td className={`text-center text-xs font-mono font-bold ${isPnlPositive ? 'text-emerald-400' : 'text-red-400'}`} style={{ padding: '6px 16px', whiteSpace: 'nowrap' }}>
                             {formatCurrency(stats.netPnl)}
                           </td>
-                          <td className={`py-2.5 px-4 text-center text-xs font-mono font-bold ${winRateColor}`} style={{ whiteSpace: 'nowrap' }}>{stats.winRate.toFixed(1)}%</td>
-                          <td className={`py-2.5 px-4 text-center text-xs font-mono ${stats.avgR >= 0 ? 'text-emerald-400' : 'text-red-400'}`} style={{ whiteSpace: 'nowrap' }}>
+                          <td className={`text-center text-xs font-mono font-bold ${winRateColor}`} style={{ padding: '6px 16px', whiteSpace: 'nowrap' }}>{stats.winRate.toFixed(1)}%</td>
+                          <td className={`text-center text-xs font-mono ${stats.avgR >= 0 ? 'text-emerald-400' : 'text-red-400'}`} style={{ padding: '6px 16px', whiteSpace: 'nowrap' }}>
                             {stats.avgR >= 0 ? '+' : ''}{stats.avgR.toFixed(2)}R
                           </td>
-                          <td className="py-2.5 px-4 text-center text-xs font-mono font-semibold text-zinc-300" style={{ whiteSpace: 'nowrap' }}>
+                          <td className="text-center text-xs font-mono font-semibold text-zinc-300" style={{ padding: '6px 16px', whiteSpace: 'nowrap' }}>
                             {typeof stats.profitFactor === 'number' ? stats.profitFactor.toFixed(2) : stats.profitFactor}
                           </td>
-                          <td className={`py-2.5 px-4 text-center text-xs font-mono font-semibold ${isExpectancyPositive ? 'text-emerald-400' : 'text-red-400'}`} style={{ whiteSpace: 'nowrap' }}>
+                          <td className={`text-center text-xs font-mono font-semibold ${isExpectancyPositive ? 'text-emerald-400' : 'text-red-400'}`} style={{ padding: '6px 16px', whiteSpace: 'nowrap' }}>
                             {formatCurrency(stats.expectancy)}
                           </td>
-                          <td className="py-2.5 px-4 text-center text-xs font-mono text-zinc-300" style={{ whiteSpace: 'nowrap' }}>{stats.missedTrades}</td>
-                          <td className="py-2.5 px-4 text-center" style={{ whiteSpace: 'nowrap' }}>{getStatusBadgeMinimal(strat.status)}</td>
-                          <td className="py-2.5 px-4 text-center relative" onClick={(e) => e.stopPropagation()} style={{ whiteSpace: 'nowrap' }}>
+                          <td className="text-center text-xs font-mono text-zinc-300" style={{ padding: '6px 16px', whiteSpace: 'nowrap' }}>{stats.missedTrades}</td>
+                          <td className="text-center" style={{ padding: '6px 16px', whiteSpace: 'nowrap' }}>{getStatusBadgeMinimal(strat.status)}</td>
+                          <td className="text-center relative" onClick={(e) => e.stopPropagation()} style={{ padding: '6px 16px', whiteSpace: 'nowrap' }}>
                             <button
                               onClick={() => {
                                 if (isMenuOpen) {
