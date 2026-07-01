@@ -555,7 +555,7 @@ export const StrategyDetail: React.FC = () => {
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center animate-pulse" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
-        <div className="w-8 h-8 border-4 border-t-cyan-500 border-zinc-700 rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 rounded-full animate-spin" style={{ borderTopColor: 'var(--accent)', borderColor: 'var(--border)' }}></div>
       </div>
     );
   }
@@ -579,37 +579,52 @@ export const StrategyDetail: React.FC = () => {
           <div className="text-xl font-bold tracking-wider font-display" style={{ color: 'var(--accent)' }}>TRADELYZE</div>
           <button
             onClick={() => setMobileOpen(true)}
-            className="p-1.5 rounded-lg cursor-pointer text-zinc-400 hover:text-white"
+            className="p-1.5 rounded-lg cursor-pointer hover:text-white"
+            style={{ color: 'var(--text-sub)' }}
           >
             <Menu className="w-6 h-6" />
           </button>
         </header>
 
-        <main className="flex-1 overflow-y-auto px-0">
-          <div className="max-w-6xl mx-auto">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden px-0">
+          <div className="max-w-7xl mx-auto">
             {/* BREADCRUMB ROW */}
-            <div className="flex flex-wrap items-center gap-1.5 text-xs text-zinc-500 font-mono mb-4 uppercase tracking-wider font-semibold">
-              <Link to="/strategies" className="hover:text-cyan-400 transition-colors">Strategies</Link>
+            <div className="flex flex-wrap items-center gap-1.5 text-xs font-mono mb-4 uppercase tracking-wider font-semibold" style={{ color: 'var(--text-muted)' }}>
+              <Link to="/strategies" className="transition-colors">Strategies</Link>
               <ChevronRight className="w-4 h-4 text-zinc-600" />
-              <span className="text-zinc-400">{strategy ? strategy.name : 'Loading...'}</span>
+              <span style={{ color: 'var(--text-sub)' }}>{strategy ? strategy.name : 'Loading...'}</span>
               <ChevronRight className="w-4 h-4 text-zinc-600" />
-              <span className="text-cyan-400">{activeTab}</span>
+              <span style={{ color: 'var(--accent)' }}>{activeTab}</span>
             </div>
 
             {/* STRATEGY HEADER BLOCK */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <div
+              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+              style={{
+                background: 'var(--card)',
+                width: 'calc(100% + 48px)',
+                marginLeft: '-24px',
+                marginRight: '-24px',
+                paddingLeft: '24px',
+                paddingRight: '24px',
+                paddingTop: '12px',
+                paddingBottom: '12px',
+                borderBottom: '1px solid var(--border)',
+                marginBottom: '16px'
+              }}
+            >
               <div>
                 <div className="flex items-center gap-2.5">
                   <h1 className="text-3xl font-extrabold tracking-tight text-white font-display">
                     {strategy ? strategy.name : 'Strategy details'}
                   </h1>
                   {strategy && (
-                    <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shadow-sm shrink-0">
+                    <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider border shadow-sm shrink-0" style={{ backgroundColor: 'var(--accent-muted)', color: 'var(--accent)', borderColor: 'var(--accent)' }}>
                       {strategy.type_of_strategy}
                     </span>
                   )}
                 </div>
-                <p className="text-zinc-500 text-xs font-mono mt-1">
+                <p className="text-xs font-mono mt-1" style={{ color: 'var(--text-muted)' }}>
                   STATUS:{' '}
                   <span
                     className="font-bold uppercase animate-fade-in"
@@ -656,7 +671,7 @@ export const StrategyDetail: React.FC = () => {
             </div>
 
             {/* TAB SELECTORS ACTIONS */}
-            <div className="flex border-b overflow-x-auto gap-1 sticky top-0 z-10 scrollbar-none mb-6" style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg)' }}>
+            <div className="flex border-b overflow-x-auto gap-1 sticky top-0 z-10 scrollbar-none mb-6" style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)' }}>
               {(['OVERVIEW', 'RULES PERFORMANCE', 'EXECUTED TRADES', 'MISSED TRADES', 'NOTES', 'REFERENCE'] as TabType[]).map((tab) => {
                 const active = activeTab === tab;
                 return (
@@ -665,9 +680,12 @@ export const StrategyDetail: React.FC = () => {
                     onClick={() => setActiveTab(tab)}
                     className={`px-4 py-3 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap border-b-2 shrink-0 ${
                       active
-                        ? 'border-cyan-500 text-cyan-400'
-                        : 'border-transparent text-zinc-500 hover:text-zinc-300 hover:border-zinc-800'
+                        ? 'border-cyan-500'
+                        : 'border-transparent'
                     }`}
+                    style={{
+                      color: active ? 'var(--accent)' : 'var(--text-muted)'
+                    }}
                   >
                     {tab}
                   </button>
@@ -678,8 +696,8 @@ export const StrategyDetail: React.FC = () => {
             {/* TAB RENDERS */}
             {loading ? (
               <div className="flex flex-col items-center justify-center py-24 gap-3">
-                <div className="w-8 h-8 rounded-full border-2 border-t-cyan-500 border-zinc-700 animate-spin"></div>
-                <p className="text-xs text-zinc-500 font-mono">Loading setup statistics...</p>
+                <div className="w-8 h-8 rounded-full border-2 animate-spin" style={{ borderTopColor: 'var(--accent)', borderColor: 'var(--border)' }}></div>
+                <p className="text-xs font-mono" style={{ color: 'var(--text-muted)' }}>Loading setup statistics...</p>
               </div>
             ) : (
               <>
@@ -690,66 +708,73 @@ export const StrategyDetail: React.FC = () => {
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                       {/* CARD 1 */}
                       <div className="rounded-2xl border p-5" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
-                        <span className="text-[10px] font-bold font-mono uppercase tracking-wider text-zinc-500">Net P&L</span>
-                        <div className={`text-2xl font-extrabold font-mono mt-1.5 ${overviewStats.netPnl >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                        <span className="text-[10px] font-bold font-mono uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Net P&L</span>
+                        <div className="text-2xl font-extrabold font-mono mt-1.5" style={{ color: overviewStats.netPnl >= 0 ? '#008F67' : '#DF1C30' }}>
                           {formatCurrency(overviewStats.netPnl)}
                         </div>
                       </div>
 
                       {/* CARD 2 */}
                       <div className="rounded-2xl border p-5" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
-                        <span className="text-[10px] font-bold font-mono uppercase tracking-wider text-zinc-500">Total Trades</span>
-                        <div className="text-2xl font-extrabold font-mono mt-1.5 text-zinc-100">
+                        <span className="text-[10px] font-bold font-mono uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Total Trades</span>
+                        <div className="text-2xl font-extrabold font-mono mt-1.5" style={{ color: 'var(--text)' }}>
                           {overviewStats.totalTrades}
                         </div>
                       </div>
 
                       {/* CARD 3 */}
                       <div className="rounded-2xl border p-5" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
-                        <span className="text-[10px] font-bold font-mono uppercase tracking-wider text-zinc-500">Win Rate</span>
-                        <div className={`text-2xl font-extrabold font-mono mt-1.5 ${
-                          overviewStats.winRate >= 60 ? 'text-emerald-400' : overviewStats.winRate >= 40 ? 'text-amber-400' : 'text-red-400'
-                        }`}>
+                        <span className="text-[10px] font-bold font-mono uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Win Rate</span>
+                        <div 
+                          className={`text-2xl font-extrabold font-mono mt-1.5 ${
+                            overviewStats.winRate >= 60 || overviewStats.winRate < 40 ? '' : 'text-amber-400'
+                          }`}
+                          style={
+                            overviewStats.winRate >= 60 ? { color: '#008F67' } :
+                            overviewStats.winRate < 40 ? { color: '#DF1C30' } :
+                            undefined
+                          }
+                        >
                           {overviewStats.winRate.toFixed(1)}%
                         </div>
                       </div>
 
                       {/* CARD 4 */}
                       <div className="rounded-2xl border p-5" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
-                        <span className="text-[10px] font-bold font-mono uppercase tracking-wider text-zinc-500">Profit Factor</span>
-                        <div className="text-2xl font-extrabold font-mono mt-1.5 text-zinc-200">
+                        <span className="text-[10px] font-bold font-mono uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Profit Factor</span>
+                        <div className="text-2xl font-extrabold font-mono mt-1.5" style={{ color: 'var(--text)' }}>
                           {typeof overviewStats.profitFactor === 'number' ? overviewStats.profitFactor.toFixed(2) : overviewStats.profitFactor}
                         </div>
                       </div>
 
                       {/* CARD 5 */}
                       <div className="rounded-2xl border p-5" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
-                        <span className="text-[10px] font-bold font-mono uppercase tracking-wider text-zinc-500">Avg R-Multiple</span>
-                        <div className={`text-2xl font-extrabold font-mono mt-1.5 ${overviewStats.avgR >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                        <span className="text-[10px] font-bold font-mono uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Avg R-Multiple</span>
+                        <div className="text-2xl font-extrabold font-mono mt-1.5" style={{ color: overviewStats.avgR >= 0 ? '#008F67' : '#DF1C30' }}>
                           {overviewStats.avgR >= 0 ? '+' : ''}{overviewStats.avgR.toFixed(2)}R
                         </div>
                       </div>
 
                       {/* CARD 6 */}
                       <div className="rounded-2xl border p-5" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
-                        <span className="text-[10px] font-bold font-mono uppercase tracking-wider text-zinc-500">Expectancy</span>
-                        <div className={`text-2xl font-extrabold font-mono mt-1.5 ${overviewStats.expectancy >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                        <span className="text-[10px] font-bold font-mono uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Expectancy</span>
+                        <div className="text-2xl font-extrabold font-mono mt-1.5" style={{ color: overviewStats.expectancy >= 0 ? '#008F67' : '#DF1C30' }}>
                           {formatCurrency(overviewStats.expectancy)}
                         </div>
                       </div>
 
                       {/* CARD 7 */}
                       <div className="rounded-2xl border p-5" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
-                        <span className="text-[10px] font-bold font-mono uppercase tracking-wider text-zinc-500">Avg Winner</span>
-                        <div className="text-2xl font-extrabold font-mono mt-1.5 text-emerald-400">
+                        <span className="text-[10px] font-bold font-mono uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Avg Winner</span>
+                        <div className="text-2xl font-extrabold font-mono mt-1.5" style={{ color: '#008F67' }}>
                           {formatCurrency(overviewStats.avgWinner)}
                         </div>
                       </div>
 
                       {/* CARD 8 */}
                       <div className="rounded-2xl border p-5" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
-                        <span className="text-[10px] font-bold font-mono uppercase tracking-wider text-zinc-500">Avg Loser</span>
-                        <div className="text-2xl font-extrabold font-mono mt-1.5 text-red-400">
+                        <span className="text-[10px] font-bold font-mono uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Avg Loser</span>
+                        <div className="text-2xl font-extrabold font-mono mt-1.5" style={{ color: '#DF1C30' }}>
                           {formatCurrency(overviewStats.avgLoser)}
                         </div>
                       </div>
@@ -762,7 +787,7 @@ export const StrategyDetail: React.FC = () => {
                       </h3>
 
                       {chartDetails.data.length <= 1 ? (
-                        <div className="h-[260px] flex flex-col items-center justify-center text-center text-zinc-500 text-xs font-mono">
+                        <div className="h-[260px] flex flex-col items-center justify-center text-center text-xs font-mono" style={{ color: 'var(--text-muted)' }}>
                           <TrendingUp className="w-8 h-8 text-zinc-600 mb-2" />
                           No trades logged with this strategy to compute curve.
                         </div>
@@ -810,7 +835,7 @@ export const StrategyDetail: React.FC = () => {
                                   color: '#ffffff'
                                 }}
                                 formatter={(value: any) => [
-                                  <span key="val" className={Number(value) >= 0 ? 'text-emerald-400 font-bold' : 'text-red-400 font-bold'}>
+                                  <span key="val" className="font-bold" style={{ color: Number(value) >= 0 ? '#008F67' : '#DF1C30' }}>
                                     {formatCurrency(Number(value))}
                                   </span>,
                                   'Cumulative P&L'
@@ -831,7 +856,7 @@ export const StrategyDetail: React.FC = () => {
                                       cx={cx}
                                       cy={cy}
                                       r={3}
-                                      fill={val >= 0 ? '#10b981' : '#ef4444'}
+                                      fill={val >= 0 ? '#10b981' : '#DF1C30'}
                                       strokeWidth={0}
                                     />
                                   );
@@ -855,18 +880,18 @@ export const StrategyDetail: React.FC = () => {
                           <span className="w-1.5 h-3 bg-cyan-400 rounded-sm" />
                           Entry Rules Performance
                         </h4>
-                        <span className="text-xs font-mono text-zinc-500 font-bold">{entryRulesPerf.length} active rules</span>
+                        <span className="text-xs font-mono font-bold" style={{ color: 'var(--text-muted)' }}>{entryRulesPerf.length} active rules</span>
                       </div>
 
                       {entryRulesPerf.length === 0 ? (
-                        <div className="p-8 text-center text-xs text-zinc-500 font-mono">
+                        <div className="p-8 text-center text-xs font-mono" style={{ color: 'var(--text-muted)' }}>
                           No entry rules specified for this strategy.
                         </div>
                       ) : (
                         <div className="overflow-x-auto">
                           <table className="w-full text-left border-collapse min-w-[700px]">
                             <thead>
-                              <tr className="border-b text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-500" style={{ borderColor: 'var(--border)' }}>
+                              <tr className="border-b text-[10px] font-mono font-bold uppercase tracking-wider" style={{ borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
                                 <th className="py-2.5 px-4">Rule Text</th>
                                 <th className="py-2.5 px-4 text-center">Follow Rate</th>
                                 <th className="py-2.5 px-4 text-right">P&L Followed</th>
@@ -877,28 +902,36 @@ export const StrategyDetail: React.FC = () => {
                             </thead>
                             <tbody>
                               {entryRulesPerf.map((r) => {
-                                let followColor = 'text-red-400';
+                                let followClass = '';
+                                let followStyle: React.CSSProperties = {};
                                 if (r.followRate !== null) {
-                                  if (r.followRate >= 80) followColor = 'text-emerald-400';
-                                  else if (r.followRate >= 50) followColor = 'text-amber-400';
+                                  if (r.followRate >= 80) {
+                                    followStyle = { color: '#008F67' };
+                                  } else if (r.followRate >= 50) {
+                                    followClass = 'text-amber-400';
+                                  } else {
+                                    followStyle = { color: '#DF1C30' };
+                                  }
+                                } else {
+                                  followStyle = { color: '#DF1C30' };
                                 }
 
                                 return (
                                   <tr key={r.id} className="border-b hover:bg-zinc-800/10 transition-colors" style={{ borderColor: 'var(--border)' }}>
-                                    <td className="py-3 px-4 text-sm text-zinc-200 font-semibold">{r.rule_text}</td>
-                                    <td className={`py-3 px-4 text-center text-xs font-mono font-bold ${followColor}`}>
+                                    <td className="py-3 px-4 text-sm font-semibold" style={{ color: 'var(--text)' }}>{r.rule_text}</td>
+                                    <td className={`py-3 px-4 text-center text-xs font-mono font-bold ${followClass}`} style={followStyle}>
                                       {r.followRate !== null ? `${r.followRate.toFixed(1)}%` : '--'}
                                     </td>
-                                    <td className={`py-3 px-4 text-right text-xs font-mono font-bold ${r.pnlFollowed !== null && r.pnlFollowed >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                                    <td className="py-3 px-4 text-right text-xs font-mono font-bold" style={{ color: r.pnlFollowed !== null && r.pnlFollowed >= 0 ? '#008F67' : '#DF1C30' }}>
                                       {r.pnlFollowed !== null ? formatCurrency(r.pnlFollowed) : '--'}
                                     </td>
-                                    <td className={`py-3 px-4 text-right text-xs font-mono font-bold ${r.pnlNotFollowed !== null && r.pnlNotFollowed >= 0 ? 'text-emerald-200' : 'text-red-300'}`}>
+                                    <td className="py-3 px-4 text-right text-xs font-mono font-bold" style={{ color: r.pnlNotFollowed !== null && r.pnlNotFollowed >= 0 ? '#008F67' : '#DF1C30' }}>
                                       {r.pnlNotFollowed !== null ? formatCurrency(r.pnlNotFollowed) : '--'}
                                     </td>
-                                    <td className="py-3 px-4 text-center text-xs font-mono text-cyan-400 font-bold">
+                                    <td className="py-3 px-4 text-center text-xs font-mono font-bold" style={{ color: 'var(--accent)' }}>
                                       {r.winRateFollowed !== null ? `${r.winRateFollowed.toFixed(1)}%` : '--'}
                                     </td>
-                                    <td className="py-3 px-4 text-center text-xs font-mono text-zinc-400">{r.evaluationCount}</td>
+                                    <td className="py-3 px-4 text-center text-xs font-mono" style={{ color: 'var(--text-sub)' }}>{r.evaluationCount}</td>
                                   </tr>
                                 );
                               })}
@@ -915,18 +948,18 @@ export const StrategyDetail: React.FC = () => {
                           <span className="w-1.5 h-3 bg-indigo-400 rounded-sm" />
                           Exit Rules Performance
                         </h4>
-                        <span className="text-xs font-mono text-zinc-500 font-bold">{exitRulesPerf.length} active rules</span>
+                        <span className="text-xs font-mono font-bold" style={{ color: 'var(--text-muted)' }}>{exitRulesPerf.length} active rules</span>
                       </div>
 
                       {exitRulesPerf.length === 0 ? (
-                        <div className="p-8 text-center text-xs text-zinc-500 font-mono">
+                        <div className="p-8 text-center text-xs font-mono" style={{ color: 'var(--text-muted)' }}>
                           No exit rules specified for this strategy.
                         </div>
                       ) : (
                         <div className="overflow-x-auto">
                           <table className="w-full text-left border-collapse min-w-[700px]">
                             <thead>
-                              <tr className="border-b text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-500" style={{ borderColor: 'var(--border)' }}>
+                              <tr className="border-b text-[10px] font-mono font-bold uppercase tracking-wider" style={{ borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
                                 <th className="py-2.5 px-4">Rule Text</th>
                                 <th className="py-2.5 px-4 text-center">Follow Rate</th>
                                 <th className="py-2.5 px-4 text-right">P&L Followed</th>
@@ -937,28 +970,36 @@ export const StrategyDetail: React.FC = () => {
                             </thead>
                             <tbody>
                               {exitRulesPerf.map((r) => {
-                                let followColor = 'text-red-400';
+                                let followClass = '';
+                                let followStyle: React.CSSProperties = {};
                                 if (r.followRate !== null) {
-                                  if (r.followRate >= 80) followColor = 'text-emerald-400';
-                                  else if (r.followRate >= 50) followColor = 'text-amber-400';
+                                  if (r.followRate >= 80) {
+                                    followStyle = { color: '#008F67' };
+                                  } else if (r.followRate >= 50) {
+                                    followClass = 'text-amber-400';
+                                  } else {
+                                    followStyle = { color: '#DF1C30' };
+                                  }
+                                } else {
+                                  followStyle = { color: '#DF1C30' };
                                 }
 
                                 return (
                                   <tr key={r.id} className="border-b hover:bg-zinc-800/10 transition-colors" style={{ borderColor: 'var(--border)' }}>
-                                    <td className="py-3 px-4 text-sm text-zinc-200 font-semibold">{r.rule_text}</td>
-                                    <td className={`py-3 px-4 text-center text-xs font-mono font-bold ${followColor}`}>
+                                    <td className="py-3 px-4 text-sm font-semibold" style={{ color: 'var(--text)' }}>{r.rule_text}</td>
+                                    <td className={`py-3 px-4 text-center text-xs font-mono font-bold ${followClass}`} style={followStyle}>
                                       {r.followRate !== null ? `${r.followRate.toFixed(1)}%` : '--'}
                                     </td>
-                                    <td className={`py-3 px-4 text-right text-xs font-mono font-bold ${r.pnlFollowed !== null && r.pnlFollowed >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                                    <td className="py-3 px-4 text-right text-xs font-mono font-bold" style={{ color: r.pnlFollowed !== null && r.pnlFollowed >= 0 ? '#008F67' : '#DF1C30' }}>
                                       {r.pnlFollowed !== null ? formatCurrency(r.pnlFollowed) : '--'}
                                     </td>
-                                    <td className={`py-3 px-4 text-right text-xs font-mono font-bold ${r.pnlNotFollowed !== null && r.pnlNotFollowed >= 0 ? 'text-emerald-200' : 'text-red-300'}`}>
+                                    <td className="py-3 px-4 text-right text-xs font-mono font-bold" style={{ color: r.pnlNotFollowed !== null && r.pnlNotFollowed >= 0 ? '#008F67' : '#DF1C30' }}>
                                       {r.pnlNotFollowed !== null ? formatCurrency(r.pnlNotFollowed) : '--'}
                                     </td>
-                                    <td className="py-3 px-4 text-center text-xs font-mono text-cyan-400 font-bold">
+                                    <td className="py-3 px-4 text-center text-xs font-mono font-bold" style={{ color: 'var(--accent)' }}>
                                       {r.winRateFollowed !== null ? `${r.winRateFollowed.toFixed(1)}%` : '--'}
                                     </td>
-                                    <td className="py-3 px-4 text-center text-xs font-mono text-zinc-400">{r.evaluationCount}</td>
+                                    <td className="py-3 px-4 text-center text-xs font-mono" style={{ color: 'var(--text-sub)' }}>{r.evaluationCount}</td>
                                   </tr>
                                 );
                               })}
@@ -975,14 +1016,14 @@ export const StrategyDetail: React.FC = () => {
                   <div className="space-y-4 animate-fade-in">
                     <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                       {trades.length === 0 ? (
-                        <div className="p-12 text-center text-xs text-zinc-500 font-mono">
+                        <div className="p-12 text-center text-xs font-mono" style={{ color: 'var(--text-muted)' }}>
                           No trades logged with this setup yet.
                         </div>
                       ) : (
                         <div className="overflow-x-auto animate-fade-in_short">
                           <table className="w-full text-left border-collapse min-w-[750px]">
                             <thead>
-                              <tr className="border-b text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-500" style={{ borderColor: 'var(--border)' }}>
+                              <tr className="border-b text-[10px] font-mono font-bold uppercase tracking-wider" style={{ borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
                                 <th className="py-3 px-4">Date</th>
                                 <th className="py-3 px-4">Symbol</th>
                                 <th className="py-3 px-4">Direction</th>
@@ -1003,34 +1044,40 @@ export const StrategyDetail: React.FC = () => {
                                     style={{ borderColor: 'var(--border)' }}
                                     onClick={() => navigate(`/trade/${t.id}`)}
                                   >
-                                    <td className="py-3.5 px-4 text-xs font-mono text-zinc-300">{t.date}</td>
-                                    <td className="py-3.5 px-4 font-bold text-zinc-100 text-sm tracking-tight">{t.symbol}</td>
+                                    <td className="py-3.5 px-4 text-xs font-mono" style={{ color: 'var(--text-sub)' }}>{t.date}</td>
+                                    <td className="py-3.5 px-4 font-bold text-sm tracking-tight" style={{ color: 'var(--text)' }}>{t.symbol}</td>
                                     <td className="py-3.5 px-4">
-                                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
-                                        t.direction.toUpperCase() === 'LONG' || t.direction.toUpperCase() === 'BUY'
-                                          ? 'bg-emerald-500/10 text-emerald-400'
-                                          : 'bg-rose-500/10 text-rose-400'
-                                      }`}>
+                                      <span 
+                                        className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider"
+                                        style={
+                                          t.direction.toUpperCase() === 'LONG' || t.direction.toUpperCase() === 'BUY'
+                                            ? { backgroundColor: 'rgba(0,143,103,0.1)', color: '#008F67' }
+                                            : { backgroundColor: 'rgba(223,28,48,0.1)', color: '#DF1C30' }
+                                        }
+                                      >
                                         {dirOpt}
                                       </span>
                                     </td>
-                                    <td className={`py-3.5 px-4 text-right text-xs font-mono font-bold ${t.pnl && t.pnl >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                                    <td className="py-3.5 px-4 text-right text-xs font-mono font-bold" style={{ color: t.pnl && t.pnl >= 0 ? '#008F67' : '#DF1C30' }}>
                                       {t.pnl !== null ? formatCurrency(t.pnl) : '₹0'}
                                     </td>
-                                    <td className={`py-3.5 px-4 text-center text-xs font-mono font-bold ${t.r_multiple && t.r_multiple >= 0 ? 'text-emerald-400' : 'text-red-450'}`}>
+                                    <td className="py-3.5 px-4 text-center text-xs font-mono font-bold" style={{ color: t.r_multiple && t.r_multiple >= 0 ? '#008F67' : '#DF1C30' }}>
                                       {t.r_multiple !== null ? `${t.r_multiple >= 0 ? '+' : ''}${t.r_multiple.toFixed(2)}R` : '--'}
                                     </td>
                                     <td className="py-3.5 px-4 text-center text-xs">
-                                      <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider ${
-                                        t.status === 'Win' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-550/20' :
-                                        t.status === 'Loss' ? 'bg-rose-500/10 text-rose-400 border border-rose-550/20' :
-                                        'bg-zinc-500/10 text-zinc-400 border border-zinc-500/20'
-                                      }`}>
+                                      <span 
+                                        className="px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider border"
+                                        style={
+                                          t.status === 'Win' ? { backgroundColor: 'rgba(0,143,103,0.1)', color: '#008F67', borderColor: 'rgba(0,143,103,0.2)' } :
+                                          t.status === 'Loss' ? { backgroundColor: 'rgba(223,28,48,0.1)', color: '#DF1C30', borderColor: 'rgba(223,28,48,0.2)' } :
+                                          { backgroundColor: 'var(--bar)', color: 'var(--text-sub)', borderColor: 'var(--border)' }
+                                        }
+                                      >
                                         {t.status}
                                       </span>
                                     </td>
-                                    <td className="py-3.5 px-4 text-xs font-semibold text-zinc-300 capitalize">{t.execution_status || '--'}</td>
-                                    <td className="py-3.5 px-4 text-xs font-mono text-zinc-400">{t.holding_time_mins ? `${t.holding_time_mins} mins` : '--'}</td>
+                                    <td className="py-3.5 px-4 text-xs font-semibold capitalize" style={{ color: 'var(--text-sub)' }}>{t.execution_status || '--'}</td>
+                                    <td className="py-3.5 px-4 text-xs font-mono" style={{ color: 'var(--text-sub)' }}>{t.holding_time_mins ? `${t.holding_time_mins} mins` : '--'}</td>
                                   </tr>
                                 );
                               })}
@@ -1046,20 +1093,22 @@ export const StrategyDetail: React.FC = () => {
                         <button
                           disabled={tradePage === 1}
                           onClick={() => setTradePage(prev => Math.max(prev - 1, 1))}
-                          className="px-3.5 py-1.5 text-xs font-bold uppercase rounded-lg border border-[#2c2d3c] hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors inline-flex items-center gap-1 text-zinc-300"
+                          className="px-3.5 py-1.5 text-xs font-bold uppercase rounded-lg border border-[#2c2d3c] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors inline-flex items-center gap-1"
+                          style={{ color: 'var(--text-sub)' }}
                         >
                           <ChevronLeft className="w-4 h-4" />
                           Prev
                         </button>
 
-                        <span className="text-zinc-500 text-xs font-mono">
-                          Page <strong className="text-zinc-300">{tradePage}</strong> of <strong className="text-zinc-300">{totalTradePages}</strong>
+                        <span className="text-xs font-mono" style={{ color: 'var(--text-muted)' }}>
+                          Page <strong style={{ color: 'var(--text-sub)' }}>{tradePage}</strong> of <strong style={{ color: 'var(--text-sub)' }}>{totalTradePages}</strong>
                         </span>
 
                         <button
                           disabled={tradePage === totalTradePages}
                           onClick={() => setTradePage(prev => Math.min(prev + 1, totalTradePages))}
-                          className="px-3.5 py-1.5 text-xs font-bold uppercase rounded-lg border border-[#2c2d3c] hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors inline-flex items-center gap-1 text-zinc-300"
+                          className="px-3.5 py-1.5 text-xs font-bold uppercase rounded-lg border border-[#2c2d3c] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors inline-flex items-center gap-1"
+                          style={{ color: 'var(--text-sub)' }}
                         >
                           Next
                           <ChevronRight className="w-4 h-4" />
@@ -1078,20 +1127,20 @@ export const StrategyDetail: React.FC = () => {
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 flex-1">
                         {/* CARD 1 */}
                         <div className="p-4 rounded-xl border flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
-                          <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-500">Total Missed</span>
-                          <span className="text-2xl font-bold font-sans mt-1.5 text-zinc-100">{missedTradesStats.totalMissed}</span>
+                          <span className="text-[11px] font-mono font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Total Missed</span>
+                          <span className="text-2xl font-bold font-sans mt-1.5" style={{ color: 'var(--text)' }}>{missedTradesStats.totalMissed}</span>
                         </div>
                         {/* CARD 2 */}
                         <div className="p-4 rounded-xl border flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
-                          <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-500">Potential P&L</span>
-                          <span className={`text-2xl font-bold font-sans mt-1.5 ${missedTradesStats.potentialPnlSum >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                          <span className="text-[11px] font-mono font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Potential P&L</span>
+                          <span className="text-2xl font-bold font-sans mt-1.5" style={{ color: missedTradesStats.potentialPnlSum >= 0 ? '#008F67' : '#DF1C30' }}>
                             {formatCurrency(missedTradesStats.potentialPnlSum)}
                           </span>
                         </div>
                         {/* CARD 3 */}
                         <div className="p-4 rounded-xl border flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
-                          <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-500">Avg Potential</span>
-                          <span className={`text-2xl font-bold font-sans mt-1.5 ${missedTradesStats.avgPotential >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                          <span className="text-[11px] font-mono font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Avg Potential</span>
+                          <span className="text-2xl font-bold font-sans mt-1.5" style={{ color: missedTradesStats.avgPotential >= 0 ? '#008F67' : '#DF1C30' }}>
                             {formatCurrency(missedTradesStats.avgPotential)}
                           </span>
                         </div>
@@ -1114,8 +1163,8 @@ export const StrategyDetail: React.FC = () => {
                     <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                       {missedTrades.length === 0 ? (
                         <div className="py-16 text-center px-4">
-                          <p className="text-sm font-semibold text-zinc-300">No missed trades logged for this strategy.</p>
-                          <p className="text-xs text-zinc-500 mt-1.5 max-w-sm mx-auto leading-relaxed font-sans">
+                          <p className="text-sm font-semibold" style={{ color: 'var(--text-sub)' }}>No missed trades logged for this strategy.</p>
+                          <p className="text-xs mt-1.5 max-w-sm mx-auto leading-relaxed font-sans" style={{ color: 'var(--text-muted)' }}>
                             Log trades you missed to analyze opportunity costs and improve discipline.
                           </p>
                         </div>
@@ -1123,7 +1172,7 @@ export const StrategyDetail: React.FC = () => {
                         <div className="overflow-x-auto">
                           <table className="w-full text-left border-collapse">
                             <thead>
-                              <tr className="border-b font-mono text-[10px] text-zinc-400 uppercase tracking-wider" style={{ borderColor: 'var(--border)', backgroundColor: 'rgba(255,255,255,0.01)' }}>
+                              <tr className="border-b font-mono text-[10px] uppercase tracking-wider" style={{ borderColor: 'var(--border)', backgroundColor: 'rgba(255,255,255,0.01)', color: 'var(--text-muted)' }}>
                                 <th className="py-3.5 px-4 font-bold">Date</th>
                                 <th className="py-3.5 px-4 font-bold">Symbol</th>
                                 <th className="py-3.5 px-4 font-bold">Direction</th>
@@ -1140,25 +1189,28 @@ export const StrategyDetail: React.FC = () => {
                                     key={mt.id}
                                     className="hover:bg-zinc-800/10 transition-colors"
                                   >
-                                    <td className="py-3.5 px-4 text-xs font-mono text-zinc-400">
+                                    <td className="py-3.5 px-4 text-xs font-mono" style={{ color: 'var(--text-muted)' }}>
                                       {formatDateCustom(mt.date)}
                                     </td>
-                                    <td className="py-3.5 px-4 font-bold text-[#E4E4E7] text-sm tracking-tight uppercase">
+                                    <td className="py-3.5 px-4 font-bold text-sm tracking-tight uppercase" style={{ color: 'var(--text)' }}>
                                       {mt.symbol}
                                     </td>
                                     <td className="py-3.5 px-4">
-                                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
-                                        isLong
-                                          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                                          : 'bg-rose-500/10 text-rose-400 border border-rose-550/20'
-                                      }`}>
+                                      <span 
+                                        className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border"
+                                        style={
+                                          isLong
+                                            ? { backgroundColor: 'rgba(0,143,103,0.1)', color: '#008F67', borderColor: 'rgba(0,143,103,0.2)' }
+                                            : { backgroundColor: 'rgba(223,28,48,0.1)', color: '#DF1C30', borderColor: 'rgba(223,28,48,0.2)' }
+                                        }
+                                      >
                                         {mt.direction}
                                       </span>
                                     </td>
-                                    <td className={`py-3.5 px-4 text-right text-xs font-mono font-bold ${mt.potential_pnl !== null && mt.potential_pnl !== undefined ? (mt.potential_pnl >= 0 ? 'text-emerald-400' : 'text-rose-400') : 'text-zinc-500'}`}>
+                                    <td className="py-3.5 px-4 text-right text-xs font-mono font-bold" style={{ color: mt.potential_pnl !== null && mt.potential_pnl !== undefined ? (mt.potential_pnl >= 0 ? '#008F67' : '#DF1C30') : 'var(--text-muted)' }}>
                                       {mt.potential_pnl !== null && mt.potential_pnl !== undefined ? formatCurrency(mt.potential_pnl) : '--'}
                                     </td>
-                                    <td className="py-3.5 px-4 text-xs text-zinc-300 max-w-xs truncate" title={mt.notes || ''}>
+                                    <td className="py-3.5 px-4 text-xs max-w-xs truncate" style={{ color: 'var(--text-sub)' }} title={mt.notes || ''}>
                                       {mt.notes || '--'}
                                     </td>
                                     <td className="py-3.5 px-4 text-center">
@@ -1168,7 +1220,8 @@ export const StrategyDetail: React.FC = () => {
                                             handleDeleteMissedTrade(mt.id, e);
                                           }
                                         }}
-                                        className="p-1.5 text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer inline-flex items-center"
+                                        className="p-1.5 rounded-lg transition-colors cursor-pointer inline-flex items-center"
+                                        style={{ color: 'var(--text-muted)' }}
                                         title="Delete missed trade"
                                       >
                                         <Trash2 className="w-3.5 h-3.5" />
@@ -1199,10 +1252,11 @@ export const StrategyDetail: React.FC = () => {
                         >
                           {/* Header */}
                           <div className="flex items-center justify-between mb-5">
-                            <h3 className="text-base font-bold text-[#E4E4E7] tracking-tight">Log Missed Trade</h3>
+                            <h3 className="text-base font-bold tracking-tight" style={{ color: 'var(--text)' }}>Log Missed Trade</h3>
                             <button 
                               onClick={() => setAddModalOpen(false)}
-                              className="p-1.5 text-zinc-400 hover:text-white rounded-lg transition-colors cursor-pointer"
+                              className="p-1.5 rounded-lg transition-colors cursor-pointer"
+                              style={{ color: 'var(--text-muted)' }}
                             >
                               <X className="w-4 h-4" />
                             </button>
@@ -1212,7 +1266,7 @@ export const StrategyDetail: React.FC = () => {
                             {/* Date field */}
                             <div>
                               <label htmlFor="mt-date" className="block text-[10px] font-mono font-bold uppercase tracking-widest text-zinc-500 mb-1.5">
-                                Date <span className="text-[var(--accent)]">*</span>
+                                Date <span style={{ color: 'var(--accent)' }}>*</span>
                               </label>
                               <input
                                 id="mt-date"
@@ -1228,7 +1282,7 @@ export const StrategyDetail: React.FC = () => {
                             {/* Symbol field */}
                             <div className="relative" ref={mtSymbolContainerRef}>
                               <label htmlFor="mt-symbol" className="block text-[10px] font-mono font-bold uppercase tracking-widest text-zinc-500 mb-1.5">
-                                Symbol <span className="text-[var(--accent)]">*</span>
+                                Symbol <span style={{ color: 'var(--accent)' }}>*</span>
                               </label>
                               <input
                                 id="mt-symbol"
@@ -1260,7 +1314,8 @@ export const StrategyDetail: React.FC = () => {
                                         setMtSymbol(sym);
                                         setShowMtSuggestions(false);
                                       }}
-                                      className="w-full text-left px-3 py-2 text-zinc-300 hover:bg-zinc-805 hover:text-white transition-colors cursor-pointer"
+                                      className="w-full text-left px-3 py-2 hover:bg-zinc-805 transition-colors cursor-pointer"
+                                      style={{ color: 'var(--text-sub)' }}
                                     >
                                       {sym}
                                     </button>
@@ -1272,7 +1327,7 @@ export const StrategyDetail: React.FC = () => {
                             {/* Direction field */}
                             <div>
                               <label className="block text-[10px] font-mono font-bold uppercase tracking-widest text-zinc-500 mb-1.5">
-                                Direction <span className="text-[var(--accent)]">*</span>
+                                Direction <span style={{ color: 'var(--accent)' }}>*</span>
                               </label>
                               <div className="grid grid-cols-2 gap-2 font-sans">
                                 {(['LONG', 'SHORT'] as const).map((dir) => {
@@ -1285,13 +1340,13 @@ export const StrategyDetail: React.FC = () => {
                                   };
 
                                   const activeStyle = dir === 'LONG' ? {
-                                    backgroundColor: 'rgba(34,197,94,0.12)',
-                                    border: '1.5px solid #22c55e',
-                                    color: '#22c55e'
+                                    backgroundColor: 'rgba(0,143,103,0.12)',
+                                    border: '1.5px solid #008F67',
+                                    color: '#008F67'
                                   } : {
-                                    backgroundColor: 'rgba(239,68,68,0.12)',
-                                    border: '1.5px solid #ef4444',
-                                    color: '#ef4444'
+                                    backgroundColor: 'rgba(223,28,48,0.12)',
+                                    border: '1.5px solid #DF1C30',
+                                    color: '#DF1C30'
                                   };
 
                                   return (
@@ -1372,14 +1427,21 @@ export const StrategyDetail: React.FC = () => {
                   <div className="space-y-4 animate-fade-in">
                     <div className="rounded-2xl border p-5" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                       <div className="flex items-center justify-between mb-3.5">
-                        <label htmlFor="strategy-notes-area" className="text-xs font-mono uppercase tracking-wider text-zinc-500 font-bold flex items-center gap-1.5">
+                        <label htmlFor="strategy-notes-area" className="text-xs font-mono uppercase tracking-wider font-bold flex items-center gap-1.5" style={{ color: 'var(--text-muted)' }}>
                           <FileText className="w-4 h-4" />
                           Strategy Notes
                         </label>
                         {saveFeedback && (
-                          <span className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded ${
-                            saveFeedback.includes('Saved') ? 'text-emerald-400 bg-emerald-500/10' : 'text-amber-400 bg-amber-500/10'
-                          }`}>
+                          <span 
+                            className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded ${
+                              saveFeedback.includes('Saved') ? '' : 'text-amber-400 bg-amber-500/10'
+                            }`}
+                            style={
+                              saveFeedback.includes('Saved')
+                                ? { backgroundColor: 'rgba(0,143,103,0.1)', color: '#008F67' }
+                                : undefined
+                            }
+                          >
                             {saveFeedback}
                           </span>
                         )}
@@ -1391,7 +1453,8 @@ export const StrategyDetail: React.FC = () => {
                         onChange={(e) => setNotesText(e.target.value)}
                         placeholder="Write down details for your playbook setup, entry rules logic, core signals, checklist rules..."
                         rows={10}
-                        className="w-full bg-[#13141F] rounded-xl border border-zinc-800 text-zinc-100 p-4 font-sans text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500 placeholder-zinc-600 leading-relaxed"
+                        className="w-full rounded-xl border p-4 font-sans text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500 leading-relaxed"
+                        style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)', color: 'var(--text)' }}
                       />
                     </div>
                   </div>
@@ -1411,11 +1474,11 @@ export const StrategyDetail: React.FC = () => {
                             className="flex flex-col items-center justify-center p-12 py-20 text-center rounded-2xl border"
                             style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
                           >
-                            <div className="p-4 rounded-full bg-zinc-800/30 mb-4 text-zinc-500">
+                            <div className="p-4 rounded-full mb-4" style={{ backgroundColor: 'var(--bar)', color: 'var(--text-muted)' }}>
                               <Image className="w-8 h-8" />
                             </div>
-                            <h3 className="text-sm font-semibold text-zinc-200">No reference images yet</h3>
-                            <p className="text-xs text-zinc-500 mt-1.5 max-w-sm leading-relaxed font-sans">
+                            <h3 className="text-sm font-semibold" style={{ color: 'var(--text-sub)' }}>No reference images yet</h3>
+                            <p className="text-xs mt-1.5 max-w-sm leading-relaxed font-sans" style={{ color: 'var(--text-muted)' }}>
                               Add reference images when editing this strategy to see them here.
                             </p>
                             <Link
@@ -1451,7 +1514,7 @@ export const StrategyDetail: React.FC = () => {
                                   loading="lazy"
                                 />
                                 <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center animate-fade-in">
-                                  <span className="text-[11px] font-mono font-medium px-2 py-1 rounded bg-zinc-900/80 text-white">
+                                  <span className="text-[11px] font-mono font-medium px-2 py-1 rounded text-white" style={{ backgroundColor: 'var(--card)' }}>
                                     View Maximized
                                   </span>
                                 </div>
@@ -1460,7 +1523,7 @@ export const StrategyDetail: React.FC = () => {
                           </div>
 
                           {/* Image Count Footer */}
-                          <p className="text-xs text-zinc-500 font-mono mt-3">
+                          <p className="text-xs font-mono mt-3" style={{ color: 'var(--text-muted)' }}>
                             {referenceImages.length} reference image{referenceImages.length === 1 ? '' : 's'}
                           </p>
                         </div>
