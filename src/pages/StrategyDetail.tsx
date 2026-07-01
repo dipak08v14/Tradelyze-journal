@@ -784,7 +784,7 @@ export const StrategyDetail: React.FC = () => {
                     </div>
 
                     {/* CHARTS GRAPH COMPONENT */}
-                    <div className="rounded-2xl border p-4" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
+                    <div className="rounded-2xl border p-6" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                       <h3 className="text-sm font-bold text-white font-mono uppercase tracking-wider mb-5">
                         Cumulative P&L — {strategy?.name || 'Strategy'}
                       </h3>
@@ -799,43 +799,43 @@ export const StrategyDetail: React.FC = () => {
                           <ResponsiveContainer width="100%" height="100%">
                             <AreaChart
                               data={chartDetails.data}
-                              margin={{ top: 5, right: 10, left: 10, bottom: 5 }}
+                              margin={{ top: 10, right: 20, left: 10, bottom: 5 }}
                             >
                               <defs>
                                 <linearGradient id="stratAreaGrad" x1="0" y1="0" x2="0" y2="1">
-                                  <stop offset="0%" stopColor="#008F67" stopOpacity={0.40} />
-                                  <stop offset={`${chartDetails.zeroPercent}%`} stopColor="#008F67" stopOpacity={0.00} />
-                                  <stop offset={`${chartDetails.zeroPercent}%`} stopColor="#DF1C30" stopOpacity={0.00} />
-                                  <stop offset="100%" stopColor="#DF1C30" stopOpacity={0.40} />
+                                  <stop offset="0%" stopColor="#22c55e" stopOpacity={0.40} />
+                                  <stop offset={`${chartDetails.zeroPercent}%`} stopColor="#22c55e" stopOpacity={0.00} />
+                                  <stop offset={`${chartDetails.zeroPercent}%`} stopColor="#ef4444" stopOpacity={0.00} />
+                                  <stop offset="100%" stopColor="#ef4444" stopOpacity={0.40} />
                                 </linearGradient>
                                 <linearGradient id="stratLineGrad" x1="0" y1="0" x2="0" y2="1">
-                                  <stop offset="0%" stopColor="#008F67" stopOpacity={1} />
-                                  <stop offset={`${chartDetails.zeroPercent}%`} stopColor="#008F67" stopOpacity={1} />
-                                  <stop offset={`${chartDetails.zeroPercent}%`} stopColor="#DF1C30" stopOpacity={1} />
-                                  <stop offset="100%" stopColor="#DF1C30" stopOpacity={1} />
+                                  <stop offset="0%" stopColor="#22c55e" stopOpacity={1} />
+                                  <stop offset={`${chartDetails.zeroPercent}%`} stopColor="#22c55e" stopOpacity={1} />
+                                  <stop offset={`${chartDetails.zeroPercent}%`} stopColor="#ef4444" stopOpacity={1} />
+                                  <stop offset="100%" stopColor="#ef4444" stopOpacity={1} />
                                 </linearGradient>
                               </defs>
 
                               <XAxis
                                 dataKey="dateLabel"
-                                tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
+                                tick={{ fontSize: 10, fill: '#8a8b9c' }}
                                 tickLine={false}
                                 axisLine={{ stroke: 'var(--border)' }}
                               />
                               <YAxis
-                                tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
+                                tick={{ fontSize: 10, fill: '#8a8b9c' }}
                                 tickLine={false}
                                 axisLine={false}
                                 tickFormatter={(v) => `₹${v.toLocaleString('en-IN')}`}
                                 width={85}
                               />
-                              <ReferenceLine y={0} stroke="var(--border)" strokeDasharray="3 3" />
+                              <ReferenceLine y={0} stroke="rgba(255,255,255,0.1)" strokeDasharray="3 3" />
                               <RechartsTooltip
                                 contentStyle={{
-                                  backgroundColor: 'var(--card)',
+                                  backgroundColor: '#1E1F29',
                                   border: '0.5px solid var(--border)',
                                   borderRadius: '12px',
-                                  color: 'var(--text)'
+                                  color: '#ffffff'
                                 }}
                                 formatter={(value: any) => [
                                   <span key="val" className="font-bold" style={{ color: Number(value) >= 0 ? '#008F67' : '#DF1C30' }}>
@@ -859,7 +859,7 @@ export const StrategyDetail: React.FC = () => {
                                       cx={cx}
                                       cy={cy}
                                       r={3}
-                                      fill={val >= 0 ? '#008F67' : '#DF1C30'}
+                                      fill={val >= 0 ? '#10b981' : '#DF1C30'}
                                       strokeWidth={0}
                                     />
                                   );
