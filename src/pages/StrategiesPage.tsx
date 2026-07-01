@@ -1201,7 +1201,7 @@ export const StrategiesPage: React.FC = () => {
                           <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block">
                             Win Rate
                           </span>
-                          <span style={{ fontSize: '18px', fontWeight: 700, color: 'var(--accent)' }} className="block font-sans">
+                          <span style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text)' }} className="block font-sans">
                             {stats.winRate.toFixed(1)}%
                           </span>
                         </div>
@@ -1215,7 +1215,7 @@ export const StrategiesPage: React.FC = () => {
                             style={{
                               fontSize: '18px',
                               fontWeight: 700,
-                              color: typeof stats.profitFactor === 'number' && stats.profitFactor >= 1.0 ? 'var(--accent)' : stats.profitFactor === 'N/A' ? 'var(--accent)' : '#ef4444'
+                              color: 'var(--text)'
                             }}
                             className="block font-sans"
                           >
@@ -1242,7 +1242,7 @@ export const StrategiesPage: React.FC = () => {
                             style={{
                               fontSize: '18px',
                               fontWeight: 700,
-                              color: stats.avgR >= 0 ? 'var(--accent)' : '#ef4444'
+                              color: 'var(--text)'
                             }}
                             className="block font-sans"
                           >
