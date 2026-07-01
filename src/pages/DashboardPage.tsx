@@ -976,7 +976,7 @@ export const DashboardPage: React.FC = () => {
   const zeroPercent = range > 0 ? (maxVal / range) * 100 : 0;
 
   return (
-    <div className="min-h-screen w-full flex flex-col md:flex-row md:items-start font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)', overflowX: 'hidden' }}>
+    <div className="min-h-screen w-full flex flex-col md:flex-row md:items-start font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
       <Sidebar userEmail={user.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 

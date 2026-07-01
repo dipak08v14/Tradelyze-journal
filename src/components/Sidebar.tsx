@@ -55,7 +55,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
 
   const sidebarContent = (
     <div 
-      className="flex flex-col h-full font-sans"
+      className="flex flex-col h-full min-h-0 font-sans"
       style={{ 
         backgroundColor: 'var(--topbar)', 
         borderRight: '1px solid rgba(0, 0, 0, 0.08)', 
@@ -131,7 +131,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
       </button>
 
       {/* Navigation items section */}
-      <nav className="flex-1 space-y-1 overflow-y-auto" style={{ padding: '0px 8px 8px 8px' }}>
+      <nav className="flex-1 min-h-0 space-y-1 overflow-y-auto" style={{ padding: '0px 8px 8px 8px' }}>
         {menuItems.map((item) => {
           const isActive = location.pathname === item.route || 
             (item.route === '/strategies' && location.pathname.startsWith('/strategies')) ||
@@ -204,7 +204,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
     <>
       {/* Desktop sidebar */}
       <aside 
-        className="hidden md:flex flex-col w-[220px] h-screen sticky top-0 overflow-y-auto flex-shrink-0"
+        className="hidden md:flex flex-col w-[220px] h-screen sticky top-0 overflow-y-hidden flex-shrink-0"
         style={{ backgroundColor: 'var(--topbar)', borderRight: '1px solid rgba(0, 0, 0, 0.08)', boxShadow: '1px 0 3px rgba(0, 0, 0, 0.04)' }}
       >
         {sidebarContent}
