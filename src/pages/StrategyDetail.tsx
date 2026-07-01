@@ -816,24 +816,29 @@ export const StrategyDetail: React.FC = () => {
 
                               <XAxis
                                 dataKey="dateLabel"
-                                tick={{ fontSize: 10, fill: '#8a8b9c' }}
+                                tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
                                 tickLine={false}
                                 axisLine={{ stroke: 'var(--border)' }}
                               />
+                              <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="rgba(0,0,0,0.12)" />
                               <YAxis
-                                tick={{ fontSize: 10, fill: '#8a8b9c' }}
+                                tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
                                 tickLine={false}
                                 axisLine={false}
                                 tickFormatter={(v) => `₹${v.toLocaleString('en-IN')}`}
                                 width={85}
+                                tickCount={8}
                               />
                               <ReferenceLine y={0} stroke="rgba(255,255,255,0.1)" strokeDasharray="3 3" />
                               <RechartsTooltip
+                                cursor={false}
                                 contentStyle={{
-                                  backgroundColor: '#1E1F29',
+                                  backgroundColor: 'var(--card)',
                                   border: '0.5px solid var(--border)',
-                                  borderRadius: '12px',
-                                  color: '#ffffff'
+                                  borderRadius: '8px',
+                                  color: 'var(--text)',
+                                  fontSize: '11px',
+                                  padding: '6px 10px'
                                 }}
                                 formatter={(value: any) => [
                                   <span key="val" className="font-bold" style={{ color: Number(value) >= 0 ? '#008F67' : '#DF1C30' }}>
