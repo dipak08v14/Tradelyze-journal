@@ -816,13 +816,13 @@ export const StrategyDetail: React.FC = () => {
 
                               <XAxis
                                 dataKey="dateLabel"
-                                tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
+                                tick={{ fontSize: 11, fill: 'var(--text-sub)' }}
                                 tickLine={false}
                                 axisLine={{ stroke: 'var(--border)' }}
                               />
                               <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="rgba(0,0,0,0.12)" />
                               <YAxis
-                                tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
+                                tick={{ fontSize: 11, fill: 'var(--text-sub)' }}
                                 tickLine={false}
                                 axisLine={false}
                                 tickFormatter={(v) => `₹${v.toLocaleString('en-IN')}`}
