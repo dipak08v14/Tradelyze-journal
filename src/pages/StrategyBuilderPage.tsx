@@ -792,7 +792,7 @@ export const StrategyBuilderPage: React.FC = () => {
               {/* BREADCRUMB HEADER */}
               <Link
                 to="/strategies"
-                className="inline-flex items-center gap-1.5 text-sm hover:opacity-90 font-bold transition-all group"
+                className="inline-flex items-center gap-1.5 text-sm hover:opacity-90 font-bold transition-all group mb-1"
                 style={{ color: 'var(--accent)' }}
               >
                 <ArrowLeft className="w-3.5 h-3.5 transform group-hover:-translate-x-1 transition-transform animate-none" />
@@ -815,7 +815,7 @@ export const StrategyBuilderPage: React.FC = () => {
                   marginBottom: '16px'
                 }}
               >
-                <h1 className="text-3xl font-bold tracking-tight leading-none font-display" style={{ color: 'var(--text)' }}>
+                <h1 className="text-2xl font-bold tracking-tight font-display" style={{ color: 'var(--text)' }}>
                   {isEditMode ? `Edit Strategy — ${name || 'Setup'}` : 'New Strategy'}
                 </h1>
                 
