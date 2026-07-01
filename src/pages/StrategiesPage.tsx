@@ -571,7 +571,7 @@ export const StrategiesPage: React.FC = () => {
             </div>
 
             {/* NEW PAGE HEADER ROW */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 pb-2 mt-6">
+            <div className="flex items-center justify-between px-2 py-1 rounded-lg mt-4 mb-4 no-scrollbar" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
               {/* LEFT SIDE TABS */}
               <div className="flex items-center border-b border-zinc-800 sm:border-0 w-fit">
                 <button
