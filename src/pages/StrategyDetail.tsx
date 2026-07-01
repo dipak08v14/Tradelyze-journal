@@ -790,12 +790,12 @@ export const StrategyDetail: React.FC = () => {
                       </h3>
 
                       {chartDetails.data.length <= 1 ? (
-                        <div className="h-[280px] flex flex-col items-center justify-center text-center text-xs font-mono" style={{ color: 'var(--text-muted)' }}>
+                        <div className="h-[286px] flex flex-col items-center justify-center text-center text-xs font-mono" style={{ color: 'var(--text-muted)' }}>
                           <TrendingUp className="w-8 h-8 text-zinc-600 mb-2" />
                           No trades logged with this strategy to compute curve.
                         </div>
                       ) : (
-                        <div style={{ width: '100%', height: 280 }}>
+                        <div style={{ width: '100%', height: 286 }}>
                           <ResponsiveContainer width="100%" height="100%">
                             <AreaChart
                               data={chartDetails.data}
