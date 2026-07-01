@@ -632,7 +632,7 @@ export const StrategyDetail: React.FC = () => {
                     style={{
                       color:
                         strategy?.status?.toLowerCase() === 'active'
-                          ? '#10b981'
+                          ? '#008F67'
                           : strategy?.status?.toLowerCase() === 'not working'
                           ? '#f59e0b'
                           : '#71717a'
@@ -648,21 +648,19 @@ export const StrategyDetail: React.FC = () => {
                   to={`/strategies/${strategyId}/edit`}
                   className="inline-flex items-center gap-1.5 transition-colors cursor-pointer"
                   style={{
-                    backgroundColor: 'var(--card)',
-                    border: '0.5px solid var(--border)',
-                    color: 'var(--text)',
+                    backgroundColor: 'var(--accent)',
+                    border: 'none',
+                    color: '#ffffff',
                     borderRadius: '8px',
-                    padding: '8px 16px',
+                    padding: '6px 16px',
                     fontSize: '13px',
-                    fontWeight: 500
+                    fontWeight: 600
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'var(--card-hover)';
-                    e.currentTarget.style.borderColor = 'var(--border-md)';
+                    e.currentTarget.style.opacity = '0.9';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'var(--card)';
-                    e.currentTarget.style.borderColor = 'var(--border)';
+                    e.currentTarget.style.opacity = '1';
                   }}
                 >
                   <Pencil className="w-4 h-4" />
@@ -799,20 +797,20 @@ export const StrategyDetail: React.FC = () => {
                           <ResponsiveContainer width="100%" height="100%">
                             <AreaChart
                               data={chartDetails.data}
-                              margin={{ top: 2, right: 2, left: -6, bottom: -3 }}
+                              margin={{ top: 2, right: 2, left: -40, bottom: -10 }}
                             >
                               <defs>
                                 <linearGradient id="stratAreaGrad" x1="0" y1="0" x2="0" y2="1">
-                                  <stop offset="0%" stopColor="#22c55e" stopOpacity={0.40} />
-                                  <stop offset={`${chartDetails.zeroPercent}%`} stopColor="#22c55e" stopOpacity={0.00} />
-                                  <stop offset={`${chartDetails.zeroPercent}%`} stopColor="#ef4444" stopOpacity={0.00} />
-                                  <stop offset="100%" stopColor="#ef4444" stopOpacity={0.40} />
+                                  <stop offset="0%" stopColor="#008F67" stopOpacity={0.40} />
+                                  <stop offset={`${chartDetails.zeroPercent}%`} stopColor="#008F67" stopOpacity={0.00} />
+                                  <stop offset={`${chartDetails.zeroPercent}%`} stopColor="#DF1C30" stopOpacity={0.00} />
+                                  <stop offset="100%" stopColor="#DF1C30" stopOpacity={0.40} />
                                 </linearGradient>
                                 <linearGradient id="stratLineGrad" x1="0" y1="0" x2="0" y2="1">
-                                  <stop offset="0%" stopColor="#22c55e" stopOpacity={1} />
-                                  <stop offset={`${chartDetails.zeroPercent}%`} stopColor="#22c55e" stopOpacity={1} />
-                                  <stop offset={`${chartDetails.zeroPercent}%`} stopColor="#ef4444" stopOpacity={1} />
-                                  <stop offset="100%" stopColor="#ef4444" stopOpacity={1} />
+                                  <stop offset="0%" stopColor="#008F67" stopOpacity={1} />
+                                  <stop offset={`${chartDetails.zeroPercent}%`} stopColor="#008F67" stopOpacity={1} />
+                                  <stop offset={`${chartDetails.zeroPercent}%`} stopColor="#DF1C30" stopOpacity={1} />
+                                  <stop offset="100%" stopColor="#DF1C30" stopOpacity={1} />
                                 </linearGradient>
                               </defs>
 
