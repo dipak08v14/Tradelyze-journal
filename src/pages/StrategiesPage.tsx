@@ -602,8 +602,8 @@ export const StrategiesPage: React.FC = () => {
                 <div className="relative" ref={filterRef}>
                   <button
                     onClick={() => setFilterDropdownOpen(!filterDropdownOpen)}
-                    style={{ border: '1px solid var(--border)', backgroundColor: 'var(--bar)', borderRadius: '8px', color: 'var(--text-sub)' }}
-                    className="px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer inline-flex items-center gap-1.5"
+                    style={{ border: '1px solid var(--border)', backgroundColor: 'var(--card)', borderRadius: '8px', color: 'var(--text-sub)' }}
+                    className="px-3 py-2 text-sm font-semibold transition-all cursor-pointer inline-flex items-center gap-1.5"
                   >
                     <SlidersHorizontal className="w-3.5 h-3.5" />
                     <span>Filters</span>
@@ -743,12 +743,13 @@ export const StrategiesPage: React.FC = () => {
                   <button
                     onClick={() => setViewType('table')}
                     style={{
-                      background: viewType === 'table' ? 'var(--accent-muted)' : 'transparent',
+                      background: viewType === 'table' ? 'var(--accent-muted)' : 'var(--card)',
                       border: viewType === 'table' ? '0.5px solid var(--accent)' : '0.5px solid var(--border)',
                       color: viewType === 'table' ? 'var(--accent)' : 'var(--text-sub)',
                       borderRadius: '6px',
-                      padding: '6px 8px',
-                      cursor: 'pointer'
+                      padding: '8px 8px',
+                      cursor: 'pointer',
+                      alignSelf: 'stretch'
                     }}
                     className={`transition-colors flex items-center justify-center ${
                       viewType !== 'table' ? 'hover:bg-[var(--bar)] hover:text-[var(--text)]' : ''
@@ -760,12 +761,13 @@ export const StrategiesPage: React.FC = () => {
                   <button
                     onClick={() => setViewType('grid')}
                     style={{
-                      background: viewType === 'grid' ? 'var(--accent-muted)' : 'transparent',
+                      background: viewType === 'grid' ? 'var(--accent-muted)' : 'var(--card)',
                       border: viewType === 'grid' ? '0.5px solid var(--accent)' : '0.5px solid var(--border)',
                       color: viewType === 'grid' ? 'var(--accent)' : 'var(--text-sub)',
                       borderRadius: '6px',
-                      padding: '6px 8px',
-                      cursor: 'pointer'
+                      padding: '8px 8px',
+                      cursor: 'pointer',
+                      alignSelf: 'stretch'
                     }}
                     className={`transition-colors flex items-center justify-center ${
                       viewType !== 'grid' ? 'hover:bg-[var(--bar)] hover:text-[var(--text)]' : ''
