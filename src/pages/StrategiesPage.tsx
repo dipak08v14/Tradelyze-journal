@@ -601,8 +601,8 @@ export const StrategiesPage: React.FC = () => {
                 <div className="relative" ref={filterRef}>
                   <button
                     onClick={() => setFilterDropdownOpen(!filterDropdownOpen)}
-                    style={{ border: '1px solid var(--border)', backgroundColor: 'var(--bar)' }}
-                    className="px-3 py-1.5 rounded-xl text-xs font-semibold text-zinc-300 hover:text-white transition-all cursor-pointer inline-flex items-center gap-1.5"
+                    style={{ border: '1px solid var(--border)', backgroundColor: 'var(--bar)', borderRadius: '8px' }}
+                    className="px-3 py-1.5 text-xs font-semibold text-zinc-300 hover:text-white transition-all cursor-pointer inline-flex items-center gap-1.5"
                   >
                     <SlidersHorizontal className="w-3.5 h-3.5" />
                     <span>Filters</span>
