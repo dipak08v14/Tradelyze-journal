@@ -1025,7 +1025,7 @@ export const StrategiesPage: React.FC = () => {
               </div>
             ) : (
               /* GRID MINIMAL VIEW (JUST NAME, TYP, STATUS, NO STATS) */
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-4">
                 {paginatedStrategies.map((strat) => {
                   const isMenuOpen = activeMenuId === strat.id;
                   const stats = computedStats[strat.id] || {
