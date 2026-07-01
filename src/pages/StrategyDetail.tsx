@@ -672,7 +672,7 @@ export const StrategyDetail: React.FC = () => {
             </div>
 
             {/* TAB SELECTORS ACTIONS */}
-            <div className="flex items-center overflow-x-auto gap-1 sticky top-0 z-10 scrollbar-none mb-4 px-1 py-1 rounded-lg" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
+            <div className="flex items-center overflow-x-auto gap-1 sticky top-0 z-10 scrollbar-none mb-3 px-1 py-1 rounded-lg" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
               {(['OVERVIEW', 'RULES PERFORMANCE', 'EXECUTED TRADES', 'MISSED TRADES', 'NOTES', 'REFERENCE'] as TabType[]).map((tab) => {
                 const active = activeTab === tab;
                 return (
@@ -708,7 +708,7 @@ export const StrategyDetail: React.FC = () => {
                 {activeTab === 'OVERVIEW' && (
                   <div className="space-y-3 animate-fade-in">
                     {/* STATS MATRIX */}
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                       {/* CARD 1 */}
                       <div className="rounded-2xl border p-5" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                         <span className="text-[10px] font-bold font-mono uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Net P&L</span>
