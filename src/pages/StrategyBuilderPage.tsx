@@ -809,8 +809,8 @@ export const StrategyBuilderPage: React.FC = () => {
                   marginRight: '-24px',
                   paddingLeft: '24px',
                   paddingRight: '24px',
-                  paddingTop: '3px',
-                  paddingBottom: '3px',
+                  paddingTop: '7px',
+                  paddingBottom: '7px',
                   borderBottom: '1px solid var(--border)',
                   marginBottom: '16px'
                 }}
