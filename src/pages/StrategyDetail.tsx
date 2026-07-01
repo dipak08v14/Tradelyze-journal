@@ -592,7 +592,7 @@ export const StrategyDetail: React.FC = () => {
             <Link
               to="/strategies"
               style={{ color: 'var(--accent)' }}
-              className="hover:opacity-90 text-sm inline-flex items-center gap-1 font-medium transition-all group mb-4"
+              className="hover:opacity-90 text-sm inline-flex items-center gap-1 font-medium transition-all group mb-1"
             >
               <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
               <span>Strategies</span>
@@ -616,7 +616,7 @@ export const StrategyDetail: React.FC = () => {
             >
               <div>
                 <div className="flex items-center gap-2.5 flex-wrap">
-                  <h1 className="text-3xl font-extrabold tracking-tight font-display" style={{ color: 'var(--text)' }}>
+                  <h1 className="text-2xl font-bold tracking-tight font-display" style={{ color: 'var(--text)' }}>
                     {strategy ? strategy.name : 'Strategy details'}
                   </h1>
                   {strategy && (
