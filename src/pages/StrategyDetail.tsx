@@ -799,7 +799,7 @@ export const StrategyDetail: React.FC = () => {
                           <ResponsiveContainer width="100%" height="100%">
                             <AreaChart
                               data={chartDetails.data}
-                              margin={{ top: 10, right: 20, left: 10, bottom: 5 }}
+                              margin={{ top: 2, right: 2, left: -6, bottom: -3 }}
                             >
                               <defs>
                                 <linearGradient id="stratAreaGrad" x1="0" y1="0" x2="0" y2="1">
