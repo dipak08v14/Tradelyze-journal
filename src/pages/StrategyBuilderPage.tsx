@@ -726,16 +726,21 @@ export const StrategyBuilderPage: React.FC = () => {
 
   const hasEnoughSplitData = firstHalfTrades.length >= 5 && secondHalfTrades.length >= 5;
 
-  const getWinRateColor = (rate: number) => {
-    if (rate >= 60) return 'text-green-500';
-    if (rate >= 40) return 'text-amber-500';
-    return 'text-red-500';
+  const getWinRateColorStyle = (rate: number) => {
+    if (rate >= 60) return { color: '#008F67' };
+    if (rate >= 40) return {};
+    return { color: '#DF1C30' };
+  };
+
+  const getWinRateColorClass = (rate: number) => {
+    if (rate >= 40 && rate < 60) return 'text-amber-500';
+    return '';
   };
 
   const getDeltaColor = (val: number) => {
-    if (val > 0) return 'text-green-500';
-    if (val < 0) return 'text-red-500';
-    return 'text-[#F9FAFB]';
+    if (val > 0) return '#008F67';
+    if (val < 0) return '#DF1C30';
+    return 'var(--text)';
   };
 
   const formatCurrency = (val: number) => {
@@ -776,13 +781,13 @@ export const StrategyBuilderPage: React.FC = () => {
         {loading ? (
           <div className="flex-1 flex flex-col items-center justify-center p-6" style={{ backgroundColor: 'var(--bg)' }}>
             <Loader2 style={{ color: 'var(--accent)' }} className="w-10 h-10 animate-spin" />
-            <span className="text-xs text-gray-500 font-medium tracking-wide mt-3 uppercase">
+            <span className="text-xs font-medium tracking-wide mt-3 uppercase" style={{ color: 'var(--text-muted)' }}>
               Fetching strategy profile...
             </span>
           </div>
         ) : (
-          <main className="flex-1 overflow-y-auto px-0">
-            <div className="max-w-5xl mx-auto">
+          <main className="flex-1 overflow-y-auto overflow-x-hidden px-0">
+            <div className="max-w-7xl mx-auto">
               
               {/* BREADCRUMB HEADER */}
               <Link
@@ -795,7 +800,21 @@ export const StrategyBuilderPage: React.FC = () => {
               </Link>
 
               {/* TITLE AND CONTROL BUTTONS ROW */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-3 gap-4">
+              <div 
+                className="flex flex-row items-center justify-between gap-4"
+                style={{
+                  background: 'var(--card)',
+                  width: 'calc(100% + 48px)',
+                  marginLeft: '-24px',
+                  marginRight: '-24px',
+                  paddingLeft: '24px',
+                  paddingRight: '24px',
+                  paddingTop: '3px',
+                  paddingBottom: '3px',
+                  borderBottom: '1px solid var(--border)',
+                  marginBottom: '16px'
+                }}
+              >
                 <h1 className="text-3xl font-bold tracking-tight leading-none font-display" style={{ color: 'var(--text)' }}>
                   {isEditMode ? `Edit Strategy — ${name || 'Setup'}` : 'New Strategy'}
                 </h1>
@@ -818,7 +837,7 @@ export const StrategyBuilderPage: React.FC = () => {
                       background: saving || !name.trim() || !typeOfStrategy ? 'var(--border)' : 'var(--accent)',
                       color: saving || !name.trim() || !typeOfStrategy ? 'var(--text-muted)' : '#ffffff',
                       border: 'none',
-                      padding: '10px 20px',
+                      padding: '6px 20px',
                       borderRadius: '8px',
                       fontSize: '13px',
                       fontWeight: '600',
@@ -875,7 +894,7 @@ export const StrategyBuilderPage: React.FC = () => {
                           className="w-full focus:border-[var(--accent)] focus:ring-[var(--accent)] focus:ring-1 focus:outline-none placeholder-[var(--text-muted)] transition-all duration-150 text-sm"
                         />
                         {showErrors && !name.trim() && (
-                          <p className="mt-1.5 text-red-500 text-xs font-semibold">
+                          <p className="mt-1.5 text-xs font-semibold" style={{ color: '#DF1C30' }}>
                             Strategy name is required.
                           </p>
                         )}
@@ -936,7 +955,7 @@ export const StrategyBuilderPage: React.FC = () => {
                             })}
                           </div>
                           {showErrors && !typeOfStrategy && (
-                            <p className="mt-1.5 text-red-500 text-xs font-semibold">
+                            <p className="mt-1.5 text-xs font-semibold" style={{ color: '#DF1C30' }}>
                               Please select a type of strategy.
                             </p>
                           )}
@@ -1058,7 +1077,8 @@ export const StrategyBuilderPage: React.FC = () => {
                               type="button"
                               onClick={() => moveRuleUp(idx, 'entry')}
                               disabled={idx === 0}
-                              className="text-zinc-500 hover:text-[var(--accent)] p-1.5 rounded transition-colors disabled:opacity-30 disabled:hover:text-zinc-500 cursor-pointer"
+                              style={{ color: 'var(--text-muted)' }}
+                              className="hover:text-[var(--accent)] p-1.5 rounded transition-colors disabled:opacity-30 cursor-pointer"
                               title="Move Up"
                             >
                               <ChevronUp className="w-4 h-4" />
@@ -1067,7 +1087,8 @@ export const StrategyBuilderPage: React.FC = () => {
                               type="button"
                               onClick={() => moveRuleDown(idx, 'entry')}
                               disabled={idx === entryRules.length - 1}
-                              className="text-zinc-500 hover:text-[var(--accent)] p-1.5 rounded transition-colors disabled:opacity-30 disabled:hover:text-zinc-500 cursor-pointer"
+                              style={{ color: 'var(--text-muted)' }}
+                              className="hover:text-[var(--accent)] p-1.5 rounded transition-colors disabled:opacity-30 cursor-pointer"
                               title="Move Down"
                             >
                               <ChevronDown className="w-4 h-4" />
@@ -1076,7 +1097,8 @@ export const StrategyBuilderPage: React.FC = () => {
                               type="button"
                               onClick={() => handleRemoveRule(idx, 'entry')}
                               disabled={entryRules.length <= 1}
-                              className="text-zinc-500 hover:text-red-400 p-1.5 rounded transition-colors disabled:opacity-30 disabled:hover:text-zinc-500 cursor-pointer"
+                              style={{ color: 'var(--text-muted)' }}
+                              className="p-1.5 rounded transition-colors disabled:opacity-30 cursor-pointer"
                               title="Delete rule"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -1106,7 +1128,7 @@ export const StrategyBuilderPage: React.FC = () => {
                           ＋ ADD ENTRY RULE
                         </button>
                       ) : (
-                        <p className="text-center text-zinc-500 text-xs py-2.5 italic font-mono bg-zinc-950/30 border border-zinc-800/40 rounded-xl">
+                        <p className="text-center text-xs py-2.5 italic font-mono border rounded-xl" style={{ color: 'var(--text-muted)', backgroundColor: 'var(--bg)', borderColor: 'var(--border)' }}>
                           Maximum 10 entry rules reached.
                         </p>
                       )}
@@ -1154,7 +1176,8 @@ export const StrategyBuilderPage: React.FC = () => {
                               type="button"
                               onClick={() => moveRuleUp(idx, 'exit')}
                               disabled={idx === 0}
-                              className="text-zinc-500 hover:text-[var(--accent)] p-1.5 rounded transition-colors disabled:opacity-30 disabled:hover:text-zinc-500 cursor-pointer"
+                              style={{ color: 'var(--text-muted)' }}
+                              className="hover:text-[var(--accent)] p-1.5 rounded transition-colors disabled:opacity-30 cursor-pointer"
                               title="Move Up"
                             >
                               <ChevronUp className="w-4 h-4" />
@@ -1163,7 +1186,8 @@ export const StrategyBuilderPage: React.FC = () => {
                               type="button"
                               onClick={() => moveRuleDown(idx, 'exit')}
                               disabled={idx === exitRules.length - 1}
-                              className="text-zinc-500 hover:text-[var(--accent)] p-1.5 rounded transition-colors disabled:opacity-30 disabled:hover:text-zinc-500 cursor-pointer"
+                              style={{ color: 'var(--text-muted)' }}
+                              className="hover:text-[var(--accent)] p-1.5 rounded transition-colors disabled:opacity-30 cursor-pointer"
                               title="Move Down"
                             >
                               <ChevronDown className="w-4 h-4" />
@@ -1172,7 +1196,8 @@ export const StrategyBuilderPage: React.FC = () => {
                               type="button"
                               onClick={() => handleRemoveRule(idx, 'exit')}
                               disabled={exitRules.length <= 1}
-                              className="text-zinc-500 hover:text-red-400 p-1.5 rounded transition-colors disabled:opacity-30 disabled:hover:text-zinc-500 cursor-pointer"
+                              style={{ color: 'var(--text-muted)' }}
+                              className="p-1.5 rounded transition-colors disabled:opacity-30 cursor-pointer"
                               title="Delete rule"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -1202,7 +1227,7 @@ export const StrategyBuilderPage: React.FC = () => {
                           ＋ ADD EXIT RULE
                         </button>
                       ) : (
-                        <p className="text-center text-zinc-500 text-xs py-2.5 italic font-mono bg-zinc-950/30 border border-zinc-800/40 rounded-xl">
+                        <p className="text-center text-xs py-2.5 italic font-mono border rounded-xl" style={{ color: 'var(--text-muted)', backgroundColor: 'var(--bg)', borderColor: 'var(--border)' }}>
                           Maximum 10 exit rules reached.
                         </p>
                       )}
@@ -1225,7 +1250,7 @@ export const StrategyBuilderPage: React.FC = () => {
                         cursor: saving || !name.trim() || !typeOfStrategy ? 'not-allowed' : 'pointer',
                         border: 'none'
                       }}
-                      className="hover:opacity-90 transition-all font-display shadow-lg shadow-cyan-500/10 flex items-center justify-center gap-2"
+                      className="hover:opacity-90 transition-all font-display shadow-lg flex items-center justify-center gap-2"
                     >
                       {saving ? (
                         <>
@@ -1282,7 +1307,7 @@ export const StrategyBuilderPage: React.FC = () => {
                           multiple
                           className="hidden"
                         />
-                        <ImagePlus className="w-9 h-9 text-cyan-500 mx-auto mb-2" />
+                        <ImagePlus className="w-9 h-9 mx-auto mb-2" style={{ color: 'var(--accent)' }} />
                         <p style={{ color: 'var(--text)' }} className="text-xs font-semibold">Drag & drop screenshots</p>
                         <p style={{ color: 'var(--accent)' }} className="text-xs font-semibold underline mt-1">or click to browse</p>
                         <p style={{ color: 'var(--text-muted)' }} className="text-[10px] mt-2 font-mono">
@@ -1304,8 +1329,8 @@ export const StrategyBuilderPage: React.FC = () => {
                           .map((url, index) => (
                             <div 
                               key={`exist-${index}`} 
-                              style={{ borderColor: 'var(--border)', cursor: 'pointer' }} 
-                              className="group relative aspect-square rounded-xl border overflow-hidden bg-zinc-950/55"
+                              className="group relative aspect-square rounded-xl border overflow-hidden"
+                              style={{ borderColor: 'var(--border)', cursor: 'pointer', backgroundColor: 'var(--bg)' }}
                               onClick={() => setLightboxImage(url)}
                             >
                               <img
@@ -1320,7 +1345,8 @@ export const StrategyBuilderPage: React.FC = () => {
                                     e.stopPropagation();
                                     setLightboxImage(url);
                                   }}
-                                  className="bg-cyan-600 text-white rounded-xl p-2.5 transition-all shadow-md cursor-pointer hover:scale-105"
+                                  className="text-white rounded-xl p-2.5 transition-all shadow-md cursor-pointer hover:scale-105"
+                                  style={{ backgroundColor: 'var(--accent)' }}
                                   title="Expand image"
                                 >
                                   <Eye className="w-4 h-4" />
@@ -1331,7 +1357,8 @@ export const StrategyBuilderPage: React.FC = () => {
                                     e.stopPropagation();
                                     removeExistingImage(url);
                                   }}
-                                  className="bg-[#ef4444] text-white rounded-xl p-2.5 transition-all shadow-md cursor-pointer hover:scale-105"
+                                  className="text-white rounded-xl p-2.5 transition-all shadow-md cursor-pointer hover:scale-105"
+                                  style={{ backgroundColor: '#DF1C30' }}
                                   title="Delete screenshot"
                                 >
                                   <Trash2 className="w-4 h-4" />
@@ -1344,8 +1371,8 @@ export const StrategyBuilderPage: React.FC = () => {
                         {pendingUploads.map((item) => (
                           <div 
                             key={item.id} 
-                            style={{ borderColor: 'var(--border)', cursor: 'pointer' }} 
-                            className="group relative aspect-square rounded-xl border overflow-hidden bg-zinc-950/55"
+                            className="group relative aspect-square rounded-xl border overflow-hidden"
+                            style={{ borderColor: 'var(--border)', cursor: 'pointer', backgroundColor: 'var(--bg)' }}
                             onClick={() => setLightboxImage(item.preview)}
                           >
                             <img
@@ -1354,7 +1381,7 @@ export const StrategyBuilderPage: React.FC = () => {
                               className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-200"
                             />
                             {/* Badging for pending staged file */}
-                            <span style={{ backgroundColor: 'var(--accent)' }} className="absolute top-1 left-1 text-[9px] font-mono font-medium rounded-md px-1.5 py-0.5 text-white tracking-wide border border-cyan-400">
+                            <span className="absolute top-1 left-1 text-[9px] font-mono font-medium rounded-md px-1.5 py-0.5 text-white tracking-wide border" style={{ backgroundColor: 'var(--accent)', borderColor: 'var(--accent)' }}>
                               Staged
                             </span>
                             <div className="absolute inset-0 bg-black/60 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -1364,7 +1391,8 @@ export const StrategyBuilderPage: React.FC = () => {
                                     e.stopPropagation();
                                     setLightboxImage(item.preview);
                                 }}
-                                className="bg-cyan-600 text-white rounded-xl p-2.5 transition-all shadow-md cursor-pointer hover:scale-105"
+                                className="text-white rounded-xl p-2.5 transition-all shadow-md cursor-pointer hover:scale-105"
+                                style={{ backgroundColor: 'var(--accent)' }}
                                 title="Expand image"
                               >
                                 <Eye className="w-4 h-4" />
@@ -1375,7 +1403,8 @@ export const StrategyBuilderPage: React.FC = () => {
                                   e.stopPropagation();
                                   removePendingImage(item.id);
                                 }}
-                                className="bg-[#ef4444] text-white rounded-xl p-2.5 transition-all shadow-md cursor-pointer hover:scale-105"
+                                className="text-white rounded-xl p-2.5 transition-all shadow-md cursor-pointer hover:scale-105"
+                                style={{ backgroundColor: '#DF1C30' }}
                                 title="Remove upload item"
                               >
                                 <Trash2 className="w-4 h-4" />
@@ -1421,11 +1450,11 @@ export const StrategyBuilderPage: React.FC = () => {
                               <span style={{ color: 'var(--text-muted)' }} className="text-[9px] uppercase tracking-widest font-bold mt-0.5">Trades</span>
                             </div>
                             <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="text-center p-2.5 rounded-xl flex flex-col justify-center font-sans">
-                              <span className="font-extrabold text-sm text-[#22c55e]">+{winsCount}</span>
+                              <span className="font-extrabold text-sm" style={{ color: '#008F67' }}>+{winsCount}</span>
                               <span style={{ color: 'var(--text-muted)' }} className="text-[9px] uppercase tracking-widest font-bold mt-0.5">Wins</span>
                             </div>
                             <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="text-center p-2.5 rounded-xl flex flex-col justify-center font-sans">
-                              <span className="font-extrabold text-sm text-[#ef4444]">{lossesCount > 0 ? `-${lossesCount}` : '0'}</span>
+                              <span className="font-extrabold text-sm" style={{ color: '#DF1C30' }}>{lossesCount > 0 ? `-${lossesCount}` : '0'}</span>
                               <span style={{ color: 'var(--text-muted)' }} className="text-[9px] uppercase tracking-widest font-bold mt-0.5">Losses</span>
                             </div>
                           </div>
@@ -1433,7 +1462,7 @@ export const StrategyBuilderPage: React.FC = () => {
                           {/* Stat items */}
                           <div style={{ borderColor: 'var(--border)' }} className="flex justify-between items-center py-2.5 border-b">
                             <span style={{ color: 'var(--text-sub)' }} className="text-xs font-medium font-sans">Win Rate</span>
-                            <span className={`text-sm font-bold ${getWinRateColor(calculatedWinRate)}`}>
+                            <span className={`text-sm font-bold ${getWinRateColorClass(calculatedWinRate)}`} style={getWinRateColorStyle(calculatedWinRate)}>
                               {calculatedWinRate}%
                             </span>
                           </div>
@@ -1445,14 +1474,14 @@ export const StrategyBuilderPage: React.FC = () => {
 
                           <div style={{ borderColor: 'var(--border)' }} className="flex justify-between items-center py-2.5 border-b">
                             <span style={{ color: 'var(--text-sub)' }} className="text-xs font-medium">Avg R-Multiple</span>
-                            <span className={`text-sm font-bold ${getDeltaColor(calculatedAvgR)}`}>
+                            <span className="text-sm font-bold" style={{ color: getDeltaColor(calculatedAvgR) }}>
                               {calculatedAvgR > 0 ? '+' : ''}{calculatedAvgR.toFixed(1)}R
                             </span>
                           </div>
 
                           <div style={{ borderColor: 'var(--border)' }} className="flex justify-between items-center py-2.5 border-b">
                             <span style={{ color: 'var(--text-sub)' }} className="text-xs font-medium">Total P&L</span>
-                            <span className={`text-sm font-bold ${getDeltaColor(calculatedPnL)}`}>
+                            <span className="text-sm font-bold" style={{ color: getDeltaColor(calculatedPnL) }}>
                               {formatCurrency(calculatedPnL)}
                             </span>
                           </div>
@@ -1466,7 +1495,7 @@ export const StrategyBuilderPage: React.FC = () => {
                               <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="flex select-none items-center justify-between text-xs font-mono font-medium rounded-xl p-3">
                                 <div className="text-center flex-1 font-sans">
                                   <div style={{ color: 'var(--text-sub)' }} className="text-[10px] font-semibold mb-0.5">1st Half (≤15th)</div>
-                                  <div className={`font-bold ${getWinRateColor(firstHalfWinRate)}`}>
+                                  <div className={`font-bold ${getWinRateColorClass(firstHalfWinRate)}`} style={getWinRateColorStyle(firstHalfWinRate)}>
                                     {firstHalfWinRate}% Win Rate
                                   </div>
                                   <div style={{ color: 'var(--text-muted)' }} className="text-[9px] mt-0.5">{firstHalfTrades.length} Trades</div>
@@ -1474,7 +1503,7 @@ export const StrategyBuilderPage: React.FC = () => {
                                 <div style={{ backgroundColor: 'var(--border)' }} className="w-px h-8 shrink-0" />
                                 <div className="text-center flex-1 font-sans">
                                   <div style={{ color: 'var(--text-sub)' }} className="text-[10px] font-semibold mb-0.5">2nd Half (&gt;15th)</div>
-                                  <div className={`font-bold ${getWinRateColor(secondHalfWinRate)}`}>
+                                  <div className={`font-bold ${getWinRateColorClass(secondHalfWinRate)}`} style={getWinRateColorStyle(secondHalfWinRate)}>
                                     {secondHalfWinRate}% Win Rate
                                   </div>
                                   <div style={{ color: 'var(--text-muted)' }} className="text-[9px] mt-0.5">{secondHalfTrades.length} Trades</div>
