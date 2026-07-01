@@ -324,7 +324,7 @@ export const StrategiesPage: React.FC = () => {
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center animate-pulse" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
-        <div className="w-8 h-8 border-4 border-t-cyan-500 border-zinc-700 rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 rounded-full animate-spin" style={{ borderTopColor: 'var(--accent)', borderColor: 'var(--border)' }}></div>
       </div>
     );
   }
@@ -424,7 +424,7 @@ export const StrategiesPage: React.FC = () => {
     switch (clean) {
       case 'Active':
         return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400">
+          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold" style={{ backgroundColor: 'rgba(0,143,103,0.1)', color: '#008F67' }}>
             Active
           </span>
         );
@@ -436,7 +436,7 @@ export const StrategiesPage: React.FC = () => {
         );
       default:
         return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-800 text-zinc-400">
+          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold" style={{ backgroundColor: 'var(--bar)', color: 'var(--text-sub)' }}>
             Retired
           </span>
         );
@@ -446,9 +446,9 @@ export const StrategiesPage: React.FC = () => {
   const getTypeSquare = (typeOfStrat: string) => {
     switch (typeOfStrat) {
       case 'Breakout':
-        return <div className="w-1 h-4 rounded-sm bg-emerald-500 shrink-0" />;
+        return <div className="w-1 h-4 rounded-sm shrink-0" style={{ backgroundColor: '#008F67' }} />;
       case 'Reversal':
-        return <div className="w-1 h-4 rounded-sm bg-cyan-500 shrink-0" />;
+        return <div className="w-1 h-4 rounded-sm shrink-0" style={{ backgroundColor: 'var(--accent)' }} />;
       default:
         return <div className="w-1 h-4 rounded-sm bg-amber-500 shrink-0" />;
     }
@@ -514,7 +514,8 @@ export const StrategiesPage: React.FC = () => {
           <div className="text-xl font-bold tracking-wider font-display" style={{ color: 'var(--accent)' }}>TRADELYZE</div>
           <button
             onClick={() => setMobileOpen(true)}
-            className="p-1.5 rounded-lg cursor-pointer text-zinc-400 hover:text-white"
+            className="p-1.5 rounded-lg cursor-pointer"
+            style={{ color: 'var(--text-sub)' }}
             aria-label="Open sidebar menu"
           >
             <Menu className="w-6 h-6" />
@@ -573,7 +574,7 @@ export const StrategiesPage: React.FC = () => {
             {/* NEW PAGE HEADER ROW */}
             <div className="flex items-center justify-between px-2 py-1 rounded-lg mt-4 mb-4 no-scrollbar" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
               {/* LEFT SIDE TABS */}
-              <div className="flex items-center border-b border-zinc-800 sm:border-0 w-fit">
+              <div className="flex items-center border-b sm:border-0 w-fit" style={{ borderColor: 'var(--border)' }}>
                 <button
                   onClick={() => {
                     setActiveSubTab('my');
@@ -601,13 +602,13 @@ export const StrategiesPage: React.FC = () => {
                 <div className="relative" ref={filterRef}>
                   <button
                     onClick={() => setFilterDropdownOpen(!filterDropdownOpen)}
-                    style={{ border: '1px solid var(--border)', backgroundColor: 'var(--bar)', borderRadius: '8px' }}
-                    className="px-3 py-1.5 text-xs font-semibold text-zinc-300 hover:text-white transition-all cursor-pointer inline-flex items-center gap-1.5"
+                    style={{ border: '1px solid var(--border)', backgroundColor: 'var(--bar)', borderRadius: '8px', color: 'var(--text-sub)' }}
+                    className="px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer inline-flex items-center gap-1.5"
                   >
                     <SlidersHorizontal className="w-3.5 h-3.5" />
                     <span>Filters</span>
                     {activeFiltersCount > 0 && (
-                      <span className="bg-cyan-500 text-slate-900 font-bold px-1.5 py-0.2 rounded-full text-[10px]">
+                      <span className="font-bold px-1.5 py-0.2 rounded-full text-[10px]" style={{ backgroundColor: 'var(--accent)', color: '#fff' }}>
                         {activeFiltersCount}
                       </span>
                     )}
@@ -781,21 +782,22 @@ export const StrategiesPage: React.FC = () => {
             {/* ERROR / LOADER BOX */}
             {loading ? (
               <div className="flex flex-col gap-3 py-16 items-center justify-center">
-                <div className="w-8 h-8 rounded-full border-2 border-t-cyan-500 border-zinc-700 animate-spin"></div>
-                <p className="text-xs text-zinc-500 font-mono">Aggregating playbook statistics...</p>
+                <div className="w-8 h-8 border-4 rounded-full animate-spin" style={{ borderTopColor: 'var(--accent)', borderColor: 'var(--border)' }}></div>
+                <p className="text-xs font-mono" style={{ color: 'var(--text-muted)' }}>Aggregating playbook statistics...</p>
               </div>
             ) : sortedStrategies.length === 0 ? (
               <div className="text-center py-16 flex flex-col items-center justify-center">
-                <div className="bg-zinc-800/20 w-12 h-12 rounded-xl flex items-center justify-center border border-zinc-800 mb-4">
-                  <Target className="w-6 h-6 text-zinc-500" />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center border mb-4" style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)' }}>
+                  <Target className="w-6 h-6" style={{ color: 'var(--text-muted)' }} />
                 </div>
-                <h3 className="text-sm font-semibold text-zinc-400 mb-1">No strategies yet</h3>
-                <p className="text-xs text-zinc-500 max-w-xs mb-4">
+                <h3 className="text-sm font-semibold mb-1" style={{ color: 'var(--text-sub)' }}>No strategies yet</h3>
+                <p className="text-xs max-w-xs mb-4" style={{ color: 'var(--text-muted)' }}>
                   No setups match current filters or you haven't created your first setup yet. Learn from your edge.
                 </p>
                 <Link
                   to="/strategies/new"
-                  className="px-3.5 py-1.5 bg-cyan-600/10 hover:bg-cyan-600/20 text-cyan-450 border border-cyan-500/20 font-semibold text-xs rounded-lg transition-transform"
+                  className="px-3.5 py-1.5 font-semibold text-xs rounded-lg transition-transform"
+                  style={{ backgroundColor: 'var(--accent-muted)', color: 'var(--accent)', borderColor: 'var(--accent)' }}
                 >
                   + Add New Strategy
                 </Link>
@@ -844,9 +846,15 @@ export const StrategiesPage: React.FC = () => {
                       const isPnlPositive = stats.netPnl >= 0;
                       const isExpectancyPositive = stats.expectancy >= 0;
 
-                      let winRateColor = 'text-red-400';
-                      if (stats.winRate >= 60) winRateColor = 'text-emerald-400';
-                      else if (stats.winRate >= 40) winRateColor = 'text-amber-400';
+                      let winRateColorClass = '';
+                      let winRateColorStyle = {};
+                      if (stats.winRate >= 60) {
+                        winRateColorStyle = { color: '#008F67' };
+                      } else if (stats.winRate >= 40) {
+                        winRateColorClass = 'text-amber-400';
+                      } else {
+                        winRateColorStyle = { color: '#DF1C30' };
+                      }
 
                       const isMenuOpen = activeMenuId === strat.id;
 
@@ -903,21 +911,21 @@ export const StrategiesPage: React.FC = () => {
                               );
                             })()}
                           </td>
-                          <td className="text-center text-xs font-mono font-medium text-zinc-300" style={{ padding: '6px 16px', whiteSpace: 'nowrap' }}>{stats.totalTrades}</td>
-                          <td className={`text-center text-xs font-mono font-bold ${isPnlPositive ? 'text-emerald-400' : 'text-red-400'}`} style={{ padding: '6px 16px', whiteSpace: 'nowrap' }}>
+                          <td className="text-center text-xs font-mono font-medium" style={{ padding: '6px 16px', whiteSpace: 'nowrap', color: 'var(--text-sub)' }}>{stats.totalTrades}</td>
+                          <td className="text-center text-xs font-mono font-bold" style={{ padding: '6px 16px', whiteSpace: 'nowrap', color: isPnlPositive ? '#008F67' : '#DF1C30' }}>
                             {formatCurrency(stats.netPnl)}
                           </td>
-                          <td className={`text-center text-xs font-mono font-bold ${winRateColor}`} style={{ padding: '6px 16px', whiteSpace: 'nowrap' }}>{stats.winRate.toFixed(1)}%</td>
-                          <td className={`text-center text-xs font-mono ${stats.avgR >= 0 ? 'text-emerald-400' : 'text-red-400'}`} style={{ padding: '6px 16px', whiteSpace: 'nowrap' }}>
+                          <td className={`text-center text-xs font-mono font-bold ${winRateColorClass}`} style={{ padding: '6px 16px', whiteSpace: 'nowrap', ...winRateColorStyle }}>{stats.winRate.toFixed(1)}%</td>
+                          <td className="text-center text-xs font-mono" style={{ padding: '6px 16px', whiteSpace: 'nowrap', color: stats.avgR >= 0 ? '#008F67' : '#DF1C30' }}>
                             {stats.avgR >= 0 ? '+' : ''}{stats.avgR.toFixed(2)}R
                           </td>
-                          <td className="text-center text-xs font-mono font-semibold text-zinc-300" style={{ padding: '6px 16px', whiteSpace: 'nowrap' }}>
+                          <td className="text-center text-xs font-mono font-semibold" style={{ padding: '6px 16px', whiteSpace: 'nowrap', color: 'var(--text-sub)' }}>
                             {typeof stats.profitFactor === 'number' ? stats.profitFactor.toFixed(2) : stats.profitFactor}
                           </td>
-                          <td className={`text-center text-xs font-mono font-semibold ${isExpectancyPositive ? 'text-emerald-400' : 'text-red-400'}`} style={{ padding: '6px 16px', whiteSpace: 'nowrap' }}>
+                          <td className="text-center text-xs font-mono font-semibold" style={{ padding: '6px 16px', whiteSpace: 'nowrap', color: isExpectancyPositive ? '#008F67' : '#DF1C30' }}>
                             {formatCurrency(stats.expectancy)}
                           </td>
-                          <td className="text-center text-xs font-mono text-zinc-300" style={{ padding: '6px 16px', whiteSpace: 'nowrap' }}>{stats.missedTrades}</td>
+                          <td className="text-center text-xs font-mono" style={{ padding: '6px 16px', whiteSpace: 'nowrap', color: 'var(--text-sub)' }}>{stats.missedTrades}</td>
                           <td className="text-center" style={{ padding: '6px 16px', whiteSpace: 'nowrap' }}>{getStatusBadgeMinimal(strat.status)}</td>
                           <td className="text-center relative" onClick={(e) => e.stopPropagation()} style={{ padding: '6px 16px', whiteSpace: 'nowrap' }}>
                             <button
@@ -928,7 +936,8 @@ export const StrategiesPage: React.FC = () => {
                                   setActiveMenuId(strat.id);
                                 }
                               }}
-                              className="p-1 rounded text-zinc-500 hover:text-white transition-colors cursor-pointer"
+                              className="p-1 rounded transition-colors cursor-pointer"
+                              style={{ color: 'var(--text-muted)' }}
                             >
                               <MoreHorizontal className="w-4 h-4" />
                             </button>
@@ -969,9 +978,10 @@ export const StrategiesPage: React.FC = () => {
                                 <hr className="my-1" style={{ borderColor: 'var(--border)', opacity: 0.2 }} />
                                 <button
                                   onClick={() => handleOpenDeleteModal(strat)}
-                                  className="w-full text-left px-3 py-1.5 text-xs font-bold text-red-500 rounded-lg flex items-center gap-2 cursor-pointer transition-colors hover:bg-[var(--row)] hover:text-red-600"
+                                  className="w-full text-left px-3 py-1.5 text-xs font-bold rounded-lg flex items-center gap-2 cursor-pointer transition-colors hover:bg-[var(--row)]"
+                                  style={{ color: '#DF1C30' }}
                                 >
-                                  <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                                  <Trash2 className="w-3.5 h-3.5" style={{ color: '#DF1C30' }} />
                                   Delete Setup
                                 </button>
                               </div>
@@ -984,8 +994,8 @@ export const StrategiesPage: React.FC = () => {
                 </table>
 
                 {/* PAGINATION ROW CONTROLLER */}
-                <div className="flex items-center justify-between border-t border-zinc-800 py-4 px-1 mt-2">
-                  <span className="text-zinc-500 text-xs font-mono">
+                <div className="flex items-center justify-between border-t py-4 px-1 mt-2" style={{ borderColor: 'var(--border)' }}>
+                  <span className="text-xs font-mono" style={{ color: 'var(--text-muted)' }}>
                     Result: {(currentPage - 1) * itemsPerPage + 1} - {Math.min(currentPage * itemsPerPage, sortedStrategies.length)} of {sortedStrategies.length} strategies
                   </span>
 
@@ -994,7 +1004,8 @@ export const StrategiesPage: React.FC = () => {
                       <button
                         disabled={currentPage === 1}
                         onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                        className="px-3 py-1 text-xs font-bold uppercase rounded-lg border border-zinc-800 hover:bg-zinc-800 disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer transition-colors inline-flex items-center gap-1 text-zinc-300"
+                        className="px-3 py-1 text-xs font-bold uppercase rounded-lg border disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer transition-colors inline-flex items-center gap-1"
+                        style={{ borderColor: 'var(--border)', color: 'var(--text-sub)' }}
                       >
                         <ChevronLeft className="w-4 h-4" />
                         Prev
@@ -1002,7 +1013,8 @@ export const StrategiesPage: React.FC = () => {
                       <button
                         disabled={currentPage === totalPages}
                         onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                        className="px-3 py-1 text-xs font-bold uppercase rounded-lg border border-zinc-800 hover:bg-zinc-800 disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer transition-colors inline-flex items-center gap-1 text-zinc-300"
+                        className="px-3 py-1 text-xs font-bold uppercase rounded-lg border disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer transition-colors inline-flex items-center gap-1"
+                        style={{ borderColor: 'var(--border)', color: 'var(--text-sub)' }}
                       >
                         Next
                         <ChevronRight className="w-4 h-4" />
@@ -1061,11 +1073,11 @@ export const StrategiesPage: React.FC = () => {
                     <div
                       key={strat.id}
                       onClick={() => navigate(`/strategies/${strat.id}`)}
-                      className="p-5 flex flex-col cursor-pointer border hover:border-zinc-700/50"
+                      className="p-5 flex flex-col cursor-pointer border"
                       style={{
                         backgroundColor: 'var(--card)',
                         boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
-                        border: '1px solid rgba(0,0,0,0.06)',
+                        border: '1px solid var(--border)',
                         borderRadius: '12px',
                         transition: 'box-shadow 150ms ease'
                       }}
@@ -1096,7 +1108,8 @@ export const StrategiesPage: React.FC = () => {
                                 setActiveMenuId(strat.id);
                               }
                             }}
-                            className="p-1 rounded text-zinc-500 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
+                            className="p-1 rounded transition-colors cursor-pointer"
+                            style={{ color: 'var(--text-muted)' }}
                           >
                             <MoreHorizontal className="w-3.5 h-3.5" />
                           </button>
@@ -1137,9 +1150,10 @@ export const StrategiesPage: React.FC = () => {
                               <hr className="my-1" style={{ borderColor: 'var(--border)', opacity: 0.2 }} />
                               <button
                                 onClick={() => handleOpenDeleteModal(strat)}
-                                className="w-full text-left px-2.5 py-1.5 text-xs font-bold text-red-500 rounded-lg flex items-center gap-1.5 cursor-pointer transition-colors hover:bg-[var(--row)] hover:text-red-600"
+                                className="w-full text-left px-2.5 py-1.5 text-xs font-bold rounded-lg flex items-center gap-1.5 cursor-pointer transition-colors hover:bg-[var(--row)]"
+                                style={{ color: '#DF1C30' }}
                               >
-                                <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                                <Trash2 className="w-3.5 h-3.5" style={{ color: '#DF1C30' }} />
                                 Delete Setup
                               </button>
                             </div>
@@ -1260,61 +1274,65 @@ export const StrategiesPage: React.FC = () => {
           title="Change Status"
         >
           <div className="space-y-4 pt-1">
-            <span className="text-xs text-zinc-400 font-semibold uppercase tracking-wider block font-mono">
-              Strategy: <strong className="text-white">{selectedStrategy.name}</strong>
+            <span className="text-xs font-semibold uppercase tracking-wider block font-mono" style={{ color: 'var(--text-muted)' }}>
+              Strategy: <strong style={{ color: 'var(--text)' }}>{selectedStrategy.name}</strong>
             </span>
 
             <div className="space-y-2.5">
               <button
                 onClick={() => handleStatusChange('active')}
-                className={`w-full text-left py-3 px-4 rounded-xl border text-sm font-semibold transition-all flex items-center justify-between cursor-pointer ${
+                className="w-full text-left py-3 px-4 rounded-xl border text-sm font-semibold transition-all flex items-center justify-between cursor-pointer"
+                style={
                   selectedStrategy.status === 'active'
-                    ? 'bg-emerald-950/40 border-emerald-600 text-emerald-400'
-                    : 'border-zinc-800 text-zinc-400 hover:bg-zinc-800/40'
-                }`}
+                    ? { backgroundColor: 'rgba(0,143,103,0.1)', borderColor: '#008F67', color: '#008F67' }
+                    : { borderColor: 'var(--border)', color: 'var(--text-sub)' }
+                }
               >
                 <span className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: '#008F67' }} />
                   <span>Set Active</span>
                 </span>
-                {selectedStrategy.status === 'active' && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
+                {selectedStrategy.status === 'active' && <CheckCircle2 className="w-4 h-4" style={{ color: '#008F67' }} />}
               </button>
 
               <button
                 onClick={() => handleStatusChange('not_working')}
-                className={`w-full text-left py-3 px-4 rounded-xl border text-sm font-semibold transition-all flex items-center justify-between cursor-pointer ${
+                className="w-full text-left py-3 px-4 rounded-xl border text-sm font-semibold transition-all flex items-center justify-between cursor-pointer"
+                style={
                   selectedStrategy.status === 'not_working'
-                    ? 'bg-amber-950/40 border-amber-600 text-amber-400'
-                    : 'border-zinc-800 text-zinc-400 hover:bg-zinc-800/40'
-                }`}
+                    ? { backgroundColor: 'rgba(245,158,11,0.1)', borderColor: '#f59e0b', color: '#f59e0b' }
+                    : { borderColor: 'var(--border)', color: 'var(--text-sub)' }
+                }
               >
                 <span className="flex items-center gap-2">
-                  <span className="text-amber-450 font-bold">⚠</span>
+                  <span className="font-bold" style={{ color: '#f59e0b' }}>⚠</span>
                   <span>Set Not Working Well</span>
                 </span>
-                {selectedStrategy.status === 'not_working' && <CheckCircle2 className="w-4 h-4 text-amber-400" />}
+                {selectedStrategy.status === 'not_working' && <CheckCircle2 className="w-4 h-4" style={{ color: '#f59e0b' }} />}
               </button>
 
               <button
                 onClick={() => handleStatusChange('retired')}
-                className={`w-full text-left py-3 px-4 rounded-xl border text-sm font-semibold transition-all flex items-center justify-between cursor-pointer ${
+                className="w-full text-left py-3 px-4 rounded-xl border text-sm font-semibold transition-all flex items-center justify-between cursor-pointer"
+                style={
                   selectedStrategy.status === 'retired'
-                    ? 'bg-zinc-950 border-zinc-700 text-zinc-400'
-                    : 'border-zinc-800 text-zinc-500 hover:bg-zinc-850'
-                }`}
+                    ? { backgroundColor: 'var(--bg)', borderColor: 'var(--border)', color: 'var(--text-sub)' }
+                    : { borderColor: 'var(--border)', color: 'var(--text-muted)' }
+                }
               >
                 <span className="flex items-center gap-2">
-                  <span className="text-zinc-500 font-bold">—</span>
+                  <span className="font-bold" style={{ color: 'var(--text-muted)' }}>—</span>
                   <span>Set Retired</span>
                 </span>
-                {selectedStrategy.status === 'retired' && <CheckCircle2 className="w-4 h-4 text-zinc-400" />}
+                {selectedStrategy.status === 'retired' && <CheckCircle2 className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />}
               </button>
             </div>
 
             <div className="flex justify-end gap-3 pt-3">
               <button
                 onClick={() => setStatusModalOpen(false)}
-                className="bg-transparent hover:bg-zinc-800 text-zinc-300 border border-zinc-700 rounded-lg px-4 py-2 text-sm transition-all cursor-pointer font-medium"
+                className="bg-transparent rounded-lg px-4 py-2 text-sm transition-all cursor-pointer font-medium border"
+                style={{ color: 'var(--text-sub)', borderColor: 'var(--border)' }}
               >
                 Cancel
               </button>
@@ -1331,30 +1349,32 @@ export const StrategiesPage: React.FC = () => {
           title="Delete Strategy?"
         >
           <div className="text-center pt-2">
-            <div className="bg-red-500/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-500/20">
-              <AlertTriangle className="w-6 h-6 text-red-500" />
+            <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 border" style={{ backgroundColor: 'rgba(223,28,48,0.1)', borderColor: 'rgba(223,28,48,0.2)' }}>
+              <AlertTriangle className="w-6 h-6" style={{ color: '#DF1C30' }} />
             </div>
 
-            <p className="text-zinc-100 text-base font-semibold">
+            <p className="text-base font-semibold" style={{ color: 'var(--text)' }}>
               Are you sure you want to delete this?
             </p>
 
-            <p className="text-zinc-400 text-sm mt-3 leading-relaxed">
-              You are about to delete <strong className="text-white font-semibold">"{selectedStrategy.name}"</strong>.
+            <p className="text-sm mt-3 leading-relaxed" style={{ color: 'var(--text-sub)' }}>
+              You are about to delete <strong className="font-semibold" style={{ color: 'var(--text)' }}>"{selectedStrategy.name}"</strong>.
               This will permanently remove the strategy and all {rulesToDeleteCount || 'its'} entry/exit rules.
-              Your trade logs using this setup will <strong className="text-indigo-400 font-semibold">NOT</strong> be deleted.
+              Your trade logs using this setup will <strong className="font-semibold" style={{ color: 'var(--accent)' }}>NOT</strong> be deleted.
             </p>
 
             <div className="mt-8 flex gap-3">
               <button
                 onClick={() => setDeleteModalOpen(false)}
-                className="flex-1 bg-transparent hover:bg-zinc-800 text-zinc-300 border border-zinc-700 rounded-lg px-4 py-2 font-medium transition-all cursor-pointer"
+                className="flex-1 bg-transparent rounded-lg px-4 py-2 font-medium transition-all cursor-pointer border"
+                style={{ color: 'var(--text-sub)', borderColor: 'var(--border)' }}
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteStrategy}
-                className="flex-1 bg-red-650 hover:bg-red-650 text-white rounded-lg px-4 py-2 font-semibold transition-all cursor-pointer shadow-md shadow-red-950/20"
+                className="flex-1 text-white rounded-lg px-4 py-2 font-semibold transition-all cursor-pointer shadow-md"
+                style={{ backgroundColor: '#DF1C30' }}
               >
                 Delete Setup
               </button>
