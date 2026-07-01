@@ -554,7 +554,7 @@ export const StrategiesPage: React.FC = () => {
                     backgroundColor: 'var(--accent)',
                     color: '#ffffff',
                     fontWeight: 700,
-                    borderRadius: '10px',
+                    borderRadius: '8px',
                     padding: '6px 20px',
                     fontSize: '14px',
                     border: 'none',
