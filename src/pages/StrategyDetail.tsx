@@ -706,9 +706,9 @@ export const StrategyDetail: React.FC = () => {
               <>
                 {/* TAB 1: OVERVIEW */}
                 {activeTab === 'OVERVIEW' && (
-                  <div className="space-y-6 animate-fade-in">
+                  <div className="space-y-3 animate-fade-in">
                     {/* STATS MATRIX */}
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
                       {/* CARD 1 */}
                       <div className="rounded-2xl border p-5" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                         <span className="text-[10px] font-bold font-mono uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Net P&L</span>
