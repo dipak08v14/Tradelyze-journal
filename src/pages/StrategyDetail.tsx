@@ -589,13 +589,14 @@ export const StrategyDetail: React.FC = () => {
         <main className="flex-1 overflow-y-auto overflow-x-hidden px-0">
           <div className="max-w-7xl mx-auto">
             {/* BREADCRUMB ROW */}
-            <div className="flex flex-wrap items-center gap-1.5 text-xs font-mono mb-4 uppercase tracking-wider font-semibold" style={{ color: 'var(--text-muted)' }}>
-              <Link to="/strategies" className="transition-colors">Strategies</Link>
-              <ChevronRight className="w-4 h-4 text-zinc-600" />
-              <span style={{ color: 'var(--text-sub)' }}>{strategy ? strategy.name : 'Loading...'}</span>
-              <ChevronRight className="w-4 h-4 text-zinc-600" />
-              <span style={{ color: 'var(--accent)' }}>{activeTab}</span>
-            </div>
+            <Link
+              to="/strategies"
+              style={{ color: 'var(--accent)' }}
+              className="hover:opacity-90 text-sm inline-flex items-center gap-1 font-medium transition-all group mb-4"
+            >
+              <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
+              <span>Strategies</span>
+            </Link>
 
             {/* STRATEGY HEADER BLOCK */}
             <div
