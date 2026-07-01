@@ -73,7 +73,7 @@ function AuthenticatedLayout() {
 
   return (
     <div className="flex flex-col min-h-screen w-full font-sans">
-      <div className="flex-1 flex flex-col w-full">
+      <div className="flex-1 flex flex-col w-full" style={{ overflowX: 'hidden', minWidth: 0 }}>
         <Outlet />
       </div>
     </div>
