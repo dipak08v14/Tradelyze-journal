@@ -542,7 +542,7 @@ export const DailyJournal: React.FC = () => {
         </header>
 
         {/* CONTAINER CONTENT */}
-        <main className="flex-1 overflow-y-auto px-0">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden px-0">
           <div className="max-w-7xl mx-auto">
             {/* PAGE HEADER */}
             <div
