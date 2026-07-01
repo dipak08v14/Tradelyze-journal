@@ -874,7 +874,7 @@ export const StrategyBuilderPage: React.FC = () => {
                     <div className="space-y-5 mt-5">
                       {/* Name Entry */}
                       <div>
-                        <label style={{ color: 'var(--text-muted)' }} className="block text-[11px] font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="strat_name">
+                        <label style={{ color: 'var(--text-sub)' }} className="block text-[11px] font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="strat_name">
                           Strategy Name *
                         </label>
                         <input
@@ -903,7 +903,7 @@ export const StrategyBuilderPage: React.FC = () => {
                       {/* Row 1 Entry */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 font-sans">
                         <div>
-                          <label style={{ color: 'var(--text-muted)' }} className="block text-[11px] font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="sr_no">
+                          <label style={{ color: 'var(--text-sub)' }} className="block text-[11px] font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="sr_no">
                             Sr. No.
                           </label>
                           <input
@@ -926,7 +926,7 @@ export const StrategyBuilderPage: React.FC = () => {
                         </div>
 
                         <div>
-                          <label style={{ color: 'var(--text-muted)' }} className="block text-[11px] font-bold uppercase tracking-wider mb-2 font-mono">
+                          <label style={{ color: 'var(--text-sub)' }} className="block text-[11px] font-bold uppercase tracking-wider mb-2 font-mono">
                             Type of Strategy *
                           </label>
                           <div className="flex flex-wrap gap-2.5 mt-1.5">
@@ -944,7 +944,7 @@ export const StrategyBuilderPage: React.FC = () => {
                                     fontWeight: 600,
                                     border: isSelected ? '1px solid var(--accent)' : '0.5px solid var(--border)',
                                     backgroundColor: isSelected ? 'var(--accent-muted)' : 'transparent',
-                                    color: isSelected ? 'var(--accent)' : 'var(--text-sub)',
+                                    color: isSelected ? 'var(--accent)' : 'var(--text)',
                                     cursor: 'pointer'
                                   }}
                                   className="transition-all hover:opacity-90 active:scale-95"
@@ -965,7 +965,7 @@ export const StrategyBuilderPage: React.FC = () => {
                       {/* Row 2 Entry */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                          <label style={{ color: 'var(--text-muted)' }} className="block text-[11px] font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="sub_type">
+                          <label style={{ color: 'var(--text-sub)' }} className="block text-[11px] font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="sub_type">
                             Sub Type
                           </label>
                           <input
@@ -987,7 +987,7 @@ export const StrategyBuilderPage: React.FC = () => {
                         </div>
 
                         <div>
-                          <label style={{ color: 'var(--text-muted)' }} className="block text-[11px] font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="status">
+                          <label style={{ color: 'var(--text-sub)' }} className="block text-[11px] font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="status">
                             Status
                           </label>
                           <select
@@ -1013,7 +1013,7 @@ export const StrategyBuilderPage: React.FC = () => {
 
                       {/* Notes Entries */}
                       <div>
-                        <label style={{ color: 'var(--text-muted)' }} className="block text-[11px] font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="notes">
+                        <label style={{ color: 'var(--text-sub)' }} className="block text-[11px] font-bold uppercase tracking-wider mb-2 font-mono" htmlFor="notes">
                           Notes
                         </label>
                         <textarea
@@ -1041,11 +1041,11 @@ export const StrategyBuilderPage: React.FC = () => {
                     <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between border-b pb-3">
                       <div>
                         <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display">Entry Rules</h2>
-                        <p style={{ color: 'var(--text-sub)' }} className="text-xs mt-0.5">
+                        <p style={{ color: 'var(--text)' }} className="text-xs mt-0.5">
                           Criteria required BEFORE entering trades. These auto-populate as checklist items.
                         </p>
                       </div>
-                      <span style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text-muted)' }} className="text-xs font-mono rounded-lg px-2.5 py-1">
+                      <span style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text-sub)' }} className="text-xs font-mono rounded-lg px-2.5 py-1">
                         {entryRules.length} / 10
                       </span>
                     </div>
@@ -1140,11 +1140,11 @@ export const StrategyBuilderPage: React.FC = () => {
                     <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between border-b pb-3">
                       <div>
                         <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display">Exit Rules</h2>
-                        <p style={{ color: 'var(--text-sub)' }} className="text-xs mt-0.5">
+                        <p style={{ color: 'var(--text)' }} className="text-xs mt-0.5">
                           Criteria suggesting when to secure the trade. These auto-populate in checklists.
                         </p>
                       </div>
-                      <span style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text-muted)' }} className="text-xs font-mono rounded-lg px-2.5 py-1">
+                      <span style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', color: 'var(--text-sub)' }} className="text-xs font-mono rounded-lg px-2.5 py-1">
                         {exitRules.length} / 10
                       </span>
                     </div>
@@ -1273,7 +1273,7 @@ export const StrategyBuilderPage: React.FC = () => {
                     <div style={{ borderColor: 'var(--border)' }} className="flex justify-between items-center border-b pb-3">
                       <div>
                         <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display">Reference Images</h2>
-                        <p style={{ color: 'var(--text-sub)' }} className="text-xs mt-0.5">
+                        <p style={{ color: 'var(--text)' }} className="text-xs mt-0.5">
                           Screenshots showing ideal examples.
                         </p>
                       </div>
@@ -1422,7 +1422,7 @@ export const StrategyBuilderPage: React.FC = () => {
                       <h2 style={{ color: 'var(--text)', borderColor: 'var(--border)' }} className="text-lg font-bold border-b pb-3 font-display">
                         Performance Stats
                       </h2>
-                      <p style={{ color: 'var(--text-sub)' }} className="text-xs mt-2 pb-1">
+                      <p style={{ color: 'var(--text)' }} className="text-xs mt-2 pb-1">
                         Auto-calculated from your trade history logs.
                       </p>
 
