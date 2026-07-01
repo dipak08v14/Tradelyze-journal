@@ -599,7 +599,7 @@ export const StrategyDetail: React.FC = () => {
 
             {/* STRATEGY HEADER BLOCK */}
             <div
-              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+              className="flex flex-row items-center justify-between gap-4"
               style={{
                 background: 'var(--card)',
                 width: 'calc(100% + 48px)',
@@ -607,15 +607,15 @@ export const StrategyDetail: React.FC = () => {
                 marginRight: '-24px',
                 paddingLeft: '24px',
                 paddingRight: '24px',
-                paddingTop: '12px',
-                paddingBottom: '12px',
+                paddingTop: '3px',
+                paddingBottom: '3px',
                 borderBottom: '1px solid var(--border)',
                 marginBottom: '16px'
               }}
             >
               <div>
-                <div className="flex items-center gap-2.5">
-                  <h1 className="text-3xl font-extrabold tracking-tight text-white font-display">
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  <h1 className="text-3xl font-extrabold tracking-tight font-display" style={{ color: 'var(--text)' }}>
                     {strategy ? strategy.name : 'Strategy details'}
                   </h1>
                   {strategy && (
@@ -624,7 +624,7 @@ export const StrategyDetail: React.FC = () => {
                     </span>
                   )}
                 </div>
-                <p className="text-xs font-mono mt-1" style={{ color: 'var(--text-muted)' }}>
+                <p className="text-xs font-mono" style={{ color: 'var(--text-muted)', marginLeft: '8px' }}>
                   STATUS:{' '}
                   <span
                     className="font-bold uppercase animate-fade-in"
