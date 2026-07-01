@@ -814,7 +814,7 @@ export const StrategiesPage: React.FC = () => {
               >
                 <table className="w-full text-left border-collapse" style={{ tableLayout: 'auto', width: '100%', minWidth: '900px' }}>
                   <thead>
-                    <tr style={{ background: 'rgba(0, 0, 0, 0.04)', borderBottom: '1px solid rgba(0, 0, 0, 0.08)' }}>
+                    <tr style={{ backgroundColor: 'var(--row)', borderBottom: '1px solid var(--border)', color: 'var(--text-muted)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       <th className="py-3 px-4 text-center" style={{ width: '40px', whiteSpace: 'nowrap', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>#</th>
                       {renderSortableHeader('name', 'Strategy Name', false, { maxWidth: '220px', overflow: 'hidden', textOverflow: 'ellipsis' })}
                       {renderSortableHeader('type', 'TYPE', true, { width: '100px' })}
@@ -857,7 +857,8 @@ export const StrategiesPage: React.FC = () => {
                           className="transition-colors cursor-pointer h-[52px]"
                           style={{ 
                             borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
-                            backgroundColor: isEven ? 'rgba(0, 0, 0, 0.018)' : 'transparent'
+                            backgroundColor: isEven ? 'var(--bar)' : 'transparent',
+                            color: 'var(--text)'
                           }}
                           onClick={() => navigate(`/strategies/${strat.id}`)}
                           onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.025)')}
