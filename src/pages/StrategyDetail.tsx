@@ -878,12 +878,12 @@ export const StrategyDetail: React.FC = () => {
 
                 {/* TAB 2: RULES PERFORMANCE */}
                 {activeTab === 'RULES PERFORMANCE' && (
-                  <div className="space-y-8 animate-fade-in">
+                  <div className="space-y-4 animate-fade-in">
                     {/* ENTRY RULES SELECTION */}
                     <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                       <div className="px-5 py-4 border-b flex items-center justify-between" style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bar)' }}>
                         <h4 className="text-xs font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2">
-                          <span className="w-1.5 h-3 bg-cyan-400 rounded-sm" />
+                          <span className="w-1.5 h-3 rounded-sm" style={{ backgroundColor: 'var(--accent)' }} />
                           Entry Rules Performance
                         </h4>
                         <span className="text-xs font-mono font-bold" style={{ color: 'var(--text-muted)' }}>{entryRulesPerf.length} active rules</span>
@@ -923,7 +923,7 @@ export const StrategyDetail: React.FC = () => {
                                 }
 
                                 return (
-                                  <tr key={r.id} className="border-b hover:bg-zinc-800/10 transition-colors" style={{ borderColor: 'var(--border)' }}>
+                                  <tr key={r.id} className="border-b transition-colors" style={{ borderColor: 'var(--border)' }}>
                                     <td className="py-3 px-4 text-sm font-semibold" style={{ color: 'var(--text)' }}>{r.rule_text}</td>
                                     <td className={`py-3 px-4 text-center text-xs font-mono font-bold ${followClass}`} style={followStyle}>
                                       {r.followRate !== null ? `${r.followRate.toFixed(1)}%` : '--'}
@@ -950,8 +950,8 @@ export const StrategyDetail: React.FC = () => {
                     {/* EXIT RULES SELECTION */}
                     <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                       <div className="px-5 py-4 border-b flex items-center justify-between" style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bar)' }}>
-                        <h4 className="text-xs font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2">
-                          <span className="w-1.5 h-3 bg-indigo-400 rounded-sm" />
+                        <h4 className="text-xs font-bold uppercase tracking-wider font-mono flex items-center gap-2" style={{ color: 'var(--text)' }}>
+                          <span className="w-1.5 h-3 rounded-sm" style={{ backgroundColor: 'var(--accent)' }} />
                           Exit Rules Performance
                         </h4>
                         <span className="text-xs font-mono font-bold" style={{ color: 'var(--text-muted)' }}>{exitRulesPerf.length} active rules</span>
@@ -991,7 +991,7 @@ export const StrategyDetail: React.FC = () => {
                                 }
 
                                 return (
-                                  <tr key={r.id} className="border-b hover:bg-zinc-800/10 transition-colors" style={{ borderColor: 'var(--border)' }}>
+                                  <tr key={r.id} className="border-b transition-colors" style={{ borderColor: 'var(--border)' }}>
                                     <td className="py-3 px-4 text-sm font-semibold" style={{ color: 'var(--text)' }}>{r.rule_text}</td>
                                     <td className={`py-3 px-4 text-center text-xs font-mono font-bold ${followClass}`} style={followStyle}>
                                       {r.followRate !== null ? `${r.followRate.toFixed(1)}%` : '--'}
@@ -1050,9 +1050,9 @@ export const StrategyDetail: React.FC = () => {
                                     style={{ borderColor: 'var(--border)' }}
                                     onClick={() => navigate(`/trade/${t.id}`)}
                                   >
-                                    <td className="py-3.5 px-4 text-xs font-mono" style={{ color: 'var(--text-sub)' }}>{t.date}</td>
-                                    <td className="py-3.5 px-4 font-bold text-sm tracking-tight" style={{ color: 'var(--text)' }}>{t.symbol}</td>
-                                    <td className="py-3.5 px-4">
+                                    <td className="py-1.5 px-4 text-xs font-mono" style={{ color: 'var(--text-sub)' }}>{t.date}</td>
+                                    <td className="py-1.5 px-4 font-bold text-sm tracking-tight" style={{ color: 'var(--text)' }}>{t.symbol}</td>
+                                    <td className="py-1.5 px-4">
                                       <span 
                                         className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider"
                                         style={
@@ -1064,13 +1064,13 @@ export const StrategyDetail: React.FC = () => {
                                         {dirOpt}
                                       </span>
                                     </td>
-                                    <td className="py-3.5 px-4 text-right text-xs font-mono font-bold" style={{ color: t.pnl && t.pnl >= 0 ? '#008F67' : '#DF1C30' }}>
+                                    <td className="py-1.5 px-4 text-right text-xs font-mono font-bold" style={{ color: t.pnl && t.pnl >= 0 ? '#008F67' : '#DF1C30' }}>
                                       {t.pnl !== null ? formatCurrency(t.pnl) : '₹0'}
                                     </td>
-                                    <td className="py-3.5 px-4 text-center text-xs font-mono font-bold" style={{ color: t.r_multiple && t.r_multiple >= 0 ? '#008F67' : '#DF1C30' }}>
+                                    <td className="py-1.5 px-4 text-center text-xs font-mono font-bold" style={{ color: t.r_multiple && t.r_multiple >= 0 ? '#008F67' : '#DF1C30' }}>
                                       {t.r_multiple !== null ? `${t.r_multiple >= 0 ? '+' : ''}${t.r_multiple.toFixed(2)}R` : '--'}
                                     </td>
-                                    <td className="py-3.5 px-4 text-center text-xs">
+                                    <td className="py-1.5 px-4 text-center text-xs">
                                       <span 
                                         className="px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider border"
                                         style={
@@ -1082,8 +1082,8 @@ export const StrategyDetail: React.FC = () => {
                                         {t.status}
                                       </span>
                                     </td>
-                                    <td className="py-3.5 px-4 text-xs font-semibold capitalize" style={{ color: 'var(--text-sub)' }}>{t.execution_status || '--'}</td>
-                                    <td className="py-3.5 px-4 text-xs font-mono" style={{ color: 'var(--text-sub)' }}>{t.holding_time_mins ? `${t.holding_time_mins} mins` : '--'}</td>
+                                    <td className="py-1.5 px-4 text-xs font-semibold capitalize" style={{ color: 'var(--text-sub)' }}>{t.execution_status || '--'}</td>
+                                    <td className="py-1.5 px-4 text-xs font-mono" style={{ color: 'var(--text-sub)' }}>{t.holding_time_mins ? `${t.holding_time_mins} mins` : '--'}</td>
                                   </tr>
                                 );
                               })}
@@ -1195,13 +1195,13 @@ export const StrategyDetail: React.FC = () => {
                                     key={mt.id}
                                     className="hover:bg-zinc-800/10 transition-colors"
                                   >
-                                    <td className="py-3.5 px-4 text-xs font-mono" style={{ color: 'var(--text-muted)' }}>
+                                    <td className="py-1.5 px-4 text-xs font-mono" style={{ color: 'var(--text-muted)' }}>
                                       {formatDateCustom(mt.date)}
                                     </td>
-                                    <td className="py-3.5 px-4 font-bold text-sm tracking-tight uppercase" style={{ color: 'var(--text)' }}>
+                                    <td className="py-1.5 px-4 font-bold text-sm tracking-tight uppercase" style={{ color: 'var(--text)' }}>
                                       {mt.symbol}
                                     </td>
-                                    <td className="py-3.5 px-4">
+                                    <td className="py-1.5 px-4">
                                       <span 
                                         className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border"
                                         style={
@@ -1213,13 +1213,13 @@ export const StrategyDetail: React.FC = () => {
                                         {mt.direction}
                                       </span>
                                     </td>
-                                    <td className="py-3.5 px-4 text-right text-xs font-mono font-bold" style={{ color: mt.potential_pnl !== null && mt.potential_pnl !== undefined ? (mt.potential_pnl >= 0 ? '#008F67' : '#DF1C30') : 'var(--text-muted)' }}>
+                                    <td className="py-1.5 px-4 text-right text-xs font-mono font-bold" style={{ color: mt.potential_pnl !== null && mt.potential_pnl !== undefined ? (mt.potential_pnl >= 0 ? '#008F67' : '#DF1C30') : 'var(--text-muted)' }}>
                                       {mt.potential_pnl !== null && mt.potential_pnl !== undefined ? formatCurrency(mt.potential_pnl) : '--'}
                                     </td>
-                                    <td className="py-3.5 px-4 text-xs max-w-xs truncate" style={{ color: 'var(--text-sub)' }} title={mt.notes || ''}>
+                                    <td className="py-1.5 px-4 text-xs max-w-xs truncate" style={{ color: 'var(--text-sub)' }} title={mt.notes || ''}>
                                       {mt.notes || '--'}
                                     </td>
-                                    <td className="py-3.5 px-4 text-center">
+                                    <td className="py-1.5 px-4 text-center">
                                       <button
                                         onClick={(e) => {
                                           if (confirm("Are you sure you want to delete this missed trade?")) {
