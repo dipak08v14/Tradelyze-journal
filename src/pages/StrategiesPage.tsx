@@ -580,7 +580,7 @@ export const StrategiesPage: React.FC = () => {
                     setCurrentPage(1);
                   }}
                   style={getTabStyle(activeSubTab === 'my')}
-                  className={`px-4 py-2 text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${activeSubTab === 'my' ? 'rounded' : 'rounded-xl'}`}
+                  className={`px-4 py-2 text-sm font-bold transition-all cursor-pointer whitespace-nowrap ${activeSubTab === 'my' ? 'rounded' : 'rounded-xl'}`}
                 >
                   My Strategies
                 </button>
@@ -589,7 +589,7 @@ export const StrategiesPage: React.FC = () => {
                     showSuccess('Coming soon — Shared setup Playbook will be added in a future update.');
                   }}
                   style={getTabStyle(activeSubTab === 'shared')}
-                  className={`px-4 py-2 text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${activeSubTab === 'shared' ? 'rounded' : 'rounded-xl'}`}
+                  className={`px-4 py-2 text-sm font-bold transition-all cursor-pointer whitespace-nowrap ${activeSubTab === 'shared' ? 'rounded' : 'rounded-xl'}`}
                 >
                   Shared Strategies
                 </button>
