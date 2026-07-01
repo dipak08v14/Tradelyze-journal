@@ -58,12 +58,12 @@ export const StrategiesPage: React.FC = () => {
   // Current sub-tab active (default: My Strategies)
   const [activeSubTab, setActiveSubTab] = useState<'my' | 'shared'>('my');
 
-  const getTabStyle = (isActive: boolean) => ({
-    color: isActive ? 'var(--accent)' : 'var(--text-sub)',
-    borderBottom: isActive ? '2px solid var(--accent)' : '2px solid transparent',
-    background: 'transparent',
-    fontWeight: isActive ? 600 : 400
-  });
+  const getTabStyle = (isActive: boolean) => {
+    if (isActive) {
+      return { backgroundColor: 'var(--card)', color: 'var(--accent)', border: '0.5px solid var(--border)', borderRadius: '6px' };
+    }
+    return { backgroundColor: 'transparent', color: 'var(--text-sub)', border: '0.5px solid transparent' };
+  };
 
   // Filters State
   const [statusFilter, setStatusFilter] = useState<string>('All');
@@ -580,7 +580,7 @@ export const StrategiesPage: React.FC = () => {
                     setCurrentPage(1);
                   }}
                   style={getTabStyle(activeSubTab === 'my')}
-                  className="px-4 py-2.5 text-[15px] font-display transition-all cursor-pointer relative -bottom-[2px]"
+                  className={`px-4 py-2 text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${activeSubTab === 'my' ? 'rounded' : 'rounded-xl'}`}
                 >
                   My Strategies
                 </button>
@@ -589,7 +589,7 @@ export const StrategiesPage: React.FC = () => {
                     showSuccess('Coming soon — Shared setup Playbook will be added in a future update.');
                   }}
                   style={getTabStyle(activeSubTab === 'shared')}
-                  className="px-4 py-2.5 text-[15px] font-display transition-all cursor-pointer relative -bottom-[2px]"
+                  className={`px-4 py-2 text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${activeSubTab === 'shared' ? 'rounded' : 'rounded-xl'}`}
                 >
                   Shared Strategies
                 </button>
