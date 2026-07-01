@@ -671,21 +671,23 @@ export const StrategyDetail: React.FC = () => {
             </div>
 
             {/* TAB SELECTORS ACTIONS */}
-            <div className="flex border-b overflow-x-auto gap-1 sticky top-0 z-10 scrollbar-none mb-6" style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)' }}>
+            <div className="flex items-center overflow-x-auto gap-1 sticky top-0 z-10 scrollbar-none mb-4 px-1 py-1 rounded-lg" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
               {(['OVERVIEW', 'RULES PERFORMANCE', 'EXECUTED TRADES', 'MISSED TRADES', 'NOTES', 'REFERENCE'] as TabType[]).map((tab) => {
                 const active = activeTab === tab;
                 return (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`px-4 py-3 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap border-b-2 shrink-0 ${
+                    className={
                       active
-                        ? 'border-cyan-500'
-                        : 'border-transparent'
-                    }`}
-                    style={{
-                      color: active ? 'var(--accent)' : 'var(--text-muted)'
-                    }}
+                        ? "px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap rounded"
+                        : "px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap rounded-xl"
+                    }
+                    style={
+                      active
+                        ? { backgroundColor: 'var(--card)', color: 'var(--accent)', border: '0.5px solid var(--border)', borderRadius: '6px' }
+                        : { backgroundColor: 'transparent', color: 'var(--text-sub)', border: '0.5px solid transparent' }
+                    }
                   >
                     {tab}
                   </button>
