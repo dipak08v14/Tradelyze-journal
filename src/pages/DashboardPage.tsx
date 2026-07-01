@@ -981,7 +981,7 @@ export const DashboardPage: React.FC = () => {
       <Sidebar userEmail={user.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* RIGHT SIDE MAIN CONTAINER */}
-      <div className="flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen">
+      <div className="flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen" style={{ overflowX: 'hidden' }}>
         {/* MOBILE HEADER BAR */}
         <header 
           className="flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20"
@@ -999,7 +999,7 @@ export const DashboardPage: React.FC = () => {
         </header>
 
         {/* CONTAINER CONTENT */}
-        <main className="flex-1 overflow-y-auto px-0">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden px-0">
           <div className="max-w-7xl mx-auto p-0">
             {/* PAGE HEADER */}
             <div 
@@ -2121,7 +2121,7 @@ export const DashboardPage: React.FC = () => {
                 </div>
 
                 {/* NEW 3-COLUMN ROW: Trading Metrics | Cumulative P&L | Daily P&L */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', alignItems: 'stretch' }} className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '16px', alignItems: 'stretch' }} className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
                   {/* Column 1: Trading Metrics */}
                   <div className="rounded-xl px-5 pb-5 pt-2.5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', height: '300px', position: 'relative', overflow: 'hidden' }}>
                     <style>{`
@@ -2583,7 +2583,7 @@ export const DashboardPage: React.FC = () => {
                 </div>
 
                 {/* NEW 2-COLUMN ROW: Dhan Live + Recent Trades (Left 1/3) & Monthly Calendar (Right 2/3) */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', alignItems: 'stretch' }} className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '16px', alignItems: 'stretch' }} className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
                   {/* Left Column (33%): Tabbed Info Card */}
                   <div className="rounded-xl px-5 pb-5 pt-0 flex flex-col justify-between lg:col-span-1" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', gridColumn: 'span 1' }}>
                     <div>
