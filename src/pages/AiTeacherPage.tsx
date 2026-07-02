@@ -545,9 +545,6 @@ export const AiTeacherPage: React.FC = () => {
           <header 
             style={{
               background: 'var(--card)',
-              width: 'calc(100% + 48px)',
-              marginLeft: '-24px',
-              marginRight: '-24px',
               paddingTop: '3px',
               paddingBottom: '3px',
               paddingLeft: '24px',
