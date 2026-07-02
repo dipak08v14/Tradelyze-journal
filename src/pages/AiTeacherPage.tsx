@@ -566,8 +566,8 @@ export const AiTeacherPage: React.FC = () => {
             </div>
 
             {/* TOKEN & COST STAT COUNTER PILL */}
-            <div className="flex items-center gap-2 self-stretch sm:self-auto justify-between sm:justify-start">
-              <div style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text-sub)' }} className="px-3 py-1.5 rounded-xl border font-mono text-[10px] flex items-center gap-2">
+            <div className="flex-1 sm:flex-initial flex items-center gap-2 self-stretch sm:self-auto justify-between sm:justify-start">
+              <div style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text-sub)' }} className="px-3 py-2 rounded-lg border font-mono text-[11px] flex items-center gap-2">
                 <Sparkles style={{ color: 'var(--accent)' }} className="w-3.5 h-3.5" />
                 <span>
                   {totalTokens.toLocaleString()} tokens
@@ -717,7 +717,7 @@ export const AiTeacherPage: React.FC = () => {
             </aside>
 
             {/* RIGHT SIDE CHAT PANE (2/3 Width) */}
-            <main style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px' }} className="flex-1 flex flex-col overflow-hidden h-full m-4">
+            <main style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px' }} className="flex-1 flex flex-col overflow-hidden h-full mr-5 mb-5 ml-4">
               
               {/* THREAD CONTAINER */}
               <div className="flex-1 p-6 overflow-y-auto space-y-4">
