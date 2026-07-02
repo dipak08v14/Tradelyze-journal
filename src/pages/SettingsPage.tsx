@@ -1062,7 +1062,7 @@ export default function SettingsPage() {
                         <button
                           type="submit"
                           disabled={saving}
-                          className="bg-[var(--accent)] hover:bg-[var(--accent-light)] text-slate-950 font-bold px-5 py-2.5 rounded-xl cursor-pointer transition-all duration-200 text-sm flex items-center gap-1.5"
+                          className="bg-[var(--accent)] hover:bg-[var(--accent-light)] text-white font-bold px-5 py-2.5 rounded-xl cursor-pointer transition-all duration-200 text-sm flex items-center gap-1.5"
                         >
                           {saving ? 'Saving...' : 'Save Profile'}
                         </button>
@@ -1189,7 +1189,7 @@ export default function SettingsPage() {
                               <div className="space-y-1">
                                 <div className="flex items-center gap-2">
                                   <h4 className="font-bold text-sm text-[var(--text)]">{conn.broker_name || 'Generic Broker'}</h4>
-                                  <span className="bg-cyan-500/12 text-cyan-400 border border-cyan-800 text-[10px] font-extrabold uppercase rounded px-1.5 py-0.5">
+                                  <span className="bg-[var(--accent-muted)] text-[var(--accent)] border border-[var(--accent)]/30 text-[10px] font-extrabold uppercase rounded px-1.5 py-0.5">
                                     {conn.connection_type || 'MT5'}
                                   </span>
                                   {conn.is_active ? (
@@ -1808,7 +1808,7 @@ export default function SettingsPage() {
                       </div>
 
                       <div className="pt-4 border-t border-emerald-800/30 flex justify-between items-center">
-                        <span className="text-xs text-emerald-300/80">Next invoice will generate on standard monthly cycles.</span>
+                        <span className="text-sm text-[var(--text)]">Next invoice will generate on standard monthly cycles.</span>
                         <button
                           onClick={() => alert('To modify or cancel your active subscription plan, please send an query email to our customer care team at billing@tradelyze.app')}
                           className="text-xs font-bold text-red-400 hover:text-red-300 underline cursor-pointer"
