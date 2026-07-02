@@ -110,7 +110,8 @@ export default function RiskCalculatorPage() {
       <Sidebar userEmail={user?.email || ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* MAIN SCREEN AREA */}
-      <main className="flex-1 overflow-y-auto w-full min-w-0 overflow-x-hidden px-0">
+      <main className="flex-1 overflow-y-auto overflow-x-hidden px-0">
+        <div className="max-w-7xl mx-auto w-full px-4 md:px-6">
         
         {/* HEADER */}
         <div 
@@ -131,7 +132,6 @@ export default function RiskCalculatorPage() {
             alignItems: 'center',
             justifyContent: 'space-between'
           }}
-          className="sticky top-0 z-10"
         >
           <div className="flex items-center gap-3">
             <button
@@ -565,7 +565,8 @@ export default function RiskCalculatorPage() {
           </div>
 
         </div>
-      </main>
+      </div>
+    </main>
     </div>
   );
 }
