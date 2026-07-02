@@ -960,7 +960,7 @@ export default function SettingsPage() {
                 <button
                   key={tab.id}
                   onClick={() => handleTabChange(tab.id as any)}
-                  className={`px-4 py-2 text-xs font-bold ${isActive ? 'rounded' : 'rounded-xl'} transition-all cursor-pointer whitespace-nowrap flex items-center gap-2`}
+                  className={`px-4 py-2 text-[13px] font-bold ${isActive ? 'rounded' : 'rounded-xl'} transition-all cursor-pointer whitespace-nowrap flex items-center gap-2`}
                   style={{
                     backgroundColor: isActive ? 'var(--card)' : 'transparent',
                     color: isActive ? 'var(--accent)' : 'var(--text-sub)',
@@ -980,10 +980,10 @@ export default function SettingsPage() {
               
               {/* TAB 1: ACCOUNT PROFILE */}
               {activeTab === 'account' && (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start animate-fade-in">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-6 gap-x-2 md:gap-x-3 items-start animate-fade-in">
                   
                   {/* RIGHT COLUMN STACKED CARDS: PROFILE, SECURITY, ACCOUNT MANAGEMENT */}
-                  <div className="space-y-6 order-1 lg:order-1">
+                  <div className="space-y-2 md:space-y-3 order-1 lg:order-1">
                   
                   {/* PROFILE CARD */}
                   <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
