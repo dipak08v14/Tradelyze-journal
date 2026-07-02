@@ -1019,7 +1019,7 @@ export function Notebook() {
               }}
             >
               {note.log_date && (
-                <Calendar className="w-3.5 h-3.5 shrink-0 text-cyan-500" />
+                <Calendar className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--accent)' }} />
               )}
               {note.title && note.title.trim() !== '' ? note.title : 'Untitled'}
             </span>
@@ -1168,7 +1168,7 @@ export function Notebook() {
                   onMouseLeave={() => setIsAllNotesHovered(false)}
                 >
                   <div className="flex items-center gap-2">
-                    <BookOpen className="w-3.5 h-3.5 text-zinc-400" />
+                    <BookOpen className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />
                     <span className="font-sans font-medium">All notes</span>
                   </div>
                   <span style={{ fontSize: '11px', color: 'var(--text-muted)' }} className="font-mono">
@@ -1295,7 +1295,7 @@ export function Notebook() {
                       >
                         <Tag className="w-2.5 h-2.5" />
                         <span>{tagName}</span>
-                        <span className="font-mono text-[9px] text-zinc-500">({tagCount})</span>
+                        <span className="font-mono text-[9px]" style={{ color: 'var(--text-muted)' }}>({tagCount})</span>
                       </button>
                     );
                   })
@@ -1367,7 +1367,8 @@ export function Notebook() {
                     id="notebook-btn-new-note"
                     type="button"
                     onClick={handleCreateNote}
-                    className="flex items-center gap-1 px-2 py-1.5 text-[11px] font-mono font-bold text-cyan-500 hover:text-cyan-400 bg-cyan-500/5 hover:bg-cyan-500/10 cursor-pointer rounded-lg border border-cyan-500/20"
+                    className="flex items-center gap-1 px-2 py-1.5 text-[11px] font-mono font-bold cursor-pointer rounded-lg border"
+                    style={{ background: 'var(--accent-muted)', borderColor: 'var(--accent)', color: 'var(--accent)' }}
                   >
                     <FilePlus className="w-3 h-3" />
                     NEW NOTE
@@ -1382,7 +1383,8 @@ export function Notebook() {
                       setLogDateInput(localToday.toISOString().split('T')[0]);
                       setIsLogDayModalOpen(true);
                     }}
-                    className="flex items-center gap-1 px-2 py-1.5 text-[11px] font-mono font-bold text-cyan-500 hover:text-cyan-400 bg-cyan-500/5 hover:bg-cyan-500/10 cursor-pointer rounded-lg border border-cyan-500/20"
+                    className="flex items-center gap-1 px-2 py-1.5 text-[11px] font-mono font-bold cursor-pointer rounded-lg border"
+                    style={{ background: 'var(--accent-muted)', borderColor: 'var(--accent)', color: 'var(--accent)' }}
                   >
                     <Calendar className="w-3 h-3" />
                     LOG DAY
