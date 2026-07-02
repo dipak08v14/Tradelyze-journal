@@ -111,7 +111,7 @@ export default function RiskCalculatorPage() {
 
       {/* MAIN SCREEN AREA */}
       <main className="flex-1 overflow-y-auto overflow-x-hidden px-0">
-        <div className="max-w-7xl mx-auto w-full px-4 md:px-6">
+        <div className="max-w-7xl mx-auto">
         
         {/* HEADER */}
         <div 
