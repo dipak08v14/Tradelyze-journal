@@ -3,6 +3,7 @@ export const THEMES = {
     bg: '#f7f5f0',
     card: '#ffffff',
     cardHover: '#fdfcfa',
+    bgSub: '#faf9f6',
     border: 'rgba(0,0,0,.07)',
     borderMd: 'rgba(0,0,0,.12)',
     text: '#1c1917',
@@ -17,6 +18,7 @@ export const THEMES = {
     bg: '#eef1f8',
     card: '#f8faff',
     cardHover: '#f0f4fe',
+    bgSub: '#f3f5fa',
     border: 'rgba(0,0,0,.07)',
     borderMd: 'rgba(0,0,0,.12)',
     text: '#111827',
@@ -31,6 +33,7 @@ export const THEMES = {
     bg: '#f0f2f7',
     card: '#ffffff',
     cardHover: '#f8f9fc',
+    bgSub: '#f5f7fb',
     border: 'rgba(0,0,0,.08)',
     borderMd: 'rgba(0,0,0,.14)',
     text: '#0f172a',
@@ -45,6 +48,7 @@ export const THEMES = {
     bg: '#111318',
     card: '#191c22',
     cardHover: '#1e2128',
+    bgSub: '#15181e',
     border: 'rgba(255,255,255,.08)',
     borderMd: 'rgba(255,255,255,.14)',
     text: '#e8eaf0',
@@ -59,6 +63,7 @@ export const THEMES = {
     bg: '#060b18',
     card: '#0c1424',
     cardHover: '#101c30',
+    bgSub: '#090e1d',
     border: 'rgba(255,255,255,.08)',
     borderMd: 'rgba(255,255,255,.14)',
     text: '#e2e8f0',
@@ -73,6 +78,7 @@ export const THEMES = {
     bg: '#07080d',
     card: '#0e0f16',
     cardHover: '#13141e',
+    bgSub: '#0a0b11',
     border: 'rgba(255,255,255,.07)',
     borderMd: 'rgba(255,255,255,.12)',
     text: '#f1f5f9',
@@ -100,6 +106,7 @@ export function applyTheme(themeId: string, accentId: string) {
   const a = ACCENTS[accentId as keyof typeof ACCENTS] || ACCENTS.cyan;
   const root = document.documentElement;
   root.style.setProperty('--bg', t.bg);
+  root.style.setProperty('--bg-sub', t.bgSub);
   root.style.setProperty('--card', t.card);
   root.style.setProperty('--card-hover', t.cardHover || t.card);
   root.style.setProperty('--border', t.border);
