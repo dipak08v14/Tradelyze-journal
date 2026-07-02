@@ -828,9 +828,9 @@ export const AiTeacherPage: React.FC = () => {
                       justifyContent: 'center',
                       opacity: question.trim() && !askingAI ? 1 : 0.5
                     }}
-                    className="absolute right-3.5 top-3 hover:opacity-90 transition-all"
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 hover:opacity-90 transition-all"
                   >
-                    <Send className="w-4 h-4 text-white" />
+                    <Send className="w-4 h-4 text-white translate-x-[-0.5px] translate-y-[0.5px]" />
                   </button>
                 </form>
               </div>
