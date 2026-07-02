@@ -1641,7 +1641,7 @@ export function Notebook() {
                       {!activeNote.is_deleted && (
                         <>
                           {activeNote.log_date ? (
-                            <div className="flex items-center gap-1.5 bg-cyan-500/10 text-cyan-400 px-2 py-0.5 rounded border border-cyan-500/20 font-mono text-xs">
+                            <div className="flex items-center gap-1.5 bg-[var(--accent-muted)] text-[var(--accent)] px-2 py-0.5 rounded border border-[var(--accent)]/30 font-mono text-xs">
                               <span>📅 {formatLogDateLabel(activeNote.log_date)}</span>
                               <button
                                 type="button"
