@@ -944,55 +944,46 @@ export default function SettingsPage() {
             </div>
           )}
 
-          {/* TWO COLUMN TABULAR LAYOUT */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            
-            {/* TABS SIDEBAR */}
-            <div className="col-span-1 flex flex-row md:flex-col overflow-x-auto md:overflow-x-visible gap-2 border-b md:border-b-0 md:border-r border-[var(--border)] pb-4 md:pb-0 md:pr-4">
-              <button
-                onClick={() => handleTabChange('account')}
-                className={`flex items-center gap-2.5 px-4 py-3 rounded-xl text-left text-sm font-medium w-full whitespace-nowrap md:whitespace-normal cursor-pointer transition-all ${
-                  activeTab === 'account' ? 'bg-[var(--accent-muted)] text-[var(--accent)]' : 'text-[var(--text-sub)] hover:bg-[var(--bar)] hover:text-[var(--text)]'
-                }`}
-              >
-                <User className="w-4 h-4 flex-shrink-0" />
-                <span>Account Profile</span>
-              </button>
-              <button
-                onClick={() => handleTabChange('appearance')}
-                className={`flex items-center gap-2.5 px-4 py-3 rounded-xl text-left text-sm font-medium w-full whitespace-nowrap md:whitespace-normal cursor-pointer transition-all ${
-                  activeTab === 'appearance' ? 'bg-[var(--accent-muted)] text-[var(--accent)]' : 'text-[var(--text-sub)] hover:bg-[var(--bar)] hover:text-[var(--text)]'
-                }`}
-              >
-                <Palette className="w-4 h-4 flex-shrink-0" />
-                <span>Appearance</span>
-              </button>
-              <button
-                onClick={() => handleTabChange('subscription')}
-                className={`flex items-center gap-2.5 px-4 py-3 rounded-xl text-left text-sm font-medium w-full whitespace-nowrap md:whitespace-normal cursor-pointer transition-all ${
-                  activeTab === 'subscription' ? 'bg-[var(--accent-muted)] text-[var(--accent)]' : 'text-[var(--text-sub)] hover:bg-[var(--bar)] hover:text-[var(--text)]'
-                }`}
-              >
-                <CreditCard className="w-4 h-4 flex-shrink-0" />
-                <span>Subscription</span>
-              </button>
-              <button
-                onClick={() => handleTabChange('notifications')}
-                className={`flex items-center gap-2.5 px-4 py-3 rounded-xl text-left text-sm font-medium w-full whitespace-nowrap md:whitespace-normal cursor-pointer transition-all ${
-                  activeTab === 'notifications' ? 'bg-[var(--accent-muted)] text-[var(--accent)]' : 'text-[var(--text-sub)] hover:bg-[var(--bar)] hover:text-[var(--text)]'
-                }`}
-              >
-                <Bell className="w-4 h-4 flex-shrink-0" />
-                <span>Notifications</span>
-              </button>
-            </div>
+          {/* HORIZONTAL TAB STRIP */}
+          <div 
+            style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} 
+            className="flex overflow-x-auto gap-2 px-1 pt-1 pb-1 rounded-lg mb-3 font-mono no-scrollbar"
+          >
+            {[
+              { id: 'account', label: 'Account Profile', icon: <User className="w-4 h-4 flex-shrink-0" /> },
+              { id: 'appearance', label: 'Appearance', icon: <Palette className="w-4 h-4 flex-shrink-0" /> },
+              { id: 'subscription', label: 'Subscription', icon: <CreditCard className="w-4 h-4 flex-shrink-0" /> },
+              { id: 'notifications', label: 'Notifications', icon: <Bell className="w-4 h-4 flex-shrink-0" /> }
+            ].map((tab) => {
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => handleTabChange(tab.id as any)}
+                  className={`px-4 py-2 text-xs font-bold ${isActive ? 'rounded' : 'rounded-xl'} transition-all cursor-pointer whitespace-nowrap flex items-center gap-2`}
+                  style={{
+                    backgroundColor: isActive ? 'var(--card)' : 'transparent',
+                    color: isActive ? 'var(--accent)' : 'var(--text-sub)',
+                    border: isActive ? '0.5px solid var(--border)' : '0.5px solid transparent',
+                    borderRadius: isActive ? '6px' : undefined
+                  }}
+                >
+                  {tab.icon}
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
 
-            {/* CONTENT MODULES */}
-            <div className="col-span-1 md:col-span-3 space-y-8">
+          {/* CONTENT MODULES (FULL WIDTH) */}
+          <div className="space-y-8">
               
               {/* TAB 1: ACCOUNT PROFILE */}
               {activeTab === 'account' && (
-                <div className="space-y-8 animate-fade-in">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start animate-fade-in">
+                  
+                  {/* RIGHT COLUMN STACKED CARDS: PROFILE, SECURITY, ACCOUNT MANAGEMENT */}
+                  <div className="space-y-6 order-1 lg:order-1">
                   
                   {/* PROFILE CARD */}
                   <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
@@ -1164,6 +1155,10 @@ export default function SettingsPage() {
                      </div>
                   </div>
                </div>
+                  </div>
+
+                  {/* LEFT COLUMN: BROKER CONNECTIONS */}
+                  <div className="space-y-6 order-2 lg:order-2">
 
                   {/* BROKER CONNECTIONS SECTION */}
                   <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
@@ -1651,6 +1646,7 @@ export default function SettingsPage() {
                     </div>
                   </div>
 
+                  </div>
                 </div>
               )}
 
@@ -1881,7 +1877,6 @@ export default function SettingsPage() {
               )}
 
             </div>
-          </div>
           
         </div>
       </div>
