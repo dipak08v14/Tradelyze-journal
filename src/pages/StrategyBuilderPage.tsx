@@ -811,7 +811,6 @@ export const StrategyBuilderPage: React.FC = () => {
                   paddingRight: '24px',
                   paddingTop: '7px',
                   paddingBottom: '7px',
-                  borderBottom: '1px solid var(--border)',
                   marginBottom: '16px'
                 }}
               >
@@ -856,8 +855,6 @@ export const StrategyBuilderPage: React.FC = () => {
                   </button>
                 </div>
               </div>
-
-              <div className="border-b mt-5 mb-6" style={{ borderColor: 'var(--border)' }} />
 
               {/* TWO COLUMN FORM WORKSPACE */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
