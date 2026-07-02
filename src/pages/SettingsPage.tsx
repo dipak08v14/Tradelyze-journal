@@ -921,7 +921,7 @@ export default function SettingsPage() {
         </div>
 
         {/* CONTAINER WITH SPACING */}
-        <div className="max-w-[1400px] mx-auto px-4 py-6 md:px-0 md:py-8">
+        <div className="max-w-[1400px] mx-auto px-4 pt-2 pb-6 md:px-0 md:pt-3 md:pb-8">
           
           {/* SECURE BLOCK FOR EXPIRED SUBSCRIPTION */}
           {trialExpired && (
