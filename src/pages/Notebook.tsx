@@ -971,7 +971,7 @@ export function Notebook() {
 
   // UI styling helpers
   const getFolderColorDot = (color: string | undefined | null) => {
-    return color || '#06b6d4';
+    return color || 'var(--accent)';
   };
 
   // Render note item helper for grouped and other lists
@@ -1200,7 +1200,7 @@ export function Notebook() {
                       onMouseLeave={() => setHoveredFolderId(null)}
                     >
                       <div className="flex items-center gap-2 overflow-hidden mr-1">
-                        <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: getFolderColorDot(folder.color) }} />
+                        <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: 'var(--accent)' }} />
                         <span className="font-sans font-medium truncate" title={folder.name}>{folder.name}</span>
                       </div>
 
