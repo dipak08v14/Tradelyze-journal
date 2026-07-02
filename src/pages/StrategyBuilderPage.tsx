@@ -860,10 +860,10 @@ export const StrategyBuilderPage: React.FC = () => {
               <div className="border-b mt-5 mb-6" style={{ borderColor: 'var(--border)' }} />
 
               {/* TWO COLUMN FORM WORKSPACE */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 
                 {/* LEFT WORKSPACE: SPANS 2 COLS */}
-                <div className="lg:col-span-2 space-y-6">
+                <div className="lg:col-span-2 space-y-4">
                   
                   {/* CARD 1: STRATEGY DETAILS */}
                   <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '20px' }} className="relative overflow-hidden">
