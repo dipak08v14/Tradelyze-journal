@@ -3458,7 +3458,7 @@ export const DashboardPage: React.FC = () => {
                   style={{ 
                     fontSize: '16px', 
                     fontWeight: 700, 
-                    color: clickedDayStats.netPnl > 0 ? '#22c55e' : clickedDayStats.netPnl < 0 ? '#ef4444' : 'var(--text)' 
+                    color: clickedDayStats.netPnl > 0 ? '#008F67' : clickedDayStats.netPnl < 0 ? '#DF1C30' : 'var(--text)' 
                   }}
                 >
                   {formatINR(clickedDayStats.netPnl)}
@@ -3503,12 +3503,12 @@ export const DashboardPage: React.FC = () => {
             {/* Box 2 */}
             <div style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px' }} className="p-2.5 px-3">
               <div style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase">WINNERS</div>
-              <div style={{ color: '#22c55e', fontSize: '16px', fontWeight: 700 }} className="mt-0.5 font-mono">{clickedDayStats.winners}</div>
+              <div style={{ color: '#008F67', fontSize: '16px', fontWeight: 700 }} className="mt-0.5 font-mono">{clickedDayStats.winners}</div>
             </div>
             {/* Box 3 */}
             <div style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px' }} className="p-2.5 px-3">
               <div style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase">LOSERS</div>
-              <div style={{ color: '#ef4444', fontSize: '16px', fontWeight: 700 }} className="mt-0.5 font-mono">{clickedDayStats.losers}</div>
+              <div style={{ color: '#DF1C30', fontSize: '16px', fontWeight: 700 }} className="mt-0.5 font-mono">{clickedDayStats.losers}</div>
             </div>
             {/* Box 4 */}
             <div style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px' }} className="p-2.5 px-3">
@@ -3518,7 +3518,7 @@ export const DashboardPage: React.FC = () => {
             {/* Box 5 */}
             <div style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px' }} className="p-2.5 px-3">
               <div style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase">GROSS P&L</div>
-              <div style={{ color: clickedDayStats.grossPnl > 0 ? '#22c55e' : clickedDayStats.grossPnl < 0 ? '#ef4444' : 'var(--text)', fontSize: '16px', fontWeight: 700 }} className="mt-0.5 font-mono">
+              <div style={{ color: clickedDayStats.grossPnl > 0 ? '#008F67' : clickedDayStats.grossPnl < 0 ? '#DF1C30' : 'var(--text)', fontSize: '16px', fontWeight: 700 }} className="mt-0.5 font-mono">
                 {formatINR(clickedDayStats.grossPnl)}
               </div>
             </div>
@@ -3532,7 +3532,7 @@ export const DashboardPage: React.FC = () => {
             {/* Box 7 */}
             <div style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px' }} className="p-2.5 px-3">
               <div style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase">NET P&L</div>
-              <div style={{ color: clickedDayStats.netPnl > 0 ? '#22c55e' : clickedDayStats.netPnl < 0 ? '#ef4444' : 'var(--text)', fontSize: '16px', fontWeight: 700 }} className="mt-0.5 font-mono">
+              <div style={{ color: clickedDayStats.netPnl > 0 ? '#008F67' : clickedDayStats.netPnl < 0 ? '#DF1C30' : 'var(--text)', fontSize: '16px', fontWeight: 700 }} className="mt-0.5 font-mono">
                 {formatINR(clickedDayStats.netPnl)}
               </div>
             </div>
@@ -3595,8 +3595,8 @@ export const DashboardPage: React.FC = () => {
                           style={{ 
                             fontSize: '10px', 
                             fontWeight: 700,
-                            backgroundColor: isDirLong ? 'rgba(34, 197, 94, 0.12)' : 'rgba(239, 68, 68, 0.12)',
-                            color: isDirLong ? '#22c55e' : '#ef4444'
+                            backgroundColor: isDirLong ? 'rgba(0, 143, 103, 0.12)' : 'rgba(223, 28, 48, 0.12)',
+                            color: isDirLong ? '#008F67' : '#DF1C30'
                           }} 
                           className="px-2 py-0.5 rounded-full inline-block uppercase"
                         >
@@ -3610,7 +3610,7 @@ export const DashboardPage: React.FC = () => {
                           <span style={{ color: 'var(--text-muted)', fontSize: '12px' }} className="italic">No Setup</span>
                         )}
                       </td>
-                      <td style={{ color: trade.pnl > 0 ? '#22c55e' : trade.pnl < 0 ? '#ef4444' : 'var(--text)', fontSize: '13px', fontWeight: 700 }} className="p-2.5 px-3 font-mono text-right">
+                      <td style={{ color: trade.pnl > 0 ? '#008F67' : trade.pnl < 0 ? '#DF1C30' : 'var(--text)', fontSize: '13px', fontWeight: 700 }} className="p-2.5 px-3 font-mono text-right">
                         {formatINR(trade.pnl)}
                       </td>
                       <td className="p-2.5 px-3 text-center font-mono">
