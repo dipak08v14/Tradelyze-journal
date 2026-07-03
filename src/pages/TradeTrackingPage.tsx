@@ -869,7 +869,7 @@ const TradeTrackingPageContent: React.FC = () => {
           <div className="max-w-7xl mx-auto">
             
             {/* BREADCRUMB ROW WITH TRADE NAVIGATION */}
-            <div className="mb-3 flex items-center justify-between">
+            <div className="mb-1 flex items-center justify-between">
               <Link
                 to="/trading-logs"
                 style={{ color: 'var(--accent)' }}
@@ -881,7 +881,7 @@ const TradeTrackingPageContent: React.FC = () => {
             </div>
 
             {/* HEADER STRIP */}
-            <div style={{ backgroundColor: 'var(--card)' }} className="-mx-6 px-6 py-1.5 mb-4 flex items-center justify-between border-b-0">
+            <div style={{ backgroundColor: 'var(--card)', paddingTop: '7px', paddingBottom: '7px' }} className="-mx-6 px-6 mb-4 flex items-center justify-between border-b-0">
               <div>
                 <h1 style={{ color: 'var(--text)', fontSize: '24px', fontWeight: 700 }} className="text-xl md:text-2xl font-bold font-display">
                   Trade Tracking
