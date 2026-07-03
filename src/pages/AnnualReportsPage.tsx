@@ -270,6 +270,33 @@ export const AnnualReportsPage: React.FC = () => {
     return 'bg-red-500';
   };
 
+  const renderAnnualPnlLegend = (props: any) => {
+    const { payload } = props;
+    return (
+      <div className="flex justify-center items-center gap-6 mt-2">
+        {payload.map((entry: any, index: number) => {
+          if (entry.value === 'Monthly P&L') {
+            return (
+              <div key={`item-${index}`} className="flex items-center gap-2 text-xs font-sans font-medium" style={{ color: 'var(--text-sub)' }}>
+                <div className="flex gap-0.5 shrink-0">
+                  <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: '#008F67' }} />
+                  <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: '#DF1C30' }} />
+                </div>
+                <span>{entry.value}</span>
+              </div>
+            );
+          }
+          return (
+            <div key={`item-${index}`} className="flex items-center gap-2 text-xs font-sans font-medium" style={{ color: 'var(--text-sub)' }}>
+              <div className="w-3 h-3 rounded-sm shrink-0" style={{ backgroundColor: entry.color || 'var(--accent)' }} />
+              <span>{entry.value}</span>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen w-full flex flex-col md:flex-row font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
@@ -482,7 +509,7 @@ export const AnnualReportsPage: React.FC = () => {
                       <h2 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)' }} className="tracking-tight">
                         Annual P&L Performance
                       </h2>
-                      <span style={{ color: '#22c55e', fontWeight: 600 }} className="font-mono text-sm">
+                      <span style={{ color: annualStats.totalPnl >= 0 ? '#008F67' : '#DF1C30', fontWeight: 600 }} className="font-mono text-sm">
                         Cumulative Year P&L: {formatINR(annualStats.totalPnl)}
                       </span>
                     </div>
@@ -496,10 +523,11 @@ export const AnnualReportsPage: React.FC = () => {
                                  tickFormatter={v => { const absV = Math.abs(v); return absV >= 1000 ? '₹' + (v/1000).toFixed(1) + 'k' : '₹' + v.toFixed(0); }} width={55} />
                           <ReferenceLine yAxisId="left" y={0} stroke="var(--border)" strokeDasharray="4 4" />
                           <Tooltip
+                            cursor={false}
                             contentStyle={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text)', fontSize: '12px' }}
                             formatter={(value: any, name: any) => [formatINR(value), name]}
                           />
-                          <Legend wrapperStyle={{ color: 'var(--text-sub)', fontSize: '12px' }} />
+                          <Legend content={renderAnnualPnlLegend} />
                           <Bar yAxisId="left" dataKey="monthPnl" name="Monthly P&L" radius={[4, 4, 0, 0]}
                                fill="var(--accent)" fillOpacity={0.7}>
                             {annualEquityData.map((entry, i) => (
