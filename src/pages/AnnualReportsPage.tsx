@@ -1027,7 +1027,7 @@ export const AnnualReportsPage: React.FC = () => {
                                 </td>
                                 <td
                                   style={{ 
-                                    color: setupItem.pnl >= 0 ? '#22c55e' : '#ef4444', 
+                                    color: setupItem.pnl >= 0 ? '#008F67' : '#DF1C30', 
                                     fontWeight: 600 
                                   }}
                                   className="px-4 py-2.5 text-right font-mono text-xs"
