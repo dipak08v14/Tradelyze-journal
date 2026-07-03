@@ -403,7 +403,7 @@ export const AnnualReportsPage: React.FC = () => {
                       border: '1px solid rgba(0,0,0,0.06)',
                       borderRadius: '12px'
                     }}
-                    className="p-4"
+                    className="p-3"
                   >
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-y-4 md:gap-y-0 text-center">
                       
