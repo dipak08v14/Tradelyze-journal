@@ -881,7 +881,7 @@ const TradeTrackingPageContent: React.FC = () => {
             </div>
 
             {/* HEADER STRIP */}
-            <div style={{ backgroundColor: 'var(--card)', paddingTop: '7px', paddingBottom: '7px' }} className="-mx-6 px-6 mb-4 flex items-center justify-between border-b-0">
+            <div style={{ backgroundColor: 'var(--card)', paddingTop: '4px', paddingBottom: '4px' }} className="-mx-6 px-6 mb-4 flex items-center justify-between border-b-0">
               <div>
                 <h1 style={{ color: 'var(--text)', fontSize: '24px', fontWeight: 700 }} className="text-xl md:text-2xl font-bold font-display">
                   Trade Tracking
