@@ -684,12 +684,12 @@ export const AnnualReportsPage: React.FC = () => {
                               </td>
 
                               {/* Win count */}
-                              <td className="px-4 py-3 text-center font-mono font-semibold text-xs" style={{ color: '#22c55e' }}>
+                              <td className="px-4 py-3 text-center font-mono font-semibold text-xs" style={{ color: '#008F67' }}>
                                 {mStats.wins}
                               </td>
 
                               {/* Loss Count */}
-                              <td className="px-4 py-3 text-center font-mono font-semibold text-xs" style={{ color: '#ef4444' }}>
+                              <td className="px-4 py-3 text-center font-mono font-semibold text-xs" style={{ color: '#DF1C30' }}>
                                 {mStats.losses}
                               </td>
 
@@ -704,7 +704,7 @@ export const AnnualReportsPage: React.FC = () => {
                               {/* Month overall P&L */}
                               <td
                                 style={{ 
-                                  color: mStats.totalPnl >= 0 ? '#22c55e' : '#ef4444', 
+                                  color: mStats.totalPnl >= 0 ? '#008F67' : '#DF1C30', 
                                   fontWeight: 600 
                                 }}
                                 className="px-4 py-3 text-right font-mono text-xs"
@@ -718,9 +718,7 @@ export const AnnualReportsPage: React.FC = () => {
                               </td>
 
                               {/* Profit Factor */}
-                              <td className={`px-4 py-3 text-center font-mono text-xs font-semibold ${
-                                mStats.profitFactor >= 1.0 ? 'text-green-500' : 'text-red-500'
-                              }`}>
+                              <td className="px-4 py-3 text-center font-mono text-xs font-semibold" style={{ color: mStats.profitFactor >= 1.0 ? '#008F67' : '#DF1C30' }}>
                                 {mStats.profitFactor === 999 ? '∞' : mStats.profitFactor.toFixed(1)}
                               </td>
 
@@ -749,22 +747,22 @@ export const AnnualReportsPage: React.FC = () => {
                             <td style={{ color: 'var(--text)', fontWeight: 700 }} className="px-4 py-3.5 text-center font-mono text-xs">
                               {annualStats.totalTrades}
                             </td>
-                            <td className="px-4 py-3.5 text-center font-mono text-xs" style={{ color: '#22c55e', fontWeight: 700 }}>
+                            <td className="px-4 py-3.5 text-center font-mono text-xs" style={{ color: '#008F67', fontWeight: 700 }}>
                               {annualStats.wins}
                             </td>
-                            <td className="px-4 py-3.5 text-center font-mono text-xs" style={{ color: '#ef4444', fontWeight: 700 }}>
+                            <td className="px-4 py-3.5 text-center font-mono text-xs" style={{ color: '#DF1C30', fontWeight: 700 }}>
                               {annualStats.losses}
                             </td>
                             <td className="px-4 py-3.5 text-center font-mono text-xs" style={{ color: 'var(--accent)', fontWeight: 700 }}>
                               {annualStats.winRate.toFixed(1)}%
                             </td>
-                            <td className="px-4 py-3.5 text-right font-mono text-sm" style={{ color: annualStats.totalPnl >= 0 ? '#22c55e' : '#ef4444', fontWeight: 700 }}>
+                            <td className="px-4 py-3.5 text-right font-mono text-sm" style={{ color: annualStats.totalPnl >= 0 ? '#008F67' : '#DF1C30', fontWeight: 700 }}>
                               {formatINR(annualStats.totalPnl)}
                             </td>
                             <td className="px-4 py-3.5 text-right font-mono text-xs" style={{ color: annualStats.avgR >= 0 ? '#22c55e' : '#ef4444', fontWeight: 700 }}>
                               {annualStats.avgR >= 0 ? '+' : ''}{annualStats.avgR.toFixed(2)}R
                             </td>
-                            <td className="px-4 py-3.5 text-center font-mono text-xs" style={{ color: annualStats.profitFactor >= 1.0 ? '#22c55e' : '#ef4444', fontWeight: 700 }}>
+                            <td className="px-4 py-3.5 text-center font-mono text-xs" style={{ color: annualStats.profitFactor >= 1.0 ? '#008F67' : '#DF1C30', fontWeight: 700 }}>
                               {annualStats.profitFactor === 999 ? '∞' : annualStats.profitFactor.toFixed(2)}
                             </td>
                             <td className="px-4 py-3.5 text-center font-mono text-xs" style={{ color: annualScores.avgOverall >= 70 ? '#22c55e' : annualScores.avgOverall >= 50 ? 'var(--accent)' : '#ef4444', fontWeight: 700 }}>
