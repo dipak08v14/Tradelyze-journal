@@ -1143,8 +1143,8 @@ const TradeTrackingPageContent: React.FC = () => {
                       >
                         {/* THE NEW TAB BAR */}
                         <div 
-                          style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)' }} 
-                          className="flex items-center border rounded-lg p-1 w-fit mb-6 overflow-hidden"
+                          style={{ border: '1px solid var(--accent)', backgroundColor: 'var(--card)' }} 
+                          className="flex items-center rounded-lg p-1 w-fit mb-6 overflow-hidden"
                         >
                           <button
                             type="button"
