@@ -713,7 +713,7 @@ export const AnnualReportsPage: React.FC = () => {
                               </td>
 
                               {/* Average R Multiple */}
-                              <td className={`px-4 py-3 text-right font-mono text-xs ${pnlColor(mStats.avgR)}`}>
+                              <td className="px-4 py-3 text-right font-mono text-xs font-semibold" style={{ color: mStats.avgR > 0 ? '#008F67' : mStats.avgR < 0 ? '#DF1C30' : '#a1a1aa' }}>
                                 {mStats.avgR >= 0 ? '+' : ''}{mStats.avgR.toFixed(2)}R
                               </td>
 
@@ -725,7 +725,7 @@ export const AnnualReportsPage: React.FC = () => {
                               {/* Score Metric */}
                               <td className="px-4 py-3 text-center text-xs whitespace-nowrap">
                                 {mScores ? (
-                                  <span className={`font-black font-mono ${getScoreColor(mScores.avgOverall)}`}>
+                                  <span className="font-black font-mono" style={{ color: mScores.avgOverall >= 70 ? '#008F67' : mScores.avgOverall >= 50 ? '#fbbf24' : '#DF1C30' }}>
                                     {mScores.avgOverall.toFixed(0)}%
                                   </span>
                                 ) : (
@@ -759,13 +759,13 @@ export const AnnualReportsPage: React.FC = () => {
                             <td className="px-4 py-3.5 text-right font-mono text-sm" style={{ color: annualStats.totalPnl >= 0 ? '#008F67' : '#DF1C30', fontWeight: 700 }}>
                               {formatINR(annualStats.totalPnl)}
                             </td>
-                            <td className="px-4 py-3.5 text-right font-mono text-xs" style={{ color: annualStats.avgR >= 0 ? '#22c55e' : '#ef4444', fontWeight: 700 }}>
+                            <td className="px-4 py-3.5 text-right font-mono text-xs" style={{ color: annualStats.avgR >= 0 ? '#008F67' : '#DF1C30', fontWeight: 700 }}>
                               {annualStats.avgR >= 0 ? '+' : ''}{annualStats.avgR.toFixed(2)}R
                             </td>
                             <td className="px-4 py-3.5 text-center font-mono text-xs" style={{ color: annualStats.profitFactor >= 1.0 ? '#008F67' : '#DF1C30', fontWeight: 700 }}>
                               {annualStats.profitFactor === 999 ? '∞' : annualStats.profitFactor.toFixed(2)}
                             </td>
-                            <td className="px-4 py-3.5 text-center font-mono text-xs" style={{ color: annualScores.avgOverall >= 70 ? '#22c55e' : annualScores.avgOverall >= 50 ? 'var(--accent)' : '#ef4444', fontWeight: 700 }}>
+                            <td className="px-4 py-3.5 text-center font-mono text-xs" style={{ color: annualScores.avgOverall >= 70 ? '#008F67' : annualScores.avgOverall >= 50 ? 'var(--accent)' : '#DF1C30', fontWeight: 700 }}>
                               {annualScores.avgOverall.toFixed(0)}%
                             </td>
                           </tr>
