@@ -790,13 +790,13 @@ export const AnnualReportsPage: React.FC = () => {
                       <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="font-sans leading-none">
                         Best Month
                       </span>
-                      <TrendingUp className="w-5 h-5 text-green-500 shrink-0" />
+                      <TrendingUp className="w-5 h-5 shrink-0" style={{ color: '#008F67' }} />
                     </div>
                     <div className="mt-3">
-                      <div className="text-2xl font-black text-green-600 font-display">
+                      <div className="text-2xl font-black font-display" style={{ color: '#008F67' }}>
                         {bestMonth?.month || '—'}
                       </div>
-                      <div className="text-[13px] text-green-600 font-mono font-bold mt-0.5">
+                      <div className="text-[13px] font-mono font-bold mt-0.5" style={{ color: '#008F67' }}>
                         {bestMonth ? formatINR(bestMonth.stats?.totalPnl || 0) : ''}
                       </div>
                     </div>
@@ -819,13 +819,13 @@ export const AnnualReportsPage: React.FC = () => {
                       <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="font-sans leading-none">
                         Worst Month
                       </span>
-                      <TrendingDown className="w-5 h-5 text-red-500 shrink-0" />
+                      <TrendingDown className="w-5 h-5 shrink-0" style={{ color: '#DF1C30' }} />
                     </div>
                     <div className="mt-3">
-                      <div className="text-2xl font-black text-red-500 font-display">
+                      <div className="text-2xl font-black font-display" style={{ color: '#DF1C30' }}>
                         {worstMonth?.month || '—'}
                       </div>
-                      <div className="text-[13px] text-red-500 font-mono font-bold mt-0.5">
+                      <div className="text-[13px] font-mono font-bold mt-0.5" style={{ color: '#DF1C30' }}>
                         {worstMonth ? `(${formatINR(Math.abs(worstMonth.stats?.totalPnl || 0))})` : ''}
                       </div>
                     </div>
@@ -851,10 +851,10 @@ export const AnnualReportsPage: React.FC = () => {
                       <Target className="w-5 h-5 text-indigo-500 shrink-0" />
                     </div>
                     <div className="mt-3 overflow-hidden">
-                      <div style={{ color: 'var(--text)' }} className="text-lg font-extrabold truncate pr-1" title={bestSetup?.name || '—'}>
+                      <div style={{ color: 'var(--text)' }} className="text-2xl font-black font-display truncate pr-1" title={bestSetup?.name || '—'}>
                         {bestSetup?.name || '—'}
                       </div>
-                      <div className="text-[13px] text-green-600 font-semibold font-mono mt-0.5">
+                      <div className="text-[13px] font-mono font-bold mt-0.5" style={{ color: '#008F67' }}>
                         {bestSetup ? formatINR(bestSetup.pnl) : ''}
                       </div>
                     </div>
@@ -880,10 +880,10 @@ export const AnnualReportsPage: React.FC = () => {
                       <AlertCircle className="w-5 h-5 text-amber-500 shrink-0" />
                     </div>
                     <div className="mt-3">
-                      <div style={{ color: 'var(--text)' }} className="text-xs font-bold leading-snug break-words line-clamp-2" title={topMistakeEntry ? topMistakeEntry[0] : 'None ✓'}>
+                      <div style={{ color: 'var(--text)' }} className="text-2xl font-black font-display leading-snug break-words line-clamp-2" title={topMistakeEntry ? topMistakeEntry[0] : 'None ✓'}>
                         {topMistakeEntry ? topMistakeEntry[0] : 'None ✓'}
                       </div>
-                      <div className="text-[11px] mt-1 font-mono">
+                      <div className="text-[13px] font-mono font-bold mt-0.5">
                         {topMistakeEntry ? (
                           <span className="text-amber-500 font-bold">{topMistakeEntry[1]} times this year</span>
                         ) : (
