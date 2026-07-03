@@ -1175,16 +1175,8 @@ const TradeTrackingPageContent: React.FC = () => {
 
                         {activeTab === 'stats' && (
                           <>
-                            <div className="flex items-center gap-2 mb-4">
-                              <Briefcase className="w-5 h-5 text-[#06b6d4]" />
-                              <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">Trade Accountancies</h2>
-                            </div>
-
                             {/* FINANCIAL GRID */}
                             <div>
-                        <h3 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, borderColor: 'var(--border)', textTransform: 'none' }} className="font-display tracking-wider mb-3 border-b pb-1">
-                          Financial Calculations
-                        </h3>
                         <div className="flex flex-col">
                           {/* P&L */}
                           <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
@@ -1444,12 +1436,6 @@ const TradeTrackingPageContent: React.FC = () => {
                           {/* Large P&L and Setup Name */}
                           <div className="py-2">
                             <div className="flex flex-col gap-1.5">
-                              <span 
-                                className="text-4xl font-extrabold tracking-tight font-mono"
-                                style={{ color: trade.pnl > 0 ? '#22c55e' : trade.pnl < 0 ? '#ef4444' : 'var(--text-sub)' }}
-                              >
-                                {formatINR(trade.pnl)}
-                              </span>
                               <span style={{ color: 'var(--text-sub)' }} className="text-sm font-semibold tracking-wide uppercase font-sans mt-0.5">
                                 Setup: {trade.strategies?.name || 'Unnamed Setup'}
                               </span>
