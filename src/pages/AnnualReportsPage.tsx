@@ -492,14 +492,12 @@ export const AnnualReportsPage: React.FC = () => {
                         <ComposedChart data={annualEquityData} margin={{ top: 10, right: 20, left: 10, bottom: 0 }}>
                           <CartesianGrid strokeDasharray="3 3" stroke="var(--bar)" vertical={false} />
                           <XAxis dataKey="month" tick={{ fill: 'var(--text-muted)', fontSize: 11 }} axisLine={false} tickLine={false} />
-                          <YAxis yAxisId="left" tick={{ fill: 'var(--text-muted)', fontSize: 11 }} axisLine={false} tickLine={false}
-                                 tickFormatter={v => '₹' + (v/1000).toFixed(0) + 'k'} width={55} />
-                          <YAxis yAxisId="right" orientation="right" tick={{ fill: 'var(--text-muted)', fontSize: 11 }}
-                                 axisLine={false} tickLine={false} tickFormatter={v => '₹' + (v/1000).toFixed(0) + 'k'} width={55} />
+                          <YAxis yAxisId="left" tickCount={7} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} axisLine={false} tickLine={false}
+                                 tickFormatter={v => { const absV = Math.abs(v); return absV >= 1000 ? '₹' + (v/1000).toFixed(1) + 'k' : '₹' + v.toFixed(0); }} width={55} />
                           <ReferenceLine yAxisId="left" y={0} stroke="var(--border)" strokeDasharray="4 4" />
                           <Tooltip
                             contentStyle={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text)', fontSize: '12px' }}
-                            formatter={(value: any, name: any) => [formatINR(value), name === 'monthPnl' ? 'Monthly P&L' : 'Cumulative P&L']}
+                            formatter={(value: any, name: any) => [formatINR(value), name]}
                           />
                           <Legend wrapperStyle={{ color: 'var(--text-sub)', fontSize: '12px' }} />
                           <Bar yAxisId="left" dataKey="monthPnl" name="Monthly P&L" radius={[4, 4, 0, 0]}
@@ -508,7 +506,7 @@ export const AnnualReportsPage: React.FC = () => {
                               <Cell key={i} fill={entry.monthPnl >= 0 ? 'var(--accent)' : '#ef4444'} fillOpacity={0.7} />
                             ))}
                           </Bar>
-                          <Line yAxisId="right" type="monotone" dataKey="cumPnl" name="Cumulative P&L"
+                          <Line yAxisId="left" type="monotone" dataKey="cumPnl" name="Cumulative P&L"
                                 stroke="var(--accent)" strokeWidth={2.5} dot={{ fill: 'var(--accent)', r: 3 }} />
                         </ComposedChart>
                       </ResponsiveContainer>
