@@ -1142,18 +1142,22 @@ const TradeTrackingPageContent: React.FC = () => {
                         className="pt-4 pr-6 pb-6 pl-4 relative flex-1 min-w-0"
                       >
                         {/* THE NEW TAB BAR */}
-                        <div style={{ borderColor: 'var(--border)' }} className="flex border-b w-full mb-6 relative">
+                        <div 
+                          style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)' }} 
+                          className="flex items-center border rounded-lg p-1 w-fit mb-6 overflow-hidden"
+                        >
                           <button
                             type="button"
                             onClick={() => setActiveTab('stats')}
                             style={{
-                              color: activeTab === 'stats' ? 'var(--accent)' : 'var(--text-muted)',
-                              borderBottom: activeTab === 'stats' ? '2px solid var(--accent)' : '2px solid transparent',
-                              background: 'transparent',
+                              backgroundColor: activeTab === 'stats' ? 'var(--accent)' : 'transparent',
+                              color: 'var(--text)',
                               fontWeight: activeTab === 'stats' ? 600 : 400,
+                              border: 'none',
+                              borderRadius: '6px',
                               cursor: 'pointer'
                             }}
-                            className="px-4 py-1.5 text-sm transition-all relative -bottom-[10px]"
+                            className="px-4 py-1 text-sm transition-all"
                           >
                             Stats
                           </button>
@@ -1161,13 +1165,14 @@ const TradeTrackingPageContent: React.FC = () => {
                             type="button"
                             onClick={() => setActiveTab('playbooks')}
                             style={{
-                              color: activeTab === 'playbooks' ? 'var(--accent)' : 'var(--text-muted)',
-                              borderBottom: activeTab === 'playbooks' ? '2px solid var(--accent)' : '2px solid transparent',
-                              background: 'transparent',
+                              backgroundColor: activeTab === 'playbooks' ? 'var(--accent)' : 'transparent',
+                              color: 'var(--text)',
                               fontWeight: activeTab === 'playbooks' ? 600 : 400,
+                              border: 'none',
+                              borderRadius: '6px',
                               cursor: 'pointer'
                             }}
-                            className="px-4 py-1.5 text-sm transition-all relative -bottom-[10px]"
+                            className="px-4 py-1 text-sm transition-all"
                           >
                             Playbooks
                           </button>
