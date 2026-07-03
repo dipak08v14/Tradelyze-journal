@@ -878,44 +878,72 @@ const TradeTrackingPageContent: React.FC = () => {
                 <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
                 <span>Trading Logs</span>
               </Link>
+            </div>
 
-              {/* CHANGE 1 — Previous Trade / Next Trade navigation */}
-              <div className="flex items-center gap-2">
+            {/* HEADER STRIP */}
+            <div style={{ backgroundColor: 'var(--card)', borderBottom: '1px solid var(--border)' }} className="-mx-6 px-6 py-4 mb-6 flex items-center justify-between">
+              <div>
+                <h1 style={{ color: 'var(--text)', fontSize: '20px', fontWeight: 700 }} className="font-display">Trade Tracking</h1>
+              </div>
+              <div className="flex items-center gap-2.5">
+                {/* Ask AI - Placeholder */}
                 <button
                   type="button"
-                  onClick={handlePrevTrade}
-                  disabled={!hasPrevious}
+                  onClick={() => navigate(`/ai-teacher?tradeId=${tradeId || (trade && trade.id)}`)}
                   style={{
-                    backgroundColor: 'var(--card)',
-                    border: '0.5px solid var(--border)',
+                    backgroundColor: 'var(--accent)',
+                    color: '#ffffff',
+                    border: 'none',
                     borderRadius: '8px',
-                    color: 'var(--text-sub)',
-                    fontSize: '12px',
-                    padding: '6px 14px',
-                    opacity: hasPrevious ? 1 : 0.4,
-                    cursor: hasPrevious ? 'pointer' : 'not-allowed'
+                    padding: '8px 16px',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    cursor: 'pointer'
                   }}
-                  className="hover:opacity-85 transition-all font-semibold"
+                  className="hover:opacity-90 transition-all inline-flex items-center gap-1.5"
                 >
-                  ← Previous Trade
+                  <Sparkles className="w-3.5 h-3.5 text-white" />
+                  <span>Ask AI ✨</span>
                 </button>
+
+                {/* Edit */}
                 <button
                   type="button"
-                  onClick={handleNextTrade}
-                  disabled={!hasNext}
+                  onClick={() => navigate(`/trade-entry/${trade.id}`)}
                   style={{
-                    backgroundColor: 'var(--card)',
+                    backgroundColor: 'var(--bar)',
                     border: '0.5px solid var(--border)',
+                    color: 'var(--text)',
                     borderRadius: '8px',
-                    color: 'var(--text-sub)',
-                    fontSize: '12px',
-                    padding: '6px 14px',
-                    opacity: hasNext ? 1 : 0.4,
-                    cursor: hasNext ? 'pointer' : 'not-allowed'
+                    padding: '8px 16px',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    cursor: 'pointer'
                   }}
-                  className="hover:opacity-85 transition-all font-semibold"
+                  className="hover:opacity-95 transition-all inline-flex items-center gap-1.5"
                 >
-                  Next Trade →
+                  <Pencil className="w-3.5 h-3.5" />
+                  <span>Edit Trade</span>
+                </button>
+
+                {/* Delete */}
+                <button
+                  type="button"
+                  onClick={() => setIsDeleteModalOpen(true)}
+                  style={{
+                    backgroundColor: 'transparent',
+                    border: '0.5px solid #ef4444',
+                    color: '#ef4444',
+                    borderRadius: '8px',
+                    padding: '8px 16px',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    cursor: 'pointer'
+                  }}
+                  className="hover:bg-red-50 transition-all inline-flex items-center gap-1.5"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Delete</span>
                 </button>
               </div>
             </div>
@@ -1049,66 +1077,43 @@ const TradeTrackingPageContent: React.FC = () => {
                 </div>
               </div>
 
-              {/* CONTROLS */}
-              <div className="flex flex-wrap items-center gap-2.5 mt-2 md:mt-0 font-sans">
-                {/* Ask AI - Placeholder */}
+              {/* CHANGE 1 — Previous Trade / Next Trade navigation */}
+              <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => navigate(`/ai-teacher?tradeId=${tradeId || (trade && trade.id)}`)}
+                  onClick={handlePrevTrade}
+                  disabled={!hasPrevious}
                   style={{
-                    backgroundColor: 'var(--accent)',
-                    color: '#ffffff',
-                    border: 'none',
-                    borderRadius: '8px',
-                    padding: '8px 16px',
-                    fontSize: '13px',
-                    fontWeight: 600,
-                    cursor: 'pointer'
-                  }}
-                  className="hover:opacity-90 transition-all inline-flex items-center gap-1.5"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-white" />
-                  <span>Ask AI ✨</span>
-                </button>
-
-                {/* Edit */}
-                <button
-                  type="button"
-                  onClick={() => navigate(`/trade-entry/${trade.id}`)}
-                  style={{
-                    backgroundColor: 'var(--bar)',
+                    backgroundColor: 'var(--card)',
                     border: '0.5px solid var(--border)',
-                    color: 'var(--text)',
                     borderRadius: '8px',
-                    padding: '8px 16px',
-                    fontSize: '13px',
-                    fontWeight: 600,
-                    cursor: 'pointer'
+                    color: 'var(--text-sub)',
+                    fontSize: '12px',
+                    padding: '6px 14px',
+                    opacity: hasPrevious ? 1 : 0.4,
+                    cursor: hasPrevious ? 'pointer' : 'not-allowed'
                   }}
-                  className="hover:opacity-95 transition-all inline-flex items-center gap-1.5"
+                  className="hover:opacity-85 transition-all font-semibold"
                 >
-                  <Pencil className="w-3.5 h-3.5" />
-                  <span>Edit Trade</span>
+                  ← Previous Trade
                 </button>
-
-                {/* Delete */}
                 <button
                   type="button"
-                  onClick={() => setIsDeleteModalOpen(true)}
+                  onClick={handleNextTrade}
+                  disabled={!hasNext}
                   style={{
-                    backgroundColor: 'transparent',
-                    border: '0.5px solid #ef4444',
-                    color: '#ef4444',
+                    backgroundColor: 'var(--card)',
+                    border: '0.5px solid var(--border)',
                     borderRadius: '8px',
-                    padding: '8px 16px',
-                    fontSize: '13px',
-                    fontWeight: 600,
-                    cursor: 'pointer'
+                    color: 'var(--text-sub)',
+                    fontSize: '12px',
+                    padding: '6px 14px',
+                    opacity: hasNext ? 1 : 0.4,
+                    cursor: hasNext ? 'pointer' : 'not-allowed'
                   }}
-                  className="hover:bg-red-50 transition-all inline-flex items-center gap-1.5"
+                  className="hover:opacity-85 transition-all font-semibold"
                 >
-                  <Trash2 className="w-3.5 h-3.5" />
-                  <span>Delete</span>
+                  Next Trade →
                 </button>
               </div>
             </div>
