@@ -136,6 +136,22 @@ const TradeTrackingPageContent: React.FC = () => {
   // CHANGE 2 — Tabs State
   const [activeTab, setActiveTab] = useState<'stats' | 'playbooks'>('stats');
 
+  // Strategies list state for dropdown selection
+  const [strategiesList, setStrategiesList] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchStrategiesList = async () => {
+      const { data, error } = await supabase
+        .from('strategies')
+        .select('id, name, sr_no, type_of_strategy')
+        .eq('user_id', userId)
+        .eq('status', 'active')
+        .order('sr_no', { ascending: true });
+      if (!error) setStrategiesList(data || []);
+    };
+    if (userId) fetchStrategiesList();
+  }, [userId]);
+
   // CHANGE 3 — Form states
   const [profitTarget, setProfitTarget] = useState<string>('');
   const [stopLossPrice, setStopLossPrice] = useState<string>('');
@@ -290,6 +306,73 @@ const TradeTrackingPageContent: React.FC = () => {
   const calculatedPlannedR = React.useMemo(() => {
     return '—';
   }, []);
+
+  const handleStrategyChange = async (newStrategyId: string) => {
+    try {
+      const { error: tradeError } = await supabase
+        .from('trades')
+        .update({ strategy_id: newStrategyId || null })
+        .eq('id', tradeId)
+        .eq('user_id', userId);
+      if (tradeError) throw tradeError;
+
+      await supabase
+        .from('trade_rule_adherence')
+        .delete()
+        .eq('trade_id', tradeId)
+        .eq('user_id', userId);
+
+      let newRules: any[] = [];
+      if (newStrategyId) {
+        const { data: rulesData, error: rulesFetchError } = await supabase
+          .from('strategy_rules')
+          .select('*')
+          .eq('strategy_id', newStrategyId)
+          .eq('user_id', userId)
+          .order('rule_type')
+          .order('rule_order', { ascending: true });
+        if (rulesFetchError) throw rulesFetchError;
+        newRules = rulesData || [];
+      }
+
+      const allRulesToLog = newRules.map((r: any) => ({
+        trade_id: tradeId,
+        user_id: userId,
+        date: trade?.date,
+        rule_id: r.id,
+        rule_type: r.rule_type,
+        rule_order: r.rule_order,
+        rule_text: r.rule_text,
+        followed: false,
+      }));
+
+      let insertedRules: any[] = [];
+      if (allRulesToLog.length > 0) {
+        const { data: insertedData, error: insertError } = await supabase
+          .from('trade_rule_adherence')
+          .insert(allRulesToLog)
+          .select();
+        if (insertError) {
+          console.error('Rules logging failed:', insertError);
+        } else {
+          insertedRules = insertedData || [];
+        }
+      }
+
+      const selectedStrategy = strategiesList.find((s) => s.id === newStrategyId);
+      setTrade((prev: any) => ({
+        ...prev,
+        strategy_id: newStrategyId || null,
+        strategies: selectedStrategy ? { name: selectedStrategy.name, type_of_strategy: selectedStrategy.type_of_strategy } : null,
+      }));
+      setEntryRules(insertedRules.filter((r: any) => r.rule_type === 'entry'));
+      setExitRules(insertedRules.filter((r: any) => r.rule_type === 'exit'));
+      showSuccess('Strategy updated and rule checklist refreshed!');
+    } catch (err) {
+      console.error('Strategy switch failed:', err);
+      showError('Failed to change trade strategy.');
+    }
+  };
 
   // Playbooks rules handlers
   const handleToggleRule = async (ruleId: string, ruleType: 'entry' | 'exit', currentFollowed: boolean | null) => {
@@ -1441,9 +1524,25 @@ const TradeTrackingPageContent: React.FC = () => {
                           {/* Large P&L and Setup Name */}
                           <div className="py-2">
                             <div className="flex flex-col gap-1.5">
-                              <span style={{ color: 'var(--text-sub)' }} className="text-sm font-semibold tracking-wide uppercase font-sans mt-0.5">
-                                Setup: {trade.strategies?.name || 'Unnamed Setup'}
-                              </span>
+                              <div className="flex items-center gap-2 mt-0.5">
+                                <span style={{ color: 'var(--text-sub)' }} className="text-sm font-semibold tracking-wide uppercase font-sans">
+                                  Setup:
+                                </span>
+                                <select
+                                  id="strategy-dropdown-select"
+                                  value={trade?.strategy_id || ''}
+                                  onChange={(e) => handleStrategyChange(e.target.value)}
+                                  className="bg-transparent border border-gray-300 dark:border-zinc-700 rounded-md px-2.5 py-1 text-xs focus:outline-none focus:border-[var(--accent)] font-semibold transition-all cursor-pointer"
+                                  style={{ color: 'var(--text)', backgroundColor: 'var(--card)' }}
+                                >
+                                  <option value="" style={{ color: 'var(--text)', backgroundColor: 'var(--card)' }}>Select a setup</option>
+                                  {strategiesList.map((s: any) => (
+                                    <option key={s.id} value={s.id} style={{ color: 'var(--text)', backgroundColor: 'var(--card)' }}>
+                                      {s.name}
+                                    </option>
+                                  ))}
+                                </select>
+                              </div>
                             </div>
                           </div>
 
