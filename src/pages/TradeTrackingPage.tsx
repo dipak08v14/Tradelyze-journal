@@ -1130,7 +1130,7 @@ const TradeTrackingPageContent: React.FC = () => {
 
                   <div className="space-y-6">
                     {/* SIDE-BY-SIDE STATS + CHART ROW */}
-                    <div className="flex flex-col lg:flex-row gap-6 items-start">
+                    <div className="flex flex-col lg:flex-row gap-3 items-start">
                       {/* CARD A: TRADE DETAILS */}
                       <section 
                         style={{ 
