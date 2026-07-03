@@ -1222,7 +1222,7 @@ export const DashboardPage: React.FC = () => {
                                   return date.getDate() === today.getDate() &&
                                          date.getMonth() === today.getMonth() &&
                                          date.getFullYear() === today.getFullYear();
-                                })();
+                                  })();
 
                               const isSelectedStart = headerPickerTempStart &&
                                 date.getDate() === headerPickerTempStart.getDate() &&
@@ -1289,7 +1289,7 @@ export const DashboardPage: React.FC = () => {
                                     backgroundColor: (isSelectedStart || isSelectedEnd)
                                       ? 'var(--accent)'
                                       : isInRange
-                                        ? 'rgba(6, 182, 212, 0.12)'
+                                        ? 'color-mix(in srgb, var(--accent) 12%, transparent)'
                                         : 'transparent',
                                     color: (isSelectedStart || isSelectedEnd)
                                       ? '#ffffff'
@@ -1535,7 +1535,7 @@ export const DashboardPage: React.FC = () => {
                                     backgroundColor: (isSelectedStart || isSelectedEnd)
                                       ? 'var(--accent)'
                                       : isInRange
-                                        ? 'rgba(6, 182, 212, 0.12)'
+                                        ? 'color-mix(in srgb, var(--accent) 12%, transparent)'
                                         : 'transparent',
                                     color: (isSelectedStart || isSelectedEnd)
                                       ? '#ffffff'
