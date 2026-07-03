@@ -1629,7 +1629,7 @@ export function Notebook() {
                         setSelectedLogDate(localToday.toISOString().split('T')[0]);
                         setShowDatePicker(true);
                       }}
-                      className="text-xs text-zinc-400 hover:text-cyan-400 transition-colors cursor-pointer text-left w-fit p-0 border-none bg-transparent flex items-center gap-1 mt-0.5"
+                      className="text-xs text-zinc-400 hover:text-[var(--accent)] transition-colors cursor-pointer text-left w-fit p-0 border-none bg-transparent flex items-center gap-1 mt-0.5"
                     >
                       📅 Link this note to a trading day →
                     </button>
@@ -1663,7 +1663,7 @@ export function Notebook() {
                               <button
                                 type="button"
                                 onClick={handleConfirmTradeDate}
-                                className="px-2 py-0.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded text-xs transition-colors cursor-pointer"
+                                className="px-2 py-0.5 hover:opacity-90 text-white rounded text-xs transition-colors cursor-pointer" style={{ backgroundColor: 'var(--accent)' }}
                               >
                                 Link to this day
                               </button>
@@ -1685,7 +1685,7 @@ export function Notebook() {
                                 setSelectedLogDate(localToday.toISOString().split('T')[0]);
                                 setShowDatePicker(true);
                               }}
-                              className="flex items-center gap-1 px-2 py-0.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded border border-[var(--border)] text-xs transition-all cursor-pointer"
+                              className="flex items-center gap-1 px-2 py-0.5 rounded border text-xs transition-all cursor-pointer hover:opacity-80" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text-sub)' }}
                             >
                               📅 Set trade date
                             </button>
