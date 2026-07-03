@@ -503,7 +503,7 @@ export const AnnualReportsPage: React.FC = () => {
                           <Bar yAxisId="left" dataKey="monthPnl" name="Monthly P&L" radius={[4, 4, 0, 0]}
                                fill="var(--accent)" fillOpacity={0.7}>
                             {annualEquityData.map((entry, i) => (
-                              <Cell key={i} fill={entry.monthPnl >= 0 ? 'var(--accent)' : '#ef4444'} fillOpacity={0.7} />
+                              <Cell key={i} fill={entry.monthPnl >= 0 ? '#008F67' : '#DF1C30'} fillOpacity={0.7} />
                             ))}
                           </Bar>
                           <Line yAxisId="left" type="monotone" dataKey="cumPnl" name="Cumulative P&L"
