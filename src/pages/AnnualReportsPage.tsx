@@ -258,6 +258,52 @@ export const AnnualReportsPage: React.FC = () => {
     topMistakeEntry
   } = calculatedContext;
 
+  const computedTicks = useMemo(() => {
+    if (!annualEquityData || annualEquityData.length === 0) {
+      return [-300, -200, -100, 0, 100, 200, 300];
+    }
+    const allValues = annualEquityData.flatMap(d => [d.monthPnl, d.cumPnl]);
+    const rawMin = Math.min(...allValues, 0);
+    const rawMax = Math.max(...allValues, 0);
+
+    if (rawMin === 0 && rawMax === 0) {
+      return [-300, -200, -100, 0, 100, 200, 300];
+    }
+
+    // Find a nice step size and zero position for exactly 6 intervals (7 ticks)
+    const rawRange = rawMax - rawMin;
+    const targetStep = (rawRange || 100) / 6;
+    let magnitude = Math.pow(10, Math.floor(Math.log10(targetStep)) || 0);
+    if (magnitude <= 0) magnitude = 1;
+
+    const candidateMultipliers = [1, 2, 2.5, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000, 2000, 2500, 5000, 10000];
+    let finalStep = magnitude;
+    let finalZeroIndex = 0;
+    let found = false;
+
+    for (const mult of candidateMultipliers) {
+      const step = magnitude * mult;
+      for (let z = 0; z <= 6; z++) {
+        const minTick = -z * step;
+        const maxTick = (6 - z) * step;
+        if (minTick <= rawMin && maxTick >= rawMax) {
+          finalStep = step;
+          finalZeroIndex = z;
+          found = true;
+          break;
+        }
+      }
+      if (found) break;
+    }
+
+    if (!found) {
+      const step = (rawMax - rawMin) / 6;
+      return Array.from({ length: 7 }, (_, i) => parseFloat((rawMin + i * step).toFixed(2)));
+    }
+
+    return Array.from({ length: 7 }, (_, i) => parseFloat(((-finalZeroIndex + i) * finalStep).toFixed(2)));
+  }, [annualEquityData]);
+
   const getScoreColor = (v: number) => {
     if (v >= 70) return 'text-green-400';
     if (v >= 50) return 'text-amber-400';
@@ -492,7 +538,7 @@ export const AnnualReportsPage: React.FC = () => {
                         <ComposedChart data={annualEquityData} margin={{ top: 10, right: 20, left: 10, bottom: 0 }}>
                           <CartesianGrid strokeDasharray="3 3" stroke="var(--bar)" vertical={false} />
                           <XAxis dataKey="month" tick={{ fill: 'var(--text-muted)', fontSize: 11 }} axisLine={false} tickLine={false} />
-                          <YAxis yAxisId="left" tickCount={7} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} axisLine={false} tickLine={false}
+                          <YAxis yAxisId="left" ticks={computedTicks} domain={[computedTicks[0], computedTicks[6]]} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} axisLine={false} tickLine={false}
                                  tickFormatter={v => { const absV = Math.abs(v); return absV >= 1000 ? '₹' + (v/1000).toFixed(1) + 'k' : '₹' + v.toFixed(0); }} width={55} />
                           <ReferenceLine yAxisId="left" y={0} stroke="var(--border)" strokeDasharray="4 4" />
                           <Tooltip
