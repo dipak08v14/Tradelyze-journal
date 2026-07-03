@@ -2724,14 +2724,14 @@ export const DashboardPage: React.FC = () => {
                                           <span 
                                             className="px-2 py-0.5 rounded text-[10px] font-bold uppercase"
                                             style={{
-                                              backgroundColor: isLong ? '#dcfce7' : '#fee2e2',
-                                              color: isLong ? '#16a34a' : '#dc2626'
+                                              backgroundColor: isLong ? 'rgba(0, 143, 103, 0.1)' : 'rgba(223, 28, 48, 0.1)',
+                                              color: isLong ? '#008F67' : '#DF1C30'
                                             }}
                                           >
                                             {trade.direction}
                                           </span>
                                         </td>
-                                        <td className={`p-3 font-mono font-bold text-right ${trade.pnl > 0 ? 'text-[#22c55e]' : trade.pnl < 0 ? 'text-[#ef4444]' : ''}`} style={{ color: trade.pnl === 0 ? 'var(--text-sub)' : undefined }}>
+                                        <td className={`p-3 font-mono font-bold text-right ${trade.pnl > 0 ? 'text-[#008F67]' : trade.pnl < 0 ? 'text-[#DF1C30]' : ''}`} style={{ color: trade.pnl === 0 ? 'var(--text-sub)' : undefined }}>
                                           {formatINR(trade.pnl)}
                                         </td>
                                       </tr>
