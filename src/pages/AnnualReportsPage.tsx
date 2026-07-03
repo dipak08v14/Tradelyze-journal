@@ -345,7 +345,7 @@ export const AnnualReportsPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="mt-6" />
+            <div className="mt-3" />
 
             {/* SKELETON DISPLAY STATE */}
             {loading ? (
@@ -721,7 +721,7 @@ export const AnnualReportsPage: React.FC = () => {
                   </div>
                 </div>
                                 {/* SECTION 4: INSIGHTS GRID */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                   {/* CARD A — BEST MONTH */}
                   <div
                     style={{
