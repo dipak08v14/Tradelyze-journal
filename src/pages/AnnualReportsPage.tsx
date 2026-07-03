@@ -288,7 +288,10 @@ export const AnnualReportsPage: React.FC = () => {
           }
           return (
             <div key={`item-${index}`} className="flex items-center gap-2 text-xs font-sans font-medium" style={{ color: 'var(--text-sub)' }}>
-              <div className="w-3 h-3 rounded-sm shrink-0" style={{ backgroundColor: entry.color || 'var(--accent)' }} />
+              <div className="relative w-4 h-3 flex items-center justify-center shrink-0">
+                <div className="absolute w-full h-0.5" style={{ backgroundColor: entry.color || 'var(--accent)' }} />
+                <div className="absolute w-1.5 h-1.5 rounded-full" style={{ backgroundColor: entry.color || 'var(--accent)' }} />
+              </div>
               <span>{entry.value}</span>
             </div>
           );
@@ -518,8 +521,8 @@ export const AnnualReportsPage: React.FC = () => {
                       <ResponsiveContainer width="100%" height={280}>
                         <ComposedChart data={annualEquityData} margin={{ top: 10, right: 20, left: 10, bottom: 0 }}>
                           <CartesianGrid strokeDasharray="3 3" stroke="var(--bar)" vertical={false} />
-                          <XAxis dataKey="month" tick={{ fill: 'var(--text-muted)', fontSize: 11 }} axisLine={false} tickLine={false} />
-                          <YAxis yAxisId="left" tickCount={7} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} axisLine={false} tickLine={false}
+                          <XAxis dataKey="month" tick={{ fill: 'var(--text-sub)', fontSize: 11 }} axisLine={false} tickLine={false} />
+                          <YAxis yAxisId="left" tickCount={7} tick={{ fill: 'var(--text-sub)', fontSize: 11 }} axisLine={false} tickLine={false}
                                  tickFormatter={v => { const absV = Math.abs(v); return absV >= 1000 ? '₹' + (v/1000).toFixed(1) + 'k' : '₹' + v.toFixed(0); }} width={55} />
                           <ReferenceLine yAxisId="left" y={0} stroke="var(--border)" strokeDasharray="4 4" />
                           <Tooltip
