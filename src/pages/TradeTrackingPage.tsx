@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Component } from 'react';
+import React, { useState, useEffect, Component, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
@@ -22,7 +22,8 @@ import {
   Layers,
   Sparkles,
   CheckCircle2,
-  Check
+  Check,
+  ChevronDown
 } from 'lucide-react';
 import {
   AreaChart,
@@ -138,6 +139,9 @@ const TradeTrackingPageContent: React.FC = () => {
 
   // Strategies list state for dropdown selection
   const [strategiesList, setStrategiesList] = useState<any[]>([]);
+  const [isSetupDropdownOpen, setIsSetupDropdownOpen] = useState(false);
+  const [activeSetupIndex, setActiveSetupIndex] = useState(0);
+  const setupDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchStrategiesList = async () => {
@@ -151,6 +155,16 @@ const TradeTrackingPageContent: React.FC = () => {
     };
     if (userId) fetchStrategiesList();
   }, [userId]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (setupDropdownRef.current && !setupDropdownRef.current.contains(e.target as Node)) {
+        setIsSetupDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // CHANGE 3 — Form states
   const [profitTarget, setProfitTarget] = useState<string>('');
@@ -371,6 +385,32 @@ const TradeTrackingPageContent: React.FC = () => {
     } catch (err) {
       console.error('Strategy switch failed:', err);
       showError('Failed to change trade strategy.');
+    }
+  };
+
+  const handleSetupDropdownKeyDown = (e: React.KeyboardEvent) => {
+    if (!isSetupDropdownOpen && (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      const currentIdx = strategiesList.findIndex((s) => s.id === trade?.strategy_id);
+      setActiveSetupIndex(currentIdx >= 0 ? currentIdx : 0);
+      setIsSetupDropdownOpen(true);
+      return;
+    }
+    if (!isSetupDropdownOpen) return;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setActiveSetupIndex((prev) => Math.min(prev + 1, strategiesList.length - 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActiveSetupIndex((prev) => Math.max(prev - 1, 0));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      const selected = strategiesList[activeSetupIndex];
+      if (selected) handleStrategyChange(selected.id);
+      setIsSetupDropdownOpen(false);
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      setIsSetupDropdownOpen(false);
     }
   };
 
@@ -1521,29 +1561,74 @@ const TradeTrackingPageContent: React.FC = () => {
                       {activeTab === 'playbooks' && (
                         <div className="space-y-6 animate-fadeIn">
                           
-                          {/* Large P&L and Setup Name */}
-                          <div className="py-2">
-                            <div className="flex flex-col gap-1.5">
-                              <div className="flex items-center gap-2 mt-0.5">
-                                <span style={{ color: 'var(--text-sub)' }} className="text-sm font-semibold tracking-wide uppercase font-sans">
-                                  Setup:
-                                </span>
-                                <select
-                                  id="strategy-dropdown-select"
-                                  value={trade?.strategy_id || ''}
-                                  onChange={(e) => handleStrategyChange(e.target.value)}
-                                  className="bg-transparent border border-gray-300 dark:border-zinc-700 rounded-md px-2.5 py-1 text-xs focus:outline-none focus:border-[var(--accent)] font-semibold transition-all cursor-pointer"
-                                  style={{ color: 'var(--text)', backgroundColor: 'var(--card)' }}
-                                >
-                                  <option value="" style={{ color: 'var(--text)', backgroundColor: 'var(--card)' }}>Select a setup</option>
-                                  {strategiesList.map((s: any) => (
-                                    <option key={s.id} value={s.id} style={{ color: 'var(--text)', backgroundColor: 'var(--card)' }}>
-                                      {s.name}
-                                    </option>
-                                  ))}
-                                </select>
+                          {/* Setup Dropdown */}
+                          <div className="relative" ref={setupDropdownRef}>
+                            <label style={{ color: 'var(--text-sub)' }} className="block text-[13px] font-semibold tracking-wide uppercase font-sans mb-1.5">
+                              SETUP
+                            </label>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (!isSetupDropdownOpen) {
+                                  const currentIdx = strategiesList.findIndex((s) => s.id === trade?.strategy_id);
+                                  setActiveSetupIndex(currentIdx >= 0 ? currentIdx : 0);
+                                }
+                                setIsSetupDropdownOpen(!isSetupDropdownOpen);
+                              }}
+                              onKeyDown={handleSetupDropdownKeyDown}
+                              style={{
+                                borderColor: 'var(--border)',
+                                color: 'var(--text)',
+                                backgroundColor: 'var(--card)'
+                              }}
+                              className="w-full flex items-center justify-between border rounded-lg px-1 py-2 text-sm font-semibold hover:border-[var(--accent)] transition-all cursor-pointer focus:outline-none focus:border-[var(--accent)]"
+                            >
+                              <span>
+                                {strategiesList.find((s) => s.id === trade?.strategy_id)?.name || 'Select a setup'}
+                              </span>
+                              <ChevronDown className="w-4 h-4 text-gray-400 dark:text-zinc-500" />
+                            </button>
+
+                            {isSetupDropdownOpen && (
+                              <div
+                                style={{
+                                  borderColor: 'var(--border)',
+                                  backgroundColor: 'var(--card)',
+                                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+                                }}
+                                className="absolute left-0 right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 max-h-60 overflow-y-auto animate-fadeIn"
+                              >
+                                {strategiesList.length === 0 ? (
+                                  <div style={{ color: 'var(--text-muted)' }} className="px-3 py-2 text-xs font-medium">
+                                    No setups found
+                                  </div>
+                                ) : (
+                                  strategiesList.map((s: any, index: number) => {
+                                    const isSelected = s.id === trade?.strategy_id;
+                                    const isActive = index === activeSetupIndex;
+                                    return (
+                                      <div
+                                        key={s.id}
+                                        onClick={() => {
+                                          handleStrategyChange(s.id);
+                                          setIsSetupDropdownOpen(false);
+                                        }}
+                                        onMouseEnter={() => setActiveSetupIndex(index)}
+                                        style={{
+                                          backgroundColor: isActive ? 'var(--accent-muted)' : 'transparent',
+                                          color: isSelected ? 'var(--accent)' : 'var(--text)',
+                                          fontWeight: isSelected ? 600 : 400
+                                        }}
+                                        className="px-3 py-2 text-sm cursor-pointer transition-colors flex items-center justify-between"
+                                      >
+                                        <span>{s.name}</span>
+                                        {isSelected && <Check className="w-4 h-4 text-[var(--accent)]" />}
+                                      </div>
+                                    );
+                                  })
+                                )}
                               </div>
-                            </div>
+                            )}
                           </div>
 
                           {/* ENTRY RULES SECTION */}
