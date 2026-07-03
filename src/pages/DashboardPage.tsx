@@ -3618,8 +3618,8 @@ export const DashboardPage: React.FC = () => {
                           style={{ 
                             fontSize: '10px', 
                             fontWeight: 700,
-                            backgroundColor: rMult !== null ? (rMult >= 0 ? 'rgba(34, 197, 94, 0.12)' : 'rgba(239, 68, 68, 0.12)') : 'transparent',
-                            color: rMult !== null ? (rMult >= 0 ? '#22c55e' : '#ef4444') : 'var(--text-muted)'
+                            backgroundColor: rMult !== null ? (rMult >= 0 ? 'rgba(0, 143, 103, 0.12)' : 'rgba(223, 28, 48, 0.12)') : 'transparent',
+                            color: rMult !== null ? (rMult >= 0 ? '#008F67' : '#DF1C30') : 'var(--text-muted)'
                           }} 
                           className="px-2 py-0.5 rounded-full inline-block"
                         >
