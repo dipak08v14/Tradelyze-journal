@@ -300,6 +300,37 @@ export const AnnualReportsPage: React.FC = () => {
     );
   };
 
+  const renderAnnualPnlTooltip = (props: any) => {
+    const { active, payload, label } = props;
+    if (!active || !payload || !payload.length) return null;
+    return (
+      <div
+        style={{
+          backgroundColor: 'var(--card)',
+          border: '1px solid var(--border)',
+          borderRadius: '8px',
+          padding: '6px 8px',
+          fontSize: '11px',
+        }}
+        className="shadow-sm font-sans"
+      >
+        <p className="font-semibold mb-1" style={{ color: 'var(--text)' }}>{label}</p>
+        {payload.map((entry: any, index: number) => {
+          const isMonthly = entry.dataKey === 'monthPnl';
+          const valueColor = isMonthly ? (entry.value >= 0 ? '#008F67' : '#DF1C30') : 'var(--accent)';
+          return (
+            <div key={`tooltip-item-${index}`} className="flex items-center gap-1.5 py-0.5">
+              <span style={{ color: 'var(--text)' }}>{entry.name}:</span>
+              <span className="font-mono font-semibold" style={{ color: valueColor }}>
+                {formatINR(entry.value)}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen w-full flex flex-col md:flex-row font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
@@ -525,11 +556,7 @@ export const AnnualReportsPage: React.FC = () => {
                           <YAxis yAxisId="left" tickCount={7} tick={{ fill: 'var(--text-sub)', fontSize: 11 }} axisLine={false} tickLine={false}
                                  tickFormatter={v => { const absV = Math.abs(v); return absV >= 1000 ? '₹' + (v/1000).toFixed(1) + 'k' : '₹' + v.toFixed(0); }} width={55} />
                           <ReferenceLine yAxisId="left" y={0} stroke="var(--border)" strokeDasharray="4 4" />
-                          <Tooltip
-                            cursor={false}
-                            contentStyle={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text)', fontSize: '12px' }}
-                            formatter={(value: any, name: any) => [formatINR(value), name]}
-                          />
+                          <Tooltip cursor={false} content={renderAnnualPnlTooltip} />
                           <Legend content={renderAnnualPnlLegend} />
                           <Bar yAxisId="left" dataKey="monthPnl" name="Monthly P&L" radius={[4, 4, 0, 0]}
                                fill="var(--accent)" fillOpacity={0.7}>
