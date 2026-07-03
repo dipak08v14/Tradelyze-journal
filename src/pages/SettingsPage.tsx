@@ -1112,7 +1112,7 @@ export default function SettingsPage() {
                         <button
                           type="submit"
                           disabled={saving}
-                          className="border border-[var(--border)] hover:bg-[var(--bar)] text-[var(--text)] font-semibold px-5 py-2.5 rounded-xl cursor-pointer transition-all duration-200 text-sm"
+                          className="bg-[var(--accent)] hover:bg-[var(--accent-light)] text-white font-bold px-5 py-2.5 rounded-xl cursor-pointer transition-all duration-200 text-sm flex items-center gap-1.5"
                         >
                           Update Password
                         </button>
