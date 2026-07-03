@@ -897,11 +897,11 @@ const TradeTrackingPageContent: React.FC = () => {
                     color: '#ffffff',
                     border: 'none',
                     borderRadius: '8px',
-                    padding: '8px 16px',
+                    padding: '0 16px',
                     fontSize: '13px',
                     fontWeight: 600,
                     cursor: 'pointer',
-                    height: '34px'
+                    height: '32px'
                   }}
                   className="hover:opacity-90 transition-all inline-flex items-center gap-1.5"
                 >
@@ -918,11 +918,11 @@ const TradeTrackingPageContent: React.FC = () => {
                     border: '0.5px solid var(--border)',
                     color: 'var(--text)',
                     borderRadius: '8px',
-                    padding: '8px 16px',
+                    padding: '0 16px',
                     fontSize: '13px',
                     fontWeight: 600,
                     cursor: 'pointer',
-                    height: '34px'
+                    height: '32px'
                   }}
                   className="hover:opacity-95 transition-all inline-flex items-center gap-1.5"
                 >
@@ -939,11 +939,11 @@ const TradeTrackingPageContent: React.FC = () => {
                     border: '0.5px solid #ef4444',
                     color: '#ef4444',
                     borderRadius: '8px',
-                    padding: '8px 16px',
+                    padding: '0 16px',
                     fontSize: '13px',
                     fontWeight: 600,
                     cursor: 'pointer',
-                    height: '34px'
+                    height: '32px'
                   }}
                   className="hover:bg-red-50 transition-all inline-flex items-center gap-1.5"
                 >
