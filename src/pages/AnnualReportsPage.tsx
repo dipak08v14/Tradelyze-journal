@@ -471,7 +471,7 @@ export const AnnualReportsPage: React.FC = () => {
                       {/* STAT Card: NET P&L */}
                       <div className="p-3 flex flex-col justify-center" style={{ borderRight: '1px solid var(--border)' }}>
                         <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="font-sans">Net P&L</span>
-                        <span style={{ fontSize: '26px', fontWeight: 700, color: annualStats.totalPnl >= 0 ? '#22c55e' : '#ef4444' }} className="font-mono mt-1">
+                        <span style={{ fontSize: '26px', fontWeight: 700, color: annualStats.totalPnl >= 0 ? '#008F67' : '#DF1C30' }} className="font-mono mt-1">
                           {formatINR(annualStats.totalPnl)}
                         </span>
                       </div>
@@ -487,7 +487,7 @@ export const AnnualReportsPage: React.FC = () => {
                       {/* STAT Card: WIN RATE */}
                       <div className="p-3 flex flex-col justify-center" style={{ borderRight: '1px solid var(--border)' }}>
                         <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="font-sans">Win Rate</span>
-                        <span style={{ fontSize: '26px', fontWeight: 700, color: 'var(--accent)' }} className="font-mono mt-1">
+                        <span style={{ fontSize: '26px', fontWeight: 700, color: 'var(--text)' }} className="font-mono mt-1">
                           {annualStats.winRate.toFixed(1)}%
                         </span>
                       </div>
@@ -495,7 +495,7 @@ export const AnnualReportsPage: React.FC = () => {
                       {/* STAT Card: PROFIT FACTOR */}
                       <div className="p-3 flex flex-col justify-center" style={{ borderRight: '1px solid var(--border)' }}>
                         <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="font-sans">Profit Factor</span>
-                        <span style={{ fontSize: '26px', fontWeight: 700, color: annualStats.profitFactor >= 1.0 ? 'var(--accent)' : '#ef4444' }} className="font-mono mt-1">
+                        <span style={{ fontSize: '26px', fontWeight: 700, color: 'var(--text)' }} className="font-mono mt-1">
                           {annualStats.profitFactor === 999 ? '∞' : annualStats.profitFactor.toFixed(2)}
                         </span>
                       </div>
@@ -503,7 +503,7 @@ export const AnnualReportsPage: React.FC = () => {
                       {/* STAT Card: AVG R */}
                       <div className="p-3 flex flex-col justify-center" style={{ borderRight: '1px solid var(--border)' }}>
                         <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="font-sans">Avg R</span>
-                        <span style={{ fontSize: '26px', fontWeight: 700, color: annualStats.avgR >= 0 ? '#22c55e' : '#ef4444' }} className="font-mono mt-1">
+                        <span style={{ fontSize: '26px', fontWeight: 700, color: 'var(--text)' }} className="font-mono mt-1">
                           {annualStats.avgR >= 0 ? '+' : ''}{annualStats.avgR.toFixed(2)}R
                         </span>
                       </div>
@@ -519,7 +519,7 @@ export const AnnualReportsPage: React.FC = () => {
                       {/* STAT Card: OVERALL SCORE */}
                       <div className="p-3 flex flex-col justify-center">
                         <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="font-sans">Compliance</span>
-                        <span style={{ fontSize: '26px', fontWeight: 700, color: annualScores.avgOverall >= 70 ? '#22c55e' : annualScores.avgOverall >= 50 ? 'var(--accent)' : '#ef4444' }} className="font-mono mt-1">
+                        <span style={{ fontSize: '26px', fontWeight: 700, color: annualScores.avgOverall >= 70 ? '#008F67' : annualScores.avgOverall >= 50 ? 'var(--accent)' : '#DF1C30' }} className="font-mono mt-1">
                           {annualScores.avgOverall.toFixed(0)}%
                         </span>
                       </div>
