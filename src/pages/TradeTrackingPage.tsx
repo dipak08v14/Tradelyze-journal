@@ -900,7 +900,8 @@ const TradeTrackingPageContent: React.FC = () => {
                     padding: '8px 16px',
                     fontSize: '13px',
                     fontWeight: 600,
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    height: '34px'
                   }}
                   className="hover:opacity-90 transition-all inline-flex items-center gap-1.5"
                 >
@@ -920,7 +921,8 @@ const TradeTrackingPageContent: React.FC = () => {
                     padding: '8px 16px',
                     fontSize: '13px',
                     fontWeight: 600,
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    height: '34px'
                   }}
                   className="hover:opacity-95 transition-all inline-flex items-center gap-1.5"
                 >
@@ -940,7 +942,8 @@ const TradeTrackingPageContent: React.FC = () => {
                     padding: '8px 16px',
                     fontSize: '13px',
                     fontWeight: 600,
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    height: '34px'
                   }}
                   className="hover:bg-red-50 transition-all inline-flex items-center gap-1.5"
                 >
