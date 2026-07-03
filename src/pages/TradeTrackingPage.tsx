@@ -1139,7 +1139,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           borderRadius: '12px',
                           boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
                         }} 
-                        className="pt-0 pr-6 pb-6 pl-4 relative flex-1 min-w-0"
+                        className="pt-4 pr-6 pb-6 pl-4 relative flex-1 min-w-0"
                       >
                         {/* THE NEW TAB BAR */}
                         <div style={{ borderColor: 'var(--border)' }} className="flex border-b w-full mb-6 relative">
@@ -1614,14 +1614,13 @@ const TradeTrackingPageContent: React.FC = () => {
 
                     {/* TRADINGVIEW CHART CARD */}
                     <div 
-                      className="shrink-0"
+                      className="shrink-0 mt-6 lg:mt-0"
                       style={{ 
                         backgroundColor: 'var(--card)', 
                         border: '1px solid rgba(0,0,0,0.06)', 
                         borderRadius: '12px',
                         boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
                         padding: '16px 20px',
-                        marginTop: '24px',
                         width: '778px'
                       }}
                     >
