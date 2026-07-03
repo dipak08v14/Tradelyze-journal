@@ -1150,7 +1150,7 @@ const TradeTrackingPageContent: React.FC = () => {
                             type="button"
                             onClick={() => setActiveTab('stats')}
                             style={{
-                              backgroundColor: activeTab === 'stats' ? 'var(--accent)' : 'transparent',
+                              backgroundColor: activeTab === 'stats' ? 'var(--accent-muted)' : 'transparent',
                               color: 'var(--text)',
                               fontWeight: activeTab === 'stats' ? 600 : 400,
                               border: 'none',
@@ -1165,7 +1165,7 @@ const TradeTrackingPageContent: React.FC = () => {
                             type="button"
                             onClick={() => setActiveTab('playbooks')}
                             style={{
-                              backgroundColor: activeTab === 'playbooks' ? 'var(--accent)' : 'transparent',
+                              backgroundColor: activeTab === 'playbooks' ? 'var(--accent-muted)' : 'transparent',
                               color: 'var(--text)',
                               fontWeight: activeTab === 'playbooks' ? 600 : 400,
                               border: 'none',
