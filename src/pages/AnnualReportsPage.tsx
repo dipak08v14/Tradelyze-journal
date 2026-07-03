@@ -393,7 +393,7 @@ export const AnnualReportsPage: React.FC = () => {
               </div>
             ) : (
               /* ACTIVE COMPREHENSIVE ANNUAL DISPLAY */
-              <div className="space-y-6 animate-fade-in">
+              <div className="space-y-3 animate-fade-in">
                                 {/* SECTION 1: ANNUAL STATS STRIP CARD */}
                 {annualStats && (
                   <div
