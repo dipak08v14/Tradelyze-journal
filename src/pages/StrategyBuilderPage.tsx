@@ -792,10 +792,10 @@ export const StrategyBuilderPage: React.FC = () => {
               {/* BREADCRUMB HEADER */}
               <Link
                 to="/strategies"
-                className="inline-flex items-center gap-1.5 text-sm hover:opacity-90 font-bold transition-all group mb-1"
+                className="inline-flex items-center gap-1.5 text-sm hover:opacity-90 transition-all group mb-1"
                 style={{ color: 'var(--accent)' }}
               >
-                <ArrowLeft className="w-3.5 h-3.5 transform group-hover:-translate-x-1 transition-transform animate-none" />
+                <span className="transform group-hover:-translate-x-1 transition-transform inline-block">{'<'}</span>
                 <span>Back to Strategies</span>
               </Link>
 
