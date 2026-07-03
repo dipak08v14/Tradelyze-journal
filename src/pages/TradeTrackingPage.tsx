@@ -1117,37 +1117,7 @@ const TradeTrackingPageContent: React.FC = () => {
 
             {/* SINGLE VERTICAL STACK */}
             <div className="flex flex-col gap-6">
-                
-                {/* TABS SELECTOR ROW */}
-                <div style={{ borderColor: 'var(--border)' }} className="flex border-b w-full gap-1">
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab('stats')}
-                    style={{
-                      backgroundColor: activeTab === 'stats' ? 'var(--accent-muted)' : 'transparent',
-                      color: activeTab === 'stats' ? 'var(--accent)' : 'var(--text-sub)',
-                      borderBottom: activeTab === 'stats' ? '2px solid var(--accent)' : '2px solid transparent',
-                    }}
-                    className="px-5 py-3 text-sm font-bold transition-all cursor-pointer focus:outline-none"
-                  >
-                    Stats
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab('playbooks')}
-                    style={{
-                      backgroundColor: activeTab === 'playbooks' ? 'var(--accent-muted)' : 'transparent',
-                      color: activeTab === 'playbooks' ? 'var(--accent)' : 'var(--text-sub)',
-                      borderBottom: activeTab === 'playbooks' ? '2px solid var(--accent)' : '2px solid transparent',
-                    }}
-                    className="px-5 py-3 text-sm font-bold transition-all cursor-pointer focus:outline-none"
-                  >
-                    Playbooks
-                  </button>
-                </div>
 
-                {/* STATS TAB CONTENT */}
-                {activeTab === 'stats' && (
                   <div className="space-y-6">
                     {/* SIDE-BY-SIDE STATS + CHART ROW */}
                     <div className="flex flex-col lg:flex-row gap-6 items-start">
@@ -1159,15 +1129,49 @@ const TradeTrackingPageContent: React.FC = () => {
                           borderRadius: '12px',
                           boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
                         }} 
-                        className="pt-6 pr-6 pb-6 pl-4 relative flex-1 min-w-0"
+                        className="pt-0 pr-6 pb-6 pl-4 relative flex-1 min-w-0"
                       >
-                      <div className="flex items-center gap-2 mb-4">
-                        <Briefcase className="w-5 h-5 text-[#06b6d4]" />
-                        <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">Trade Accountancies</h2>
-                      </div>
+                        {/* THE NEW TAB BAR */}
+                        <div style={{ borderColor: 'var(--border)' }} className="flex border-b w-full mb-6 relative">
+                          <button
+                            type="button"
+                            onClick={() => setActiveTab('stats')}
+                            style={{
+                              color: activeTab === 'stats' ? 'var(--accent)' : 'var(--text-muted)',
+                              borderBottom: activeTab === 'stats' ? '2px solid var(--accent)' : '2px solid transparent',
+                              background: 'transparent',
+                              fontWeight: activeTab === 'stats' ? 600 : 400,
+                              cursor: 'pointer'
+                            }}
+                            className="px-4 py-1.5 text-sm transition-all relative -bottom-[10px]"
+                          >
+                            Stats
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setActiveTab('playbooks')}
+                            style={{
+                              color: activeTab === 'playbooks' ? 'var(--accent)' : 'var(--text-muted)',
+                              borderBottom: activeTab === 'playbooks' ? '2px solid var(--accent)' : '2px solid transparent',
+                              background: 'transparent',
+                              fontWeight: activeTab === 'playbooks' ? 600 : 400,
+                              cursor: 'pointer'
+                            }}
+                            className="px-4 py-1.5 text-sm transition-all relative -bottom-[10px]"
+                          >
+                            Playbooks
+                          </button>
+                        </div>
 
-                      {/* FINANCIAL GRID */}
-                      <div>
+                        {activeTab === 'stats' && (
+                          <>
+                            <div className="flex items-center gap-2 mb-4">
+                              <Briefcase className="w-5 h-5 text-[#06b6d4]" />
+                              <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">Trade Accountancies</h2>
+                            </div>
+
+                            {/* FINANCIAL GRID */}
+                            <div>
                         <h3 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, borderColor: 'var(--border)', textTransform: 'none' }} className="font-display tracking-wider mb-3 border-b pb-1">
                           Financial Calculations
                         </h3>
@@ -1421,6 +1425,181 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
                         </div>
                       </div>
+                        </>
+                      )}
+
+                      {activeTab === 'playbooks' && (
+                        <div className="space-y-6 animate-fadeIn">
+                          
+                          {/* Large P&L and Setup Name */}
+                          <div className="py-2">
+                            <div className="flex flex-col gap-1.5">
+                              <span 
+                                className="text-4xl font-extrabold tracking-tight font-mono"
+                                style={{ color: trade.pnl > 0 ? '#22c55e' : trade.pnl < 0 ? '#ef4444' : 'var(--text-sub)' }}
+                              >
+                                {formatINR(trade.pnl)}
+                              </span>
+                              <span style={{ color: 'var(--text-sub)' }} className="text-sm font-semibold tracking-wide uppercase font-sans mt-0.5">
+                                Setup: {trade.strategies?.name || 'Unnamed Setup'}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* ENTRY RULES SECTION */}
+                          <div>
+                            <div className="flex items-center justify-between mb-4">
+                              <span style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, textTransform: 'none' }} className="font-display">
+                                Entry Rules
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => handleUncheckAllRules('entry')}
+                                style={{ color: 'var(--text-muted)', fontSize: '11px' }}
+                                className="hover:underline hover:opacity-85 transition-all cursor-pointer font-sans"
+                              >
+                                UNCHECK ALL
+                              </button>
+                            </div>
+
+                            {/* Progress bar showing rules followed */}
+                            {(() => {
+                              const totalCount = entryRules.length;
+                              const followedCount = entryRules.filter(r => r.followed === true).length;
+                              const percentage = totalCount > 0 ? (followedCount / totalCount) * 100 : 0;
+                              return (
+                                <div className="mb-5">
+                                  <div style={{ backgroundColor: 'var(--bar)' }} className="w-full h-1.5 rounded-[3px] overflow-hidden">
+                                    <div 
+                                      style={{ width: `${percentage}%`, backgroundColor: 'var(--accent)' }}
+                                      className="h-full rounded-[3px] transition-all duration-300" 
+                                    />
+                                  </div>
+                                  <span style={{ color: 'var(--text-sub)' }} className="text-xs mt-2 block font-medium">
+                                    {followedCount} / {totalCount} rules followed
+                                  </span>
+                                </div>
+                              );
+                            })()}
+
+                            {/* Entry Rules list with Checkboxes */}
+                            <div className="space-y-1 mt-4">
+                              {entryRules.length === 0 ? (
+                                <div style={{ color: 'var(--text-muted)' }} className="text-xs italic py-2">
+                                  No entry rules defined for this strategy.
+                                </div>
+                              ) : (
+                                entryRules.map((rule) => {
+                                  const isChecked = rule.followed === true;
+                                  return (
+                                    <div
+                                      key={rule.id}
+                                      onClick={() => handleToggleRule(rule.id, 'entry', rule.followed)}
+                                      style={{ borderColor: 'var(--border)' }}
+                                      className="flex items-center gap-3 py-3 border-b border-zinc-800/40 last:border-0 hover:bg-[var(--accent-muted)]/10 px-1 rounded-lg transition-colors cursor-pointer group"
+                                    >
+                                      <div
+                                        style={{
+                                          borderColor: isChecked ? '#22c55e' : '#ef4444',
+                                          backgroundColor: isChecked ? '#22c55e' : 'transparent',
+                                          width: '18px',
+                                          height: '18px',
+                                          fontSize: '13px'
+                                        }}
+                                        className="rounded border flex items-center justify-center transition-colors shrink-0"
+                                      >
+                                        {isChecked && (
+                                          <Check className="w-3.5 h-3.5 text-white stroke-[3px]" />
+                                        )}
+                                      </div>
+                                      <span style={{ fontSize: '13px', color: 'var(--text-sub)' }} className="flex-1 leading-snug">
+                                        {rule.rule_text}
+                                      </span>
+                                    </div>
+                                  );
+                                })
+                              )}
+                            </div>
+                          </div>
+
+                          {/* EXIT RULES SECTION */}
+                          <div>
+                            <div className="flex items-center justify-between mb-4">
+                              <span style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, textTransform: 'none' }} className="font-display">
+                                Exit Rules
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => handleUncheckAllRules('exit')}
+                                style={{ color: 'var(--text-muted)', fontSize: '11px' }}
+                                className="hover:underline hover:opacity-85 transition-all cursor-pointer font-sans"
+                              >
+                                UNCHECK ALL
+                              </button>
+                            </div>
+
+                            {/* Progress bar showing rules followed */}
+                            {(() => {
+                              const totalCount = exitRules.length;
+                              const followedCount = exitRules.filter(r => r.followed === true).length;
+                              const percentage = totalCount > 0 ? (followedCount / totalCount) * 100 : 0;
+                              return (
+                                <div className="mb-5">
+                                  <div style={{ backgroundColor: 'var(--bar)' }} className="w-full h-1.5 rounded-[3px] overflow-hidden">
+                                    <div 
+                                      style={{ width: `${percentage}%`, backgroundColor: 'var(--accent)' }}
+                                      className="h-full rounded-[3px] transition-all duration-300" 
+                                    />
+                                  </div>
+                                  <span style={{ color: 'var(--text-sub)' }} className="text-xs mt-2 block font-medium">
+                                    {followedCount} / {totalCount} rules followed
+                                  </span>
+                                </div>
+                              );
+                            })()}
+
+                            {/* Exit Rules list with Checkboxes */}
+                            <div className="space-y-1 mt-4">
+                              {exitRules.length === 0 ? (
+                                <div style={{ color: 'var(--text-muted)' }} className="text-xs italic py-2">
+                                  No exit rules defined for this strategy.
+                                </div>
+                              ) : (
+                                exitRules.map((rule) => {
+                                  const isChecked = rule.followed === true;
+                                  return (
+                                    <div
+                                      key={rule.id}
+                                      onClick={() => handleToggleRule(rule.id, 'exit', rule.followed)}
+                                      style={{ borderColor: 'var(--border)' }}
+                                      className="flex items-center gap-3 py-3 border-b border-zinc-800/40 last:border-0 hover:bg-[var(--accent-muted)]/10 px-1 rounded-lg transition-colors cursor-pointer group"
+                                    >
+                                      <div
+                                        style={{
+                                          borderColor: isChecked ? '#22c55e' : '#ef4444',
+                                          backgroundColor: isChecked ? '#22c55e' : 'transparent',
+                                          width: '18px',
+                                          height: '18px',
+                                          fontSize: '13px'
+                                        }}
+                                        className="rounded border flex items-center justify-center transition-colors shrink-0"
+                                      >
+                                        {isChecked && (
+                                          <Check className="w-3.5 h-3.5 text-white stroke-[3px]" />
+                                        )}
+                                      </div>
+                                      <span style={{ fontSize: '13px', color: 'var(--text-sub)' }} className="flex-1 leading-snug">
+                                        {rule.rule_text}
+                                      </span>
+                                    </div>
+                                  );
+                                })
+                              )}
+                            </div>
+                          </div>
+
+                        </div>
+                      )}
                     </section>
 
                     {/* TRADINGVIEW CHART CARD */}
@@ -2242,204 +2421,6 @@ const TradeTrackingPageContent: React.FC = () => {
                       <span>Ask AI Assistant</span>
                     </button>
                   </div>
-                )}
-
-                {/* PLAYBOOKS TAB CONTENT */}
-                {activeTab === 'playbooks' && (
-                  <div className="space-y-6 animate-fadeIn">
-                    
-                    {/* Large P&L and Setup Name */}
-                    <div 
-                      style={{ 
-                        backgroundColor: 'var(--card)', 
-                        border: '1px solid rgba(0,0,0,0.06)', 
-                        borderRadius: '12px',
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
-                      }} 
-                      className="p-6"
-                    >
-                      <div className="flex flex-col gap-1.5">
-                        <span 
-                          className="text-4xl font-extrabold tracking-tight font-mono"
-                          style={{ color: trade.pnl > 0 ? '#22c55e' : trade.pnl < 0 ? '#ef4444' : 'var(--text-sub)' }}
-                        >
-                          {formatINR(trade.pnl)}
-                        </span>
-                        <span style={{ color: 'var(--text-sub)' }} className="text-sm font-semibold tracking-wide uppercase font-sans mt-0.5">
-                          Setup: {trade.strategies?.name || 'Unnamed Setup'}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* ENTRY RULES SECTION */}
-                    <div 
-                      style={{ 
-                        backgroundColor: 'var(--card)', 
-                        border: '1px solid rgba(0,0,0,0.06)', 
-                        borderRadius: '12px',
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
-                      }} 
-                      className="p-6"
-                    >
-                      <div className="flex items-center justify-between mb-4">
-                        <span style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, textTransform: 'none' }} className="font-display">
-                          Entry Rules
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => handleUncheckAllRules('entry')}
-                          style={{ color: 'var(--text-muted)', fontSize: '11px' }}
-                          className="hover:underline hover:opacity-85 transition-all cursor-pointer font-sans"
-                        >
-                          UNCHECK ALL
-                        </button>
-                      </div>
-
-                      {/* Progress bar showing rules followed */}
-                      {(() => {
-                        const totalCount = entryRules.length;
-                        const followedCount = entryRules.filter(r => r.followed === true).length;
-                        const percentage = totalCount > 0 ? (followedCount / totalCount) * 100 : 0;
-                        return (
-                          <div className="mb-5">
-                            <div style={{ backgroundColor: 'var(--bar)' }} className="w-full h-1.5 rounded-[3px] overflow-hidden">
-                              <div 
-                                style={{ width: `${percentage}%`, backgroundColor: 'var(--accent)' }}
-                                className="h-full rounded-[3px] transition-all duration-300" 
-                              />
-                            </div>
-                            <span style={{ color: 'var(--text-sub)' }} className="text-xs mt-2 block font-medium">
-                              {followedCount} / {totalCount} rules followed
-                            </span>
-                          </div>
-                        );
-                      })()}
-
-                      {/* Entry Rules list with Checkboxes */}
-                      <div className="space-y-1 mt-4">
-                        {entryRules.length === 0 ? (
-                          <div style={{ color: 'var(--text-muted)' }} className="text-xs italic py-2">
-                            No entry rules defined for this strategy.
-                          </div>
-                        ) : (
-                          entryRules.map((rule) => {
-                            const isChecked = rule.followed === true;
-                            return (
-                              <div
-                                key={rule.id}
-                                onClick={() => handleToggleRule(rule.id, 'entry', rule.followed)}
-                                style={{ borderColor: 'var(--border)' }}
-                                className="flex items-center gap-3 py-3 border-b border-zinc-800/40 last:border-0 hover:bg-[var(--accent-muted)]/10 px-1 rounded-lg transition-colors cursor-pointer group"
-                              >
-                                <div
-                                  style={{
-                                    borderColor: isChecked ? '#22c55e' : '#ef4444',
-                                    backgroundColor: isChecked ? '#22c55e' : 'transparent',
-                                    width: '18px',
-                                    height: '18px',
-                                    fontSize: '13px'
-                                  }}
-                                  className="rounded border flex items-center justify-center transition-colors shrink-0"
-                                >
-                                  {isChecked && (
-                                    <Check className="w-3.5 h-3.5 text-white stroke-[3px]" />
-                                  )}
-                                </div>
-                                <span style={{ fontSize: '13px', color: 'var(--text-sub)' }} className="flex-1 leading-snug">
-                                  {rule.rule_text}
-                                </span>
-                              </div>
-                            );
-                          })
-                        )}
-                      </div>
-                    </div>
-
-                    {/* EXIT RULES SECTION */}
-                    <div 
-                      style={{ 
-                        backgroundColor: 'var(--card)', 
-                        border: '1px solid rgba(0,0,0,0.06)', 
-                        borderRadius: '12px',
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
-                      }} 
-                      className="p-6"
-                    >
-                      <div className="flex items-center justify-between mb-4">
-                        <span style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, textTransform: 'none' }} className="font-display">
-                          Exit Rules
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => handleUncheckAllRules('exit')}
-                          style={{ color: 'var(--text-muted)', fontSize: '11px' }}
-                          className="hover:underline hover:opacity-85 transition-all cursor-pointer font-sans"
-                        >
-                          UNCHECK ALL
-                        </button>
-                      </div>
-
-                      {/* Progress bar showing rules followed */}
-                      {(() => {
-                        const totalCount = exitRules.length;
-                        const followedCount = exitRules.filter(r => r.followed === true).length;
-                        const percentage = totalCount > 0 ? (followedCount / totalCount) * 100 : 0;
-                        return (
-                          <div className="mb-5">
-                            <div style={{ backgroundColor: 'var(--bar)' }} className="w-full h-1.5 rounded-[3px] overflow-hidden">
-                              <div 
-                                style={{ width: `${percentage}%`, backgroundColor: 'var(--accent)' }}
-                                className="h-full rounded-[3px] transition-all duration-300" 
-                              />
-                            </div>
-                            <span style={{ color: 'var(--text-sub)' }} className="text-xs mt-2 block font-medium">
-                              {followedCount} / {totalCount} rules followed
-                            </span>
-                          </div>
-                        );
-                      })()}
-
-                      {/* Exit Rules list with Checkboxes */}
-                      <div className="space-y-1 mt-4">
-                        {exitRules.length === 0 ? (
-                          <div style={{ color: 'var(--text-muted)' }} className="text-xs italic py-2">
-                            No exit rules defined for this strategy.
-                          </div>
-                        ) : (
-                          exitRules.map((rule) => {
-                            const isChecked = rule.followed === true;
-                            return (
-                              <div
-                                key={rule.id}
-                                onClick={() => handleToggleRule(rule.id, 'exit', rule.followed)}
-                                style={{ borderColor: 'var(--border)' }}
-                                className="flex items-center gap-3 py-3 border-b border-zinc-800/40 last:border-0 hover:bg-[var(--accent-muted)]/10 px-1 rounded-lg transition-colors cursor-pointer group"
-                              >
-                                <div
-                                  style={{
-                                    borderColor: isChecked ? '#22c55e' : '#ef4444',
-                                    backgroundColor: isChecked ? '#22c55e' : 'transparent',
-                                    width: '18px',
-                                    height: '18px',
-                                    fontSize: '13px'
-                                  }}
-                                  className="rounded border flex items-center justify-center transition-colors shrink-0"
-                                >
-                                  {isChecked && (
-                                    <Check className="w-3.5 h-3.5 text-white stroke-[3px]" />
-                                  )}
-                                </div>
-                                <span style={{ fontSize: '13px', color: 'var(--text-sub)' }} className="flex-1 leading-snug">
-                                  {rule.rule_text}
-                                </span>
-                              </div>
-                            );
-                          })
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
 
             </div>
           </div>
