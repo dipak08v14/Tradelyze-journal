@@ -1681,7 +1681,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                       key={rule.id}
                                       onClick={() => handleToggleRule(rule.id, 'entry', rule.followed)}
                                       style={{ borderColor: 'var(--border)' }}
-                                      className="flex items-center gap-3 py-3 border-b border-zinc-800/40 last:border-0 hover:bg-[var(--accent-muted)]/10 px-1 rounded-lg transition-colors cursor-pointer group"
+                                      className="flex items-center gap-3 py-1 hover:bg-[var(--accent-muted)]/10 px-1 rounded-lg transition-colors cursor-pointer group"
                                     >
                                       <div
                                         style={{
@@ -1757,7 +1757,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                       key={rule.id}
                                       onClick={() => handleToggleRule(rule.id, 'exit', rule.followed)}
                                       style={{ borderColor: 'var(--border)' }}
-                                      className="flex items-center gap-3 py-3 border-b border-zinc-800/40 last:border-0 hover:bg-[var(--accent-muted)]/10 px-1 rounded-lg transition-colors cursor-pointer group"
+                                      className="flex items-center gap-3 py-1 hover:bg-[var(--accent-muted)]/10 px-1 rounded-lg transition-colors cursor-pointer group"
                                     >
                                       <div
                                         style={{
