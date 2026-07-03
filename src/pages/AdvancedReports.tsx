@@ -2269,7 +2269,7 @@ export const AdvancedReports: React.FC = () => {
                                   );
                                 }}
                               />
-                              <Bar dataKey="count" fill="#06b6d4" radius={[0, 4, 4, 0]} />
+                              <Bar dataKey="count" fill="var(--accent)" radius={[0, 4, 4, 0]} />
                             </BarChart>
                           </ResponsiveContainer>
                         </div>
