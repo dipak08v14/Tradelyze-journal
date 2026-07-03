@@ -866,7 +866,7 @@ const TradeTrackingPageContent: React.FC = () => {
 
         {/* PAGE BODY SCROLLER */}
         <main className="flex-1 overflow-y-auto px-0">
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             
             {/* BREADCRUMB ROW WITH TRADE NAVIGATION */}
             <div className="mb-3 flex items-center justify-between">
@@ -1115,11 +1115,8 @@ const TradeTrackingPageContent: React.FC = () => {
 
             <div className="border-b border-zinc-800/80 mt-5 mb-8" />
 
-            {/* THREE-COLUMN BENTO GRID */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-              
-              {/* LEFT SPANNING TWO COLUMNS */}
-              <div className="lg:col-span-2 space-y-6">
+            {/* SINGLE VERTICAL STACK */}
+            <div className="flex flex-col gap-6">
                 
                 {/* TABS SELECTOR ROW */}
                 <div style={{ borderColor: 'var(--border)' }} className="flex border-b w-full gap-1">
@@ -1152,16 +1149,18 @@ const TradeTrackingPageContent: React.FC = () => {
                 {/* STATS TAB CONTENT */}
                 {activeTab === 'stats' && (
                   <div className="space-y-6">
-                    {/* CARD A: TRADE DETAILS */}
-                    <section 
-                      style={{ 
-                        backgroundColor: 'var(--card)', 
-                        border: '1px solid rgba(0,0,0,0.06)', 
-                        borderRadius: '12px',
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
-                      }} 
-                      className="p-6 relative"
-                    >
+                    {/* SIDE-BY-SIDE STATS + CHART ROW */}
+                    <div className="flex flex-col lg:flex-row gap-6 items-start">
+                      {/* CARD A: TRADE DETAILS */}
+                      <section 
+                        style={{ 
+                          backgroundColor: 'var(--card)', 
+                          border: '1px solid rgba(0,0,0,0.06)', 
+                          borderRadius: '12px',
+                          boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
+                        }} 
+                        className="pt-6 pr-6 pb-6 pl-4 relative flex-1 min-w-0"
+                      >
                       <div className="flex items-center gap-2 mb-4">
                         <Briefcase className="w-5 h-5 text-[#06b6d4]" />
                         <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">Trade Accountancies</h2>
@@ -1172,12 +1171,12 @@ const TradeTrackingPageContent: React.FC = () => {
                         <h3 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, borderColor: 'var(--border)', textTransform: 'none' }} className="font-display tracking-wider mb-3 border-b pb-1">
                           Financial Calculations
                         </h3>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                        <div className="flex flex-col">
                           {/* P&L */}
-                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">P&L Gain/Loss</span>
+                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                            <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)' }} className="font-mono">P&L Gain/Loss</span>
                             <span
-                              className="block mt-1 font-mono"
+                              className="font-mono"
                               style={{ 
                                 fontSize: '14px', 
                                 fontWeight: 700, 
@@ -1189,10 +1188,10 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
 
                           {/* R-Multiple */}
-                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">R-Multiple Earned</span>
+                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                            <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)' }} className="font-mono">R-Multiple Earned</span>
                             <span
-                              className="block mt-1 font-mono"
+                              className="font-mono"
                               style={{ 
                                 fontSize: '14px', 
                                 fontWeight: 700, 
@@ -1204,10 +1203,10 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
 
                           {/* ROI */}
-                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Return on Investment</span>
+                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                            <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)' }} className="font-mono">Return on Investment</span>
                             <span
-                              className="block mt-1 font-mono"
+                              className="font-mono"
                               style={{ 
                                 fontSize: '14px', 
                                 fontWeight: 700, 
@@ -1219,80 +1218,80 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
 
                           {/* Risk */}
-                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Actual Risk Taken</span>
-                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="text-sm block mt-1 font-mono">
+                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                            <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)' }} className="font-mono">Actual Risk Taken</span>
+                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">
                               {formatINR(trade.risk)}
                             </span>
                           </div>
 
                           {/* Investment */}
-                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Total Allocation</span>
-                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="text-sm block mt-1 font-mono">
+                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                            <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)' }} className="font-mono">Total Allocation</span>
+                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">
                               {formatINR(trade.investment)}
                             </span>
                           </div>
 
                           {/* Fees */}
-                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Brokerage Fees</span>
-                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="text-sm block mt-1 font-mono">
+                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                            <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)' }} className="font-mono">Brokerage Fees</span>
+                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">
                               {formatINR(trade.fees)}
                             </span>
                           </div>
 
                           {/* Quantity */}
-                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Quantity / Lots</span>
-                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="text-sm block mt-1 font-mono">
+                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                            <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)' }} className="font-mono">Quantity / Lots</span>
+                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">
                               {trade.quantity !== null ? trade.quantity : '—'}
                             </span>
                           </div>
 
                           {/* Points */}
-                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Capture Points</span>
-                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="text-sm block mt-1 font-mono">
+                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                            <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)' }} className="font-mono">Capture Points</span>
+                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">
                               {trade.points !== null ? trade.points : '—'}
                             </span>
                           </div>
 
                           {/* Holding Time */}
-                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Holding Duration</span>
-                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="text-sm block mt-1 font-mono">
+                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                            <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)' }} className="font-mono">Holding Duration</span>
+                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">
                               {trade.holding_time_mins !== null ? `${trade.holding_time_mins} mins` : '—'}
                             </span>
                           </div>
 
                           {/* Max Drawdown */}
-                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Max Drawdown (DD)</span>
-                            <span className="block mt-1 font-mono" style={{ fontSize: '14px', fontWeight: 700, color: '#ef4444' }}>
+                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                            <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)' }} className="font-mono">Max Drawdown (DD)</span>
+                            <span className="font-mono" style={{ fontSize: '14px', fontWeight: 700, color: '#ef4444' }}>
                               {formatINR(trade.max_drawdown)}
                             </span>
                           </div>
 
                           {/* MDD % */}
-                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Drawdown %</span>
-                            <span className="block mt-1 font-mono" style={{ fontSize: '14px', fontWeight: 700, color: '#ef4444' }}>
+                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                            <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)' }} className="font-mono">Drawdown %</span>
+                            <span className="font-mono" style={{ fontSize: '14px', fontWeight: 700, color: '#ef4444' }}>
                               {trade.mdd_pct !== null ? `${trade.mdd_pct.toFixed(2)}%` : '—'}
                             </span>
                           </div>
 
                           {/* ROR */}
-                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Risk of Ruin (ROR)</span>
-                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="text-sm block mt-1 font-mono">
+                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                            <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)' }} className="font-mono">Risk of Ruin (ROR)</span>
+                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">
                               {trade.ror !== null ? `${trade.ror.toFixed(2)}%` : '—'}
                             </span>
                           </div>
 
                           {/* Profit Target */}
-                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">PROFIT TARGET</span>
+                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                            <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)' }} className="font-mono">PROFIT TARGET</span>
                             <input
                               type="number"
                               step="any"
@@ -1308,16 +1307,16 @@ const TradeTrackingPageContent: React.FC = () => {
                                 fontSize: '13px',
                                 borderRadius: '6px',
                                 padding: '4px 8px',
-                                width: '100%',
-                                marginTop: '4px'
+                                width: '120px',
+                                textAlign: 'right'
                               }}
                               className="font-mono"
                             />
                           </div>
 
                           {/* Stop Loss Price */}
-                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">STOP LOSS PRICE</span>
+                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                            <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)' }} className="font-mono">STOP LOSS PRICE</span>
                             <input
                               type="number"
                               step="any"
@@ -1333,27 +1332,27 @@ const TradeTrackingPageContent: React.FC = () => {
                                 fontSize: '13px',
                                 borderRadius: '6px',
                                 padding: '4px 8px',
-                                width: '100%',
-                                marginTop: '4px'
+                                width: '120px',
+                                textAlign: 'right'
                               }}
                               className="font-mono"
                             />
                           </div>
 
                           {/* Planned R-Multiple */}
-                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">PLANNED R-MULTIPLE</span>
+                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                            <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)' }} className="font-mono">PLANNED R-MULTIPLE</span>
                             <span
                               style={{ color: 'var(--accent)', fontSize: '14px', fontWeight: 700 }}
-                              className="font-mono block mt-1"
+                              className="font-mono"
                             >
                               {calculatedPlannedR}
                             </span>
                           </div>
 
                           {/* MAE */}
-                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">MAE (Max Adverse Excursion)</span>
+                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                            <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)' }} className="font-mono">MAE (Max Adverse Excursion)</span>
                             <input
                               type="number"
                               step="any"
@@ -1369,16 +1368,16 @@ const TradeTrackingPageContent: React.FC = () => {
                                 fontSize: '13px',
                                 borderRadius: '6px',
                                 padding: '4px 8px',
-                                width: '100%',
-                                marginTop: '4px'
+                                width: '120px',
+                                textAlign: 'right'
                               }}
                               className="font-mono"
                             />
                           </div>
 
                           {/* MFE */}
-                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">MFE (Max Favorable Excursion)</span>
+                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                            <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)' }} className="font-mono">MFE (Max Favorable Excursion)</span>
                             <input
                               type="number"
                               step="any"
@@ -1394,21 +1393,21 @@ const TradeTrackingPageContent: React.FC = () => {
                                 fontSize: '13px',
                                 borderRadius: '6px',
                                 padding: '4px 8px',
-                                width: '100%',
-                                marginTop: '4px'
+                                width: '120px',
+                                textAlign: 'right'
                               }}
                               className="font-mono"
                             />
                           </div>
 
                           {/* Gross P&L */}
-                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="p-3.5 rounded-xl">
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">GROSS P&L</span>
+                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                            <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)' }} className="font-mono">GROSS P&L</span>
                             {(() => {
                               const grossVal = (trade.pnl || 0) + (trade.fees || 0);
                               return (
                                 <span
-                                  className="block mt-1 font-mono"
+                                  className="font-mono"
                                   style={{ 
                                     fontSize: '14px', 
                                     fontWeight: 700, 
@@ -1422,55 +1421,67 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
                         </div>
                       </div>
-
-                      {/* CONTEXT GRID */}
-                      <div style={{ borderColor: 'var(--border)' }} className="mt-6 pt-5 border-t">
-                        <h3 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, textTransform: 'none' }} className="font-display tracking-wider mb-3 pb-1">
-                          Trading Context Variables
-                        </h3>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                          <div>
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Entry Time</span>
-                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="block mt-0.5">{trade.entry_time || '—'}</span>
-                          </div>
-                          <div>
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Market Phase</span>
-                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="block mt-0.5">{trade.phase || '—'}</span>
-                          </div>
-                          <div>
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Trend Location</span>
-                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="block mt-0.5">{trade.trend_position || '—'}</span>
-                          </div>
-                          <div>
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Opening State</span>
-                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="block mt-0.5">{trade.opening_condition || '—'}</span>
-                          </div>
-                          <div>
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Hourly Trend</span>
-                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="block mt-0.5">{trade.hourly_trend || '—'}</span>
-                          </div>
-                          <div>
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Vantage Month / Yr</span>
-                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="block mt-0.5 font-mono">
-                              {trade.month} {trade.year}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
                     </section>
 
                     {/* TRADINGVIEW CHART CARD */}
                     <div 
+                      className="shrink-0"
                       style={{ 
                         backgroundColor: 'var(--card)', 
                         border: '1px solid rgba(0,0,0,0.06)', 
                         borderRadius: '12px',
                         boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
-                        padding: '16px 20px'
+                        padding: '16px 20px',
+                        marginTop: '24px',
+                        width: '778px'
                       }}
                     >
                       <TradeChart trade={trade} userTheme={userTheme} />
                     </div>
+                  </div>
+
+                  {/* TRADING CONTEXT VARIABLES CARD */}
+                  <section 
+                    style={{ 
+                      backgroundColor: 'var(--card)', 
+                      border: '1px solid rgba(0,0,0,0.06)', 
+                      borderRadius: '12px',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
+                    }} 
+                    className="p-6 relative"
+                  >
+                    <h3 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, textTransform: 'none' }} className="font-display tracking-wider mb-3 pb-1">
+                      Trading Context Variables
+                    </h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                      <div>
+                        <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Entry Time</span>
+                        <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="block mt-0.5">{trade.entry_time || '—'}</span>
+                      </div>
+                      <div>
+                        <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Market Phase</span>
+                        <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="block mt-0.5">{trade.phase || '—'}</span>
+                      </div>
+                      <div>
+                        <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Trend Location</span>
+                        <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="block mt-0.5">{trade.trend_position || '—'}</span>
+                      </div>
+                      <div>
+                        <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Opening State</span>
+                        <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="block mt-0.5">{trade.opening_condition || '—'}</span>
+                      </div>
+                      <div>
+                        <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Hourly Trend</span>
+                        <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="block mt-0.5">{trade.hourly_trend || '—'}</span>
+                      </div>
+                      <div>
+                        <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Vantage Month / Yr</span>
+                        <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="block mt-0.5 font-mono">
+                          {trade.month} {trade.year}
+                        </span>
+                      </div>
+                    </div>
+                  </section>
 
                     {/* CARD D: GENERAL EXECUTION QUALITY & TRADER NOTES */}
                     <section 
@@ -1572,6 +1583,664 @@ const TradeTrackingPageContent: React.FC = () => {
                         </div>
                       </div>
                     </section>
+
+                    {/* CARD E: KEY PERFORMANCE SCOREBOARD + SPIDER RADAR */}
+                    <section 
+                      style={{ 
+                        backgroundColor: 'var(--card)', 
+                        border: '1px solid rgba(0,0,0,0.06)', 
+                        borderRadius: '12px',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
+                      }} 
+                      className="p-6"
+                    >
+                      <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">
+                        Performance Score
+                      </h2>
+                      <p style={{ color: 'var(--text-muted)' }} className="text-[11px] font-mono uppercase tracking-wider mb-1">Multidimensional analysis</p>
+
+                      <div className="flex flex-col items-center justify-center mt-4">
+                        {/* Big Score tag */}
+                        <div 
+                          style={{ fontSize: '36px', fontWeight: 800 }} 
+                          className={`font-display tracking-tight ${getScoreColor(overallScore)}`}
+                        >
+                          {overallScore.toFixed(0)}%
+                        </div>
+                        <div style={{ color: 'var(--text-sub)' }} className="text-[10px] font-bold font-mono uppercase tracking-wider mt-1">
+                          Integrity Index
+                        </div>
+                      </div>
+
+                      {/* Horizontal progress bars with reuse logic */}
+                      <div style={{ borderColor: 'var(--border)' }} className="mt-5 space-y-4 pt-4 border-t">
+                        {/* Technical bar */}
+                        <div>
+                          <div className="flex justify-between font-mono font-bold mb-1.5 font-sans" style={{ fontSize: '11px' }}>
+                            <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Technical Rules (checklists)</span>
+                            <span className={getScoreColor(technicalScore)}>{technicalScore.toFixed(0)}%</span>
+                          </div>
+                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-2 rounded-full overflow-hidden w-full">
+                            <div
+                              className="h-full rounded-full transition-all duration-300"
+                              style={{ width: `${technicalScore}%`, backgroundColor: 'var(--accent)' }}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Psychology bar */}
+                        <div>
+                          <div className="flex justify-between font-mono font-bold mb-1.5 font-sans" style={{ fontSize: '11px' }}>
+                            <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Psychology (mindfulness)</span>
+                            <span className={getScoreColor(psychScore)}>{psychScore.toFixed(0)}%</span>
+                          </div>
+                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-2 rounded-full overflow-hidden w-full">
+                            <div
+                              className="h-full rounded-full transition-all duration-300"
+                              style={{ width: `${psychScore}%`, backgroundColor: 'var(--accent)' }}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Risk bar */}
+                        <div>
+                          <div className="flex justify-between font-mono font-bold mb-1.5 font-sans" style={{ fontSize: '11px' }}>
+                            <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Risk Management (guidelines)</span>
+                            <span className={getScoreColor(riskScore)}>{riskScore.toFixed(0)}%</span>
+                          </div>
+                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-2 rounded-full overflow-hidden w-full">
+                            <div
+                              className="h-full rounded-full transition-all duration-300"
+                              style={{ width: `${riskScore}%`, backgroundColor: 'var(--accent)' }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* RADAR SCORE CHART IF INTEGRATED */}
+                      <div style={{ borderColor: 'var(--border)' }} className="mt-6 pt-3 border-t">
+                        <RadarScoreChart
+                          technicalScore={technicalScore}
+                          psychScore={psychScore}
+                          riskScore={riskScore}
+                        />
+                      </div>
+
+                      {activeTab === 'stats' && (
+                        <div style={{ borderColor: 'var(--border)' }} className="mt-6 pt-4 border-t space-y-4">
+                          <div className="flex items-center justify-between">
+                            <h3 style={{ color: 'var(--text)', fontSize: '12px', fontWeight: 600 }} className="font-mono uppercase tracking-wider">
+                              Psychology Breakdown
+                            </h3>
+                            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }} className="font-mono uppercase">Subjective States</span>
+                          </div>
+                          {!psychology ? (
+                            <div style={{ color: 'var(--text-muted)' }} className="text-xs italic py-2">
+                              No psychology data for this trade
+                            </div>
+                          ) : (
+                            <div className="space-y-3.5">
+                              {/* External Stress */}
+                              <div>
+                                <div className="flex justify-between mb-1 font-sans" style={{ fontSize: '11px' }}>
+                                  <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>External Factors / Stress</span>
+                                  <span style={{ color: 'var(--text)' }} className="font-bold font-mono">{psychology.external_stress_pct ?? 0}%</span>
+                                </div>
+                                <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
+                                  <div className="h-full rounded-full transition-all duration-300" style={{ width: `${psychology.external_stress_pct ?? 0}%`, backgroundColor: 'var(--accent)' }} />
+                                </div>
+                              </div>
+
+                              {/* Price Action */}
+                              <div>
+                                <div className="flex justify-between mb-1 font-sans" style={{ fontSize: '11px' }}>
+                                  <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Price Action Reading</span>
+                                  <span style={{ color: 'var(--text)' }} className="font-bold font-mono">{psychology.price_action_reading_pct ?? 0}%</span>
+                                </div>
+                                <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
+                                  <div className="h-full rounded-full transition-all duration-300" style={{ width: `${psychology.price_action_reading_pct ?? 0}%`, backgroundColor: 'var(--accent)' }} />
+                                </div>
+                              </div>
+
+                              {/* Confidence */}
+                              <div>
+                                <div className="flex justify-between mb-1 font-sans" style={{ fontSize: '11px' }}>
+                                  <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Self Confidence</span>
+                                  <span style={{ color: 'var(--text)' }} className="font-bold font-mono">{psychology.confidence_pct ?? 0}%</span>
+                                </div>
+                                <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
+                                  <div className="h-full rounded-full transition-all duration-300" style={{ width: `${psychology.confidence_pct ?? 0}%`, backgroundColor: 'var(--accent)' }} />
+                                </div>
+                              </div>
+
+                              {/* Entry Levels */}
+                              <div>
+                                <div className="flex justify-between mb-1 font-sans" style={{ fontSize: '11px' }}>
+                                  <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Entry Levels Confidence</span>
+                                  <span style={{ color: 'var(--text)' }} className="font-bold font-mono">{psychology.entry_levels_pct ?? 0}%</span>
+                                </div>
+                                <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
+                                  <div className="h-full rounded-full transition-all duration-300" style={{ width: `${psychology.entry_levels_pct ?? 0}%`, backgroundColor: 'var(--accent)' }} />
+                                </div>
+                              </div>
+
+                              {/* Anxiety */}
+                              <div>
+                                <div className="flex justify-between mb-1 font-sans" style={{ fontSize: '11px' }}>
+                                  <div className="flex items-center gap-1">
+                                    <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Anxiety</span>
+                                    <span className="text-[10px] text-amber-500 font-mono font-bold">(lower is better)</span>
+                                  </div>
+                                  <span className="text-amber-500 font-bold font-mono">{psychology.anxiety_pct ?? 0}%</span>
+                                </div>
+                                <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
+                                  <div className="h-full rounded-full transition-all duration-300" style={{ width: `${psychology.anxiety_pct ?? 0}%`, backgroundColor: '#f59e0b' }} />
+                                </div>
+                              </div>
+
+                              {/* Fear */}
+                              <div>
+                                <div className="flex justify-between mb-1 font-sans" style={{ fontSize: '11px' }}>
+                                  <div className="flex items-center gap-1">
+                                    <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Fear</span>
+                                    <span className="text-[10px] text-red-500 font-mono font-bold">(lower is better)</span>
+                                  </div>
+                                  <span className="text-red-500 font-bold font-mono">{psychology.fear_pct ?? 0}%</span>
+                                </div>
+                                <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
+                                  <div className="h-full rounded-full transition-all duration-300" style={{ width: `${psychology.fear_pct ?? 0}%`, backgroundColor: '#ef4444' }} />
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </section>
+
+                    {/* CHANGE 4 — Running P&L Chart Card */}
+                    <section 
+                      style={{ 
+                        backgroundColor: 'var(--card)', 
+                        border: '1px solid rgba(0,0,0,0.06)', 
+                        borderRadius: '12px',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
+                      }} 
+                      className="p-6 overflow-hidden"
+                    >
+                      <div className="flex items-center justify-between mb-1">
+                        <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">
+                          Running P&L Chart
+                        </h2>
+                        {chartLoading ? (
+                          <span style={{ color: 'var(--accent)' }} className="text-xs font-mono animate-pulse">Syncing TwelveData...</span>
+                        ) : apiError ? (
+                          null
+                        ) : (
+                          <span className="text-xs text-green-500 font-mono">Live Session Data</span>
+                        )}
+                      </div>
+                      <p style={{ color: 'var(--text-muted)' }} className="text-[11px] font-mono uppercase tracking-wider mb-4">
+                        Intraday P&L trajectory analysis
+                      </p>
+
+                      <div className="h-[200px] min-h-[200px] w-full flex items-center justify-center font-sans">
+                        {chartLoading ? (
+                          <div className="flex flex-col items-center gap-2">
+                            <div className="w-5 h-5 border-2 rounded-full animate-spin" style={{ borderColor: 'var(--border)', borderTopColor: 'var(--accent)' }} />
+                            <span style={{ color: 'var(--text-muted)' }} className="text-xs font-mono">Loading market bars...</span>
+                          </div>
+                        ) : (
+                          <ResponsiveContainer width="100%" height="100%">
+                            <ComposedChart
+                              data={chartData}
+                              margin={{ top: 12, right: 12, bottom: 0, left: -10 }}
+                            >
+                              <defs>
+                                {/* Gradient for fill area */}
+                                <linearGradient id="pnlAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                                  {/* Green above zero: top (0%) has opacity 0.25, zero line has opacity 0.02 */}
+                                  <stop offset="0%" stopColor="#22c55e" stopOpacity={0.25} />
+                                  <stop offset={`${zeroPercent}%`} stopColor="#22c55e" stopOpacity={0.02} />
+                                  
+                                  {/* Red below zero: zero line has opacity 0.02, bottom (100%) has opacity 0.25 */}
+                                  <stop offset={`${zeroPercent}%`} stopColor="#ef4444" stopOpacity={0.02} />
+                                  <stop offset="100%" stopColor="#ef4444" stopOpacity={0.25} />
+                                </linearGradient>
+
+                                {/* Gradient for LINE color */}
+                                <linearGradient id="pnlLineGrad" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset={`${zeroPercent}%`} stopColor="#22c55e" stopOpacity={1} />
+                                  <stop offset={`${zeroPercent}%`} stopColor="#ef4444" stopOpacity={1} />
+                                </linearGradient>
+                              </defs>
+
+                              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
+
+                              <YAxis
+                                stroke="var(--text-muted)"
+                                tickFormatter={(v) => v >= 0 ? `₹${v}` : `-₹${Math.abs(v)}`}
+                                tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
+                                axisLine={false}
+                                tickLine={false}
+                                width={55}
+                              />
+
+                              <ReferenceLine
+                                y={0}
+                                stroke="rgba(0,0,0,0.15)"
+                                strokeDasharray="4 4"
+                                strokeWidth={1}
+                              />
+
+                              <Area
+                                type="monotone"
+                                dataKey="pnl"
+                                stroke="none"
+                                fill="url(#pnlAreaGrad)"
+                                baseLine={0}
+                              />
+
+                              <Line
+                                type="monotone"
+                                dataKey="pnl"
+                                stroke="url(#pnlLineGrad)"
+                                strokeWidth={3}
+                                dot={(props: any) => {
+                                  const { cx, cy, index } = props;
+                                  if (index === 0) {
+                                    return (
+                                      <circle
+                                        cx={cx}
+                                        cy={cy}
+                                        r={5}
+                                        fill="white"
+                                        stroke="#22c55e"
+                                        strokeWidth={2}
+                                        key="dot-entry"
+                                      />
+                                    );
+                                  }
+                                  if (index === chartData.length - 1) {
+                                    const isWin = props.payload?.pnl >= 0;
+                                    return (
+                                      <circle
+                                        cx={cx}
+                                        cy={cy}
+                                        r={7}
+                                        fill={isWin ? '#22c55e' : '#ef4444'}
+                                        stroke="white"
+                                        strokeWidth={2.5}
+                                        key="dot-exit"
+                                      />
+                                    );
+                                  }
+                                  return <g key={`dot-empty-${index}`} />;
+                                }}
+                                activeDot={{ r: 5, strokeWidth: 2, stroke: 'white' }}
+                              />
+
+                              <Tooltip
+                                content={(props: any) => {
+                                  const { active, payload } = props;
+                                  if (!active || !payload?.length) return null;
+                                  const val = payload[0]?.value;
+                                  const isPos = val >= 0;
+                                  return (
+                                    <div style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '8px 12px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)' }} className="font-sans">
+                                      <span style={{ color: isPos ? '#22c55e' : '#ef4444' }} className="text-xs font-bold font-mono">
+                                        {isPos ? `+₹${val}` : `-₹${Math.abs(val)}`}
+                                      </span>
+                                    </div>
+                                  );
+                                }}
+                              />
+                            </ComposedChart>
+                          </ResponsiveContainer>
+                        )}
+                      </div>
+                    </section>
+
+                    {/* CARD F: PSYCHOLOGY SUB-METRICS ANALYSIS */}
+                    <section 
+                      style={{ 
+                        backgroundColor: 'var(--card)', 
+                        border: '1px solid rgba(0,0,0,0.06)', 
+                        borderRadius: '12px',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
+                      }} 
+                      className="p-6"
+                    >
+                      <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">
+                        Psychology Spectrum
+                      </h2>
+                      <p style={{ color: 'var(--text-muted)' }} className="text-[11px] font-mono uppercase tracking-wider mb-2">Subjective states</p>
+
+                      {!psychology ? (
+                        <div style={{ color: 'var(--text-muted)' }} className="text-xs italic py-4">No psychology data for this trade</div>
+                      ) : (
+                        <div style={{ borderColor: 'var(--border)' }} className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 mt-3 pt-3 border-t">
+                          {/* Left side */}
+                          <div className="space-y-4">
+                            <div>
+                              <div className="flex justify-between font-mono text-xs mb-1.5 font-sans" style={{ fontSize: '11px' }}>
+                                <span style={{ color: 'var(--text-muted)', textTransform: 'uppercase' }}>FOMO State</span>
+                                <span style={{ color: 'var(--text)' }} className="font-bold">{psychology.fomo_state || '—'}</span>
+                              </div>
+                              <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
+                                <div className="h-full rounded-full bg-cyan-500" style={{ width: psychology.fomo_state === 'None' ? '10%' : psychology.fomo_state === 'Mild' ? '40%' : psychology.fomo_state === 'Moderate' ? '70%' : psychology.fomo_state === 'Severe' ? '100%' : '0%' }} />
+                              </div>
+                            </div>
+
+                            <div>
+                              <div className="flex justify-between font-mono text-xs mb-1.5 font-sans" style={{ fontSize: '11px' }}>
+                                <span style={{ color: 'var(--text-muted)', textTransform: 'uppercase' }}>Greed Index</span>
+                                <span style={{ color: 'var(--text)' }} className="font-bold">{psychology.greed_index || '—'}</span>
+                              </div>
+                              <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
+                                <div className="h-full rounded-full bg-cyan-500" style={{ width: psychology.greed_index === 'Low' ? '25%' : psychology.greed_index === 'Medium' ? '60%' : psychology.greed_index === 'High' ? '90%' : '0%' }} />
+                              </div>
+                            </div>
+
+                            <div>
+                              <div className="flex justify-between font-mono text-xs mb-1.5 font-sans" style={{ fontSize: '11px' }}>
+                                <span style={{ color: 'var(--text-muted)', textTransform: 'uppercase' }}>Patience Level</span>
+                                <span style={{ color: 'var(--text)' }} className="font-bold">{psychology.patience_level || '—'}</span>
+                              </div>
+                              <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
+                                <div className="h-full rounded-full bg-cyan-500" style={{ width: psychology.patience_level === 'Poor' ? '20%' : psychology.patience_level === 'Fair' ? '50%' : psychology.patience_level === 'Good' ? '80%' : psychology.patience_level === 'Excellent' ? '100%' : '0%' }} />
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Right side */}
+                          <div className="space-y-4">
+                            <div>
+                              <div className="flex justify-between font-mono text-xs mb-1.5 font-sans" style={{ fontSize: '11px' }}>
+                                <span style={{ color: 'var(--text-muted)', textTransform: 'uppercase' }}>Anger / Frustration</span>
+                                <span style={{ color: 'var(--text)' }} className="font-bold">{psychology.anger_state || '—'}</span>
+                              </div>
+                              <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
+                                <div className="h-full rounded-full bg-cyan-500" style={{ width: psychology.anger_state === 'None' ? '10%' : psychology.anger_state === 'Low' ? '35%' : psychology.anger_state === 'Medium' ? '65%' : psychology.anger_state === 'High' ? '100%' : '0%' }} />
+                              </div>
+                            </div>
+
+                            <div>
+                              <div className="flex justify-between font-mono text-xs mb-1.5 font-sans" style={{ fontSize: '11px' }}>
+                                <span style={{ color: 'var(--text-muted)', textTransform: 'uppercase' }}>Discipline Score</span>
+                                <span style={{ color: 'var(--text)' }} className="font-bold">{psychology.discipline_rating ? `${psychology.discipline_rating}/5` : '—'}</span>
+                              </div>
+                              <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
+                                <div className="h-full rounded-full bg-cyan-500" style={{ width: `${(psychology.discipline_rating || 0) * 20}%` }} />
+                              </div>
+                            </div>
+
+                            <div>
+                              <div className="flex justify-between font-mono text-xs mb-1.5 font-sans" style={{ fontSize: '11px' }}>
+                                <span style={{ color: 'var(--text-muted)', textTransform: 'uppercase' }}>Mental Comfort</span>
+                                <span style={{ color: 'var(--text)' }} className="font-bold">{psychology.comfort_level || '—'}</span>
+                              </div>
+                              <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
+                                <div className="h-full rounded-full bg-cyan-500" style={{ width: psychology.comfort_level === 'Distressed' ? '15%' : psychology.comfort_level === 'Uncomfortable' ? '45%' : psychology.comfort_level === 'Neutral' ? '70%' : psychology.comfort_level === 'Comfortable' ? '100%' : '0%' }} />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </section>
+
+                    {/* CARD G: RISK MANAGEMENT RULES FOLLOWED */}
+                    <section 
+                      style={{ 
+                        backgroundColor: 'var(--card)', 
+                        border: '1px solid rgba(0,0,0,0.06)', 
+                        borderRadius: '12px',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
+                      }} 
+                      className="p-6"
+                    >
+                      <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">Risk Management</h2>
+                      <p style={{ color: 'var(--text-muted)' }} className="text-[11px] font-mono uppercase tracking-wider mb-2">Exposure analysis</p>
+
+                      {!riskMgmt ? (
+                        <div style={{ color: 'var(--text-muted)' }} className="text-xs italic py-4">No risk data for this trade</div>
+                      ) : (
+                        <div className="space-y-4 mt-3">
+                          <div style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)' }} className="p-3 rounded-xl border font-sans">
+                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Decided Risk</span>
+                            <span style={{ color: 'var(--text)' }} className="text-sm font-semibold block mt-0.5 font-mono">
+                              {formatINR(riskMgmt.decided_risk)}
+                            </span>
+                          </div>
+
+                          <div>
+                            <div className="flex justify-between font-mono font-bold mb-1.5 font-sans" style={{ fontSize: '11px' }}>
+                              <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Followed Risk Rules</span>
+                              <span className={getScoreColor(riskScore)}>{riskScore.toFixed(0)}%</span>
+                            </div>
+                            <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-2 rounded-full overflow-hidden w-full">
+                              <div
+                                className="h-full rounded-full transition-all duration-300"
+                                style={{ width: `${riskScore}%`, backgroundColor: 'var(--accent)' }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </section>
+
+                    {/* CARD H: MEDIA VIEWER ZONE */}
+                    <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="rounded-xl p-6 shadow-sm">
+                      <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, textTransform: 'none' }} className="font-display mb-3">
+                        Trade Attachments
+                      </h2>
+
+                      <div className="space-y-4 text-xs">
+                        {/* Chart Screenshot */}
+                        <div>
+                          <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] font-bold font-mono uppercase tracking-widest mb-1.5 font-sans">
+                            Chart Screenshot
+                          </span>
+                          {trade.chart_image_url ? (
+                            <div
+                              style={{ position: 'relative', cursor: 'pointer' }}
+                              onClick={() => setViewerOpen(true)}
+                              className="group rounded-xl overflow-hidden border border-[var(--border)] bg-zinc-950"
+                            >
+                              <img
+                                src={trade.chart_image_url}
+                                style={{ width: '100%', borderRadius: '8px', display: 'block', border: '0.5px solid var(--border)' }}
+                                alt="Chart execution screenshot"
+                                referrerPolicy="no-referrer"
+                              />
+                              <div
+                                style={{ position: 'absolute', inset: 0, borderRadius: '8px', background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                className="opacity-70 group-hover:opacity-100 transition-opacity"
+                              >
+                                <span style={{ fontSize: '11px', color: '#fff', background: 'rgba(0,0,0,0.6)', padding: '4px 10px', borderRadius: '20px' }}>
+                                  🔍 Click to view & draw
+                                </span>
+                              </div>
+                            </div>
+                          ) : (
+                            <div style={{ backgroundColor: 'var(--bar)', border: '0.5px dashed var(--border)', color: 'var(--text-muted)' }} className="p-3 rounded-xl text-center italic">
+                              No chart image snapshot archived.
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Trade Video Recording */}
+                        {trade.trade_video_url && (
+                          <div style={{ borderColor: 'var(--border)' }} className="pt-2 border-t">
+                            <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] font-bold font-mono uppercase tracking-widest mb-2 font-sans">
+                              Trade Recording Video
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => window.open(trade.trade_video_url, '_blank')}
+                              style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', color: 'var(--text-sub)' }}
+                              className="w-full hover:opacity-90 font-semibold rounded-xl px-4 py-2.5 flex items-center justify-center gap-2 cursor-pointer transition-all"
+                            >
+                              <ExternalLink className="w-3.5 h-3.5 text-cyan-500" />
+                              <span>Watch Playback Recording</span>
+                            </button>
+                          </div>
+                        )}
+
+                        {/* Trade Plan PDF/image */}
+                        {trade.trade_plan_url && (
+                          <div style={{ borderColor: 'var(--border)' }} className="pt-2 border-t">
+                            <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] font-bold font-mono uppercase tracking-widest mb-2 font-sans">
+                              Associated Trade Plan
+                            </span>
+                            {trade.trade_plan_url.toLowerCase().endsWith('.pdf') ? (
+                              <button
+                                type="button"
+                                onClick={() => window.open(trade.trade_plan_url, '_blank')}
+                                style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', color: 'var(--text-sub)' }}
+                                className="w-full hover:opacity-90 font-semibold rounded-xl px-4 py-2.5 flex items-center justify-center gap-2 cursor-pointer transition-all"
+                              >
+                                <FileText className="w-3.5 h-3.5 text-cyan-500" />
+                                <span>Read Trade Plan (PDF)</span>
+                              </button>
+                            ) : (
+                              <div style={{ borderColor: 'var(--border)' }} className="relative group rounded-xl overflow-hidden border bg-zinc-950">
+                                <img
+                                  src={trade.trade_plan_url}
+                                  alt="Trade plan chart/model"
+                                  className="w-full object-contain max-h-48 cursor-pointer hover:scale-[1.01] transition-transform duration-200"
+                                  onClick={() => window.open(trade.trade_plan_url, '_blank')}
+                                  referrerPolicy="no-referrer"
+                                />
+                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity pointer-events-none">
+                                  <span className="text-[10px] font-bold uppercase text-white font-mono flex items-center gap-1.5 bg-zinc-950 px-3 py-1.5 rounded-lg border border-zinc-800">
+                                    <ExternalLink className="w-3 h-3" />
+                                    <span>Inspect Plan</span>
+                                  </span>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </section>
+
+                    {/* SPECIAL CARD: VISUAL PATTERN MATCH */}
+                    <section 
+                      style={{ 
+                        backgroundColor: 'var(--card)', 
+                        border: '1px solid rgba(0,0,0,0.06)', 
+                        borderRadius: '12px',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
+                      }} 
+                      className="p-6"
+                    >
+                      <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">Visual Pattern Match</h2>
+                      <p style={{ color: 'var(--text-muted)' }} className="text-[11px] font-mono uppercase tracking-wider mb-2">Machine vision resemblance</p>
+
+                      {matchesLoading ? (
+                        <div className="flex flex-col items-center py-6 gap-2">
+                          <div className="w-5 h-5 border-2 rounded-full animate-spin" style={{ borderColor: 'var(--border)', borderTopColor: 'var(--accent)' }} />
+                          <span style={{ color: 'var(--text-muted)' }} className="text-xs font-mono">Running structural comparisons...</span>
+                        </div>
+                      ) : !trade.chart_image_url ? (
+                        <div style={{ backgroundColor: 'var(--bar)', border: '0.5px dashed var(--border)', color: 'var(--text-muted)' }} className="text-xs italic py-4 text-center rounded-xl px-4">
+                          Upload a chart screenshot to activate automated pattern-matching intelligence!
+                        </div>
+                      ) : visualMatches.length === 0 ? (
+                        <div style={{ backgroundColor: 'var(--bar)', border: '0.5px dashed var(--border)', color: 'var(--text-muted)' }} className="text-xs italic py-4 text-center rounded-xl px-4">
+                          No visually similar patterns found in your library yet. Keep logging trades with chart screenshots!
+                        </div>
+                      ) : (
+                        <div className="space-y-3 font-sans">
+                          <p style={{ color: 'var(--text-muted)' }} className="text-[10px] font-mono uppercase tracking-wider">
+                            Matches (Threshold &gt; 45%)
+                          </p>
+                          <div style={{ borderColor: 'var(--border)' }} className="divide-y">
+                            {visualMatches.map((match) => {
+                              const matchPercent = (match.similarity * 100).toFixed(1);
+                              
+                              let outcomeBadge = null;
+                              if (match.outcome === 'Win') {
+                                outcomeBadge = <span style={{ backgroundColor: '#d1fae5', color: '#065f46', borderRadius: '6px', fontSize: '10px', fontWeight: 700, padding: '1px 5px', display: 'inline-block' }} className="uppercase font-mono">WIN</span>;
+                              } else if (match.outcome === 'Loss') {
+                                outcomeBadge = <span style={{ backgroundColor: '#fee2e2', color: '#dc2626', borderRadius: '6px', fontSize: '10px', fontWeight: 700, padding: '1px 5px', display: 'inline-block' }} className="uppercase font-mono">LOSS</span>;
+                              } else if (match.outcome === 'Breakeven') {
+                                outcomeBadge = <span style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', color: 'var(--text-sub)', borderRadius: '6px', fontSize: '10px', fontWeight: 700, padding: '1px 5px', display: 'inline-block' }} className="uppercase font-mono">BE</span>;
+                              }
+
+                              return (
+                                <div key={match.trade_id} style={{ borderColor: 'var(--border)' }} className="py-3 first:pt-0 last:pb-0 flex gap-3 group">
+                                  {/* Thumbnail */}
+                                  <div style={{ borderColor: 'var(--border)' }} className="w-16 h-12 rounded-lg overflow-hidden bg-zinc-950 border flex-shrink-0 relative">
+                                    <img
+                                      src={match.image_url}
+                                      alt="Matching pattern representation"
+                                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200"
+                                      referrerPolicy="no-referrer"
+                                    />
+                                  </div>
+                                  
+                                  {/* Info */}
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center justify-between gap-1.5">
+                                      <Link
+                                        to={`/trading-logs/${match.trade_id}`}
+                                        style={{ color: 'var(--text)' }}
+                                        className="text-xs font-semibold hover:text-[var(--accent)] truncate tracking-wide"
+                                      >
+                                        Setup: {match.setup_name || 'Unnamed Setup'}
+                                      </Link>
+                                      <span style={{ color: 'var(--text-sub)' }} className="text-[10px] font-bold font-mono shrink-0">
+                                        {matchPercent}%
+                                      </span>
+                                    </div>
+                                    
+                                    <div className="flex items-center gap-2 mt-1.5">
+                                      {outcomeBadge}
+                                      {match.trade_rating && (
+                                        <div className="flex items-center gap-0.5 text-amber-500">
+                                          {Array.from({ length: Math.min(5, match.trade_rating) }).map((_, i) => (
+                                            <Star key={i} className="w-2.5 h-2.5 fill-current" />
+                                          ))}
+                                        </div>
+                                      )}
+                                      <span style={{ color: 'var(--text-muted)' }} className="text-[9px] font-mono">
+                                        Rating: {match.trade_rating || '—'}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </section>
+
+                    {/* ASK AI BUTTON AT BOTTOM OF RIGHT COLUMN */}
+                    <button
+                      type="button"
+                      onClick={() => navigate(`/ai-teacher?tradeId=${tradeId || (trade && trade.id)}`)}
+                      style={{
+                        backgroundColor: 'var(--accent)',
+                        color: '#ffffff',
+                        border: 'none',
+                        borderRadius: '8px',
+                        padding: '12px',
+                        fontSize: '14px',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
+                      }}
+                      className="hover:opacity-90 transition-all shadow-sm"
+                    >
+                      <Sparkles className="w-4 h-4 text-white" />
+                      <span>Ask AI Assistant</span>
+                    </button>
                   </div>
                 )}
 
@@ -1771,729 +2440,7 @@ const TradeTrackingPageContent: React.FC = () => {
                     </div>
                   </div>
                 )}
-              </div>
 
-              {/* RIGHT SPANNING ONE COLUMN BENTO RAILS */}
-              <div className="space-y-6">
-                
-                {/* CARD E: KEY PERFORMANCE SCOREBOARD + SPIDER RADAR */}
-                <section 
-                  style={{ 
-                    backgroundColor: 'var(--card)', 
-                    border: '1px solid rgba(0,0,0,0.06)', 
-                    borderRadius: '12px',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
-                  }} 
-                  className="p-6"
-                >
-                  <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">
-                    Performance Score
-                  </h2>
-                  <p style={{ color: 'var(--text-muted)' }} className="text-[11px] font-mono uppercase tracking-wider mb-1">Multidimensional analysis</p>
-
-                  <div className="flex flex-col items-center justify-center mt-4">
-                    {/* Big Score tag */}
-                    <div 
-                      style={{ fontSize: '36px', fontWeight: 800 }} 
-                      className={`font-display tracking-tight ${getScoreColor(overallScore)}`}
-                    >
-                      {overallScore.toFixed(0)}%
-                    </div>
-                    <div style={{ color: 'var(--text-sub)' }} className="text-[10px] font-bold font-mono uppercase tracking-wider mt-1">
-                      Integrity Index
-                    </div>
-                  </div>
-
-                  {/* Horizontal progress bars with reuse logic */}
-                  <div style={{ borderColor: 'var(--border)' }} className="mt-5 space-y-4 pt-4 border-t">
-                    {/* Technical bar */}
-                    <div>
-                      <div className="flex justify-between font-mono font-bold mb-1.5" style={{ fontSize: '11px' }}>
-                        <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Technical Rules (checklists)</span>
-                        <span className={getScoreColor(technicalScore)}>{technicalScore.toFixed(0)}%</span>
-                      </div>
-                      <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-2 rounded-full overflow-hidden w-full">
-                        <div
-                          className="h-full rounded-full transition-all duration-300"
-                          style={{ width: `${technicalScore}%`, backgroundColor: 'var(--accent)' }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Psychology bar */}
-                    <div>
-                      <div className="flex justify-between font-mono font-bold mb-1.5" style={{ fontSize: '11px' }}>
-                        <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Psychology (mindfulness)</span>
-                        <span className={getScoreColor(psychScore)}>{psychScore.toFixed(0)}%</span>
-                      </div>
-                      <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-2 rounded-full overflow-hidden w-full">
-                        <div
-                          className="h-full rounded-full transition-all duration-300"
-                          style={{ width: `${psychScore}%`, backgroundColor: 'var(--accent)' }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Risk bar */}
-                    <div>
-                      <div className="flex justify-between font-mono font-bold mb-1.5" style={{ fontSize: '11px' }}>
-                        <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Risk Management (guidelines)</span>
-                        <span className={getScoreColor(riskScore)}>{riskScore.toFixed(0)}%</span>
-                      </div>
-                      <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-2 rounded-full overflow-hidden w-full">
-                        <div
-                          className="h-full rounded-full transition-all duration-300"
-                          style={{ width: `${riskScore}%`, backgroundColor: 'var(--accent)' }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* RADAR SCORE CHART IF INTEGRATED */}
-                  <div style={{ borderColor: 'var(--border)' }} className="mt-6 pt-3 border-t">
-                    <RadarScoreChart
-                      technicalScore={technicalScore}
-                      psychScore={psychScore}
-                      riskScore={riskScore}
-                    />
-                  </div>
-
-                  {activeTab === 'stats' && (
-                    <div style={{ borderColor: 'var(--border)' }} className="mt-6 pt-4 border-t space-y-4">
-                      <div className="flex items-center justify-between">
-                        <h3 style={{ color: 'var(--text)', fontSize: '12px', fontWeight: 600 }} className="font-mono uppercase tracking-wider">
-                          Psychology Breakdown
-                        </h3>
-                        <span style={{ fontSize: '10px', color: 'var(--text-muted)' }} className="font-mono uppercase">Subjective States</span>
-                      </div>
-                      {!psychology ? (
-                        <div style={{ color: 'var(--text-muted)' }} className="text-xs italic py-2">
-                          No psychology data for this trade
-                        </div>
-                      ) : (
-                        <div className="space-y-3.5">
-                          {/* External Stress */}
-                          <div>
-                            <div className="flex justify-between mb-1 font-sans" style={{ fontSize: '11px' }}>
-                              <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>External Factors / Stress</span>
-                              <span style={{ color: 'var(--text)' }} className="font-bold font-mono">{psychology.external_stress_pct ?? 0}%</span>
-                            </div>
-                            <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
-                              <div className="h-full rounded-full transition-all duration-300" style={{ width: `${psychology.external_stress_pct ?? 0}%`, backgroundColor: 'var(--accent)' }} />
-                            </div>
-                          </div>
-
-                          {/* Price Action */}
-                          <div>
-                            <div className="flex justify-between mb-1 font-sans" style={{ fontSize: '11px' }}>
-                              <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Price Action Reading</span>
-                              <span style={{ color: 'var(--text)' }} className="font-bold font-mono">{psychology.price_action_reading_pct ?? 0}%</span>
-                            </div>
-                            <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
-                              <div className="h-full rounded-full transition-all duration-300" style={{ width: `${psychology.price_action_reading_pct ?? 0}%`, backgroundColor: 'var(--accent)' }} />
-                            </div>
-                          </div>
-
-                          {/* Confidence */}
-                          <div>
-                            <div className="flex justify-between mb-1 font-sans" style={{ fontSize: '11px' }}>
-                              <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Self Confidence</span>
-                              <span style={{ color: 'var(--text)' }} className="font-bold font-mono">{psychology.confidence_pct ?? 0}%</span>
-                            </div>
-                            <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
-                              <div className="h-full rounded-full transition-all duration-300" style={{ width: `${psychology.confidence_pct ?? 0}%`, backgroundColor: 'var(--accent)' }} />
-                            </div>
-                          </div>
-
-                          {/* Entry Levels */}
-                          <div>
-                            <div className="flex justify-between mb-1 font-sans" style={{ fontSize: '11px' }}>
-                              <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Entry Levels Confidence</span>
-                              <span style={{ color: 'var(--text)' }} className="font-bold font-mono">{psychology.entry_levels_pct ?? 0}%</span>
-                            </div>
-                            <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
-                              <div className="h-full rounded-full transition-all duration-300" style={{ width: `${psychology.entry_levels_pct ?? 0}%`, backgroundColor: 'var(--accent)' }} />
-                            </div>
-                          </div>
-
-                          {/* Anxiety */}
-                          <div>
-                            <div className="flex justify-between mb-1 font-sans" style={{ fontSize: '11px' }}>
-                              <div className="flex items-center gap-1">
-                                <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Anxiety</span>
-                                <span className="text-[10px] text-amber-500 font-mono font-bold">(lower is better)</span>
-                              </div>
-                              <span className="text-amber-500 font-bold font-mono">{psychology.anxiety_pct ?? 0}%</span>
-                            </div>
-                            <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
-                              <div className="h-full rounded-full transition-all duration-300" style={{ width: `${psychology.anxiety_pct ?? 0}%`, backgroundColor: '#f59e0b' }} />
-                            </div>
-                          </div>
-
-                          {/* Fear */}
-                          <div>
-                            <div className="flex justify-between mb-1 font-sans" style={{ fontSize: '11px' }}>
-                              <div className="flex items-center gap-1">
-                                <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Fear</span>
-                                <span className="text-[10px] text-red-500 font-mono font-bold">(lower is better)</span>
-                              </div>
-                              <span className="text-red-500 font-bold font-mono">{psychology.fear_pct ?? 0}%</span>
-                            </div>
-                            <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
-                              <div className="h-full rounded-full transition-all duration-300" style={{ width: `${psychology.fear_pct ?? 0}%`, backgroundColor: '#ef4444' }} />
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </section>
-
-                {/* CHANGE 4 — Running P&L Chart Card */}
-                <section 
-                  style={{ 
-                    backgroundColor: 'var(--card)', 
-                    border: '1px solid rgba(0,0,0,0.06)', 
-                    borderRadius: '12px',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
-                  }} 
-                  className="p-6 overflow-hidden"
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">
-                      Running P&L Chart
-                    </h2>
-                    {chartLoading ? (
-                      <span style={{ color: 'var(--accent)' }} className="text-xs font-mono animate-pulse">Syncing TwelveData...</span>
-                    ) : apiError ? (
-                      null
-                    ) : (
-                      <span className="text-xs text-green-500 font-mono">Live Session Data</span>
-                    )}
-                  </div>
-                  <p style={{ color: 'var(--text-muted)' }} className="text-[11px] font-mono uppercase tracking-wider mb-4">
-                    Intraday P&L trajectory analysis
-                  </p>
-
-                  <div className="h-[200px] min-h-[200px] w-full flex items-center justify-center font-sans">
-                    {chartLoading ? (
-                      <div className="flex flex-col items-center gap-2">
-                        <div className="w-5 h-5 border-2 rounded-full animate-spin" style={{ borderColor: 'var(--border)', borderTopColor: 'var(--accent)' }} />
-                        <span style={{ color: 'var(--text-muted)' }} className="text-xs font-mono">Loading market bars...</span>
-                      </div>
-                    ) : (
-                      <ResponsiveContainer width="100%" height="100%">
-                        <ComposedChart
-                          data={chartData}
-                          margin={{ top: 12, right: 12, bottom: 0, left: -10 }}
-                        >
-                          <defs>
-                            {/* Gradient for fill area */}
-                            <linearGradient id="pnlAreaGrad" x1="0" y1="0" x2="0" y2="1">
-                              {/* Green above zero: top (0%) has opacity 0.25, zero line has opacity 0.02 */}
-                              <stop offset="0%" stopColor="#22c55e" stopOpacity={0.25} />
-                              <stop offset={`${zeroPercent}%`} stopColor="#22c55e" stopOpacity={0.02} />
-                              
-                              {/* Red below zero: zero line has opacity 0.02, bottom (100%) has opacity 0.25 */}
-                              <stop offset={`${zeroPercent}%`} stopColor="#ef4444" stopOpacity={0.02} />
-                              <stop offset="100%" stopColor="#ef4444" stopOpacity={0.25} />
-                            </linearGradient>
-
-                            {/* Gradient for LINE color */}
-                            <linearGradient id="pnlLineGrad" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset={`${zeroPercent}%`} stopColor="#22c55e" stopOpacity={1} />
-                              <stop offset={`${zeroPercent}%`} stopColor="#ef4444" stopOpacity={1} />
-                            </linearGradient>
-                          </defs>
-
-                          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
-
-                          <YAxis
-                            stroke="var(--text-muted)"
-                            tickFormatter={(v) => v >= 0 ? `₹${v}` : `-₹${Math.abs(v)}`}
-                            tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
-                            axisLine={false}
-                            tickLine={false}
-                            width={55}
-                          />
-
-                          <ReferenceLine
-                            y={0}
-                            stroke="rgba(0,0,0,0.15)"
-                            strokeDasharray="4 4"
-                            strokeWidth={1}
-                          />
-
-                          <Area
-                            type="monotone"
-                            dataKey="pnl"
-                            stroke="none"
-                            fill="url(#pnlAreaGrad)"
-                            baseLine={0}
-                          />
-
-                          <Line
-                            type="monotone"
-                            dataKey="pnl"
-                            stroke="url(#pnlLineGrad)"
-                            strokeWidth={3}
-                            dot={(props: any) => {
-                              const { cx, cy, index } = props;
-                              if (index === 0) {
-                                return (
-                                  <circle
-                                    cx={cx}
-                                    cy={cy}
-                                    r={5}
-                                    fill="white"
-                                    stroke="#22c55e"
-                                    strokeWidth={2}
-                                    key="dot-entry"
-                                  />
-                                );
-                              }
-                              if (index === chartData.length - 1) {
-                                const isWin = props.payload?.pnl >= 0;
-                                return (
-                                  <circle
-                                    cx={cx}
-                                    cy={cy}
-                                    r={7}
-                                    fill={isWin ? '#22c55e' : '#ef4444'}
-                                    stroke="white"
-                                    strokeWidth={2.5}
-                                    key="dot-exit"
-                                  />
-                                );
-                              }
-                              return <g key={`dot-empty-${index}`} />;
-                            }}
-                            activeDot={{ r: 5, strokeWidth: 2, stroke: 'white' }}
-                          />
-
-                          <Tooltip
-                            content={(props: any) => {
-                              const { active, payload } = props;
-                              if (!active || !payload?.length) return null;
-                              const val = payload[0]?.value;
-                              const isPos = val >= 0;
-                              return (
-                                <div style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '8px 12px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)' }} className="font-sans">
-                                  <span style={{ color: isPos ? '#22c55e' : '#ef4444' }} className="text-xs font-bold font-mono">
-                                    {isPos ? `+₹${val}` : `-₹${Math.abs(val)}`}
-                                  </span>
-                                </div>
-                              );
-                            }}
-                          />
-                        </ComposedChart>
-                      </ResponsiveContainer>
-                    )}
-                  </div>
-                </section>
-
-                {/* CARD F: PSYCHOLOGY SUB-METRICS ANALYSIS */}
-                <section 
-                  style={{ 
-                    backgroundColor: 'var(--card)', 
-                    border: '1px solid rgba(0,0,0,0.06)', 
-                    borderRadius: '12px',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
-                  }} 
-                  className="p-6"
-                >
-                  <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">
-                    Psychology Spectrum
-                  </h2>
-                  <p style={{ color: 'var(--text-muted)' }} className="text-[11px] font-mono uppercase tracking-wider mb-2">Subjective states</p>
-
-                  {!psychology ? (
-                    <div style={{ color: 'var(--text-muted)' }} className="text-xs italic py-4">No psychology data for this trade</div>
-                  ) : (
-                    <div className="space-y-4 mt-3">
-                      
-                      {/* External Stress */}
-                      <div>
-                        <div className="flex justify-between mb-1 font-sans" style={{ fontSize: '11px' }}>
-                          <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>External Factors / Stress</span>
-                          <span style={{ color: 'var(--text)' }} className="font-bold font-mono">{psychology.external_stress_pct}%</span>
-                        </div>
-                        <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
-                          <div className="h-full rounded-full" style={{ width: `${psychology.external_stress_pct}%`, backgroundColor: 'var(--accent)' }} />
-                        </div>
-                      </div>
-
-                      {/* Price Action */}
-                      <div>
-                        <div className="flex justify-between mb-1 font-sans" style={{ fontSize: '11px' }}>
-                          <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Price Action Reading</span>
-                          <span style={{ color: 'var(--text)' }} className="font-bold font-mono">{psychology.price_action_reading_pct}%</span>
-                        </div>
-                        <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
-                          <div className="h-full rounded-full" style={{ width: `${psychology.price_action_reading_pct}%`, backgroundColor: 'var(--accent)' }} />
-                        </div>
-                      </div>
-
-                      {/* Confidence */}
-                      <div>
-                        <div className="flex justify-between mb-1 font-sans" style={{ fontSize: '11px' }}>
-                          <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Self Confidence</span>
-                          <span style={{ color: 'var(--text)' }} className="font-bold font-mono">{psychology.confidence_pct}%</span>
-                        </div>
-                        <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
-                          <div className="h-full rounded-full" style={{ width: `${psychology.confidence_pct}%`, backgroundColor: 'var(--accent)' }} />
-                        </div>
-                      </div>
-
-                      {/* Entry Level Confidence */}
-                      <div>
-                        <div className="flex justify-between mb-1 font-sans" style={{ fontSize: '11px' }}>
-                          <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Entry Levels Confidence</span>
-                          <span style={{ color: 'var(--text)' }} className="font-bold font-mono">{psychology.entry_levels_pct}%</span>
-                        </div>
-                        <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
-                          <div className="h-full rounded-full" style={{ width: `${psychology.entry_levels_pct}%`, backgroundColor: 'var(--accent)' }} />
-                        </div>
-                      </div>
-
-                      {/* Anxiety */}
-                      <div>
-                        <div className="flex justify-between mb-1 font-sans" style={{ fontSize: '11px' }}>
-                          <div className="flex items-center gap-1">
-                            <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Anxiety</span>
-                            <span className="text-[10px] text-amber-500 font-mono font-bold">(lower is better)</span>
-                          </div>
-                          <span className="text-amber-500 font-bold font-mono">{psychology.anxiety_pct}%</span>
-                        </div>
-                        <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
-                          <div className="h-full rounded-full" style={{ width: `${psychology.anxiety_pct}%`, backgroundColor: '#f59e0b' }} />
-                        </div>
-                      </div>
-
-                      {/* Fear */}
-                      <div>
-                        <div className="flex justify-between mb-1 font-sans" style={{ fontSize: '11px' }}>
-                          <div className="flex items-center gap-1">
-                            <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Fear</span>
-                            <span className="text-[10px] text-red-500 font-mono font-bold">(lower is better)</span>
-                          </div>
-                          <span className="text-red-500 font-bold font-mono">{psychology.fear_pct}%</span>
-                        </div>
-                        <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
-                          <div className="h-full rounded-full" style={{ width: `${psychology.fear_pct}%`, backgroundColor: '#ef4444' }} />
-                        </div>
-                      </div>
-
-                      {/* Summary psychological score condition */}
-                      <div style={{ borderColor: 'var(--border)' }} className="mt-4 pt-3 border-t flex items-center justify-between">
-                        <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="font-mono">
-                          Psychological Score
-                        </span>
-                        <span className={`text-base font-black font-mono ${getScoreColor(psychScore)}`}>
-                          {psychScore.toFixed(1)}%
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </section>
-
-                {/* CARD G: RISK MANAGEMENT RULES FOLLOWED */}
-                <section 
-                  style={{ 
-                    backgroundColor: 'var(--card)', 
-                    border: '1px solid rgba(0,0,0,0.06)', 
-                    borderRadius: '12px',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
-                  }} 
-                  className="p-6"
-                >
-                  <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">Risk Management</h2>
-                  <p style={{ color: 'var(--text-muted)' }} className="text-[11px] font-mono uppercase tracking-wider mb-2">Exposure analysis</p>
-
-                  {!riskMgmt ? (
-                    <div style={{ color: 'var(--text-muted)' }} className="text-xs italic py-4">No risk data for this trade</div>
-                  ) : (
-                    <div className="space-y-4 mt-3">
-                      <div style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)' }} className="p-3 rounded-xl border font-sans">
-                        <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Decided Risk</span>
-                        <span style={{ color: 'var(--text)' }} className="text-sm font-semibold block mt-0.5 font-mono">
-                          {formatINR(riskMgmt.decided_risk)}
-                        </span>
-                      </div>
-
-                      <div>
-                        <div className="flex justify-between font-mono font-bold mb-1.5 font-sans" style={{ fontSize: '11px' }}>
-                          <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Followed Risk Rules</span>
-                          <span className={getScoreColor(riskScore)}>{riskScore.toFixed(0)}%</span>
-                        </div>
-                        <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-2 rounded-full overflow-hidden w-full">
-                          <div
-                            className="h-full rounded-full transition-all duration-300"
-                            style={{ width: `${riskScore}%`, backgroundColor: 'var(--accent)' }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </section>
-
-                   {/* CARD H: MEDIA VIEWER ZONE */}
-                <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="rounded-xl p-6 shadow-sm">
-                  <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, textTransform: 'none' }} className="font-display mb-3">
-                    Trade Attachments
-                  </h2>
-
-                  <div className="space-y-4 text-xs">
-                    {/* Chart Screenshot */}
-                    <div>
-                      <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] font-bold font-mono uppercase tracking-widest mb-1.5 font-sans">
-                        Chart Screenshot
-                      </span>
-                      {trade.chart_image_url ? (
-                        <div
-                          style={{ position: 'relative', cursor: 'pointer' }}
-                          onClick={() => setViewerOpen(true)}
-                          className="group rounded-xl overflow-hidden border border-[var(--border)] bg-zinc-950"
-                        >
-                          <img
-                            src={trade.chart_image_url}
-                            style={{ width: '100%', borderRadius: '8px', display: 'block', border: '0.5px solid var(--border)' }}
-                            alt="Chart execution screenshot"
-                            referrerPolicy="no-referrer"
-                          />
-                          <div
-                            style={{ position: 'absolute', inset: 0, borderRadius: '8px', background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                            className="opacity-70 group-hover:opacity-100 transition-opacity"
-                          >
-                            <span style={{ fontSize: '11px', color: '#fff', background: 'rgba(0,0,0,0.6)', padding: '4px 10px', borderRadius: '20px' }}>
-                              🔍 Click to view & draw
-                            </span>
-                          </div>
-                        </div>
-                      ) : (
-                        <div style={{ backgroundColor: 'var(--bar)', border: '0.5px dashed var(--border)', color: 'var(--text-muted)' }} className="p-3 rounded-xl text-center italic">
-                          No chart image snapshot archived.
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Trade Video Recording */}
-                    {trade.trade_video_url && (
-                      <div style={{ borderColor: 'var(--border)' }} className="pt-2 border-t">
-                        <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] font-bold font-mono uppercase tracking-widest mb-2 font-sans">
-                          Trade Recording Video
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => window.open(trade.trade_video_url, '_blank')}
-                          style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', color: 'var(--text-sub)' }}
-                          className="w-full hover:opacity-90 font-semibold rounded-xl px-4 py-2.5 flex items-center justify-center gap-2 cursor-pointer transition-all"
-                        >
-                          <ExternalLink className="w-3.5 h-3.5 text-cyan-500" />
-                          <span>Watch Playback Recording</span>
-                        </button>
-                      </div>
-                    )}
-
-                    {/* Trade Plan PDF/image */}
-                    {trade.trade_plan_url && (
-                      <div style={{ borderColor: 'var(--border)' }} className="pt-2 border-t">
-                        <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] font-bold font-mono uppercase tracking-widest mb-2 font-sans">
-                          Associated Trade Plan
-                        </span>
-                        {trade.trade_plan_url.toLowerCase().endsWith('.pdf') ? (
-                          <button
-                            type="button"
-                            onClick={() => window.open(trade.trade_plan_url, '_blank')}
-                            style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', color: 'var(--text-sub)' }}
-                            className="w-full hover:opacity-90 font-semibold rounded-xl px-4 py-2.5 flex items-center justify-center gap-2 cursor-pointer transition-all"
-                          >
-                            <FileText className="w-3.5 h-3.5 text-cyan-500" />
-                            <span>Read Trade Plan (PDF)</span>
-                          </button>
-                        ) : (
-                          <div style={{ borderColor: 'var(--border)' }} className="relative group rounded-xl overflow-hidden border bg-zinc-950">
-                            <img
-                              src={trade.trade_plan_url}
-                              alt="Trade plan chart/model"
-                              className="w-full object-contain max-h-48 cursor-pointer hover:scale-[1.01] transition-transform duration-200"
-                              onClick={() => window.open(trade.trade_plan_url, '_blank')}
-                              referrerPolicy="no-referrer"
-                            />
-                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity pointer-events-none">
-                              <span className="text-[10px] font-bold uppercase text-white font-mono flex items-center gap-1.5 bg-zinc-950 px-3 py-1.5 rounded-lg border border-zinc-800">
-                                <ExternalLink className="w-3 h-3" />
-                                <span>Inspect Plan</span>
-                              </span>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </section>
-
-                {/* SPECIAL CARD: VISUAL PATTERN MATCH */}
-                <section 
-                  style={{ 
-                    backgroundColor: 'var(--card)', 
-                    border: '1px solid rgba(0,0,0,0.06)', 
-                    borderRadius: '12px',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
-                  }} 
-                  className="p-6"
-                >
-                  <div className="flex items-center gap-2 mb-4 font-sans">
-                    <Sparkles className="w-5 h-5 text-cyan-500" />
-                    <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">
-                      Visual Pattern Match
-                    </h2>
-                  </div>
-
-                  {!trade.chart_image_url ? (
-                    <div style={{ backgroundColor: 'var(--bar)', border: '0.5px dashed var(--border)', color: 'var(--text-muted)' }} className="text-xs italic py-4 text-center rounded-xl px-4">
-                      No chart screenshot uploaded for this trade.
-                    </div>
-                  ) : hasEmbedding === null ? (
-                    <div className="flex flex-col items-center justify-center py-6 gap-3">
-                      <div className="w-5 h-5 border-2 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin" />
-                    </div>
-                  ) : hasEmbedding === false ? (
-                    <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="rounded-xl p-4 text-left">
-                      {generatingState ? (
-                        <div className="space-y-3 font-sans">
-                          <div className="flex items-center gap-2">
-                            <div className="w-3.5 h-3.5 border-2 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin" />
-                            <span style={{ color: 'var(--text)' }} className="text-xs font-medium">
-                              {generatingState === 'loading-model' && `Loading Vision Model... ${generationProgress > 0 ? generationProgress + '%' : ''}`}
-                              {generatingState === 'generating' && 'Identifying edge structures...'}
-                              {generatingState === 'saving' && 'Cataloging chart vectors...'}
-                              {generatingState === 'error' && 'Failed to convert chart'}
-                            </span>
-                          </div>
-                          {generatingState === 'loading-model' && generationProgress > 0 && (
-                            <div style={{ backgroundColor: 'var(--border)' }} className="rounded-full h-1 w-full overflow-hidden">
-                              <div className="bg-cyan-500 h-1 transition-all" style={{ width: `${generationProgress}%` }} />
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={handleGenerateEmbedding}
-                          style={{ backgroundColor: 'var(--accent)', color: '#ffffff', border: 'none', padding: '10px 20px', borderRadius: '8px', fontSize: '13px', fontWeight: '600', cursor: 'pointer' }}
-                          className="w-full hover:opacity-90 transition-all flex items-center justify-center gap-2"
-                        >
-                          <Sparkles className="w-3.5 h-3.5" />
-                          <span>Generate Embedding</span>
-                        </button>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {matchesLoading ? (
-                        <div className="flex flex-col items-center justify-center py-6 gap-3">
-                          <div className="w-6 h-6 border-2 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin" />
-                          <span style={{ color: 'var(--text-muted)' }} className="text-xs font-mono">Comparing visual parameters...</span>
-                        </div>
-                      ) : visualMatches.length === 0 ? (
-                        <div style={{ backgroundColor: 'var(--bar)', border: '0.5px dashed var(--border)', color: 'var(--text-muted)' }} className="text-xs italic py-4 text-center rounded-xl px-4">
-                          No visually similar patterns found in your library yet. Keep logging trades with chart screenshots!
-                        </div>
-                      ) : (
-                        <div className="space-y-3 font-sans">
-                          <p style={{ color: 'var(--text-muted)' }} className="text-[10px] font-mono uppercase tracking-wider">
-                            Matches (Threshold &gt; 45%)
-                          </p>
-                          <div style={{ borderColor: 'var(--border)' }} className="divide-y">
-                            {visualMatches.map((match) => {
-                              const matchPercent = (match.similarity * 100).toFixed(1);
-                              
-                              let outcomeBadge = null;
-                              if (match.outcome === 'Win') {
-                                outcomeBadge = <span style={{ backgroundColor: '#d1fae5', color: '#065f46', borderRadius: '6px', fontSize: '10px', fontWeight: 700, padding: '1px 5px', display: 'inline-block' }} className="uppercase font-mono">WIN</span>;
-                              } else if (match.outcome === 'Loss') {
-                                outcomeBadge = <span style={{ backgroundColor: '#fee2e2', color: '#dc2626', borderRadius: '6px', fontSize: '10px', fontWeight: 700, padding: '1px 5px', display: 'inline-block' }} className="uppercase font-mono">LOSS</span>;
-                              } else if (match.outcome === 'Breakeven') {
-                                outcomeBadge = <span style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', color: 'var(--text-sub)', borderRadius: '6px', fontSize: '10px', fontWeight: 700, padding: '1px 5px', display: 'inline-block' }} className="uppercase font-mono">BE</span>;
-                              }
-
-                              return (
-                                <div key={match.trade_id} style={{ borderColor: 'var(--border)' }} className="py-3 first:pt-0 last:pb-0 flex gap-3 group">
-                                  {/* Thumbnail */}
-                                  <div style={{ borderColor: 'var(--border)' }} className="w-16 h-12 rounded-lg overflow-hidden bg-zinc-950 border flex-shrink-0 relative">
-                                    <img
-                                      src={match.image_url}
-                                      alt="Matching pattern representation"
-                                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200"
-                                      referrerPolicy="no-referrer"
-                                    />
-                                  </div>
-                                  
-                                  {/* Info */}
-                                  <div className="flex-1 min-w-0">
-                                    <div className="flex items-center justify-between gap-1.5">
-                                      <Link
-                                        to={`/trading-logs/${match.trade_id}`}
-                                        style={{ color: 'var(--text)' }}
-                                        className="text-xs font-semibold hover:text-[var(--accent)] truncate tracking-wide"
-                                      >
-                                        Setup: {match.setup_name || 'Unnamed Setup'}
-                                      </Link>
-                                      <span style={{ color: 'var(--text-sub)' }} className="text-[10px] font-bold font-mono shrink-0">
-                                        {matchPercent}%
-                                      </span>
-                                    </div>
-                                    
-                                    <div className="flex items-center gap-2 mt-1.5">
-                                      {outcomeBadge}
-                                      {match.trade_rating && (
-                                        <div className="flex items-center gap-0.5 text-amber-500">
-                                          {Array.from({ length: Math.min(5, match.trade_rating) }).map((_, i) => (
-                                            <Star key={i} className="w-2.5 h-2.5 fill-current" />
-                                          ))}
-                                        </div>
-                                      )}
-                                      <span style={{ color: 'var(--text-muted)' }} className="text-[9px] font-mono">
-                                        Rating: {match.trade_rating || '—'}
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </section>
-
-                {/* ASK AI BUTTON AT BOTTOM OF RIGHT COLUMN */}
-                <button
-                  type="button"
-                  onClick={() => navigate(`/ai-teacher?tradeId=${tradeId || (trade && trade.id)}`)}
-                  style={{
-                    backgroundColor: 'var(--accent)',
-                    color: '#ffffff',
-                    border: 'none',
-                    borderRadius: '8px',
-                    padding: '12px',
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    width: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px'
-                  }}
-                  className="hover:opacity-90 transition-all shadow-sm"
-                >
-                  <Sparkles className="w-4 h-4 text-white" />
-                  <span>Ask AI Assistant</span>
-                </button>
-              </div>
             </div>
           </div>
         </main>
