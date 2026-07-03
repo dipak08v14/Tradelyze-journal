@@ -1970,7 +1970,7 @@ export const AdvancedReports: React.FC = () => {
                                 return null;
                               }}
                             />
-                            <Bar dataKey="pnl">
+                            <Bar dataKey="pnl" radius={[4, 4, 0, 0]}>
                               {monthlyChartData.map((entry, index) => (
                                 <Cell key={`cell-${index}`} fill={entry.pnl >= 0 ? '#008F67' : '#DF1C30'} />
                               ))}
