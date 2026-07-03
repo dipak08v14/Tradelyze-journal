@@ -888,7 +888,7 @@ export const DailyJournal: React.FC = () => {
                                   <div>
                                     <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block">Volume</span>
                                     <p className="font-mono mt-0.5 text-foreground" style={{ fontSize: '22px', fontWeight: 700 }}>
-                                      <span style={{ fontWeight: 'inherit', fontSize: 'inherit' }}>{dayStats.volume}</span>
+                                      <span style={{ fontWeight: 'inherit', fontSize: 'inherit' }}>{dayStats.volume.toFixed(2)}</span>
                                     </p>
                                   </div>
                                   {/* Profit Factor */}
