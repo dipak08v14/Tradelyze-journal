@@ -748,6 +748,31 @@ export const TradeEntryPage: React.FC = () => {
           .eq('user_id', userId);
 
       } else {
+        // Duplicate trade safeguard: check for an existing trade with the same date, symbol, entry time, and P&L before creating a new one
+        const { data: possibleDuplicates, error: dupCheckError } = await supabase
+          .from('trades')
+          .select('id, symbol, entry_time, pnl')
+          .eq('user_id', userId)
+          .eq('date', date)
+          .eq('symbol', symbol.toUpperCase().trim());
+
+        if (!dupCheckError && possibleDuplicates && possibleDuplicates.length > 0) {
+          const matchedDuplicate = possibleDuplicates.find((t) => {
+            const sameEntryTime = (t.entry_time || null) === (entryTime || null);
+            const samePnl = String(t.pnl) === String(pnl !== '' ? parseFloat(pnl) : null);
+            return sameEntryTime && samePnl;
+          });
+          if (matchedDuplicate) {
+            const confirmed = window.confirm(
+              'A trade with the same date, symbol, entry time, and P&L already exists. Are you sure you want to log this as a new, separate trade?'
+            );
+            if (!confirmed) {
+              setSaving(false);
+              return;
+            }
+          }
+        }
+
         // Create Mode Core Trade Row Insertion
         const { data: newTrade, error: tradeError } = await supabase
           .from('trades')
