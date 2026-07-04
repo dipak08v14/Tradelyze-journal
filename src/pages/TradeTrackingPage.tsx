@@ -1581,7 +1581,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                 color: 'var(--text)',
                                 backgroundColor: 'var(--card)'
                               }}
-                              className="w-full flex items-center justify-between border rounded-lg px-1 py-2 text-sm font-semibold hover:border-[var(--accent)] transition-all cursor-pointer focus:outline-none focus:border-[var(--accent)]"
+                              className="w-full flex items-center justify-between border rounded-lg px-1 py-2 text-sm hover:border-[var(--accent)] transition-all cursor-pointer focus:outline-none focus:border-[var(--accent)]"
                             >
                               <span>
                                 {strategiesList.find((s) => s.id === trade?.strategy_id)?.name || 'Select a setup'}
@@ -1697,7 +1697,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                           <Check className="w-3.5 h-3.5 text-white stroke-[3px]" />
                                         )}
                                       </div>
-                                      <span style={{ fontSize: '13px', color: 'var(--text-sub)' }} className="flex-1 leading-snug">
+                                      <span style={{ fontSize: '13px', color: 'var(--text)' }} className="flex-1 leading-snug">
                                         {rule.rule_text}
                                       </span>
                                     </div>
@@ -1773,7 +1773,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                           <Check className="w-3.5 h-3.5 text-white stroke-[3px]" />
                                         )}
                                       </div>
-                                      <span style={{ fontSize: '13px', color: 'var(--text-sub)' }} className="flex-1 leading-snug">
+                                      <span style={{ fontSize: '13px', color: 'var(--text)' }} className="flex-1 leading-snug">
                                         {rule.rule_text}
                                       </span>
                                     </div>
