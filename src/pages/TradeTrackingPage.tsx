@@ -1251,7 +1251,7 @@ const TradeTrackingPageContent: React.FC = () => {
                             <div>
                         <div className="flex flex-col">
                           {/* P&L */}
-                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                          <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">P&L Gain/Loss</span>
                             <span
                               className="font-mono"
@@ -1266,7 +1266,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
 
                           {/* R-Multiple */}
-                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                          <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">R-Multiple Earned</span>
                             <span
                               className="font-mono"
@@ -1281,7 +1281,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
 
                           {/* ROI */}
-                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                          <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Return on Investment</span>
                             <span
                               className="font-mono"
@@ -1296,7 +1296,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
 
                           {/* Risk */}
-                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                          <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Actual Risk Taken</span>
                             <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">
                               {formatINR(trade.risk)}
@@ -1304,7 +1304,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
 
                           {/* Investment */}
-                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                          <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Total Allocation</span>
                             <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">
                               {formatINR(trade.investment)}
@@ -1312,7 +1312,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
 
                           {/* Fees */}
-                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                          <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Brokerage Fees</span>
                             <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">
                               {formatINR(trade.fees)}
@@ -1320,7 +1320,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
 
                           {/* Direction */}
-                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                          <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Direction</span>
                             {trade.direction ? (
                               <span
@@ -1342,7 +1342,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
 
                           {/* Option Type */}
-                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                          <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Option Type</span>
                             {trade.option_type === 'CALL' || trade.option_type === 'PUT' ? (
                               <span
@@ -1364,7 +1364,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
 
                           {/* Quantity */}
-                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                          <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Quantity / Lots</span>
                             <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">
                               {trade.quantity !== null ? trade.quantity : '—'}
@@ -1372,7 +1372,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
 
                           {/* Points */}
-                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                          <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Capture Points</span>
                             <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">
                               {trade.points !== null ? trade.points : '—'}
@@ -1380,7 +1380,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
 
                           {/* Holding Time */}
-                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                          <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Holding Duration</span>
                             <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">
                               {trade.holding_time_mins !== null ? `${trade.holding_time_mins} mins` : '—'}
@@ -1388,7 +1388,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
 
                           {/* Max Drawdown */}
-                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                          <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Max Drawdown (DD)</span>
                             <span className="font-mono" style={{ fontSize: '14px', fontWeight: 700, color: '#ef4444' }}>
                               {formatINR(trade.max_drawdown)}
@@ -1396,7 +1396,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
 
                           {/* MDD % */}
-                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                          <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Drawdown %</span>
                             <span className="font-mono" style={{ fontSize: '14px', fontWeight: 700, color: '#ef4444' }}>
                               {trade.mdd_pct !== null ? `${trade.mdd_pct.toFixed(2)}%` : '—'}
@@ -1404,7 +1404,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
 
                           {/* ROR */}
-                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                          <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Risk of Ruin (ROR)</span>
                             <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">
                               {trade.ror !== null ? `${trade.ror.toFixed(2)}%` : '—'}
@@ -1412,7 +1412,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
 
                           {/* Profit Target */}
-                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                          <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">PROFIT TARGET</span>
                             <input
                               type="number"
@@ -1437,7 +1437,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
 
                           {/* Stop Loss Price */}
-                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                          <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">STOP LOSS PRICE</span>
                             <input
                               type="number"
@@ -1462,7 +1462,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
 
                           {/* Planned R-Multiple */}
-                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                          <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">PLANNED R-MULTIPLE</span>
                             <span
                               style={{ color: 'var(--accent)', fontSize: '14px', fontWeight: 700 }}
@@ -1473,7 +1473,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
 
                           {/* MAE */}
-                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                          <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">MAE (Max Adverse Excursion)</span>
                             <input
                               type="number"
@@ -1498,7 +1498,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
 
                           {/* MFE */}
-                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                          <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">MFE (Max Favorable Excursion)</span>
                             <input
                               type="number"
@@ -1523,7 +1523,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
 
                           {/* Gross P&L */}
-                          <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between py-2.5 border-b last:border-b-0">
+                          <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">GROSS P&L</span>
                             {(() => {
                               const grossVal = (trade.pnl || 0) + (trade.fees || 0);
