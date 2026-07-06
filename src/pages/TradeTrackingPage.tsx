@@ -1717,7 +1717,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           <div className="flex items-center justify-between py-1.5 relative" ref={execStatusRef}>
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Execution Status</span>
                             
-                            <div className="relative">
+                            <div className="relative flex-1 flex justify-end">
                               <button
                                 type="button"
                                 onClick={() => {
@@ -1730,37 +1730,25 @@ const TradeTrackingPageContent: React.FC = () => {
                                 }}
                                 onKeyDown={handleExecStatusKeyDown}
                                 style={{
-                                  borderColor: 'var(--border)',
+                                  border: '0.5px solid var(--border)',
+                                  borderRadius: '6px',
                                   backgroundColor: 'var(--card)',
-                                  color: 'var(--text)'
+                                  color: 'var(--text)',
+                                  padding: '4px 8px',
+                                  width: '50%'
                                 }}
-                                className="flex items-center justify-between gap-1.5 border rounded-lg px-2.5 py-1 text-xs hover:border-[var(--accent)] transition-all cursor-pointer focus:outline-none focus:border-[var(--accent)]"
+                                className="flex items-center justify-between gap-1.5 text-xs hover:border-[var(--accent)] transition-all cursor-pointer focus:outline-none focus:border-[var(--accent)] whitespace-nowrap overflow-hidden"
                               >
-                                {trade.execution_status ? (() => {
-                                  let badgeStyle = { borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px' };
-                                  let bCol = 'var(--text-sub)';
-                                  let bBg = 'var(--bar)';
-                                  if (trade.execution_status === 'BEST TRADE') {
-                                    bBg = '#cffafe'; bCol = '#0e7490';
-                                  } else if (trade.execution_status === 'GOOD TRADE') {
-                                    bBg = '#d1fae5'; bCol = '#065f46';
-                                  } else if (trade.execution_status === 'AVERAGE TRADE') {
-                                    bBg = '#fef3c7'; bCol = '#92400e';
-                                  } else if (trade.execution_status === 'POOR TRADE' || trade.execution_status === 'BAD TRADE') {
-                                    bBg = '#fee2e2'; bCol = '#dc2626';
-                                  }
-                                  return (
-                                    <span
-                                      style={{ ...badgeStyle, backgroundColor: bBg, color: bCol, display: 'inline-block' }}
-                                      className="font-mono uppercase tracking-wider"
-                                    >
+                                <div className="flex-1 min-w-0 text-left truncate flex items-center justify-start">
+                                  {trade.execution_status ? (
+                                    <span style={{ color: 'var(--text)' }} className="font-mono truncate">
                                       {trade.execution_status}
                                     </span>
-                                  );
-                                })() : (
-                                  <span style={{ color: 'var(--text-muted)' }} className="font-mono text-xs font-medium">Add Tags</span>
-                                )}
-                                <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500" />
+                                  ) : (
+                                    <span style={{ color: 'var(--text-muted)' }} className="font-mono text-xs font-medium truncate">Add Tags</span>
+                                  )}
+                                </div>
+                                <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500 flex-shrink-0" />
                               </button>
 
                               {isExecStatusOpen && (
@@ -1777,19 +1765,6 @@ const TradeTrackingPageContent: React.FC = () => {
                                     const isSelected = opt === 'Add Tags' ? !trade.execution_status : opt === trade.execution_status;
                                     const isActive = index === activeExecStatusIndex;
                                     
-                                    let badgeStyle = { borderRadius: '6px', fontSize: '10px', fontWeight: 700, padding: '1px 6px' };
-                                    let bCol = 'var(--text-sub)';
-                                    let bBg = 'var(--bar)';
-                                    if (opt === 'BEST TRADE') {
-                                      bBg = '#cffafe'; bCol = '#0e7490';
-                                    } else if (opt === 'GOOD TRADE') {
-                                      bBg = '#d1fae5'; bCol = '#065f46';
-                                    } else if (opt === 'AVERAGE TRADE') {
-                                      bBg = '#fef3c7'; bCol = '#92400e';
-                                    } else if (opt === 'POOR TRADE' || opt === 'BAD TRADE') {
-                                      bBg = '#fee2e2'; bCol = '#dc2626';
-                                    }
-
                                     return (
                                       <div
                                         key={opt}
@@ -1808,10 +1783,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                             {opt}
                                           </span>
                                         ) : (
-                                          <span
-                                            style={{ ...badgeStyle, backgroundColor: bBg, color: bCol, display: 'inline-block' }}
-                                            className="font-mono uppercase tracking-wider"
-                                          >
+                                          <span style={{ color: 'var(--text)' }} className="font-mono">
                                             {opt}
                                           </span>
                                         )}
@@ -1828,7 +1800,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           <div className="flex items-center justify-between py-1.5 relative" ref={mistakeTypeRef}>
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Type of Mistake</span>
                             
-                            <div className="relative">
+                            <div className="relative flex-1 flex justify-end">
                               <button
                                 type="button"
                                 onClick={() => {
@@ -1841,24 +1813,25 @@ const TradeTrackingPageContent: React.FC = () => {
                                 }}
                                 onKeyDown={handleMistakeTypeKeyDown}
                                 style={{
-                                  borderColor: 'var(--border)',
+                                  border: '0.5px solid var(--border)',
+                                  borderRadius: '6px',
                                   backgroundColor: 'var(--card)',
-                                  color: 'var(--text)'
+                                  color: 'var(--text)',
+                                  padding: '4px 8px',
+                                  width: '50%'
                                 }}
-                                className="flex items-center justify-between gap-1.5 border rounded-lg px-2.5 py-1 text-xs hover:border-[var(--accent)] transition-all cursor-pointer focus:outline-none focus:border-[var(--accent)]"
+                                className="flex items-center justify-between gap-1.5 text-xs hover:border-[var(--accent)] transition-all cursor-pointer focus:outline-none focus:border-[var(--accent)] whitespace-nowrap overflow-hidden"
                               >
-                                {!trade.mistake_type ? (
-                                  <span style={{ color: 'var(--text-muted)' }} className="font-mono text-xs font-medium">Add Tags</span>
-                                ) : trade.mistake_type === 'No Mistake' ? (
-                                  <span style={{ backgroundColor: '#d1fae5', color: '#065f46', borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px', display: 'inline-block' }} className="font-mono uppercase tracking-wider">
-                                    No Mistake
-                                  </span>
-                                ) : (
-                                  <span style={{ backgroundColor: '#fee2e2', color: '#dc2626', borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px', display: 'inline-block' }} className="font-mono uppercase tracking-wider">
-                                    {trade.mistake_type}
-                                  </span>
-                                )}
-                                <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500" />
+                                <div className="flex-1 min-w-0 text-left truncate flex items-center justify-start">
+                                  {!trade.mistake_type ? (
+                                    <span style={{ color: 'var(--text-muted)' }} className="font-mono text-xs font-medium truncate">Add Tags</span>
+                                  ) : (
+                                    <span style={{ color: 'var(--text)' }} className="font-mono truncate">
+                                      {trade.mistake_type}
+                                    </span>
+                                  )}
+                                </div>
+                                <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500 flex-shrink-0" />
                               </button>
 
                               {isMistakeTypeOpen && (
@@ -1875,13 +1848,6 @@ const TradeTrackingPageContent: React.FC = () => {
                                     const isSelected = opt === 'Add Tags' ? !trade.mistake_type : opt === (trade.mistake_type || 'No Mistake');
                                     const isActive = index === activeMistakeTypeIndex;
                                     
-                                    let badgeStyle = { borderRadius: '6px', fontSize: '10px', fontWeight: 700, padding: '1px 6px' };
-                                    let bCol = '#065f46';
-                                    let bBg = '#d1fae5';
-                                    if (opt !== 'No Mistake') {
-                                      bBg = '#fee2e2'; bCol = '#dc2626';
-                                    }
-
                                     return (
                                       <div
                                         key={opt}
@@ -1900,10 +1866,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                             {opt}
                                           </span>
                                         ) : (
-                                          <span
-                                            style={{ ...badgeStyle, backgroundColor: bBg, color: bCol, display: 'inline-block' }}
-                                            className="font-mono uppercase tracking-wider"
-                                          >
+                                          <span style={{ color: 'var(--text)' }} className="font-mono">
                                             {opt}
                                           </span>
                                         )}
@@ -1925,7 +1888,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                 Clean trade execution
                               </span>
                             ) : (
-                              <div className="relative">
+                              <div className="relative flex-1 flex justify-end">
                                 <button
                                   type="button"
                                   onClick={() => {
@@ -1939,16 +1902,20 @@ const TradeTrackingPageContent: React.FC = () => {
                                   }}
                                   onKeyDown={handleMistakeTextKeyDown}
                                   style={{
-                                    borderColor: 'var(--border)',
+                                    border: '0.5px solid var(--border)',
+                                    borderRadius: '6px',
                                     backgroundColor: 'var(--card)',
                                     color: 'var(--text)',
-                                    maxWidth: '220px'
+                                    padding: '4px 8px',
+                                    width: '50%'
                                   }}
-                                  className="flex items-center justify-between gap-1.5 border rounded-lg px-2.5 py-1 text-xs hover:border-[var(--accent)] transition-all cursor-pointer focus:outline-none focus:border-[var(--accent)]"
+                                  className="flex items-center justify-between gap-1.5 text-xs hover:border-[var(--accent)] transition-all cursor-pointer focus:outline-none focus:border-[var(--accent)] whitespace-nowrap overflow-hidden"
                                 >
-                                  <span style={{ color: trade.mistake_text ? 'var(--text)' : 'var(--text-muted)', fontSize: '11px' }} className="font-mono truncate">
-                                    {trade.mistake_text || 'Add Tags'}
-                                  </span>
+                                  <div className="flex-1 min-w-0 text-left truncate flex items-center justify-start">
+                                    <span style={{ color: trade.mistake_text ? 'var(--text)' : 'var(--text-muted)', fontSize: '11px' }} className="font-mono truncate">
+                                      {trade.mistake_text || 'Add Tags'}
+                                    </span>
+                                  </div>
                                   <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500 flex-shrink-0" />
                                 </button>
 
@@ -1998,7 +1965,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
 
                           {/* Synthesized Star Rating */}
-                          <div className="flex items-center justify-between py-1.5 border-t border-[rgba(0,0,0,0.03)] pt-2">
+                          <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Trade Rating</span>
                             <div className="flex items-center gap-1.5">
                               {renderStars(trade.trade_rating)}
