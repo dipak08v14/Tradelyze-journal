@@ -1252,11 +1252,20 @@ const TradeTrackingPageContent: React.FC = () => {
                         <div className="flex flex-col">
                           {/* P&L */}
                           <div className="flex items-center justify-between py-1.5">
-                            <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">P&L Gain/Loss</span>
+                            <span 
+                              style={{ 
+                                fontSize: '17px', 
+                                fontWeight: 500, 
+                                color: trade.pnl > 0 ? '#22c55e' : trade.pnl < 0 ? '#ef4444' : 'var(--text-sub)' 
+                              }} 
+                              className="font-mono"
+                            >
+                              NET P&L
+                            </span>
                             <span
                               className="font-mono"
                               style={{ 
-                                fontSize: '14px', 
+                                fontSize: '17px', 
                                 fontWeight: 700, 
                                 color: trade.pnl > 0 ? '#22c55e' : trade.pnl < 0 ? '#ef4444' : 'var(--text-sub)' 
                               }}
