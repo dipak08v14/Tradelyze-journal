@@ -143,6 +143,26 @@ const TradeTrackingPageContent: React.FC = () => {
   const [activeSetupIndex, setActiveSetupIndex] = useState(0);
   const setupDropdownRef = useRef<HTMLDivElement>(null);
 
+  const [isExecStatusOpen, setIsExecStatusOpen] = useState(false);
+  const [activeExecStatusIndex, setActiveExecStatusIndex] = useState(0);
+  const execStatusRef = useRef<HTMLDivElement>(null);
+
+  const [isMistakeTypeOpen, setIsMistakeTypeOpen] = useState(false);
+  const [activeMistakeTypeIndex, setActiveMistakeTypeIndex] = useState(0);
+  const mistakeTypeRef = useRef<HTMLDivElement>(null);
+
+  const [isMistakeTextOpen, setIsMistakeTextOpen] = useState(false);
+  const [activeMistakeTextIndex, setActiveMistakeTextIndex] = useState(0);
+  const mistakeTextRef = useRef<HTMLDivElement>(null);
+
+  const EXEC_STATUS_OPTIONS = ['BEST TRADE', 'GOOD TRADE', 'AVERAGE TRADE', 'POOR TRADE', 'BAD TRADE'];
+  const MISTAKE_TYPE_OPTIONS = ['Technical', 'Psychological', 'Risk Management', 'No Mistake'];
+  const MISTAKE_TEXT_OPTIONS: Record<string, string[]> = {
+    'Technical': ['Early Exit', 'Exit without reason', 'Ignoring price action', 'OB Ignoring & very tight SL', 'Taking trade against the bias', 'Without setup entry', 'Wrong entry point', 'Wrong SL calculation'],
+    'Psychological': ['Without setup entry (emotional override)', 'Exit without reason (fear-based)', 'Taking trade against the bias (FOMO)', 'Revenge trade after loss'],
+    'Risk Management': ['Small quantity (undersized)', 'Very close SL', 'Wrong SL calculation', 'Oversized position'],
+  };
+
   useEffect(() => {
     const fetchStrategiesList = async () => {
       const { data, error } = await supabase
@@ -160,6 +180,15 @@ const TradeTrackingPageContent: React.FC = () => {
     const handleClickOutside = (e: MouseEvent) => {
       if (setupDropdownRef.current && !setupDropdownRef.current.contains(e.target as Node)) {
         setIsSetupDropdownOpen(false);
+      }
+      if (execStatusRef.current && !execStatusRef.current.contains(e.target as Node)) {
+        setIsExecStatusOpen(false);
+      }
+      if (mistakeTypeRef.current && !mistakeTypeRef.current.contains(e.target as Node)) {
+        setIsMistakeTypeOpen(false);
+      }
+      if (mistakeTextRef.current && !mistakeTextRef.current.contains(e.target as Node)) {
+        setIsMistakeTextOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -411,6 +440,139 @@ const TradeTrackingPageContent: React.FC = () => {
     } else if (e.key === 'Escape') {
       e.preventDefault();
       setIsSetupDropdownOpen(false);
+    }
+  };
+
+  const handleExecStatusChange = async (newStatus: string) => {
+    try {
+      const dbValue = (newStatus === '' || newStatus === 'Add Tags') ? null : newStatus;
+      const { error } = await supabase
+        .from('trades')
+        .update({ execution_status: dbValue })
+        .eq('id', tradeId)
+        .eq('user_id', userId);
+      if (error) throw error;
+      setTrade((prev: any) => ({ ...prev, execution_status: dbValue }));
+      showSuccess('Execution status updated successfully!');
+    } catch (err) {
+      console.error('Error saving execution status:', err);
+      showError('Failed to update execution status.');
+    }
+  };
+
+  const handleMistakeTypeChange = async (newType: string) => {
+    try {
+      const dbValue = (newType === '' || newType === 'Add Tags') ? null : newType;
+      const { error } = await supabase
+        .from('trades')
+        .update({ mistake_type: dbValue, mistake_text: null })
+        .eq('id', tradeId)
+        .eq('user_id', userId);
+      if (error) throw error;
+      setTrade((prev: any) => ({ ...prev, mistake_type: dbValue, mistake_text: null }));
+      showSuccess('Mistake type updated successfully!');
+    } catch (err) {
+      console.error('Error saving mistake type:', err);
+      showError('Failed to update mistake type.');
+    }
+  };
+
+  const handleMistakeTextChange = async (newText: string) => {
+    try {
+      const dbValue = (newText === '' || newText === 'Add Tags') ? null : newText;
+      const { error } = await supabase
+        .from('trades')
+        .update({ mistake_text: dbValue })
+        .eq('id', tradeId)
+        .eq('user_id', userId);
+      if (error) throw error;
+      setTrade((prev: any) => ({ ...prev, mistake_text: dbValue }));
+      showSuccess('Actual mistake updated successfully!');
+    } catch (err) {
+      console.error('Error saving mistake text:', err);
+      showError('Failed to update actual mistake.');
+    }
+  };
+
+  const handleExecStatusKeyDown = (e: React.KeyboardEvent) => {
+    const fullOptions = ['Add Tags', ...EXEC_STATUS_OPTIONS];
+    if (!isExecStatusOpen && (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      const currentIdx = fullOptions.indexOf(trade?.execution_status || 'Add Tags');
+      setActiveExecStatusIndex(currentIdx >= 0 ? currentIdx : 0);
+      setIsExecStatusOpen(true);
+      return;
+    }
+    if (!isExecStatusOpen) return;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setActiveExecStatusIndex((prev) => Math.min(prev + 1, fullOptions.length - 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActiveExecStatusIndex((prev) => Math.max(prev - 1, 0));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      const selected = fullOptions[activeExecStatusIndex];
+      if (selected) handleExecStatusChange(selected === 'Add Tags' ? '' : selected);
+      setIsExecStatusOpen(false);
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      setIsExecStatusOpen(false);
+    }
+  };
+
+  const handleMistakeTypeKeyDown = (e: React.KeyboardEvent) => {
+    const fullOptions = ['Add Tags', ...MISTAKE_TYPE_OPTIONS];
+    if (!isMistakeTypeOpen && (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      const currentIdx = fullOptions.indexOf(trade?.mistake_type || 'Add Tags');
+      setActiveMistakeTypeIndex(currentIdx >= 0 ? currentIdx : 0);
+      setIsMistakeTypeOpen(true);
+      return;
+    }
+    if (!isMistakeTypeOpen) return;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setActiveMistakeTypeIndex((prev) => Math.min(prev + 1, fullOptions.length - 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActiveMistakeTypeIndex((prev) => Math.max(prev - 1, 0));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      const selected = fullOptions[activeMistakeTypeIndex];
+      if (selected) handleMistakeTypeChange(selected === 'Add Tags' ? '' : selected);
+      setIsMistakeTypeOpen(false);
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      setIsMistakeTypeOpen(false);
+    }
+  };
+
+  const handleMistakeTextKeyDown = (e: React.KeyboardEvent) => {
+    const baseOptions = MISTAKE_TEXT_OPTIONS[trade?.mistake_type] || [];
+    const fullOptions = ['Add Tags', ...baseOptions];
+    if (!isMistakeTextOpen && (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      const currentIdx = fullOptions.indexOf(trade?.mistake_text || 'Add Tags');
+      setActiveMistakeTextIndex(currentIdx >= 0 ? currentIdx : 0);
+      setIsMistakeTextOpen(true);
+      return;
+    }
+    if (!isMistakeTextOpen) return;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setActiveMistakeTextIndex((prev) => Math.min(prev + 1, fullOptions.length - 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActiveMistakeTextIndex((prev) => Math.max(prev - 1, 0));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      const selected = fullOptions[activeMistakeTextIndex];
+      if (selected) handleMistakeTextChange(selected === 'Add Tags' ? '' : selected);
+      setIsMistakeTextOpen(false);
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      setIsMistakeTextOpen(false);
     }
   };
 
@@ -1552,54 +1714,285 @@ const TradeTrackingPageContent: React.FC = () => {
                           </div>
 
                           {/* Execution Match Class */}
-                          <div className="flex items-center justify-between py-1.5 border-t border-[rgba(0,0,0,0.03)] mt-1 pt-2">
+                          <div className="flex items-center justify-between py-1.5 relative" ref={execStatusRef}>
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Execution Status</span>
-                            {trade.execution_status ? (() => {
-                              let badgeStyle = { borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px' };
-                              let bCol = 'var(--text-sub)';
-                              let bBg = 'var(--bar)';
-                              if (trade.execution_status === 'BEST TRADE') {
-                                bBg = '#cffafe'; bCol = '#0e7490';
-                              } else if (trade.execution_status === 'GOOD TRADE') {
-                                bBg = '#d1fae5'; bCol = '#065f46';
-                              } else if (trade.execution_status === 'AVERAGE TRADE') {
-                                bBg = '#fef3c7'; bCol = '#92400e';
-                              } else if (trade.execution_status === 'POOR TRADE' || trade.execution_status === 'BAD TRADE') {
-                                bBg = '#fee2e2'; bCol = '#dc2626';
-                              }
-                              return (
-                                <span
-                                  style={{ ...badgeStyle, backgroundColor: bBg, color: bCol, display: 'inline-block' }}
-                                  className="font-mono uppercase tracking-wider"
-                                >
-                                  {trade.execution_status}
-                                </span>
-                              );
-                            })() : (
-                              <span style={{ color: 'var(--text-muted)' }} className="italic text-xs">Uncategorized</span>
-                            )}
-                          </div>
+                            
+                            <div className="relative">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (!isExecStatusOpen) {
+                                    const fullOptions = ['Add Tags', ...EXEC_STATUS_OPTIONS];
+                                    const currentIdx = fullOptions.indexOf(trade.execution_status || 'Add Tags');
+                                    setActiveExecStatusIndex(currentIdx >= 0 ? currentIdx : 0);
+                                  }
+                                  setIsExecStatusOpen(!isExecStatusOpen);
+                                }}
+                                onKeyDown={handleExecStatusKeyDown}
+                                style={{
+                                  borderColor: 'var(--border)',
+                                  backgroundColor: 'var(--card)',
+                                  color: 'var(--text)'
+                                }}
+                                className="flex items-center justify-between gap-1.5 border rounded-lg px-2.5 py-1 text-xs hover:border-[var(--accent)] transition-all cursor-pointer focus:outline-none focus:border-[var(--accent)]"
+                              >
+                                {trade.execution_status ? (() => {
+                                  let badgeStyle = { borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px' };
+                                  let bCol = 'var(--text-sub)';
+                                  let bBg = 'var(--bar)';
+                                  if (trade.execution_status === 'BEST TRADE') {
+                                    bBg = '#cffafe'; bCol = '#0e7490';
+                                  } else if (trade.execution_status === 'GOOD TRADE') {
+                                    bBg = '#d1fae5'; bCol = '#065f46';
+                                  } else if (trade.execution_status === 'AVERAGE TRADE') {
+                                    bBg = '#fef3c7'; bCol = '#92400e';
+                                  } else if (trade.execution_status === 'POOR TRADE' || trade.execution_status === 'BAD TRADE') {
+                                    bBg = '#fee2e2'; bCol = '#dc2626';
+                                  }
+                                  return (
+                                    <span
+                                      style={{ ...badgeStyle, backgroundColor: bBg, color: bCol, display: 'inline-block' }}
+                                      className="font-mono uppercase tracking-wider"
+                                    >
+                                      {trade.execution_status}
+                                    </span>
+                                  );
+                                })() : (
+                                  <span style={{ color: 'var(--text-muted)' }} className="font-mono text-xs font-medium">Add Tags</span>
+                                )}
+                                <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500" />
+                              </button>
 
-                          {/* Mistake Categorization */}
-                          <div className="flex flex-col py-1.5 border-t border-[rgba(0,0,0,0.03)] pt-2">
-                            <div className="flex items-center justify-between">
-                              <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Type of Mistake</span>
-                              {trade.mistake_type === 'No Mistake' || !trade.mistake_type ? (
-                                <span style={{ backgroundColor: '#d1fae5', color: '#065f46', borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px', display: 'inline-block' }}>
-                                  No Mistake
-                                </span>
-                              ) : (
-                                <span style={{ backgroundColor: '#fee2e2', color: '#dc2626', borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px', display: 'inline-block' }}>
-                                  {trade.mistake_type}
-                                </span>
+                              {isExecStatusOpen && (
+                                <div
+                                  style={{
+                                    borderColor: 'var(--border)',
+                                    backgroundColor: 'var(--card)',
+                                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                                    minWidth: '160px'
+                                  }}
+                                  className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 max-h-60 overflow-y-auto animate-fadeIn"
+                                >
+                                  {['Add Tags', ...EXEC_STATUS_OPTIONS].map((opt, index) => {
+                                    const isSelected = opt === 'Add Tags' ? !trade.execution_status : opt === trade.execution_status;
+                                    const isActive = index === activeExecStatusIndex;
+                                    
+                                    let badgeStyle = { borderRadius: '6px', fontSize: '10px', fontWeight: 700, padding: '1px 6px' };
+                                    let bCol = 'var(--text-sub)';
+                                    let bBg = 'var(--bar)';
+                                    if (opt === 'BEST TRADE') {
+                                      bBg = '#cffafe'; bCol = '#0e7490';
+                                    } else if (opt === 'GOOD TRADE') {
+                                      bBg = '#d1fae5'; bCol = '#065f46';
+                                    } else if (opt === 'AVERAGE TRADE') {
+                                      bBg = '#fef3c7'; bCol = '#92400e';
+                                    } else if (opt === 'POOR TRADE' || opt === 'BAD TRADE') {
+                                      bBg = '#fee2e2'; bCol = '#dc2626';
+                                    }
+
+                                    return (
+                                      <div
+                                        key={opt}
+                                        onClick={() => {
+                                          handleExecStatusChange(opt === 'Add Tags' ? '' : opt);
+                                          setIsExecStatusOpen(false);
+                                        }}
+                                        onMouseEnter={() => setActiveExecStatusIndex(index)}
+                                        style={{
+                                          backgroundColor: isActive ? 'var(--accent-muted)' : 'transparent',
+                                        }}
+                                        className="px-3 py-1.5 text-xs cursor-pointer transition-colors flex items-center justify-between gap-4"
+                                      >
+                                        {opt === 'Add Tags' ? (
+                                          <span style={{ color: 'var(--text-muted)' }} className="font-mono text-xs font-medium">
+                                            {opt}
+                                          </span>
+                                        ) : (
+                                          <span
+                                            style={{ ...badgeStyle, backgroundColor: bBg, color: bCol, display: 'inline-block' }}
+                                            className="font-mono uppercase tracking-wider"
+                                          >
+                                            {opt}
+                                          </span>
+                                        )}
+                                        {isSelected && <Check className="w-3.5 h-3.5 text-[var(--accent)]" />}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
                               )}
                             </div>
-                            {trade.mistake_text && (
-                              <div className="flex items-center justify-between py-1.5 border-t border-[rgba(0,0,0,0.03)] pt-2 mt-1">
-                                <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Actual Mistake</span>
-                                <span style={{ color: 'var(--text)', fontSize: '13px' }} className="font-mono">
-                                  {trade.mistake_text}
-                                </span>
+                          </div>
+
+                          {/* Type of Mistake */}
+                          <div className="flex items-center justify-between py-1.5 relative" ref={mistakeTypeRef}>
+                            <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Type of Mistake</span>
+                            
+                            <div className="relative">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (!isMistakeTypeOpen) {
+                                    const fullOptions = ['Add Tags', ...MISTAKE_TYPE_OPTIONS];
+                                    const currentIdx = fullOptions.indexOf(trade.mistake_type || 'Add Tags');
+                                    setActiveMistakeTypeIndex(currentIdx >= 0 ? currentIdx : 0);
+                                  }
+                                  setIsMistakeTypeOpen(!isMistakeTypeOpen);
+                                }}
+                                onKeyDown={handleMistakeTypeKeyDown}
+                                style={{
+                                  borderColor: 'var(--border)',
+                                  backgroundColor: 'var(--card)',
+                                  color: 'var(--text)'
+                                }}
+                                className="flex items-center justify-between gap-1.5 border rounded-lg px-2.5 py-1 text-xs hover:border-[var(--accent)] transition-all cursor-pointer focus:outline-none focus:border-[var(--accent)]"
+                              >
+                                {!trade.mistake_type ? (
+                                  <span style={{ color: 'var(--text-muted)' }} className="font-mono text-xs font-medium">Add Tags</span>
+                                ) : trade.mistake_type === 'No Mistake' ? (
+                                  <span style={{ backgroundColor: '#d1fae5', color: '#065f46', borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px', display: 'inline-block' }} className="font-mono uppercase tracking-wider">
+                                    No Mistake
+                                  </span>
+                                ) : (
+                                  <span style={{ backgroundColor: '#fee2e2', color: '#dc2626', borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px', display: 'inline-block' }} className="font-mono uppercase tracking-wider">
+                                    {trade.mistake_type}
+                                  </span>
+                                )}
+                                <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500" />
+                              </button>
+
+                              {isMistakeTypeOpen && (
+                                <div
+                                  style={{
+                                    borderColor: 'var(--border)',
+                                    backgroundColor: 'var(--card)',
+                                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                                    minWidth: '160px'
+                                  }}
+                                  className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 max-h-60 overflow-y-auto animate-fadeIn"
+                                >
+                                  {['Add Tags', ...MISTAKE_TYPE_OPTIONS].map((opt, index) => {
+                                    const isSelected = opt === 'Add Tags' ? !trade.mistake_type : opt === (trade.mistake_type || 'No Mistake');
+                                    const isActive = index === activeMistakeTypeIndex;
+                                    
+                                    let badgeStyle = { borderRadius: '6px', fontSize: '10px', fontWeight: 700, padding: '1px 6px' };
+                                    let bCol = '#065f46';
+                                    let bBg = '#d1fae5';
+                                    if (opt !== 'No Mistake') {
+                                      bBg = '#fee2e2'; bCol = '#dc2626';
+                                    }
+
+                                    return (
+                                      <div
+                                        key={opt}
+                                        onClick={() => {
+                                          handleMistakeTypeChange(opt === 'Add Tags' ? '' : opt);
+                                          setIsMistakeTypeOpen(false);
+                                        }}
+                                        onMouseEnter={() => setActiveMistakeTypeIndex(index)}
+                                        style={{
+                                          backgroundColor: isActive ? 'var(--accent-muted)' : 'transparent',
+                                        }}
+                                        className="px-3 py-1.5 text-xs cursor-pointer transition-colors flex items-center justify-between gap-4"
+                                      >
+                                        {opt === 'Add Tags' ? (
+                                          <span style={{ color: 'var(--text-muted)' }} className="font-mono text-xs font-medium">
+                                            {opt}
+                                          </span>
+                                        ) : (
+                                          <span
+                                            style={{ ...badgeStyle, backgroundColor: bBg, color: bCol, display: 'inline-block' }}
+                                            className="font-mono uppercase tracking-wider"
+                                          >
+                                            {opt}
+                                          </span>
+                                        )}
+                                        {isSelected && <Check className="w-3.5 h-3.5 text-[var(--accent)]" />}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Actual Mistake */}
+                          <div className="flex items-center justify-between py-1.5 relative" ref={mistakeTextRef}>
+                            <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Actual Mistake</span>
+                            
+                            {(!trade.mistake_type || trade.mistake_type === 'No Mistake') ? (
+                              <span style={{ color: 'var(--text-muted)', fontSize: '13px' }} className="font-mono italic">
+                                Clean trade execution
+                              </span>
+                            ) : (
+                              <div className="relative">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (!isMistakeTextOpen) {
+                                      const baseOptions = MISTAKE_TEXT_OPTIONS[trade.mistake_type] || [];
+                                      const fullOptions = ['Add Tags', ...baseOptions];
+                                      const currentIdx = fullOptions.indexOf(trade.mistake_text || 'Add Tags');
+                                      setActiveMistakeTextIndex(currentIdx >= 0 ? currentIdx : 0);
+                                    }
+                                    setIsMistakeTextOpen(!isMistakeTextOpen);
+                                  }}
+                                  onKeyDown={handleMistakeTextKeyDown}
+                                  style={{
+                                    borderColor: 'var(--border)',
+                                    backgroundColor: 'var(--card)',
+                                    color: 'var(--text)',
+                                    maxWidth: '220px'
+                                  }}
+                                  className="flex items-center justify-between gap-1.5 border rounded-lg px-2.5 py-1 text-xs hover:border-[var(--accent)] transition-all cursor-pointer focus:outline-none focus:border-[var(--accent)]"
+                                >
+                                  <span style={{ color: trade.mistake_text ? 'var(--text)' : 'var(--text-muted)', fontSize: '11px' }} className="font-mono truncate">
+                                    {trade.mistake_text || 'Add Tags'}
+                                  </span>
+                                  <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500 flex-shrink-0" />
+                                </button>
+
+                                {isMistakeTextOpen && (
+                                  <div
+                                    style={{
+                                      borderColor: 'var(--border)',
+                                      backgroundColor: 'var(--card)',
+                                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                                      width: '280px'
+                                    }}
+                                    className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 max-h-60 overflow-y-auto animate-fadeIn"
+                                  >
+                                    {['Add Tags', ...(MISTAKE_TEXT_OPTIONS[trade.mistake_type] || [])].map((opt, index) => {
+                                      const isSelected = opt === 'Add Tags' ? !trade.mistake_text : opt === trade.mistake_text;
+                                      const isActive = index === activeMistakeTextIndex;
+                                      return (
+                                        <div
+                                          key={opt}
+                                          onClick={() => {
+                                            handleMistakeTextChange(opt === 'Add Tags' ? '' : opt);
+                                            setIsMistakeTextOpen(false);
+                                          }}
+                                          onMouseEnter={() => setActiveMistakeTextIndex(index)}
+                                          style={{
+                                            backgroundColor: isActive ? 'var(--accent-muted)' : 'transparent',
+                                            color: isSelected ? 'var(--accent)' : 'var(--text)',
+                                            fontWeight: isSelected ? 600 : 400
+                                          }}
+                                          className="px-3 py-2 text-xs cursor-pointer transition-colors flex items-center justify-between gap-2"
+                                        >
+                                          {opt === 'Add Tags' ? (
+                                            <span style={{ color: 'var(--text-muted)' }} className="font-mono text-xs font-medium">
+                                              {opt}
+                                            </span>
+                                          ) : (
+                                            <span className="text-left break-words max-w-[220px]">{opt}</span>
+                                          )}
+                                          {isSelected && <Check className="w-3.5 h-3.5 text-[var(--accent)] flex-shrink-0" />}
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                )}
                               </div>
                             )}
                           </div>
