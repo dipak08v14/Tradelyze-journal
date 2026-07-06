@@ -1550,6 +1550,70 @@ const TradeTrackingPageContent: React.FC = () => {
                               );
                             })()}
                           </div>
+
+                          {/* Execution Match Class */}
+                          <div className="flex items-center justify-between py-1.5 border-t border-[rgba(0,0,0,0.03)] mt-1 pt-2">
+                            <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Execution Status</span>
+                            {trade.execution_status ? (() => {
+                              let badgeStyle = { borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px' };
+                              let bCol = 'var(--text-sub)';
+                              let bBg = 'var(--bar)';
+                              if (trade.execution_status === 'BEST TRADE') {
+                                bBg = '#cffafe'; bCol = '#0e7490';
+                              } else if (trade.execution_status === 'GOOD TRADE') {
+                                bBg = '#d1fae5'; bCol = '#065f46';
+                              } else if (trade.execution_status === 'AVERAGE TRADE') {
+                                bBg = '#fef3c7'; bCol = '#92400e';
+                              } else if (trade.execution_status === 'POOR TRADE' || trade.execution_status === 'BAD TRADE') {
+                                bBg = '#fee2e2'; bCol = '#dc2626';
+                              }
+                              return (
+                                <span
+                                  style={{ ...badgeStyle, backgroundColor: bBg, color: bCol, display: 'inline-block' }}
+                                  className="font-mono uppercase tracking-wider"
+                                >
+                                  {trade.execution_status}
+                                </span>
+                              );
+                            })() : (
+                              <span style={{ color: 'var(--text-muted)' }} className="italic text-xs">Uncategorized</span>
+                            )}
+                          </div>
+
+                          {/* Mistake Categorization */}
+                          <div className="flex flex-col py-1.5 border-t border-[rgba(0,0,0,0.03)] pt-2">
+                            <div className="flex items-center justify-between">
+                              <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Type of Mistake</span>
+                              {trade.mistake_type === 'No Mistake' || !trade.mistake_type ? (
+                                <span style={{ backgroundColor: '#d1fae5', color: '#065f46', borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px', display: 'inline-block' }}>
+                                  No Mistake
+                                </span>
+                              ) : (
+                                <span style={{ backgroundColor: '#fee2e2', color: '#dc2626', borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px', display: 'inline-block' }}>
+                                  {trade.mistake_type}
+                                </span>
+                              )}
+                            </div>
+                            {trade.mistake_text && (
+                              <div className="flex items-center justify-between py-1.5 border-t border-[rgba(0,0,0,0.03)] pt-2 mt-1">
+                                <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Actual Mistake</span>
+                                <span style={{ color: 'var(--text)', fontSize: '13px' }} className="font-mono">
+                                  {trade.mistake_text}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Synthesized Star Rating */}
+                          <div className="flex items-center justify-between py-1.5 border-t border-[rgba(0,0,0,0.03)] pt-2">
+                            <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Trade Rating</span>
+                            <div className="flex items-center gap-1.5">
+                              {renderStars(trade.trade_rating)}
+                              <span style={{ color: 'var(--text-muted)', fontSize: '11px' }} className="font-mono">
+                                {trade.trade_rating || 0}/5
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                         </>
@@ -1858,72 +1922,7 @@ const TradeTrackingPageContent: React.FC = () => {
                         <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">Execution & Notes</h2>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* Execution left side parameters */}
-                        <div className="space-y-4">
-                          <div>
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono mb-1.5">
-                              Execution Match Class
-                            </span>
-                            {trade.execution_status ? (() => {
-                              let badgeStyle = { borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px' };
-                              let bCol = 'var(--text-sub)';
-                              let bBg = 'var(--bar)';
-                              if (trade.execution_status === 'BEST TRADE') {
-                                bBg = '#cffafe'; bCol = '#0e7490';
-                              } else if (trade.execution_status === 'GOOD TRADE') {
-                                bBg = '#d1fae5'; bCol = '#065f46';
-                              } else if (trade.execution_status === 'AVERAGE TRADE') {
-                                bBg = '#fef3c7'; bCol = '#92400e';
-                              } else if (trade.execution_status === 'POOR TRADE' || trade.execution_status === 'BAD TRADE') {
-                                bBg = '#fee2e2'; bCol = '#dc2626';
-                              }
-                              return (
-                                <span
-                                  style={{ ...badgeStyle, backgroundColor: bBg, color: bCol, display: 'inline-block' }}
-                                  className="font-mono uppercase tracking-wider"
-                                >
-                                  {trade.execution_status}
-                                </span>
-                              );
-                            })() : (
-                              <span style={{ color: 'var(--text-muted)' }} className="italic text-xs">Uncategorized execution</span>
-                            )}
-                          </div>
-
-                          <div>
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono mb-1">
-                              Mistake Categorization
-                            </span>
-                            <div className="text-sm font-semibold mt-1 flex items-center gap-1.5">
-                              {trade.mistake_type === 'No Mistake' || !trade.mistake_type ? (
-                                <span style={{ backgroundColor: '#d1fae5', color: '#065f46', borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px', display: 'inline-block' }}>
-                                  No Mistake
-                                </span>
-                              ) : (
-                                <span style={{ backgroundColor: '#fee2e2', color: '#dc2626', borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px', display: 'inline-block' }}>
-                                  {trade.mistake_type}
-                                </span>
-                              )}
-                            </div>
-                            {trade.mistake_text && (
-                              <p style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', color: 'var(--text)' }} className="text-xs mt-2 italic p-2.5 rounded-lg">
-                                {trade.mistake_text}
-                              </p>
-                            )}
-                          </div>
-
-                          <div>
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono mb-1.5">
-                              Synthesized Star Rating
-                            </span>
-                            {renderStars(trade.trade_rating)}
-                            <span style={{ color: 'var(--text-muted)' }} className="text-[11px] font-mono mt-1 block">
-                              {trade.trade_rating || 0} out of 5 stars
-                            </span>
-                          </div>
-                        </div>
-
+                      <div className="grid grid-cols-1 gap-6">
                         {/* Notes Box view */}
                         <div className="flex flex-col">
                           <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono mb-2">
