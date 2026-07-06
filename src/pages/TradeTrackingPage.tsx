@@ -1717,7 +1717,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           <div className="flex items-center justify-between py-1.5 relative" ref={execStatusRef}>
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Execution Status</span>
                             
-                            <div className="relative flex-1 flex justify-end">
+                            
                               <button
                                 type="button"
                                 onClick={() => {
@@ -1730,22 +1730,24 @@ const TradeTrackingPageContent: React.FC = () => {
                                 }}
                                 onKeyDown={handleExecStatusKeyDown}
                                 style={{
-                                  border: '0.5px solid var(--border)',
-                                  borderRadius: '6px',
-                                  backgroundColor: 'var(--card)',
-                                  color: 'var(--text)',
-                                  padding: '4px 8px',
-                                  width: '50%'
-                                }}
-                                className="flex items-center justify-between gap-1.5 text-xs hover:border-[var(--accent)] transition-all cursor-pointer focus:outline-none focus:border-[var(--accent)] whitespace-nowrap overflow-hidden"
+                                   border: '0.5px solid var(--border)',
+                                   borderRadius: '6px',
+                                   backgroundColor: 'var(--card)',
+                                   color: 'var(--text)',
+                                   padding: '4px 8px',
+                                   width: '280px',
+                                   fontSize: '13px',
+                                   minHeight: '29px'
+                                 }}
+                                className="relative flex items-center justify-between gap-1.5 hover:border-[var(--accent)] transition-all cursor-pointer focus:outline-none focus:border-[var(--accent)] whitespace-nowrap overflow-hidden"
                               >
                                 <div className="flex-1 min-w-0 text-left truncate flex items-center justify-start">
                                   {trade.execution_status ? (
-                                    <span style={{ color: 'var(--text)' }} className="font-mono truncate">
+                                    <span style={{ color: 'var(--text)', fontSize: '13px' }} className="font-mono font-medium truncate">
                                       {trade.execution_status}
                                     </span>
                                   ) : (
-                                    <span style={{ color: 'var(--text-muted)' }} className="font-mono text-xs font-medium truncate">Add Tags</span>
+                                    <span style={{ color: 'var(--text-muted)', fontSize: '13px' }} className="font-mono font-medium truncate">Add Tags</span>
                                   )}
                                 </div>
                                 <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500 flex-shrink-0" />
@@ -1779,11 +1781,11 @@ const TradeTrackingPageContent: React.FC = () => {
                                         className="px-3 py-1.5 text-xs cursor-pointer transition-colors flex items-center justify-between gap-4"
                                       >
                                         {opt === 'Add Tags' ? (
-                                          <span style={{ color: 'var(--text-muted)' }} className="font-mono text-xs font-medium">
+                                          <span style={{ color: 'var(--text-muted)', fontSize: '13px' }} className="font-mono font-medium">
                                             {opt}
                                           </span>
                                         ) : (
-                                          <span style={{ color: 'var(--text)' }} className="font-mono">
+                                          <span style={{ color: 'var(--text)', fontSize: '13px' }} className="font-mono font-medium">
                                             {opt}
                                           </span>
                                         )}
@@ -1793,14 +1795,14 @@ const TradeTrackingPageContent: React.FC = () => {
                                   })}
                                 </div>
                               )}
-                            </div>
+
                           </div>
 
                           {/* Type of Mistake */}
                           <div className="flex items-center justify-between py-1.5 relative" ref={mistakeTypeRef}>
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Type of Mistake</span>
                             
-                            <div className="relative flex-1 flex justify-end">
+                            
                               <button
                                 type="button"
                                 onClick={() => {
@@ -1813,20 +1815,22 @@ const TradeTrackingPageContent: React.FC = () => {
                                 }}
                                 onKeyDown={handleMistakeTypeKeyDown}
                                 style={{
-                                  border: '0.5px solid var(--border)',
-                                  borderRadius: '6px',
-                                  backgroundColor: 'var(--card)',
-                                  color: 'var(--text)',
-                                  padding: '4px 8px',
-                                  width: '50%'
-                                }}
-                                className="flex items-center justify-between gap-1.5 text-xs hover:border-[var(--accent)] transition-all cursor-pointer focus:outline-none focus:border-[var(--accent)] whitespace-nowrap overflow-hidden"
+                                   border: '0.5px solid var(--border)',
+                                   borderRadius: '6px',
+                                   backgroundColor: 'var(--card)',
+                                   color: 'var(--text)',
+                                   padding: '4px 8px',
+                                   width: '280px',
+                                   fontSize: '13px',
+                                   minHeight: '29px'
+                                 }}
+                                className="relative flex items-center justify-between gap-1.5 hover:border-[var(--accent)] transition-all cursor-pointer focus:outline-none focus:border-[var(--accent)] whitespace-nowrap overflow-hidden"
                               >
                                 <div className="flex-1 min-w-0 text-left truncate flex items-center justify-start">
                                   {!trade.mistake_type ? (
-                                    <span style={{ color: 'var(--text-muted)' }} className="font-mono text-xs font-medium truncate">Add Tags</span>
+                                    <span style={{ color: 'var(--text-muted)', fontSize: '13px' }} className="font-mono font-medium truncate">Add Tags</span>
                                   ) : (
-                                    <span style={{ color: 'var(--text)' }} className="font-mono truncate">
+                                    <span style={{ color: 'var(--text)', fontSize: '13px' }} className="font-mono font-medium truncate">
                                       {trade.mistake_type}
                                     </span>
                                   )}
@@ -1862,11 +1866,11 @@ const TradeTrackingPageContent: React.FC = () => {
                                         className="px-3 py-1.5 text-xs cursor-pointer transition-colors flex items-center justify-between gap-4"
                                       >
                                         {opt === 'Add Tags' ? (
-                                          <span style={{ color: 'var(--text-muted)' }} className="font-mono text-xs font-medium">
+                                          <span style={{ color: 'var(--text-muted)', fontSize: '13px' }} className="font-mono font-medium">
                                             {opt}
                                           </span>
                                         ) : (
-                                          <span style={{ color: 'var(--text)' }} className="font-mono">
+                                          <span style={{ color: 'var(--text)', fontSize: '13px' }} className="font-mono font-medium">
                                             {opt}
                                           </span>
                                         )}
@@ -1876,7 +1880,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                   })}
                                 </div>
                               )}
-                            </div>
+
                           </div>
 
                           {/* Actual Mistake */}
@@ -1888,7 +1892,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                 Clean trade execution
                               </span>
                             ) : (
-                              <div className="relative flex-1 flex justify-end">
+                              <>
                                 <button
                                   type="button"
                                   onClick={() => {
@@ -1907,12 +1911,14 @@ const TradeTrackingPageContent: React.FC = () => {
                                     backgroundColor: 'var(--card)',
                                     color: 'var(--text)',
                                     padding: '4px 8px',
-                                    width: '50%'
+                                    width: '280px',
+                                    fontSize: '13px',
+                                    minHeight: '29px'
                                   }}
-                                  className="flex items-center justify-between gap-1.5 text-xs hover:border-[var(--accent)] transition-all cursor-pointer focus:outline-none focus:border-[var(--accent)] whitespace-nowrap overflow-hidden"
+                                  className="relative flex items-center justify-between gap-1.5 hover:border-[var(--accent)] transition-all cursor-pointer focus:outline-none focus:border-[var(--accent)] whitespace-nowrap overflow-hidden"
                                 >
                                   <div className="flex-1 min-w-0 text-left truncate flex items-center justify-start">
-                                    <span style={{ color: trade.mistake_text ? 'var(--text)' : 'var(--text-muted)', fontSize: '11px' }} className="font-mono truncate">
+                                    <span style={{ color: trade.mistake_text ? 'var(--text)' : 'var(--text-muted)', fontSize: '13px' }} className="font-mono font-medium truncate">
                                       {trade.mistake_text || 'Add Tags'}
                                     </span>
                                   </div>
@@ -1948,11 +1954,11 @@ const TradeTrackingPageContent: React.FC = () => {
                                           className="px-3 py-2 text-xs cursor-pointer transition-colors flex items-center justify-between gap-2"
                                         >
                                           {opt === 'Add Tags' ? (
-                                            <span style={{ color: 'var(--text-muted)' }} className="font-mono text-xs font-medium">
-                                              {opt}
-                                            </span>
+                                            <span style={{ color: 'var(--text-muted)', fontSize: '13px' }} className="font-mono font-medium">
+                                               {opt}
+                                             </span>
                                           ) : (
-                                            <span className="text-left break-words max-w-[220px]">{opt}</span>
+                                            <span style={{ fontSize: '13px' }} className="text-left break-words max-w-[220px] font-medium">{opt}</span>
                                           )}
                                           {isSelected && <Check className="w-3.5 h-3.5 text-[var(--accent)] flex-shrink-0" />}
                                         </div>
@@ -1960,7 +1966,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                     })}
                                   </div>
                                 )}
-                              </div>
+                              </>
                             )}
                           </div>
 
