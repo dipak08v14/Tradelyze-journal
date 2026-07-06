@@ -494,6 +494,23 @@ const TradeTrackingPageContent: React.FC = () => {
     }
   };
 
+  const handleTradeRatingChange = async (newRating: number) => {
+    try {
+      const dbValue = newRating <= 0 ? null : newRating;
+      const { error } = await supabase
+        .from('trades')
+        .update({ trade_rating: dbValue })
+        .eq('id', tradeId)
+        .eq('user_id', userId);
+      if (error) throw error;
+      setTrade((prev: any) => ({ ...prev, trade_rating: dbValue }));
+      showSuccess('Trade rating updated successfully!');
+    } catch (err) {
+      console.error('Error saving trade rating:', err);
+      showError('Failed to update trade rating.');
+    }
+  };
+
   const handleExecStatusKeyDown = (e: React.KeyboardEvent) => {
     const fullOptions = ['Add Tags', ...EXEC_STATUS_OPTIONS];
     if (!isExecStatusOpen && (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ')) {
@@ -1970,12 +1987,30 @@ const TradeTrackingPageContent: React.FC = () => {
                             )}
                           </div>
 
-                          {/* Synthesized Star Rating */}
+                          {/* Trade Rating clickable stars */}
                           <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Trade Rating</span>
-                            <div className="flex items-center gap-1.5">
-                              {renderStars(trade.trade_rating)}
-                              <span style={{ color: 'var(--text-muted)', fontSize: '11px' }} className="font-mono">
+                            <div className="flex items-center gap-1">
+                              {[1, 2, 3, 4, 5].map((starNum) => {
+                                const isFilled = (trade.trade_rating || 0) >= starNum;
+                                return (
+                                  <button
+                                    key={starNum}
+                                    type="button"
+                                    onClick={() => handleTradeRatingChange(trade.trade_rating === starNum ? 0 : starNum)}
+                                    className="focus:outline-none transition-transform active:scale-95 cursor-pointer"
+                                  >
+                                    <Star
+                                      className={`w-5 h-5 transition-colors duration-150 ${
+                                        isFilled
+                                          ? 'fill-amber-400 text-amber-400 hover:text-amber-300 hover:fill-amber-300'
+                                          : 'text-zinc-600 hover:text-amber-400'
+                                      }`}
+                                    />
+                                  </button>
+                                );
+                              })}
+                              <span style={{ color: 'var(--text-muted)', fontSize: '11px' }} className="font-mono ml-1.5">
                                 {trade.trade_rating || 0}/5
                               </span>
                             </div>
