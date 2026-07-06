@@ -1551,8 +1551,8 @@ const TradeTrackingPageContent: React.FC = () => {
                           
                           {/* Setup Dropdown */}
                           <div className="relative" ref={setupDropdownRef}>
-                            <label style={{ color: 'var(--text-sub)' }} className="block text-[13px] font-semibold tracking-wide uppercase font-sans mb-1.5">
-                              SETUP
+                            <label style={{ color: 'var(--text)', fontSize: '16px' }} className="block font-semibold tracking-wide font-sans mb-1.5">
+                              Setup
                             </label>
                             <button
                               type="button"
