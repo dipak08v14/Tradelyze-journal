@@ -1281,54 +1281,25 @@ const TradeTrackingPageContent: React.FC = () => {
               </div>
             )}
 
-            {/* ACTIONABLE ROW */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mt-1">
-              <div>
-                <div className="flex flex-wrap items-center gap-2.5">
-                  <h1 
-                    className="font-display" 
-                    style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }}
-                  >
-                    {trade.symbol} — Trade Profile
-                  </h1>
+            {/* Row 1: Symbol */}
+            <div className="flex flex-wrap items-center gap-2.5 mt-3">
+              <h1 
+                className="font-display" 
+                style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }}
+              >
+                {trade.symbol}
+              </h1>
+            </div>
 
-                  {/* WIN/LOSS tag */}
-                  {trade.status === 'Win' && (
-                    <span style={{ backgroundColor: '#dcfce7', color: '#16a34a', border: '1px solid #bbf7d0', borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px' }}>
-                      ✓ WIN
-                    </span>
-                  )}
-                  {trade.status === 'Loss' && (
-                    <span style={{ backgroundColor: '#fee2e2', color: '#dc2626', border: '1px solid #fecaca', borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px' }}>
-                      ✗ LOSS
-                    </span>
-                  )}
-                  {trade.status === 'Breakeven' && (
-                    <span style={{ backgroundColor: 'var(--bar)', border: '1px solid var(--border)', borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px', color: 'var(--text-sub)' }}>
-                      — BE
-                    </span>
-                  )}
-                </div>
-
-                <div 
-                  className="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-2.5"
-                  style={{ fontSize: '13px', fontWeight: 400, color: 'var(--text-sub)' }}
-                >
-                  <span className="font-mono">{formatFullDate(trade.date)}</span>
-                  <span style={{ color: 'var(--text-muted)' }}>•</span>
-                  {trade.strategies && (
-                    <div className="flex items-center gap-2">
-                      <span style={{ backgroundColor: 'var(--accent-muted)', color: 'var(--accent)', padding: '2px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 700 }}>
-                        {trade.strategies.type_of_strategy || 'Default'}
-                      </span>
-                      <span className="font-semibold" style={{ color: 'var(--text)' }}>{trade.strategies.name}</span>
-                    </div>
-                  )}
-                  {!trade.strategies && <span className="italic" style={{ color: 'var(--text-muted)' }}>No Setup Linked</span>}
-                </div>
+            {/* Row 2: Date + Previous/Next Trade navigation, same horizontal line */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-3">
+              <div 
+                className="flex flex-wrap items-center gap-x-3 gap-y-1.5"
+                style={{ fontSize: '13px', fontWeight: 400, color: 'var(--text-sub)' }}
+              >
+                <span className="font-mono">{formatFullDate(trade.date)}</span>
               </div>
 
-              {/* CHANGE 1 — Previous Trade / Next Trade navigation */}
               <div className="flex items-center gap-2">
                 <button
                   type="button"
@@ -1369,7 +1340,7 @@ const TradeTrackingPageContent: React.FC = () => {
               </div>
             </div>
 
-            <div className="border-b border-zinc-800/80 mt-5 mb-8" />
+            <div className="mb-5" />
 
             {/* SINGLE VERTICAL STACK */}
             <div className="flex flex-col gap-6">
