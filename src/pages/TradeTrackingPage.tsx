@@ -1483,6 +1483,13 @@ const TradeTrackingPageContent: React.FC = () => {
                             </span>
                           </div>
 
+                          <div className="flex items-center justify-between py-1.5">
+                            <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Decided Risk</span>
+                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="font-sans">
+                              {riskMgmt ? formatINR(riskMgmt.decided_risk) : '—'}
+                            </span>
+                          </div>
+
                           {/* Risk */}
                           <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Actual Risk Taken</span>
@@ -2597,46 +2604,6 @@ const TradeTrackingPageContent: React.FC = () => {
                               <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-1.5 rounded-full overflow-hidden w-full">
                                 <div className="h-full rounded-full bg-cyan-500" style={{ width: psychology.comfort_level === 'Distressed' ? '15%' : psychology.comfort_level === 'Uncomfortable' ? '45%' : psychology.comfort_level === 'Neutral' ? '70%' : psychology.comfort_level === 'Comfortable' ? '100%' : '0%' }} />
                               </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </section>
-
-                    {/* CARD G: RISK MANAGEMENT RULES FOLLOWED */}
-                    <section 
-                      style={{ 
-                        backgroundColor: 'var(--card)', 
-                        border: '1px solid rgba(0,0,0,0.06)', 
-                        borderRadius: '12px',
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
-                      }} 
-                      className="p-6"
-                    >
-                      <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">Risk Management</h2>
-                      <p style={{ color: 'var(--text-muted)' }} className="text-[11px] font-mono uppercase tracking-wider mb-2">Exposure analysis</p>
-
-                      {!riskMgmt ? (
-                        <div style={{ color: 'var(--text-muted)' }} className="text-xs italic py-4">No risk data for this trade</div>
-                      ) : (
-                        <div className="space-y-4 mt-3">
-                          <div style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)' }} className="p-3 rounded-xl border font-sans">
-                            <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Decided Risk</span>
-                            <span style={{ color: 'var(--text)' }} className="text-sm font-semibold block mt-0.5 font-mono">
-                              {formatINR(riskMgmt.decided_risk)}
-                            </span>
-                          </div>
-
-                          <div>
-                            <div className="flex justify-between font-mono font-bold mb-1.5 font-sans" style={{ fontSize: '11px' }}>
-                              <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Followed Risk Rules</span>
-                              <span className={getScoreColor(riskScore)}>{riskScore.toFixed(0)}%</span>
-                            </div>
-                            <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="h-2 rounded-full overflow-hidden w-full">
-                              <div
-                                className="h-full rounded-full transition-all duration-300"
-                                style={{ width: `${riskScore}%`, backgroundColor: 'var(--accent)' }}
-                              />
                             </div>
                           </div>
                         </div>
