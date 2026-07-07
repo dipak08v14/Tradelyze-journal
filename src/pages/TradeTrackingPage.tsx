@@ -1282,7 +1282,7 @@ const TradeTrackingPageContent: React.FC = () => {
             )}
 
             {/* Row 1: Symbol */}
-            <div className="flex flex-wrap items-center gap-2.5 mt-3">
+            <div className="flex flex-wrap items-center gap-2.5 mt-1">
               <h1 
                 className="font-display" 
                 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }}
@@ -1292,7 +1292,7 @@ const TradeTrackingPageContent: React.FC = () => {
             </div>
 
             {/* Row 2: Date + Previous/Next Trade navigation, same horizontal line */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-3">
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mt-1">
               <div 
                 className="flex flex-wrap items-center gap-x-3 gap-y-1.5"
                 style={{ fontSize: '13px', fontWeight: 400, color: 'var(--text-sub)' }}
