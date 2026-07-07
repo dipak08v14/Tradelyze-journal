@@ -2353,7 +2353,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           </h2>
                         </div>
 
-                        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+                        <div style={{ position: 'absolute', top: '58%', left: '50%', transform: 'translate(-50%, -50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
                           <RadarScoreChart
                             technicalScore={technicalScore}
                             psychScore={psychScore}
@@ -2361,7 +2361,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           />
 
                           {/* OVERALL SUMMARY CENTER */}
-                          <div style={{ flexShrink: 0, padding: '4px 0', textAlign: 'center', marginTop: '2px' }}>
+                          <div style={{ flexShrink: 0, padding: '4px 0', textAlign: 'center', marginTop: '-22px' }}>
                             <span style={{ fontSize: '13px', color: 'var(--text-sub)' }}>Your Score: </span>
                             <span className="animate-pulse" style={{ fontSize: '13px', fontWeight: 600, color: 'var(--accent)' }}>
                               {overallScore.toFixed(0)}%
