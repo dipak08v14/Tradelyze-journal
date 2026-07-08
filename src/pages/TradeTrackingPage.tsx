@@ -135,7 +135,7 @@ const TradeTrackingPageContent: React.FC = () => {
   const [orderedTradeIds, setOrderedTradeIds] = useState<string[]>([]);
 
   // CHANGE 2 — Tabs State
-  const [activeTab, setActiveTab] = useState<'stats' | 'playbooks'>('stats');
+  const [activeTab, setActiveTab] = useState<'stats' | 'playbooks' | 'market'>('stats');
 
   // Strategies list state for dropdown selection
   const [strategiesList, setStrategiesList] = useState<any[]>([]);
@@ -154,6 +154,28 @@ const TradeTrackingPageContent: React.FC = () => {
   const [isMistakeTextOpen, setIsMistakeTextOpen] = useState(false);
   const [activeMistakeTextIndex, setActiveMistakeTextIndex] = useState(0);
   const mistakeTextRef = useRef<HTMLDivElement>(null);
+
+  const [isPhaseOpen, setIsPhaseOpen] = useState(false);
+  const [activePhaseIndex, setActivePhaseIndex] = useState(0);
+  const phaseRef = useRef<HTMLDivElement>(null);
+
+  const [isTrendOpen, setIsTrendOpen] = useState(false);
+  const [activeTrendIndex, setActiveTrendIndex] = useState(0);
+  const trendRef = useRef<HTMLDivElement>(null);
+
+  const [isOpeningOpen, setIsOpeningOpen] = useState(false);
+  const [activeOpeningIndex, setActiveOpeningIndex] = useState(0);
+  const openingRef = useRef<HTMLDivElement>(null);
+
+  const [isHourlyOpen, setIsHourlyOpen] = useState(false);
+  const [activeHourlyIndex, setActiveHourlyIndex] = useState(0);
+  const hourlyRef = useRef<HTMLDivElement>(null);
+
+  const PHASE_OPTIONS = ['Accumulation', 'Manipulation', 'Distribution'];
+  const TREND_OPTIONS = ['Trend Starting', 'Trend Middle', 'Trend Ending', 'Ranging'];
+  const OPENING_OPTIONS = ['London Open', 'NY Open', 'Asian Session', 'Killzone', 'Pre-Market', 'Mid-Day', 'Other'];
+  const HOURLY_OPTIONS = ['UP', 'DOWN', 'CONSOLIDATION'];
+  const HOURLY_DISPLAY_LABELS: Record<string, string> = { UP: 'UP', DOWN: 'DOWN', CONSOLIDATION: 'BE/RNG' };
 
   const EXEC_STATUS_OPTIONS = ['BEST TRADE', 'GOOD TRADE', 'AVERAGE TRADE', 'POOR TRADE', 'BAD TRADE'];
   const MISTAKE_TYPE_OPTIONS = ['Technical', 'Psychological', 'Risk Management', 'No Mistake'];
@@ -189,6 +211,18 @@ const TradeTrackingPageContent: React.FC = () => {
       }
       if (mistakeTextRef.current && !mistakeTextRef.current.contains(e.target as Node)) {
         setIsMistakeTextOpen(false);
+      }
+      if (phaseRef.current && !phaseRef.current.contains(e.target as Node)) {
+        setIsPhaseOpen(false);
+      }
+      if (trendRef.current && !trendRef.current.contains(e.target as Node)) {
+        setIsTrendOpen(false);
+      }
+      if (openingRef.current && !openingRef.current.contains(e.target as Node)) {
+        setIsOpeningOpen(false);
+      }
+      if (hourlyRef.current && !hourlyRef.current.contains(e.target as Node)) {
+        setIsHourlyOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -509,6 +543,122 @@ const TradeTrackingPageContent: React.FC = () => {
       console.error('Error saving trade rating:', err);
       showError('Failed to update trade rating.');
     }
+  };
+
+  const handlePhaseChange = async (val: string) => {
+    const v = val || null;
+    try {
+      const { error } = await supabase.from('trades').update({ phase: v }).eq('id', tradeId).eq('user_id', userId);
+      if (error) throw error;
+      setTrade((prev: any) => ({ ...prev, phase: v }));
+      showSuccess('Market phase updated successfully!');
+    } catch (err) {
+      console.error('Error saving phase:', err);
+      showError('Failed to update market phase.');
+    }
+  };
+
+  const handleTrendChange = async (val: string) => {
+    const v = val || null;
+    try {
+      const { error } = await supabase.from('trades').update({ trend_position: v }).eq('id', tradeId).eq('user_id', userId);
+      if (error) throw error;
+      setTrade((prev: any) => ({ ...prev, trend_position: v }));
+      showSuccess('Trend location updated successfully!');
+    } catch (err) {
+      console.error('Error saving trend position:', err);
+      showError('Failed to update trend location.');
+    }
+  };
+
+  const handleOpeningChange = async (val: string) => {
+    const v = val || null;
+    try {
+      const { error } = await supabase.from('trades').update({ opening_condition: v }).eq('id', tradeId).eq('user_id', userId);
+      if (error) throw error;
+      setTrade((prev: any) => ({ ...prev, opening_condition: v }));
+      showSuccess('Opening state updated successfully!');
+    } catch (err) {
+      console.error('Error saving opening condition:', err);
+      showError('Failed to update opening state.');
+    }
+  };
+
+  const handleHourlyChange = async (val: string) => {
+    const v = val || null;
+    try {
+      const { error } = await supabase.from('trades').update({ hourly_trend: v }).eq('id', tradeId).eq('user_id', userId);
+      if (error) throw error;
+      setTrade((prev: any) => ({ ...prev, hourly_trend: v }));
+      showSuccess('Hourly trend updated successfully!');
+    } catch (err) {
+      console.error('Error saving hourly trend:', err);
+      showError('Failed to update hourly trend.');
+    }
+  };
+
+  const handlePhaseKeyDown = (e: React.KeyboardEvent) => {
+    const fullOptions = ['Add Tags', ...PHASE_OPTIONS];
+    if (!isPhaseOpen && (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      const currentIdx = fullOptions.indexOf(trade?.phase || 'Add Tags');
+      setActivePhaseIndex(currentIdx >= 0 ? currentIdx : 0);
+      setIsPhaseOpen(true);
+      return;
+    }
+    if (!isPhaseOpen) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); setActivePhaseIndex((prev) => Math.min(prev + 1, fullOptions.length - 1)); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setActivePhaseIndex((prev) => Math.max(prev - 1, 0)); }
+    else if (e.key === 'Enter') { e.preventDefault(); const sel = fullOptions[activePhaseIndex]; handlePhaseChange(sel === 'Add Tags' ? '' : sel); setIsPhaseOpen(false); }
+    else if (e.key === 'Escape') { e.preventDefault(); setIsPhaseOpen(false); }
+  };
+
+  const handleTrendKeyDown = (e: React.KeyboardEvent) => {
+    const fullOptions = ['Add Tags', ...TREND_OPTIONS];
+    if (!isTrendOpen && (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      const currentIdx = fullOptions.indexOf(trade?.trend_position || 'Add Tags');
+      setActiveTrendIndex(currentIdx >= 0 ? currentIdx : 0);
+      setIsTrendOpen(true);
+      return;
+    }
+    if (!isTrendOpen) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); setActiveTrendIndex((prev) => Math.min(prev + 1, fullOptions.length - 1)); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setActiveTrendIndex((prev) => Math.max(prev - 1, 0)); }
+    else if (e.key === 'Enter') { e.preventDefault(); const sel = fullOptions[activeTrendIndex]; handleTrendChange(sel === 'Add Tags' ? '' : sel); setIsTrendOpen(false); }
+    else if (e.key === 'Escape') { e.preventDefault(); setIsTrendOpen(false); }
+  };
+
+  const handleOpeningKeyDown = (e: React.KeyboardEvent) => {
+    const fullOptions = ['Add Tags', ...OPENING_OPTIONS];
+    if (!isOpeningOpen && (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      const currentIdx = fullOptions.indexOf(trade?.opening_condition || 'Add Tags');
+      setActiveOpeningIndex(currentIdx >= 0 ? currentIdx : 0);
+      setIsOpeningOpen(true);
+      return;
+    }
+    if (!isOpeningOpen) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); setActiveOpeningIndex((prev) => Math.min(prev + 1, fullOptions.length - 1)); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setActiveOpeningIndex((prev) => Math.max(prev - 1, 0)); }
+    else if (e.key === 'Enter') { e.preventDefault(); const sel = fullOptions[activeOpeningIndex]; handleOpeningChange(sel === 'Add Tags' ? '' : sel); setIsOpeningOpen(false); }
+    else if (e.key === 'Escape') { e.preventDefault(); setIsOpeningOpen(false); }
+  };
+
+  const handleHourlyKeyDown = (e: React.KeyboardEvent) => {
+    const fullOptions = ['Add Tags', ...HOURLY_OPTIONS];
+    if (!isHourlyOpen && (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      const currentIdx = fullOptions.indexOf(trade?.hourly_trend || 'Add Tags');
+      setActiveHourlyIndex(currentIdx >= 0 ? currentIdx : 0);
+      setIsHourlyOpen(true);
+      return;
+    }
+    if (!isHourlyOpen) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); setActiveHourlyIndex((prev) => Math.min(prev + 1, fullOptions.length - 1)); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setActiveHourlyIndex((prev) => Math.max(prev - 1, 0)); }
+    else if (e.key === 'Enter') { e.preventDefault(); const sel = fullOptions[activeHourlyIndex]; handleHourlyChange(sel === 'Add Tags' ? '' : sel); setIsHourlyOpen(false); }
+    else if (e.key === 'Escape') { e.preventDefault(); setIsHourlyOpen(false); }
   };
 
   const handleExecStatusKeyDown = (e: React.KeyboardEvent) => {
@@ -1393,6 +1543,21 @@ const TradeTrackingPageContent: React.FC = () => {
                           >
                             Playbooks
                           </button>
+                          <button
+                            type="button"
+                            onClick={() => setActiveTab('market')}
+                            style={{
+                              backgroundColor: activeTab === 'market' ? 'var(--accent-muted)' : 'transparent',
+                              color: 'var(--text)',
+                              fontWeight: activeTab === 'market' ? 600 : 400,
+                              border: 'none',
+                              borderRadius: '6px',
+                              cursor: 'pointer'
+                            }}
+                            className="px-4 py-1 text-sm transition-all"
+                          >
+                            Market
+                          </button>
                         </div>
 
                         {activeTab === 'stats' && (
@@ -2225,6 +2390,120 @@ const TradeTrackingPageContent: React.FC = () => {
 
                         </div>
                       )}
+
+                      {activeTab === 'market' && (
+                        <div className="space-y-6 animate-fadeIn">
+                          <h3 style={{ color: 'var(--text)', fontSize: '18px', fontWeight: 700, textTransform: 'none' }} className="font-display tracking-wider mb-3 pb-1">
+                            Market
+                          </h3>
+                          <div>
+                            <div className="flex items-center justify-between py-1.5">
+                              <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Market Phase</span>
+                              <div className="relative" ref={phaseRef}>
+                                <button
+                                  type="button"
+                                  onClick={() => { if (!isPhaseOpen) { const fullOptions = ['Add Tags', ...PHASE_OPTIONS]; setActivePhaseIndex(fullOptions.indexOf(trade?.phase || 'Add Tags') >= 0 ? fullOptions.indexOf(trade?.phase || 'Add Tags') : 0); } setIsPhaseOpen(!isPhaseOpen); }}
+                                  onKeyDown={handlePhaseKeyDown}
+                                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)', outline: 'none', fontSize: '13px', borderRadius: '6px', padding: '4px 8px', width: '120px', minHeight: '29px' }}
+                                  className="font-sans cursor-pointer flex items-center justify-between gap-1 hover:border-[var(--accent)] transition-all focus:outline-none focus:border-[var(--accent)]"
+                                >
+                                  <span className="flex-1 min-w-0 text-left truncate">
+                                    {trade?.phase || <span style={{ color: 'var(--text-muted)' }}>Add Tags</span>}
+                                  </span>
+                                  <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500 flex-shrink-0" />
+                                </button>
+                                {isPhaseOpen && (
+                                  <div style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)' }} className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 min-w-[140px] max-h-60 overflow-y-auto animate-fadeIn">
+                                    {['Add Tags', ...PHASE_OPTIONS].map((opt, idx) => (
+                                      <div key={opt} onClick={() => { handlePhaseChange(opt === 'Add Tags' ? '' : opt); setIsPhaseOpen(false); }} onMouseEnter={() => setActivePhaseIndex(idx)} style={{ backgroundColor: idx === activePhaseIndex ? 'var(--accent-muted)' : 'transparent', color: opt === 'Add Tags' ? 'var(--text-muted)' : 'var(--text)' }} className="px-3 py-1.5 text-xs cursor-pointer transition-colors">
+                                        {opt}
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            <div className="flex items-center justify-between py-1.5">
+                              <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Trend Location</span>
+                              <div className="relative" ref={trendRef}>
+                                <button
+                                  type="button"
+                                  onClick={() => { if (!isTrendOpen) { const fullOptions = ['Add Tags', ...TREND_OPTIONS]; setActiveTrendIndex(fullOptions.indexOf(trade?.trend_position || 'Add Tags') >= 0 ? fullOptions.indexOf(trade?.trend_position || 'Add Tags') : 0); } setIsTrendOpen(!isTrendOpen); }}
+                                  onKeyDown={handleTrendKeyDown}
+                                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)', outline: 'none', fontSize: '13px', borderRadius: '6px', padding: '4px 8px', width: '120px', minHeight: '29px' }}
+                                  className="font-sans cursor-pointer flex items-center justify-between gap-1 hover:border-[var(--accent)] transition-all focus:outline-none focus:border-[var(--accent)]"
+                                >
+                                  <span className="flex-1 min-w-0 text-left truncate">
+                                    {trade?.trend_position || <span style={{ color: 'var(--text-muted)' }}>Add Tags</span>}
+                                  </span>
+                                  <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500 flex-shrink-0" />
+                                </button>
+                                {isTrendOpen && (
+                                  <div style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)' }} className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 min-w-[140px] max-h-60 overflow-y-auto animate-fadeIn">
+                                    {['Add Tags', ...TREND_OPTIONS].map((opt, idx) => (
+                                      <div key={opt} onClick={() => { handleTrendChange(opt === 'Add Tags' ? '' : opt); setIsTrendOpen(false); }} onMouseEnter={() => setActiveTrendIndex(idx)} style={{ backgroundColor: idx === activeTrendIndex ? 'var(--accent-muted)' : 'transparent', color: opt === 'Add Tags' ? 'var(--text-muted)' : 'var(--text)' }} className="px-3 py-1.5 text-xs cursor-pointer transition-colors">
+                                        {opt}
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            <div className="flex items-center justify-between py-1.5">
+                              <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Opening State</span>
+                              <div className="relative" ref={openingRef}>
+                                <button
+                                  type="button"
+                                  onClick={() => { if (!isOpeningOpen) { const fullOptions = ['Add Tags', ...OPENING_OPTIONS]; setActiveOpeningIndex(fullOptions.indexOf(trade?.opening_condition || 'Add Tags') >= 0 ? fullOptions.indexOf(trade?.opening_condition || 'Add Tags') : 0); } setIsOpeningOpen(!isOpeningOpen); }}
+                                  onKeyDown={handleOpeningKeyDown}
+                                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)', outline: 'none', fontSize: '13px', borderRadius: '6px', padding: '4px 8px', width: '120px', minHeight: '29px' }}
+                                  className="font-sans cursor-pointer flex items-center justify-between gap-1 hover:border-[var(--accent)] transition-all focus:outline-none focus:border-[var(--accent)]"
+                                >
+                                  <span className="flex-1 min-w-0 text-left truncate">
+                                    {trade?.opening_condition || <span style={{ color: 'var(--text-muted)' }}>Add Tags</span>}
+                                  </span>
+                                  <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500 flex-shrink-0" />
+                                </button>
+                                {isOpeningOpen && (
+                                  <div style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)' }} className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 min-w-[140px] max-h-60 overflow-y-auto animate-fadeIn">
+                                    {['Add Tags', ...OPENING_OPTIONS].map((opt, idx) => (
+                                      <div key={opt} onClick={() => { handleOpeningChange(opt === 'Add Tags' ? '' : opt); setIsOpeningOpen(false); }} onMouseEnter={() => setActiveOpeningIndex(idx)} style={{ backgroundColor: idx === activeOpeningIndex ? 'var(--accent-muted)' : 'transparent', color: opt === 'Add Tags' ? 'var(--text-muted)' : 'var(--text)' }} className="px-3 py-1.5 text-xs cursor-pointer transition-colors">
+                                        {opt}
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            <div className="flex items-center justify-between py-1.5">
+                              <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Hourly Trend</span>
+                              <div className="relative" ref={hourlyRef}>
+                                <button
+                                  type="button"
+                                  onClick={() => { if (!isHourlyOpen) { const fullOptions = ['Add Tags', ...HOURLY_OPTIONS]; setActiveHourlyIndex(fullOptions.indexOf(trade?.hourly_trend || 'Add Tags') >= 0 ? fullOptions.indexOf(trade?.hourly_trend || 'Add Tags') : 0); } setIsHourlyOpen(!isHourlyOpen); }}
+                                  onKeyDown={handleHourlyKeyDown}
+                                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)', outline: 'none', fontSize: '13px', borderRadius: '6px', padding: '4px 8px', width: '120px', minHeight: '29px' }}
+                                  className="font-sans cursor-pointer flex items-center justify-between gap-1 hover:border-[var(--accent)] transition-all focus:outline-none focus:border-[var(--accent)]"
+                                >
+                                  <span className="flex-1 min-w-0 text-left truncate">
+                                    {trade?.hourly_trend ? (HOURLY_DISPLAY_LABELS[trade.hourly_trend] || trade.hourly_trend) : <span style={{ color: 'var(--text-muted)' }}>Add Tags</span>}
+                                  </span>
+                                  <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500 flex-shrink-0" />
+                                </button>
+                                {isHourlyOpen && (
+                                  <div style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)' }} className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 min-w-[140px] max-h-60 overflow-y-auto animate-fadeIn">
+                                    {['Add Tags', ...HOURLY_OPTIONS].map((opt, idx) => (
+                                      <div key={opt} onClick={() => { handleHourlyChange(opt === 'Add Tags' ? '' : opt); setIsHourlyOpen(false); }} onMouseEnter={() => setActiveHourlyIndex(idx)} style={{ backgroundColor: idx === activeHourlyIndex ? 'var(--accent-muted)' : 'transparent', color: opt === 'Add Tags' ? 'var(--text-muted)' : 'var(--text)' }} className="px-3 py-1.5 text-xs cursor-pointer transition-colors">
+                                        {opt === 'Add Tags' ? opt : (HOURLY_DISPLAY_LABELS[opt] || opt)}
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </section>
 
                     {/* TRADINGVIEW CHART CARD */}
@@ -2242,49 +2521,6 @@ const TradeTrackingPageContent: React.FC = () => {
                       <TradeChart trade={trade} userTheme={userTheme} />
                     </div>
                   </div>
-
-                  {/* TRADING CONTEXT VARIABLES CARD */}
-                  <section 
-                    style={{ 
-                      backgroundColor: 'var(--card)', 
-                      border: '1px solid rgba(0,0,0,0.06)', 
-                      borderRadius: '12px',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
-                    }} 
-                    className="p-6 relative"
-                  >
-                    <h3 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, textTransform: 'none' }} className="font-display tracking-wider mb-3 pb-1">
-                      Trading Context Variables
-                    </h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                      <div>
-                        <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Entry Time</span>
-                        <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="block mt-0.5">{trade.entry_time || '—'}</span>
-                      </div>
-                      <div>
-                        <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Market Phase</span>
-                        <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="block mt-0.5">{trade.phase || '—'}</span>
-                      </div>
-                      <div>
-                        <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Trend Location</span>
-                        <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="block mt-0.5">{trade.trend_position || '—'}</span>
-                      </div>
-                      <div>
-                        <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Opening State</span>
-                        <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="block mt-0.5">{trade.opening_condition || '—'}</span>
-                      </div>
-                      <div>
-                        <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Hourly Trend</span>
-                        <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="block mt-0.5">{trade.hourly_trend || '—'}</span>
-                      </div>
-                      <div>
-                        <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono">Vantage Month / Yr</span>
-                        <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="block mt-0.5 font-mono">
-                          {trade.month} {trade.year}
-                        </span>
-                      </div>
-                    </div>
-                  </section>
 
                     {/* CARD D: GENERAL EXECUTION QUALITY & TRADER NOTES */}
                     <section 
