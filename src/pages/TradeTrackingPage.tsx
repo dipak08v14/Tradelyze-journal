@@ -2771,10 +2771,10 @@ const TradeTrackingPageContent: React.FC = () => {
                           boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
                           height: '300px'
                         }} 
-                        className="p-6 overflow-hidden flex-1 min-w-0"
+                        className="px-5 pb-5 pt-2.5 overflow-hidden flex-1 min-w-0"
                       >
-                      <div className="flex items-center justify-between mb-1">
-                        <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">
+                      <div className="flex items-center justify-between mb-1" style={{ borderBottom: '1px solid rgba(0,0,0,0.07)', paddingBottom: '4px', marginBottom: '8px' }}>
+                        <h2 style={{ color: 'var(--text-muted)', fontSize: '14px', fontWeight: 500 }} className="font-display">
                           Running P&L Chart
                         </h2>
                         {chartLoading ? (
@@ -2782,14 +2782,11 @@ const TradeTrackingPageContent: React.FC = () => {
                         ) : apiError ? (
                           null
                         ) : (
-                          <span className="text-xs text-green-500 font-mono">Live Session Data</span>
+                          <span style={{ color: '#008F67' }} className="text-xs font-mono">Live Session Data</span>
                         )}
                       </div>
-                      <p style={{ color: 'var(--text-muted)' }} className="text-[11px] font-mono uppercase tracking-wider mb-4">
-                        Intraday P&L trajectory analysis
-                      </p>
 
-                      <div className="h-[200px] min-h-[200px] w-full flex items-center justify-center font-sans">
+                      <div className="h-[230px] min-h-[230px] w-full flex items-center justify-center font-sans mt-2">
                         {chartLoading ? (
                           <div className="flex flex-col items-center gap-2">
                             <div className="w-5 h-5 border-2 rounded-full animate-spin" style={{ borderColor: 'var(--border)', borderTopColor: 'var(--accent)' }} />
@@ -2799,43 +2796,42 @@ const TradeTrackingPageContent: React.FC = () => {
                           <ResponsiveContainer width="100%" height="100%">
                             <ComposedChart
                               data={chartData}
-                              margin={{ top: 12, right: 12, bottom: 0, left: -10 }}
+                              margin={{ top: 6, right: 6, bottom: 0, left: 4 }}
                             >
                               <defs>
-                                {/* Gradient for fill area */}
                                 <linearGradient id="pnlAreaGrad" x1="0" y1="0" x2="0" y2="1">
-                                  {/* Green above zero: top (0%) has opacity 0.25, zero line has opacity 0.02 */}
-                                  <stop offset="0%" stopColor="#22c55e" stopOpacity={0.25} />
-                                  <stop offset={`${zeroPercent}%`} stopColor="#22c55e" stopOpacity={0.02} />
-                                  
-                                  {/* Red below zero: zero line has opacity 0.02, bottom (100%) has opacity 0.25 */}
-                                  <stop offset={`${zeroPercent}%`} stopColor="#ef4444" stopOpacity={0.02} />
-                                  <stop offset="100%" stopColor="#ef4444" stopOpacity={0.25} />
+                                  <stop offset="0%" stopColor="#008F67" stopOpacity={0.55} />
+                                  <stop offset={`${zeroPercent}%`} stopColor="#008F67" stopOpacity={0.02} />
+                                  <stop offset={`${zeroPercent}%`} stopColor="#DF1C30" stopOpacity={0.02} />
+                                  <stop offset="100%" stopColor="#DF1C30" stopOpacity={0.55} />
                                 </linearGradient>
-
-                                {/* Gradient for LINE color */}
                                 <linearGradient id="pnlLineGrad" x1="0" y1="0" x2="0" y2="1">
-                                  <stop offset={`${zeroPercent}%`} stopColor="#22c55e" stopOpacity={1} />
-                                  <stop offset={`${zeroPercent}%`} stopColor="#ef4444" stopOpacity={1} />
+                                  <stop offset={`${zeroPercent}%`} stopColor="#008F67" stopOpacity={1} />
+                                  <stop offset={`${zeroPercent}%`} stopColor="#DF1C30" stopOpacity={1} />
                                 </linearGradient>
                               </defs>
 
-                              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
+                              <CartesianGrid horizontal={true} vertical={false} stroke="var(--border)" strokeDasharray="3 4" />
 
                               <YAxis
-                                stroke="var(--text-muted)"
-                                tickFormatter={(v) => v >= 0 ? `₹${v}` : `-₹${Math.abs(v)}`}
-                                tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
-                                axisLine={false}
+                                tick={{ fontSize: 10, fill: 'var(--text-sub)' }}
                                 tickLine={false}
-                                width={55}
+                                axisLine={false}
+                                tickFormatter={(v) => {
+                                  if (v === 0) return '₹0';
+                                  if (Math.abs(v) >= 1000) return `₹${(v/1000).toFixed(1)}K`;
+                                  return `₹${v}`;
+                                }}
+                                tickCount={8}
+                                domain={['auto', 'auto']}
+                                width={52}
+                                tickMargin={6}
                               />
 
                               <ReferenceLine
                                 y={0}
-                                stroke="rgba(0,0,0,0.15)"
-                                strokeDasharray="4 4"
-                                strokeWidth={1}
+                                stroke="var(--border)"
+                                strokeDasharray="3 3"
                               />
 
                               <Area
@@ -2850,7 +2846,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                 type="monotone"
                                 dataKey="pnl"
                                 stroke="url(#pnlLineGrad)"
-                                strokeWidth={3}
+                                strokeWidth={1.5}
                                 dot={(props: any) => {
                                   const { cx, cy, index } = props;
                                   if (index === 0) {
@@ -2860,42 +2856,42 @@ const TradeTrackingPageContent: React.FC = () => {
                                         cy={cy}
                                         r={5}
                                         fill="white"
-                                        stroke="#22c55e"
+                                        stroke="#008F67"
                                         strokeWidth={2}
                                         key="dot-entry"
                                       />
                                     );
                                   }
-                                  if (index === chartData.length - 1) {
-                                    const isWin = props.payload?.pnl >= 0;
-                                    return (
-                                      <circle
-                                        cx={cx}
-                                        cy={cy}
-                                        r={7}
-                                        fill={isWin ? '#22c55e' : '#ef4444'}
-                                        stroke="white"
-                                        strokeWidth={2.5}
-                                        key="dot-exit"
-                                      />
-                                    );
-                                  }
                                   return <g key={`dot-empty-${index}`} />;
                                 }}
-                                activeDot={{ r: 5, strokeWidth: 2, stroke: 'white' }}
+                                activeDot={(props: any) => {
+                                  const { cx, cy, payload } = props;
+                                  if (cx === undefined || cy === undefined) return null;
+                                  const isPos = (payload?.pnl ?? 0) >= 0;
+                                  const dotColor = isPos ? '#008F67' : '#DF1C30';
+                                  return (
+                                    <circle
+                                      cx={cx}
+                                      cy={cy}
+                                      r={3}
+                                      fill={dotColor}
+                                      stroke="white"
+                                      strokeWidth={1.5}
+                                    />
+                                  );
+                                }}
                               />
 
                               <Tooltip
+                                cursor={false}
                                 content={(props: any) => {
                                   const { active, payload } = props;
                                   if (!active || !payload?.length) return null;
-                                  const val = payload[0]?.value;
-                                  const isPos = val >= 0;
+                                  const val = payload[0]?.value as number;
                                   return (
-                                    <div style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '8px 12px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)' }} className="font-sans">
-                                      <span style={{ color: isPos ? '#22c55e' : '#ef4444' }} className="text-xs font-bold font-mono">
-                                        {isPos ? `+₹${val}` : `-₹${Math.abs(val)}`}
-                                      </span>
+                                    <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '5px 10px', fontSize: '11px', fontFamily: 'monospace' }}>
+                                      <span style={{ color: 'var(--text)' }}>Net P&L : </span>
+                                      <span style={{ color: val >= 0 ? '#008F67' : '#DF1C30', fontWeight: 600 }}>{val >= 0 ? '+' : '-'}₹{Math.abs(val).toLocaleString('en-IN')}</span>
                                     </div>
                                   );
                                 }}
