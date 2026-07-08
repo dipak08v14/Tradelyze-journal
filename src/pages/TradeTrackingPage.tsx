@@ -2422,7 +2422,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                   type="button"
                                   onClick={() => { if (!isPhaseOpen) { const fullOptions = ['Add Tags', ...PHASE_OPTIONS]; setActivePhaseIndex(fullOptions.indexOf(trade?.phase || 'Add Tags') >= 0 ? fullOptions.indexOf(trade?.phase || 'Add Tags') : 0); } setIsPhaseOpen(!isPhaseOpen); }}
                                   onKeyDown={handlePhaseKeyDown}
-                                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)', outline: 'none', fontSize: '13px', borderRadius: '6px', padding: '4px 8px', width: '120px', minHeight: '29px' }}
+                                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)', outline: 'none', fontSize: '13px', borderRadius: '6px', padding: '4px 8px', width: '280px', minHeight: '29px' }}
                                   className="font-sans cursor-pointer flex items-center justify-between gap-1 hover:border-[var(--accent)] transition-all focus:outline-none focus:border-[var(--accent)]"
                                 >
                                   <span className="flex-1 min-w-0 text-left truncate">
@@ -2448,7 +2448,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                   type="button"
                                   onClick={() => { if (!isTrendOpen) { const fullOptions = ['Add Tags', ...TREND_OPTIONS]; setActiveTrendIndex(fullOptions.indexOf(trade?.trend_position || 'Add Tags') >= 0 ? fullOptions.indexOf(trade?.trend_position || 'Add Tags') : 0); } setIsTrendOpen(!isTrendOpen); }}
                                   onKeyDown={handleTrendKeyDown}
-                                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)', outline: 'none', fontSize: '13px', borderRadius: '6px', padding: '4px 8px', width: '120px', minHeight: '29px' }}
+                                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)', outline: 'none', fontSize: '13px', borderRadius: '6px', padding: '4px 8px', width: '280px', minHeight: '29px' }}
                                   className="font-sans cursor-pointer flex items-center justify-between gap-1 hover:border-[var(--accent)] transition-all focus:outline-none focus:border-[var(--accent)]"
                                 >
                                   <span className="flex-1 min-w-0 text-left truncate">
@@ -2474,7 +2474,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                   type="button"
                                   onClick={() => { if (!isOpeningOpen) { const fullOptions = ['Add Tags', ...OPENING_OPTIONS]; setActiveOpeningIndex(fullOptions.indexOf(trade?.opening_condition || 'Add Tags') >= 0 ? fullOptions.indexOf(trade?.opening_condition || 'Add Tags') : 0); } setIsOpeningOpen(!isOpeningOpen); }}
                                   onKeyDown={handleOpeningKeyDown}
-                                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)', outline: 'none', fontSize: '13px', borderRadius: '6px', padding: '4px 8px', width: '120px', minHeight: '29px' }}
+                                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)', outline: 'none', fontSize: '13px', borderRadius: '6px', padding: '4px 8px', width: '280px', minHeight: '29px' }}
                                   className="font-sans cursor-pointer flex items-center justify-between gap-1 hover:border-[var(--accent)] transition-all focus:outline-none focus:border-[var(--accent)]"
                                 >
                                   <span className="flex-1 min-w-0 text-left truncate">
@@ -2500,7 +2500,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                   type="button"
                                   onClick={() => { if (!isHourlyOpen) { const fullOptions = ['Add Tags', ...HOURLY_OPTIONS]; setActiveHourlyIndex(fullOptions.indexOf(trade?.hourly_trend || 'Add Tags') >= 0 ? fullOptions.indexOf(trade?.hourly_trend || 'Add Tags') : 0); } setIsHourlyOpen(!isHourlyOpen); }}
                                   onKeyDown={handleHourlyKeyDown}
-                                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)', outline: 'none', fontSize: '13px', borderRadius: '6px', padding: '4px 8px', width: '120px', minHeight: '29px' }}
+                                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)', outline: 'none', fontSize: '13px', borderRadius: '6px', padding: '4px 8px', width: '280px', minHeight: '29px' }}
                                   className="font-sans cursor-pointer flex items-center justify-between gap-1 hover:border-[var(--accent)] transition-all focus:outline-none focus:border-[var(--accent)]"
                                 >
                                   <span className="flex-1 min-w-0 text-left truncate">
