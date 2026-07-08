@@ -51,8 +51,8 @@ function formatPnl(pnl) {
 }
 
 function getPnlColor(pnl) {
-  if (pnl > 0) return '#22c55e';
-  if (pnl < 0) return '#ef4444';
+  if (pnl > 0) return '#008F67';
+  if (pnl < 0) return '#DF1C30';
   return 'var(--text)';
 }
 
@@ -1393,8 +1393,8 @@ export default function TradeChart({ trade, userTheme }) {
                     borderRadius: '999px',
                     fontSize: '11px',
                     fontWeight: 700,
-                    color: trade.direction === 'LONG' ? '#22c55e' : trade.direction === 'SHORT' ? '#ef4444' : 'var(--text)',
-                    background: trade.direction === 'LONG' ? 'rgba(34,197,94,0.12)' : trade.direction === 'SHORT' ? 'rgba(239,68,68,0.12)' : 'transparent'
+                    color: trade.direction === 'LONG' ? '#008F67' : trade.direction === 'SHORT' ? '#DF1C30' : 'var(--text)',
+                    background: trade.direction === 'LONG' ? 'rgba(0, 143, 103, 0.12)' : trade.direction === 'SHORT' ? 'rgba(223, 28, 48, 0.12)' : 'transparent'
                   }}>
                     {trade.direction}
                   </span>

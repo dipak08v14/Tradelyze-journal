@@ -1351,7 +1351,7 @@ const TradeTrackingPageContent: React.FC = () => {
             </div>
 
             {/* HEADER STRIP */}
-            <div style={{ backgroundColor: 'var(--card)', paddingTop: '4px', paddingBottom: '4px' }} className="-mx-6 px-6 mb-4 flex items-center justify-between border-b-0">
+            <div style={{ backgroundColor: 'var(--card)', paddingTop: '6px', paddingBottom: '6px' }} className="-mx-6 px-6 mb-4 flex items-center justify-between border-b-0">
               <div>
                 <h1 style={{ color: 'var(--text)', fontSize: '24px', fontWeight: 700 }} className="text-xl md:text-2xl font-bold font-display">
                   Trade Tracking
@@ -1589,7 +1589,7 @@ const TradeTrackingPageContent: React.FC = () => {
                               style={{ 
                                 fontSize: '17px', 
                                 fontWeight: 500, 
-                                color: trade.pnl > 0 ? '#22c55e' : trade.pnl < 0 ? '#ef4444' : 'var(--text-sub)' 
+                                color: trade.pnl > 0 ? '#008F67' : trade.pnl < 0 ? '#DF1C30' : 'var(--text-sub)' 
                               }} 
                               className="font-mono"
                             >
@@ -1600,7 +1600,7 @@ const TradeTrackingPageContent: React.FC = () => {
                               style={{ 
                                 fontSize: '17px', 
                                 fontWeight: 700, 
-                                color: trade.pnl > 0 ? '#22c55e' : trade.pnl < 0 ? '#ef4444' : 'var(--text-sub)' 
+                                color: trade.pnl > 0 ? '#008F67' : trade.pnl < 0 ? '#DF1C30' : 'var(--text-sub)' 
                               }}
                             >
                               {formatINR(trade.pnl)}
@@ -1615,7 +1615,7 @@ const TradeTrackingPageContent: React.FC = () => {
                               style={{ 
                                 fontSize: '14px', 
                                 fontWeight: 700, 
-                                color: trade.r_multiple > 0 ? '#22c55e' : '#ef4444' 
+                                color: trade.r_multiple > 0 ? '#008F67' : '#DF1C30' 
                               }}
                             >
                               {trade.r_multiple !== null ? `${trade.r_multiple > 0 ? '+' : ''}${trade.r_multiple.toFixed(2)}R` : '—'}
@@ -1630,7 +1630,7 @@ const TradeTrackingPageContent: React.FC = () => {
                               style={{ 
                                 fontSize: '14px', 
                                 fontWeight: 700, 
-                                color: trade.roi > 0 ? '#22c55e' : '#ef4444' 
+                                color: trade.roi > 0 ? '#008F67' : '#DF1C30' 
                               }}
                             >
                               {trade.roi !== null ? `${trade.roi > 0 ? '+' : ''}${trade.roi.toFixed(1)}%` : '—'}
@@ -1674,8 +1674,8 @@ const TradeTrackingPageContent: React.FC = () => {
                             {trade.direction ? (
                               <span
                                 style={{
-                                  backgroundColor: trade.direction === 'LONG' ? '#dcfce7' : '#fee2e2',
-                                  color: trade.direction === 'LONG' ? '#16a34a' : '#dc2626',
+                                  backgroundColor: trade.direction === 'LONG' ? 'rgba(0, 143, 103, 0.12)' : 'rgba(223, 28, 48, 0.12)',
+                                  color: trade.direction === 'LONG' ? '#008F67' : '#DF1C30',
                                   borderRadius: '6px',
                                   padding: '2px 8px',
                                   fontSize: '11px',
@@ -1696,8 +1696,8 @@ const TradeTrackingPageContent: React.FC = () => {
                             {trade.option_type === 'CALL' || trade.option_type === 'PUT' ? (
                               <span
                                 style={{
-                                  backgroundColor: '#1e293b',
-                                  color: '#ffffff',
+                                  backgroundColor: trade.option_type === 'CALL' ? 'rgba(0, 143, 103, 0.12)' : 'rgba(223, 28, 48, 0.12)',
+                                  color: trade.option_type === 'CALL' ? '#008F67' : '#DF1C30',
                                   borderRadius: '6px',
                                   padding: '2px 8px',
                                   fontSize: '11px',
@@ -1739,7 +1739,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           {/* Max Drawdown */}
                           <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Max Drawdown (DD)</span>
-                            <span className="font-sans" style={{ fontSize: '14px', fontWeight: 700, color: '#ef4444' }}>
+                            <span className="font-sans" style={{ fontSize: '14px', fontWeight: 700, color: '#DF1C30' }}>
                               {formatINR(trade.max_drawdown)}
                             </span>
                           </div>
@@ -1747,7 +1747,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           {/* MDD % */}
                           <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Drawdown %</span>
-                            <span className="font-sans" style={{ fontSize: '14px', fontWeight: 700, color: '#ef4444' }}>
+                            <span className="font-sans" style={{ fontSize: '14px', fontWeight: 700, color: '#DF1C30' }}>
                               {trade.mdd_pct !== null ? `${trade.mdd_pct.toFixed(2)}%` : '—'}
                             </span>
                           </div>
@@ -1882,7 +1882,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                   style={{ 
                                     fontSize: '14px', 
                                     fontWeight: 700, 
-                                    color: grossVal > 0 ? '#22c55e' : grossVal < 0 ? '#ef4444' : 'var(--text-sub)' 
+                                    color: grossVal > 0 ? '#008F67' : grossVal < 0 ? '#DF1C30' : 'var(--text-sub)' 
                                   }}
                                 >
                                   {formatINR(grossVal)}
@@ -2308,8 +2308,8 @@ const TradeTrackingPageContent: React.FC = () => {
                                     >
                                       <div
                                         style={{
-                                          borderColor: isChecked ? '#22c55e' : '#ef4444',
-                                          backgroundColor: isChecked ? '#22c55e' : 'transparent',
+                                          borderColor: isChecked ? '#008F67' : '#DF1C30',
+                                          backgroundColor: isChecked ? '#008F67' : 'transparent',
                                           width: '18px',
                                           height: '18px',
                                           fontSize: '13px'
@@ -2384,8 +2384,8 @@ const TradeTrackingPageContent: React.FC = () => {
                                     >
                                       <div
                                         style={{
-                                          borderColor: isChecked ? '#22c55e' : '#ef4444',
-                                          backgroundColor: isChecked ? '#22c55e' : 'transparent',
+                                          borderColor: isChecked ? '#008F67' : '#DF1C30',
+                                          backgroundColor: isChecked ? '#008F67' : 'transparent',
                                           width: '18px',
                                           height: '18px',
                                           fontSize: '13px'
@@ -2674,9 +2674,9 @@ const TradeTrackingPageContent: React.FC = () => {
                                     
                                     let outcomeBadge = null;
                                     if (match.outcome === 'Win') {
-                                      outcomeBadge = <span style={{ backgroundColor: '#d1fae5', color: '#065f46', borderRadius: '6px', fontSize: '10px', fontWeight: 700, padding: '1px 5px', display: 'inline-block' }} className="uppercase font-mono">WIN</span>;
+                                      outcomeBadge = <span style={{ backgroundColor: 'rgba(0, 143, 103, 0.12)', color: '#008F67', borderRadius: '6px', fontSize: '10px', fontWeight: 700, padding: '1px 5px', display: 'inline-block' }} className="uppercase font-mono">WIN</span>;
                                     } else if (match.outcome === 'Loss') {
-                                      outcomeBadge = <span style={{ backgroundColor: '#fee2e2', color: '#dc2626', borderRadius: '6px', fontSize: '10px', fontWeight: 700, padding: '1px 5px', display: 'inline-block' }} className="uppercase font-mono">LOSS</span>;
+                                      outcomeBadge = <span style={{ backgroundColor: 'rgba(223, 28, 48, 0.12)', color: '#DF1C30', borderRadius: '6px', fontSize: '10px', fontWeight: 700, padding: '1px 5px', display: 'inline-block' }} className="uppercase font-mono">LOSS</span>;
                                     } else if (match.outcome === 'Breakeven') {
                                       outcomeBadge = <span style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', color: 'var(--text-sub)', borderRadius: '6px', fontSize: '10px', fontWeight: 700, padding: '1px 5px', display: 'inline-block' }} className="uppercase font-mono">BE</span>;
                                     }
