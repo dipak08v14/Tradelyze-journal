@@ -1164,15 +1164,6 @@ export const TradeEntryPage: React.FC = () => {
               }}
             >
               <div>
-                {isEditMode && (
-                  <div className="flex items-center gap-2 text-xs font-mono font-medium text-zinc-500 mb-2">
-                    <Link to="/trading-logs" style={{ color: 'var(--text-sub)' }} className="hover:text-[var(--accent)] transition-colors">TRADING LOGS</Link>
-                    <span>/</span>
-                    <Link to={`/trading-logs/${id}`} style={{ color: 'var(--text-sub)' }} className="hover:text-[var(--accent)] transition-colors">TRADE AUDIT</Link>
-                    <span>/</span>
-                    <span className="text-zinc-300">EDIT</span>
-                  </div>
-                )}
                 <h1 className="font-display" style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }}>
                   {isEditMode ? 'Edit Trade' : 'Log Trade'}
                 </h1>
@@ -1257,13 +1248,7 @@ export const TradeEntryPage: React.FC = () => {
               </div>
             </div>
 
-            <p className="text-sm text-zinc-400 mt-4">
-              {isEditMode 
-                ? 'Modify transaction parameters, rules adherence, scores and media contents.' 
-                : 'Record your complete trade — rules, psychology, execution, and media.'}
-            </p>
-
-            <div className="border-b border-zinc-800/80 mt-5 mb-8" />
+            <div className="mb-5" />
 
             {/* THREE-COLUMN LAYOUT GRID */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
