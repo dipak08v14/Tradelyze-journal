@@ -1150,8 +1150,8 @@ export const TradeEntryPage: React.FC = () => {
                 width: 'calc(100% + 48px)',
                 marginLeft: '-24px',
                 marginRight: '-24px',
-                paddingTop: '3px',
-                paddingBottom: '3px',
+                paddingTop: '6px',
+                paddingBottom: '6px',
                 paddingLeft: '24px',
                 paddingRight: '24px',
                 borderRadius: 0,
@@ -1164,7 +1164,7 @@ export const TradeEntryPage: React.FC = () => {
               }}
             >
               <div>
-                <h1 className="font-display" style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }}>
+                <h1 className="font-display tracking-tight" style={{ fontSize: '26px', fontWeight: 700, color: 'var(--text)' }}>
                   {isEditMode ? 'Edit Trade' : 'Log Trade'}
                 </h1>
               </div>
@@ -1173,12 +1173,13 @@ export const TradeEntryPage: React.FC = () => {
                 <div className="flex items-center gap-3">
                   {isEditMode && (
                     <Link 
-                      to={`/trading-logs/${id}`}
+                       to={`/trading-logs/${id}`}
                       style={{
                         backgroundColor: 'var(--bar)',
                         border: '0.5px solid var(--border)',
                         color: 'var(--text-sub)',
-                        padding: '10px 20px',
+                        padding: '0 20px',
+                        height: '34px',
                         borderRadius: '8px',
                         fontSize: '13px',
                         fontWeight: 600,
@@ -1199,7 +1200,8 @@ export const TradeEntryPage: React.FC = () => {
                       backgroundColor: 'var(--accent)',
                       color: '#ffffff',
                       border: 'none',
-                      padding: '12px 24px',
+                      padding: '0 24px',
+                      height: '34px',
                       borderRadius: '10px',
                       fontSize: '15px',
                       fontWeight: 700,
