@@ -234,6 +234,7 @@ const TradeTrackingPageContent: React.FC = () => {
   const [stopLossPrice, setStopLossPrice] = useState<string>('');
   const [maeValue, setMaeValue] = useState<string>('');
   const [mfeValue, setMfeValue] = useState<string>('');
+  const [notes, setNotes] = useState<string>('');
 
   // CHANGE 4 — Running P&L state
   const [chartData, setChartData] = useState<any[]>([]);
@@ -285,6 +286,7 @@ const TradeTrackingPageContent: React.FC = () => {
       setStopLossPrice(trade.stop_loss_price !== null && trade.stop_loss_price !== undefined ? String(trade.stop_loss_price) : '');
       setMaeValue(trade.mae !== null && trade.mae !== undefined ? String(trade.mae) : '');
       setMfeValue(trade.mfe !== null && trade.mfe !== undefined ? String(trade.mfe) : '');
+      setNotes(trade.notes || '');
     }
   }, [trade]);
 
@@ -376,6 +378,22 @@ const TradeTrackingPageContent: React.FC = () => {
     } catch (err) {
       console.error('Error saving MFE:', err);
       showError('Failed to save MFE.');
+    }
+  };
+
+  const handleBlurNotes = async () => {
+    if (!userId || !tradeId) return;
+    try {
+      const { error } = await supabase
+        .from('trades')
+        .update({ notes: notes.trim() || null })
+        .eq('id', tradeId)
+        .eq('user_id', userId);
+      if (error) throw error;
+      setTrade((prev: any) => ({ ...prev, notes: notes.trim() || null }));
+    } catch (err) {
+      console.error('Error saving notes:', err);
+      showError('Failed to save Notes.');
     }
   };
 
@@ -2716,41 +2734,7 @@ const TradeTrackingPageContent: React.FC = () => {
                     </div>
                   </div>
 
-                    {/* CARD D: GENERAL EXECUTION QUALITY & TRADER NOTES */}
-                    <section 
-                      style={{ 
-                        backgroundColor: 'var(--card)', 
-                        border: '1px solid rgba(0,0,0,0.06)', 
-                        borderRadius: '12px',
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
-                      }} 
-                      className="p-6 relative"
-                    >
-                      <div className="flex items-center gap-2 mb-4">
-                        <Star className="w-5 h-5 text-amber-500" />
-                        <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">Execution & Notes</h2>
-                      </div>
 
-                      <div className="grid grid-cols-1 gap-6">
-                        {/* Notes Box view */}
-                        <div className="flex flex-col">
-                          <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono mb-2">
-                            Post-Trade Reflections
-                          </span>
-                          <div style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} className="rounded-xl p-4 flex-1 min-h-[140px]">
-                            {trade.notes ? (
-                              <p style={{ color: 'var(--text)' }} className="text-xs leading-relaxed whitespace-pre-wrap">
-                                {trade.notes}
-                              </p>
-                            ) : (
-                              <p style={{ color: 'var(--text-muted)' }} className="text-xs italic">
-                                No diary notes transcribed for this trade.
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </section>
 
                     {/* CARD E: KEY PERFORMANCE SCOREBOARD + SPIDER RADAR */}
                     <div className="flex gap-6 items-start">
@@ -2923,8 +2907,38 @@ const TradeTrackingPageContent: React.FC = () => {
                     </section>
                   </div>
 
+                    {/* CARD D: GENERAL EXECUTION QUALITY & TRADER NOTES */}
+                    <section 
+                      style={{ 
+                        backgroundColor: 'var(--card)', 
+                        border: '1px solid rgba(0,0,0,0.06)', 
+                        borderRadius: '12px',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
+                      }} 
+                      className="p-6 relative"
+                    >
+                      <div className="flex items-center gap-2 mb-4">
+                        <Star className="w-5 h-5 text-amber-500" />
+                        <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">Execution & Notes</h2>
+                      </div>
 
-
+                      <div className="grid grid-cols-1 gap-6">
+                        <div className="flex flex-col">
+                          <span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }} className="block font-mono mb-2">
+                            Post-Trade Reflections
+                          </span>
+                          <textarea
+                            rows={2}
+                            value={notes}
+                            onChange={(e) => setNotes(e.target.value)}
+                            onBlur={handleBlurNotes}
+                            placeholder="What happened on this trade? What did you observe? What would you do differently? Key lesson..."
+                            style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', borderRadius: '12px', fontSize: '13px', color: 'var(--text)', padding: '16px' }}
+                            className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)] resize-y"
+                          />
+                        </div>
+                      </div>
+                    </section>
 
                     {/* ASK AI BUTTON AT BOTTOM OF RIGHT COLUMN */}
                     <button
