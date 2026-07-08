@@ -18,8 +18,8 @@ export const ExecutionPicker: React.FC<ExecutionPickerProps> = ({ value, onChang
     {
       status: 'BEST TRADE',
       label: 'BEST',
-      unselectedClasses: 'border border-green-200 text-green-600 hover:border-green-400 hover:text-green-700',
-      selectedClasses: 'bg-green-500/10 border border-green-500 text-green-700 font-bold shadow-sm',
+      unselectedClasses: 'border border-[rgba(0,143,103,0.2)] text-[#008F67] hover:border-[#008F67] hover:text-[#008F67]',
+      selectedClasses: 'bg-[rgba(0,143,103,0.1)] border border-[#008F67] text-[#008F67] font-bold shadow-sm',
     },
     {
       status: 'GOOD TRADE',
@@ -42,8 +42,8 @@ export const ExecutionPicker: React.FC<ExecutionPickerProps> = ({ value, onChang
     {
       status: 'BAD TRADE',
       label: 'BAD',
-      unselectedClasses: 'border border-red-200 text-red-600 hover:border-red-400 hover:text-red-700',
-      selectedClasses: 'bg-red-500/10 border border-red-500 text-red-700 font-bold shadow-sm',
+      unselectedClasses: 'border border-[rgba(223,28,48,0.2)] text-[#DF1C30] hover:border-[#DF1C30] hover:text-[#DF1C30]',
+      selectedClasses: 'bg-[rgba(223,28,48,0.1)] border border-[#DF1C30] text-[#DF1C30] font-bold shadow-sm',
     },
   ];
 

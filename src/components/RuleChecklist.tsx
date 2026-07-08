@@ -71,9 +71,9 @@ export const RuleChecklist: React.FC<RuleChecklistProps> = ({
               type="button"
               onClick={() => handleToggle(rule.id, 'Y', rule.followed)}
               style={rule.followed === true ? {
-                border: '0.5px solid #22c55e',
-                backgroundColor: 'rgba(34,197,94,0.15)',
-                color: '#22c55e',
+                border: '0.5px solid #008F67',
+                backgroundColor: 'rgba(0,143,103,0.15)',
+                color: '#008F67',
                 fontWeight: 700
               } : {
                 border: '0.5px solid var(--border)',
@@ -90,9 +90,9 @@ export const RuleChecklist: React.FC<RuleChecklistProps> = ({
               type="button"
               onClick={() => handleToggle(rule.id, 'N', rule.followed)}
               style={rule.followed === false ? {
-                border: '0.5px solid #ef4444',
-                backgroundColor: 'rgba(239,68,68,0.15)',
-                color: '#ef4444',
+                border: '0.5px solid #DF1C30',
+                backgroundColor: 'rgba(223,28,48,0.15)',
+                color: '#DF1C30',
                 fontWeight: 700
               } : {
                 border: '0.5px solid var(--border)',

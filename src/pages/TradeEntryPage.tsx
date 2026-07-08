@@ -1375,16 +1375,16 @@ export const TradeEntryPage: React.FC = () => {
                             };
 
                             const activeStyle = dir === 'LONG' ? {
-                              backgroundColor: 'rgba(34,197,94,0.12)',
-                              border: '1px solid #22c55e',
-                              color: '#22c55e',
+                              backgroundColor: 'rgba(0,143,103,0.12)',
+                              border: '1px solid #008F67',
+                              color: '#008F67',
                               fontWeight: 600,
                               borderRadius: '8px',
                               padding: '8px 16px'
                             } : {
-                              backgroundColor: 'rgba(239,68,68,0.12)',
-                              border: '1px solid #ef4444',
-                              color: '#ef4444',
+                              backgroundColor: 'rgba(223,28,48,0.12)',
+                              border: '1px solid #DF1C30',
+                              color: '#DF1C30',
                               fontWeight: 600,
                               borderRadius: '8px',
                               padding: '8px 16px'
@@ -1641,9 +1641,9 @@ export const TradeEntryPage: React.FC = () => {
                             pnl === ''
                               ? 'text-[var(--text)]'
                               : parseFloat(pnl) > 0
-                              ? 'text-[#22c55e] font-bold'
+                              ? 'text-[#008F67] font-bold'
                               : parseFloat(pnl) < 0
-                              ? 'text-[#ef4444] font-bold'
+                              ? 'text-[#DF1C30] font-bold'
                               : 'text-[var(--text-muted)]'
                           }`}
                         />
@@ -1819,12 +1819,12 @@ export const TradeEntryPage: React.FC = () => {
                     {/* Trade Status Badge Cell */}
                     <div style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)' }} className="flex flex-col items-center justify-center p-3 rounded-lg text-center min-h-[85px]">
                       {calculatedStatus === 'Win' && (
-                        <span className="bg-green-100 border border-green-400 text-green-700 text-xs font-extrabold px-3 py-1.5 rounded uppercase tracking-wider w-full">
+                        <span className="bg-[rgba(0,143,103,0.12)] border border-[#008F67]/30 text-[#008F67] text-xs font-extrabold px-3 py-1.5 rounded uppercase tracking-wider w-full">
                           ✓ WIN
                         </span>
                       )}
                       {calculatedStatus === 'Loss' && (
-                        <span className="bg-red-100 border border-red-400 text-red-700 text-xs font-extrabold px-3 py-1.5 rounded uppercase tracking-wider w-full">
+                        <span className="bg-[rgba(223,28,48,0.12)] border border-[#DF1C30]/30 text-[#DF1C30] text-xs font-extrabold px-3 py-1.5 rounded uppercase tracking-wider w-full">
                           ✗ LOSS
                         </span>
                       )}
@@ -1850,9 +1850,9 @@ export const TradeEntryPage: React.FC = () => {
                           calculatedRMultiple === null
                             ? 'text-zinc-400'
                             : calculatedRMultiple > 0
-                            ? 'text-[#22c55e]'
+                            ? 'text-[#008F67]'
                             : calculatedRMultiple < 0
-                            ? 'text-[#ef4444]'
+                            ? 'text-[#DF1C30]'
                             : 'text-zinc-650'
                         }`}
                       >
@@ -1872,9 +1872,9 @@ export const TradeEntryPage: React.FC = () => {
                           calculatedPlannedR === null
                             ? 'text-zinc-400'
                             : calculatedPlannedR > 0
-                            ? 'text-[#22c55e]'
+                            ? 'text-[#008F67]'
                             : calculatedPlannedR < 0
-                            ? 'text-[#ef4444]'
+                            ? 'text-[#DF1C30]'
                             : 'text-zinc-650'
                         }`}
                       >
@@ -1894,9 +1894,9 @@ export const TradeEntryPage: React.FC = () => {
                           calculatedRoi === null
                             ? 'text-zinc-400'
                             : calculatedRoi > 0
-                            ? 'text-[#22c55e]'
+                            ? 'text-[#008F67]'
                             : calculatedRoi < 0
-                            ? 'text-[#ef4444]'
+                            ? 'text-[#DF1C30]'
                             : 'text-zinc-650'
                         }`}
                       >
@@ -1963,10 +1963,10 @@ export const TradeEntryPage: React.FC = () => {
                       <span
                         className={`border rounded-full px-3.5 py-1 text-xs font-bold tracking-wider font-mono uppercase ${
                           technicalScore >= 70
-                            ? 'bg-green-550/10 text-[#22c55e] border-[#22c55e]/20'
+                            ? 'bg-[rgba(0,143,103,0.1)] text-[#008F67] border-[rgba(0,143,103,0.2)]'
                             : technicalScore >= 50
                             ? 'bg-amber-550/10 text-[#f59e0b] border-[#f59e0b]/20'
-                            : 'bg-red-550/10 text-[#ef4444] border-[#ef4444]/20'
+                            : 'bg-[rgba(223,28,48,0.1)] text-[#DF1C30] border-[rgba(223,28,48,0.2)]'
                         }`}
                       >
                         Technical: {technicalScore.toFixed(0)}%
@@ -2137,7 +2137,7 @@ export const TradeEntryPage: React.FC = () => {
                     <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight">
                       Trade Score
                     </h2>
-                    <span className="bg-green-50 text-green-600 border border-green-200 text-[10px] font-mono tracking-widest uppercase font-bold rounded-full px-2.5 py-0.5 animate-pulse">
+                    <span className="bg-[rgba(0,143,103,0.12)] text-[#008F67] border border-[rgba(0,143,103,0.2)] text-[10px] font-mono tracking-widest uppercase font-bold rounded-full px-2.5 py-0.5 animate-pulse">
                       LIVE
                     </span>
                   </div>
@@ -2176,7 +2176,7 @@ export const TradeEntryPage: React.FC = () => {
                         style={{
                           fontSize: '36px',
                           fontWeight: '800',
-                          color: overallScore >= 70 ? '#22c55e' : overallScore >= 50 ? '#f59e0b' : '#ef4444'
+                          color: overallScore >= 70 ? '#008F67' : overallScore >= 50 ? '#f59e0b' : '#DF1C30'
                         }}
                       >
                         {overallScore.toFixed(0)}%
@@ -2255,8 +2255,8 @@ export const TradeEntryPage: React.FC = () => {
                       value={fear}
                       onChange={setFear}
                       hint="0=fearless, 100=fearful — LOWER is better"
-                      valueColorClass="text-[#ef4444] font-bold animate-pulse"
-                      accentColor="#ef4444"
+                      valueColorClass="text-[#DF1C30] font-bold animate-pulse"
+                      accentColor="#DF1C30"
                     />
 
                     {/* Composite psychological outcome result display */}
@@ -2267,7 +2267,7 @@ export const TradeEntryPage: React.FC = () => {
                       <div
                         className="text-3xl font-black mt-1 font-display"
                         style={{
-                          color: psychScore >= 70 ? '#22c55e' : psychScore >= 50 ? '#f59e0b' : '#ef4444'
+                          color: psychScore >= 70 ? '#008F67' : psychScore >= 50 ? '#f59e0b' : '#DF1C30'
                         }}
                       >
                         {psychScore.toFixed(1)}%
@@ -2314,7 +2314,7 @@ export const TradeEntryPage: React.FC = () => {
                         <span
                           className="font-black tracking-wider"
                           style={{
-                            color: followedRiskRulesPct >= 70 ? '#22c55e' : followedRiskRulesPct >= 50 ? '#f59e0b' : '#ef4444'
+                            color: followedRiskRulesPct >= 70 ? '#008F67' : followedRiskRulesPct >= 50 ? '#f59e0b' : '#DF1C30'
                           }}
                         >
                           {followedRiskRulesPct}%

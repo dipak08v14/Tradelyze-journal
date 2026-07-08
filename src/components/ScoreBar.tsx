@@ -18,9 +18,9 @@ export const ScoreBar: React.FC<ScoreBarProps> = ({
   id
 }) => {
   const getScoreColor = (val: number) => {
-    if (val >= 70) return 'text-[#22c55e]';
+    if (val >= 70) return 'text-[#008F67]';
     if (val >= 50) return 'text-[#f59e0b]';
-    return 'text-[#ef4444]';
+    return 'text-[#DF1C30]';
   };
 
   return (
