@@ -2506,19 +2506,213 @@ const TradeTrackingPageContent: React.FC = () => {
                       )}
                     </section>
 
-                    {/* TRADINGVIEW CHART CARD */}
-                    <div 
-                      className="shrink-0 mt-6 lg:mt-0"
-                      style={{ 
-                        backgroundColor: 'var(--card)', 
-                        border: '1px solid rgba(0,0,0,0.06)', 
-                        borderRadius: '12px',
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
-                        padding: '16px 20px',
-                        width: '778px'
-                      }}
-                    >
-                      <TradeChart trade={trade} userTheme={userTheme} />
+                    {/* TRADINGVIEW CHART CARD COLUMN */}
+                    <div className="shrink-0 mt-6 lg:mt-0 flex flex-col gap-6" style={{ width: '778px' }}>
+                      <div 
+                        style={{ 
+                          backgroundColor: 'var(--card)', 
+                          border: '1px solid rgba(0,0,0,0.06)', 
+                          borderRadius: '12px',
+                          boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
+                          padding: '16px 20px'
+                        }}
+                      >
+                        <TradeChart trade={trade} userTheme={userTheme} />
+                      </div>
+
+                      <div className="flex flex-col md:flex-row gap-6">
+                        <div className="flex-1 min-w-0">
+                          {/* CARD H: MEDIA VIEWER ZONE */}
+                          <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="rounded-xl p-6 shadow-sm">
+                            <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, textTransform: 'none' }} className="font-display mb-3">
+                              Trade Attachments
+                            </h2>
+
+                            <div className="space-y-4 text-xs">
+                              {/* Chart Screenshot */}
+                              <div>
+                                <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] font-bold font-mono uppercase tracking-widest mb-1.5 font-sans">
+                                  Chart Screenshot
+                                </span>
+                                {trade.chart_image_url ? (
+                                  <div
+                                    style={{ position: 'relative', cursor: 'pointer' }}
+                                    onClick={() => setViewerOpen(true)}
+                                    className="group rounded-xl overflow-hidden border border-[var(--border)] bg-zinc-950"
+                                  >
+                                    <img
+                                      src={trade.chart_image_url}
+                                      style={{ width: '100%', borderRadius: '8px', display: 'block', border: '0.5px solid var(--border)' }}
+                                      alt="Chart execution screenshot"
+                                      referrerPolicy="no-referrer"
+                                    />
+                                    <div
+                                      style={{ position: 'absolute', inset: 0, borderRadius: '8px', background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                      className="opacity-70 group-hover:opacity-100 transition-opacity"
+                                    >
+                                      <span style={{ fontSize: '11px', color: '#fff', background: 'rgba(0,0,0,0.6)', padding: '4px 10px', borderRadius: '20px' }}>
+                                        🔍 Click to view & draw
+                                      </span>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div style={{ backgroundColor: 'var(--bar)', border: '0.5px dashed var(--border)', color: 'var(--text-muted)' }} className="p-3 rounded-xl text-center italic">
+                                    No chart image snapshot archived.
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Trade Video Recording */}
+                              {trade.trade_video_url && (
+                                <div style={{ borderColor: 'var(--border)' }} className="pt-2 border-t">
+                                  <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] font-bold font-mono uppercase tracking-widest mb-2 font-sans">
+                                    Trade Recording Video
+                                  </span>
+                                  <button
+                                    type="button"
+                                    onClick={() => window.open(trade.trade_video_url, '_blank')}
+                                    style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', color: 'var(--text-sub)' }}
+                                    className="w-full hover:opacity-90 font-semibold rounded-xl px-4 py-2.5 flex items-center justify-center gap-2 cursor-pointer transition-all"
+                                  >
+                                    <ExternalLink className="w-3.5 h-3.5 text-cyan-500" />
+                                    <span>Watch Playback Recording</span>
+                                  </button>
+                                </div>
+                              )}
+
+                              {/* Trade Plan PDF/image */}
+                              {trade.trade_plan_url && (
+                                <div style={{ borderColor: 'var(--border)' }} className="pt-2 border-t">
+                                  <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] font-bold font-mono uppercase tracking-widest mb-2 font-sans">
+                                    Associated Trade Plan
+                                  </span>
+                                  {trade.trade_plan_url.toLowerCase().endsWith('.pdf') ? (
+                                    <button
+                                      type="button"
+                                      onClick={() => window.open(trade.trade_plan_url, '_blank')}
+                                      style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', color: 'var(--text-sub)' }}
+                                      className="w-full hover:opacity-90 font-semibold rounded-xl px-4 py-2.5 flex items-center justify-center gap-2 cursor-pointer transition-all"
+                                    >
+                                      <FileText className="w-3.5 h-3.5 text-cyan-500" />
+                                      <span>Read Trade Plan (PDF)</span>
+                                    </button>
+                                  ) : (
+                                    <div style={{ borderColor: 'var(--border)' }} className="relative group rounded-xl overflow-hidden border bg-zinc-950">
+                                      <img
+                                        src={trade.trade_plan_url}
+                                        alt="Trade plan chart/model"
+                                        className="w-full object-contain max-h-48 cursor-pointer hover:scale-[1.01] transition-transform duration-200"
+                                        onClick={() => window.open(trade.trade_plan_url, '_blank')}
+                                        referrerPolicy="no-referrer"
+                                      />
+                                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity pointer-events-none">
+                                        <span className="text-[10px] font-bold uppercase text-white font-mono flex items-center gap-1.5 bg-zinc-950 px-3 py-1.5 rounded-lg border border-zinc-800">
+                                          <ExternalLink className="w-3 h-3" />
+                                          <span>Inspect Plan</span>
+                                        </span>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          </section>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          {/* SPECIAL CARD: VISUAL PATTERN MATCH */}
+                          <section 
+                            style={{ 
+                              backgroundColor: 'var(--card)', 
+                              border: '1px solid rgba(0,0,0,0.06)', 
+                              borderRadius: '12px',
+                              boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
+                            }} 
+                            className="p-6 h-full"
+                          >
+                            <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">Visual Pattern Match</h2>
+                            <p style={{ color: 'var(--text-muted)' }} className="text-[11px] font-mono uppercase tracking-wider mb-2">Machine vision resemblance</p>
+
+                            {matchesLoading ? (
+                              <div className="flex flex-col items-center py-6 gap-2">
+                                <div className="w-5 h-5 border-2 rounded-full animate-spin" style={{ borderColor: 'var(--border)', borderTopColor: 'var(--accent)' }} />
+                                <span style={{ color: 'var(--text-muted)' }} className="text-xs font-mono">Running structural comparisons...</span>
+                              </div>
+                            ) : !trade.chart_image_url ? (
+                              <div style={{ backgroundColor: 'var(--bar)', border: '0.5px dashed var(--border)', color: 'var(--text-muted)' }} className="text-xs italic py-4 text-center rounded-xl px-4">
+                                Upload a chart screenshot to activate automated pattern-matching intelligence!
+                              </div>
+                            ) : visualMatches.length === 0 ? (
+                              <div style={{ backgroundColor: 'var(--bar)', border: '0.5px dashed var(--border)', color: 'var(--text-muted)' }} className="text-xs italic py-4 text-center rounded-xl px-4">
+                                No visually similar patterns found in your library yet. Keep logging trades with chart screenshots!
+                              </div>
+                            ) : (
+                              <div className="space-y-3 font-sans">
+                                <p style={{ color: 'var(--text-muted)' }} className="text-[10px] font-mono uppercase tracking-wider">
+                                  Matches (Threshold &gt; 45%)
+                                </p>
+                                <div style={{ borderColor: 'var(--border)' }} className="divide-y">
+                                  {visualMatches.map((match) => {
+                                    const matchPercent = (match.similarity * 100).toFixed(1);
+                                    
+                                    let outcomeBadge = null;
+                                    if (match.outcome === 'Win') {
+                                      outcomeBadge = <span style={{ backgroundColor: '#d1fae5', color: '#065f46', borderRadius: '6px', fontSize: '10px', fontWeight: 700, padding: '1px 5px', display: 'inline-block' }} className="uppercase font-mono">WIN</span>;
+                                    } else if (match.outcome === 'Loss') {
+                                      outcomeBadge = <span style={{ backgroundColor: '#fee2e2', color: '#dc2626', borderRadius: '6px', fontSize: '10px', fontWeight: 700, padding: '1px 5px', display: 'inline-block' }} className="uppercase font-mono">LOSS</span>;
+                                    } else if (match.outcome === 'Breakeven') {
+                                      outcomeBadge = <span style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', color: 'var(--text-sub)', borderRadius: '6px', fontSize: '10px', fontWeight: 700, padding: '1px 5px', display: 'inline-block' }} className="uppercase font-mono">BE</span>;
+                                    }
+
+                                    return (
+                                      <div key={match.trade_id} style={{ borderColor: 'var(--border)' }} className="py-3 first:pt-0 last:pb-0 flex gap-3 group">
+                                        {/* Thumbnail */}
+                                        <div style={{ borderColor: 'var(--border)' }} className="w-16 h-12 rounded-lg overflow-hidden bg-zinc-950 border flex-shrink-0 relative">
+                                          <img
+                                            src={match.image_url}
+                                            alt="Matching pattern representation"
+                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200"
+                                            referrerPolicy="no-referrer"
+                                          />
+                                        </div>
+                                        
+                                        {/* Info */}
+                                        <div className="flex-1 min-w-0">
+                                          <div className="flex items-center justify-between gap-1.5">
+                                            <Link
+                                              to={`/trading-logs/${match.trade_id}`}
+                                              style={{ color: 'var(--text)' }}
+                                              className="text-xs font-semibold hover:text-[var(--accent)] truncate tracking-wide"
+                                            >
+                                              Setup: {match.setup_name || 'Unnamed Setup'}
+                                            </Link>
+                                            <span style={{ color: 'var(--text-sub)' }} className="text-[10px] font-bold font-mono shrink-0">
+                                              {matchPercent}%
+                                            </span>
+                                          </div>
+                                          
+                                          <div className="flex items-center gap-2 mt-1.5">
+                                            {outcomeBadge}
+                                            {match.trade_rating && (
+                                              <div className="flex items-center gap-0.5 text-amber-500">
+                                                {Array.from({ length: Math.min(5, match.trade_rating) }).map((_, i) => (
+                                                  <Star key={i} className="w-2.5 h-2.5 fill-current" />
+                                                ))}
+                                              </div>
+                                            )}
+                                            <span style={{ color: 'var(--text-muted)' }} className="text-[9px] font-mono">
+                                              Rating: {match.trade_rating || '—'}
+                                            </span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            )}
+                          </section>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -2731,195 +2925,6 @@ const TradeTrackingPageContent: React.FC = () => {
 
 
 
-
-                    {/* CARD H: MEDIA VIEWER ZONE */}
-                    <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="rounded-xl p-6 shadow-sm">
-                      <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, textTransform: 'none' }} className="font-display mb-3">
-                        Trade Attachments
-                      </h2>
-
-                      <div className="space-y-4 text-xs">
-                        {/* Chart Screenshot */}
-                        <div>
-                          <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] font-bold font-mono uppercase tracking-widest mb-1.5 font-sans">
-                            Chart Screenshot
-                          </span>
-                          {trade.chart_image_url ? (
-                            <div
-                              style={{ position: 'relative', cursor: 'pointer' }}
-                              onClick={() => setViewerOpen(true)}
-                              className="group rounded-xl overflow-hidden border border-[var(--border)] bg-zinc-950"
-                            >
-                              <img
-                                src={trade.chart_image_url}
-                                style={{ width: '100%', borderRadius: '8px', display: 'block', border: '0.5px solid var(--border)' }}
-                                alt="Chart execution screenshot"
-                                referrerPolicy="no-referrer"
-                              />
-                              <div
-                                style={{ position: 'absolute', inset: 0, borderRadius: '8px', background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                                className="opacity-70 group-hover:opacity-100 transition-opacity"
-                              >
-                                <span style={{ fontSize: '11px', color: '#fff', background: 'rgba(0,0,0,0.6)', padding: '4px 10px', borderRadius: '20px' }}>
-                                  🔍 Click to view & draw
-                                </span>
-                              </div>
-                            </div>
-                          ) : (
-                            <div style={{ backgroundColor: 'var(--bar)', border: '0.5px dashed var(--border)', color: 'var(--text-muted)' }} className="p-3 rounded-xl text-center italic">
-                              No chart image snapshot archived.
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Trade Video Recording */}
-                        {trade.trade_video_url && (
-                          <div style={{ borderColor: 'var(--border)' }} className="pt-2 border-t">
-                            <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] font-bold font-mono uppercase tracking-widest mb-2 font-sans">
-                              Trade Recording Video
-                            </span>
-                            <button
-                              type="button"
-                              onClick={() => window.open(trade.trade_video_url, '_blank')}
-                              style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', color: 'var(--text-sub)' }}
-                              className="w-full hover:opacity-90 font-semibold rounded-xl px-4 py-2.5 flex items-center justify-center gap-2 cursor-pointer transition-all"
-                            >
-                              <ExternalLink className="w-3.5 h-3.5 text-cyan-500" />
-                              <span>Watch Playback Recording</span>
-                            </button>
-                          </div>
-                        )}
-
-                        {/* Trade Plan PDF/image */}
-                        {trade.trade_plan_url && (
-                          <div style={{ borderColor: 'var(--border)' }} className="pt-2 border-t">
-                            <span style={{ color: 'var(--text-sub)' }} className="block text-[10px] font-bold font-mono uppercase tracking-widest mb-2 font-sans">
-                              Associated Trade Plan
-                            </span>
-                            {trade.trade_plan_url.toLowerCase().endsWith('.pdf') ? (
-                              <button
-                                type="button"
-                                onClick={() => window.open(trade.trade_plan_url, '_blank')}
-                                style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', color: 'var(--text-sub)' }}
-                                className="w-full hover:opacity-90 font-semibold rounded-xl px-4 py-2.5 flex items-center justify-center gap-2 cursor-pointer transition-all"
-                              >
-                                <FileText className="w-3.5 h-3.5 text-cyan-500" />
-                                <span>Read Trade Plan (PDF)</span>
-                              </button>
-                            ) : (
-                              <div style={{ borderColor: 'var(--border)' }} className="relative group rounded-xl overflow-hidden border bg-zinc-950">
-                                <img
-                                  src={trade.trade_plan_url}
-                                  alt="Trade plan chart/model"
-                                  className="w-full object-contain max-h-48 cursor-pointer hover:scale-[1.01] transition-transform duration-200"
-                                  onClick={() => window.open(trade.trade_plan_url, '_blank')}
-                                  referrerPolicy="no-referrer"
-                                />
-                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity pointer-events-none">
-                                  <span className="text-[10px] font-bold uppercase text-white font-mono flex items-center gap-1.5 bg-zinc-950 px-3 py-1.5 rounded-lg border border-zinc-800">
-                                    <ExternalLink className="w-3 h-3" />
-                                    <span>Inspect Plan</span>
-                                  </span>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </section>
-
-                    {/* SPECIAL CARD: VISUAL PATTERN MATCH */}
-                    <section 
-                      style={{ 
-                        backgroundColor: 'var(--card)', 
-                        border: '1px solid rgba(0,0,0,0.06)', 
-                        borderRadius: '12px',
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
-                      }} 
-                      className="p-6"
-                    >
-                      <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">Visual Pattern Match</h2>
-                      <p style={{ color: 'var(--text-muted)' }} className="text-[11px] font-mono uppercase tracking-wider mb-2">Machine vision resemblance</p>
-
-                      {matchesLoading ? (
-                        <div className="flex flex-col items-center py-6 gap-2">
-                          <div className="w-5 h-5 border-2 rounded-full animate-spin" style={{ borderColor: 'var(--border)', borderTopColor: 'var(--accent)' }} />
-                          <span style={{ color: 'var(--text-muted)' }} className="text-xs font-mono">Running structural comparisons...</span>
-                        </div>
-                      ) : !trade.chart_image_url ? (
-                        <div style={{ backgroundColor: 'var(--bar)', border: '0.5px dashed var(--border)', color: 'var(--text-muted)' }} className="text-xs italic py-4 text-center rounded-xl px-4">
-                          Upload a chart screenshot to activate automated pattern-matching intelligence!
-                        </div>
-                      ) : visualMatches.length === 0 ? (
-                        <div style={{ backgroundColor: 'var(--bar)', border: '0.5px dashed var(--border)', color: 'var(--text-muted)' }} className="text-xs italic py-4 text-center rounded-xl px-4">
-                          No visually similar patterns found in your library yet. Keep logging trades with chart screenshots!
-                        </div>
-                      ) : (
-                        <div className="space-y-3 font-sans">
-                          <p style={{ color: 'var(--text-muted)' }} className="text-[10px] font-mono uppercase tracking-wider">
-                            Matches (Threshold &gt; 45%)
-                          </p>
-                          <div style={{ borderColor: 'var(--border)' }} className="divide-y">
-                            {visualMatches.map((match) => {
-                              const matchPercent = (match.similarity * 100).toFixed(1);
-                              
-                              let outcomeBadge = null;
-                              if (match.outcome === 'Win') {
-                                outcomeBadge = <span style={{ backgroundColor: '#d1fae5', color: '#065f46', borderRadius: '6px', fontSize: '10px', fontWeight: 700, padding: '1px 5px', display: 'inline-block' }} className="uppercase font-mono">WIN</span>;
-                              } else if (match.outcome === 'Loss') {
-                                outcomeBadge = <span style={{ backgroundColor: '#fee2e2', color: '#dc2626', borderRadius: '6px', fontSize: '10px', fontWeight: 700, padding: '1px 5px', display: 'inline-block' }} className="uppercase font-mono">LOSS</span>;
-                              } else if (match.outcome === 'Breakeven') {
-                                outcomeBadge = <span style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', color: 'var(--text-sub)', borderRadius: '6px', fontSize: '10px', fontWeight: 700, padding: '1px 5px', display: 'inline-block' }} className="uppercase font-mono">BE</span>;
-                              }
-
-                              return (
-                                <div key={match.trade_id} style={{ borderColor: 'var(--border)' }} className="py-3 first:pt-0 last:pb-0 flex gap-3 group">
-                                  {/* Thumbnail */}
-                                  <div style={{ borderColor: 'var(--border)' }} className="w-16 h-12 rounded-lg overflow-hidden bg-zinc-950 border flex-shrink-0 relative">
-                                    <img
-                                      src={match.image_url}
-                                      alt="Matching pattern representation"
-                                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200"
-                                      referrerPolicy="no-referrer"
-                                    />
-                                  </div>
-                                  
-                                  {/* Info */}
-                                  <div className="flex-1 min-w-0">
-                                    <div className="flex items-center justify-between gap-1.5">
-                                      <Link
-                                        to={`/trading-logs/${match.trade_id}`}
-                                        style={{ color: 'var(--text)' }}
-                                        className="text-xs font-semibold hover:text-[var(--accent)] truncate tracking-wide"
-                                      >
-                                        Setup: {match.setup_name || 'Unnamed Setup'}
-                                      </Link>
-                                      <span style={{ color: 'var(--text-sub)' }} className="text-[10px] font-bold font-mono shrink-0">
-                                        {matchPercent}%
-                                      </span>
-                                    </div>
-                                    
-                                    <div className="flex items-center gap-2 mt-1.5">
-                                      {outcomeBadge}
-                                      {match.trade_rating && (
-                                        <div className="flex items-center gap-0.5 text-amber-500">
-                                          {Array.from({ length: Math.min(5, match.trade_rating) }).map((_, i) => (
-                                            <Star key={i} className="w-2.5 h-2.5 fill-current" />
-                                          ))}
-                                        </div>
-                                      )}
-                                      <span style={{ color: 'var(--text-muted)' }} className="text-[9px] font-mono">
-                                        Rating: {match.trade_rating || '—'}
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-                    </section>
 
                     {/* ASK AI BUTTON AT BOTTOM OF RIGHT COLUMN */}
                     <button
