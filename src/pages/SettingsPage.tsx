@@ -837,7 +837,7 @@ export default function SettingsPage() {
       // Clean up Supabase records first with cascading or direct
       const { error: deleteProfileError } = await supabase
         .from('users')
-        .delete()
+        .update({ is_deleted: true, deleted_at: new Date().toISOString() })
         .eq('id', userId);
 
       if (deleteProfileError) throw deleteProfileError;
