@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { decrypt } from './_encryption.js';
+import { decrypt, encrypt } from './_encryption.js';
 
 function getOptionType(leg) {
   if (!leg) return null;
@@ -129,7 +129,80 @@ export default async function handler(req, res) {
         const connRow = connectionData[0];
         connectionId = connRow.id;
 
-        const decryptedToken = decrypt(connRow.access_token_encrypted);
+        let decryptedToken = decrypt(connRow.access_token_encrypted);
+        let hadApiErrors = false;
+
+        try {
+          const renewRes = await fetch('https://api.dhan.co/v2/RenewToken', {
+            method: 'GET',
+            headers: {
+              'access-token': decryptedToken,
+              'dhanClientId': connRow.account_login || ''
+            }
+          });
+          
+          let renewData = {};
+          try {
+            renewData = await renewRes.json();
+          } catch (e) {
+            const rawText = await renewRes.text().catch(() => 'unreadable');
+            console.error('DHAN RENEW TOKEN - could not parse JSON, raw response:', rawText);
+          }
+
+          if (!renewRes.ok || !renewData.token) {
+            console.error('DHAN RENEW TOKEN FAILURE - status:', renewRes.status, 'body:', JSON.stringify(renewData));
+            await supabaseUser
+              .from('broker_connections')
+              .update({ sync_status: 'token_expired' })
+              .eq('user_id', task.userId)
+              .eq('broker_type', 'dhan');
+
+            await supabaseUser
+              .from('sync_logs')
+              .insert({
+                status: 'failed',
+                error_message: renewData.errorMessage || renewData.remarks || 'Dhan token expired or renewal failed',
+                trades_received: 0,
+                trades_imported: 0,
+                trades_skipped: 0,
+                synced_at: new Date().toISOString(),
+                user_id: task.userId,
+                connection_id: connectionId,
+                sync_type: syncType
+              });
+            continue;
+          }
+
+          decryptedToken = renewData.token;
+          const newEncryptedToken = encrypt(decryptedToken);
+          await supabaseUser
+            .from('broker_connections')
+            .update({ access_token_encrypted: newEncryptedToken })
+            .eq('user_id', task.userId)
+            .eq('broker_type', 'dhan');
+
+        } catch (renewErr) {
+          await supabaseUser
+            .from('broker_connections')
+            .update({ sync_status: 'token_expired' })
+            .eq('user_id', task.userId)
+            .eq('broker_type', 'dhan');
+
+          await supabaseUser
+            .from('sync_logs')
+            .insert({
+              status: 'failed',
+              error_message: 'Dhan token expired or renewal failed',
+              trades_received: 0,
+              trades_imported: 0,
+              trades_skipped: 0,
+              synced_at: new Date().toISOString(),
+              user_id: task.userId,
+              connection_id: connectionId,
+              sync_type: syncType
+            });
+          continue;
+        }
 
         // STEP B — DETERMINE DATE RANGES
         const today = new Date().toISOString().split('T')[0];
@@ -179,6 +252,7 @@ export default async function handler(req, res) {
 
               if (!dhanRes.ok) {
                 console.error(`Dhan API fetch error for range ${dateRange.from_date} to ${dateRange.to_date} page ${page}:`, dhanRes.status);
+                hadApiErrors = true;
                 break;
               }
 
@@ -455,7 +529,7 @@ export default async function handler(req, res) {
             last_sync_at: new Date().toISOString(),
             total_synced: (connRow.total_synced || 0) + tradesCreated,
             trades_pending_review: pendingReviewCount || 0,
-            sync_status: 'connected'
+            sync_status: hadApiErrors ? 'error' : 'connected'
           })
           .eq('user_id', task.userId)
           .eq('broker_type', 'dhan');
@@ -470,7 +544,7 @@ export default async function handler(req, res) {
             trades_received: totalLegsReceived,
             trades_imported: tradesCreated,
             trades_skipped: totalLegsSkipped,
-            status: 'success',
+            status: hadApiErrors && tradesCreated === 0 ? 'failed' : (hadApiErrors && tradesCreated > 0 ? 'partial' : 'success'),
             synced_at: new Date().toISOString()
           });
 
