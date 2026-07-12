@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
+import { supabase } from './lib/supabase';
 import { ToastProvider } from './hooks/useToast';
 import { ToastContainer } from './components/Toast';
 import { LoginPage } from './pages/LoginPage';
@@ -46,6 +47,22 @@ function HomeRoute() {
 function AuthenticatedLayout() {
   const { user, userData, loading, trialExpired } = useAuth();
   const location = useLocation();
+  const [accountClosed, setAccountClosed] = React.useState(false);
+
+  React.useEffect(() => {
+    if (userData && userData.is_deleted === true && !accountClosed) {
+      setAccountClosed(true);
+      supabase.auth.signOut();
+    }
+  }, [userData, accountClosed]);
+
+  if (accountClosed) {
+    return (
+      <div className="min-h-screen flex items-center justify-center font-sans animate-none" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+        <p className="text-lg font-medium opacity-80">This account has been permanently closed.</p>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

@@ -42,6 +42,27 @@ export const LoginPage: React.FC = () => {
       }
 
       if (data?.user) {
+        let isClosed = false;
+        try {
+          const { data: userData, error: fetchError } = await supabase
+            .from('users')
+            .select('is_deleted')
+            .eq('id', data.user.id)
+            .single();
+
+          if (!fetchError && userData?.is_deleted === true) {
+            isClosed = true;
+          }
+        } catch (fetchErr) {
+          // Ignore fetch errors to avoid blocking normal login
+        }
+
+        if (isClosed) {
+          await supabase.auth.signOut();
+          setFormError('This account has been permanently closed.');
+          return;
+        }
+
         showSuccess('Logged in successfully!');
         navigate('/dashboard');
       }

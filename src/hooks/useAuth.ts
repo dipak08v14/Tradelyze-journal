@@ -26,7 +26,7 @@ export function useAuth(): AuthState {
     try {
       const { data: userData, error } = await supabase
         .from('users')
-        .select('subscription_plan, subscription_status, trial_started_at, theme_background, theme_accent, onboarding_completed, full_name, timezone, preferred_currency')
+        .select('subscription_plan, subscription_status, trial_started_at, theme_background, theme_accent, onboarding_completed, full_name, timezone, preferred_currency, is_deleted')
         .eq('id', currentUser.id)
         .single();
 
