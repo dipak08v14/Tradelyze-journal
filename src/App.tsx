@@ -24,7 +24,7 @@ import { AdvancedReports } from './pages/AdvancedReports';
 import { AiTeacherPage } from './pages/AiTeacherPage';
 import { Notebook } from './pages/Notebook';
 import { useTheme } from './hooks/useTheme';
-import { useAuth } from './hooks/useAuth';
+import { useAuth, AuthProvider } from './hooks/useAuth';
 
 function HomeRoute() {
   const { user, loading } = useAuth();
@@ -102,53 +102,55 @@ export default function App() {
   return (
     <ToastProvider>
       <Router>
-        <Routes>
-          {/* Public routes */}
-          <Route path="/" element={<HomeRoute />} />
-          <Route path="/pricing" element={<PricingPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/login" element={<LoginPage />} />
+        <AuthProvider>
+          <Routes>
+            {/* Public routes */}
+            <Route path="/" element={<HomeRoute />} />
+            <Route path="/pricing" element={<PricingPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/login" element={<LoginPage />} />
 
-          {/* Authenticated routes wrapper */}
-          <Route element={<AuthenticatedLayout />}>
-            <Route path="/onboarding" element={<OnboardingPage />} />
-            
-            {/* Strategies setup dashboard */}
-            <Route path="/strategies" element={<StrategiesPage />} />
-            <Route path="/strategies/:id" element={<StrategyDetail />} />
-            <Route path="/strategies/new" element={<StrategyBuilderPage />} />
-            <Route path="/strategies/:id/edit" element={<StrategyBuilderPage />} />
+            {/* Authenticated routes wrapper */}
+            <Route element={<AuthenticatedLayout />}>
+              <Route path="/onboarding" element={<OnboardingPage />} />
+              
+              {/* Strategies setup dashboard */}
+              <Route path="/strategies" element={<StrategiesPage />} />
+              <Route path="/strategies/:id" element={<StrategyDetail />} />
+              <Route path="/strategies/new" element={<StrategyBuilderPage />} />
+              <Route path="/strategies/:id/edit" element={<StrategyBuilderPage />} />
 
-            {/* Performance metrics dashboard */}
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/daily-journal" element={<DailyJournal />} />
-            <Route path="/trade-entry" element={<TradeEntryPage />} />
-            <Route path="/trade-entry/:id" element={<TradeEntryPage />} />
-            
-            {/* Trading Logs Routing */}
-            <Route path="/trading-logs" element={<TradingLogsPage />} />
-            <Route path="/trading-logs/:id" element={<TradeTrackingPage />} />
-            <Route path="/trade-tracking/:id" element={<TradeTrackingPage />} />
-            <Route path="/trade/:id" element={<TradeTrackingPage />} />
-            <Route path="/logs" element={<Navigate to="/trading-logs" replace />} />
+              {/* Performance metrics dashboard */}
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/daily-journal" element={<DailyJournal />} />
+              <Route path="/trade-entry" element={<TradeEntryPage />} />
+              <Route path="/trade-entry/:id" element={<TradeEntryPage />} />
+              
+              {/* Trading Logs Routing */}
+              <Route path="/trading-logs" element={<TradingLogsPage />} />
+              <Route path="/trading-logs/:id" element={<TradeTrackingPage />} />
+              <Route path="/trade-tracking/:id" element={<TradeTrackingPage />} />
+              <Route path="/trade/:id" element={<TradeTrackingPage />} />
+              <Route path="/logs" element={<Navigate to="/trading-logs" replace />} />
 
-            {/* Other Authenticated Pages */}
-            <Route path="/notebook" element={<Notebook />} />
-            <Route path="/advanced-reports" element={<AdvancedReports />} />
-            <Route path="/reports" element={<TradingReportsPage />} />
-            <Route path="/annual-reports" element={<AnnualReportsPage />} />
-            <Route path="/ai-teacher" element={<AiTeacherPage />} />
-            
-            {/* Risk Calculator replaces generic placeholder page */}
-            <Route path="/risk-calculator" element={<RiskCalculatorPage />} />
-            
-            {/* Settings replaces generic placeholder page */}
-            <Route path="/settings" element={<SettingsPage />} />
-          </Route>
+              {/* Other Authenticated Pages */}
+              <Route path="/notebook" element={<Notebook />} />
+              <Route path="/advanced-reports" element={<AdvancedReports />} />
+              <Route path="/reports" element={<TradingReportsPage />} />
+              <Route path="/annual-reports" element={<AnnualReportsPage />} />
+              <Route path="/ai-teacher" element={<AiTeacherPage />} />
+              
+              {/* Risk Calculator replaces generic placeholder page */}
+              <Route path="/risk-calculator" element={<RiskCalculatorPage />} />
+              
+              {/* Settings replaces generic placeholder page */}
+              <Route path="/settings" element={<SettingsPage />} />
+            </Route>
 
-          {/* Wildcard Fallback */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+            {/* Wildcard Fallback */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </AuthProvider>
       </Router>
       <ToastContainer />
     </ToastProvider>

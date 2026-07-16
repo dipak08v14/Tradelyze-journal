@@ -321,13 +321,7 @@ export const StrategiesPage: React.FC = () => {
   const totalPages = Math.ceil(sortedStrategies.length / itemsPerPage) || 1;
 
   // React Rules of Hooks Guard (Early Returns placed below all React callables)
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center animate-pulse" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
-        <div className="w-8 h-8 border-4 rounded-full animate-spin" style={{ borderTopColor: 'var(--accent)', borderColor: 'var(--border)' }}></div>
-      </div>
-    );
-  }
+
 
   if (!user) {
     return <Navigate to="/login" replace />;
@@ -502,7 +496,7 @@ export const StrategiesPage: React.FC = () => {
   return (
     <div className="min-h-screen w-full flex flex-col md:flex-row font-sans" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
-      <Sidebar userEmail={user.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
+      <Sidebar userEmail={user?.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* RIGHT MAIN BOX */}
       <div className="flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen">

@@ -1245,77 +1245,10 @@ const TradeTrackingPageContent: React.FC = () => {
     );
   };
 
-  if (fetchError) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6 text-zinc-100" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
-        <div className="p-6 rounded-2xl max-w-md w-full text-center shadow-2xl" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }}>
-          <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500" style={{ backgroundColor: 'var(--row)', border: '1px solid var(--border)' }}>
-            <AlertTriangle className="w-6 h-6" />
-          </div>
-          <h2 className="text-xl font-bold font-display" style={{ color: 'var(--text)' }}>Sync Failure</h2>
-          <p className="text-xs mt-2 mb-6 leading-relaxed" style={{ color: 'var(--text-sub)' }}>
-            Could not fetch trade analytics context from the server.
-          </p>
-          <div className="rounded-xl p-3 text-left font-mono text-[10px] text-red-500 overflow-x-auto mb-6" style={{ backgroundColor: 'var(--bar)', border: '1px solid var(--border)' }}>
-            <strong>Error:</strong> {fetchError.message || 'Unknown network or database issue.'}
-          </div>
-          <div className="flex gap-3 justify-center">
-            <button
-              onClick={() => {
-                setFetchError(null);
-                fetchCompleteTradeContextData();
-              }}
-              className="font-semibold rounded-xl px-4 py-2.5 text-xs transition-colors cursor-pointer"
-              style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
-            >
-              Retry Sync
-            </button>
-            <Link
-              to="/trading-logs"
-              className="font-semibold rounded-xl px-4 py-2.5 text-xs transition-colors"
-              style={{ backgroundColor: 'var(--bar)', border: '1px solid var(--border)', color: 'var(--text)' }}
-            >
-              Back to Logs
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (authLoading || loading) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
-        <div className="w-9 h-9 border-4 rounded-full animate-spin mb-3" style={{ borderColor: 'var(--border-md)', borderTopColor: 'var(--accent)' }} />
-        <p className="text-xs font-mono tracking-widest uppercase animate-pulse" style={{ color: 'var(--text-sub)' }}>Fetching trade profile...</p>
-      </div>
-    );
-  }
-
-  if (!user || !trade) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
-        <AlertTriangle className="w-12 h-12 text-red-500 mb-2" />
-        <h2 className="text-xl font-bold font-display" style={{ color: 'var(--text)' }}>Trade Profile Missing</h2>
-        <p className="text-sm mt-1 mb-6 text-center max-w-sm" style={{ color: 'var(--text-sub)' }}>
-          We could not load this trade index. It may have been deleted or lives on another profile.
-        </p>
-        <Link
-          to="/trading-logs"
-          className="font-semibold rounded-xl px-4 py-2.5 text-sm inline-flex items-center gap-2 transition-colors"
-          style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
-        >
-          <ChevronLeft className="w-4 h-4" />
-          <span>Back to Logs</span>
-        </Link>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen w-full flex flex-col md:flex-row font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
-      <Sidebar userEmail={user.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
+      <Sidebar userEmail={user?.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* MAIN CONTAINER */}
       <div className="flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen">
@@ -1337,6 +1270,63 @@ const TradeTrackingPageContent: React.FC = () => {
         {/* PAGE BODY SCROLLER */}
         <main className="flex-1 overflow-y-auto px-0">
           <div className="max-w-7xl mx-auto">
+            {fetchError ? (
+              <div className="min-h-[60vh] flex flex-col items-center justify-center p-6 text-zinc-100" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+                <div className="p-6 rounded-2xl max-w-md w-full text-center shadow-2xl" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }}>
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500" style={{ backgroundColor: 'var(--row)', border: '1px solid var(--border)' }}>
+                    <AlertTriangle className="w-6 h-6" />
+                  </div>
+                  <h2 className="text-xl font-bold font-display" style={{ color: 'var(--text)' }}>Sync Failure</h2>
+                  <p className="text-xs mt-2 mb-6 leading-relaxed" style={{ color: 'var(--text-sub)' }}>
+                    Could not fetch trade analytics context from the server.
+                  </p>
+                  <div className="rounded-xl p-3 text-left font-mono text-[10px] text-red-500 overflow-x-auto mb-6" style={{ backgroundColor: 'var(--bar)', border: '1px solid var(--border)' }}>
+                    <strong>Error:</strong> {fetchError.message || 'Unknown network or database issue.'}
+                  </div>
+                  <div className="flex gap-3 justify-center">
+                    <button
+                      onClick={() => {
+                        setFetchError(null);
+                        fetchCompleteTradeContextData();
+                      }}
+                      className="font-semibold rounded-xl px-4 py-2.5 text-xs transition-colors cursor-pointer"
+                      style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
+                    >
+                      Retry Sync
+                    </button>
+                    <Link
+                      to="/trading-logs"
+                      className="font-semibold rounded-xl px-4 py-2.5 text-xs transition-colors"
+                      style={{ backgroundColor: 'var(--bar)', border: '1px solid var(--border)', color: 'var(--text)' }}
+                    >
+                      Back to Logs
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ) : (authLoading || loading) ? (
+              <div className="min-h-[60vh] flex flex-col items-center justify-center" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+                <div className="w-9 h-9 border-4 rounded-full animate-spin mb-3" style={{ borderColor: 'var(--border-md)', borderTopColor: 'var(--accent)' }} />
+                <p className="text-xs font-mono tracking-widest uppercase animate-pulse" style={{ color: 'var(--text-sub)' }}>Fetching trade profile...</p>
+              </div>
+            ) : (!user || !trade) ? (
+              <div className="min-h-[60vh] flex flex-col items-center justify-center p-6" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+                <AlertTriangle className="w-12 h-12 text-red-500 mb-2" />
+                <h2 className="text-xl font-bold font-display" style={{ color: 'var(--text)' }}>Trade Profile Missing</h2>
+                <p className="text-sm mt-1 mb-6 text-center max-w-sm" style={{ color: 'var(--text-sub)' }}>
+                  We could not load this trade index. It may have been deleted or lives on another profile.
+                </p>
+                <Link
+                  to="/trading-logs"
+                  className="font-semibold rounded-xl px-4 py-2.5 text-sm inline-flex items-center gap-2 transition-colors"
+                  style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  <span>Back to Logs</span>
+                </Link>
+              </div>
+            ) : (
+              <>
             
             {/* BREADCRUMB ROW WITH TRADE NAVIGATION */}
             <div className="mb-1 flex items-center justify-between">
@@ -2962,10 +2952,12 @@ const TradeTrackingPageContent: React.FC = () => {
                     </button>
                   </div>
 
+              </div>
+              </>
+            )}
             </div>
-          </div>
-        </main>
-      </div>
+          </main>
+        </div>
 
       {/* CONFIRM DELETE MODAL DIALOG */}
       <Modal
@@ -2979,7 +2971,7 @@ const TradeTrackingPageContent: React.FC = () => {
           </div>
           <h4 className="text-lg font-bold text-zinc-100">Permanently Delete Trade?</h4>
           <p className="text-zinc-400 text-xs mt-3.5 leading-relaxed">
-            This action will permanently delete <span className="font-bold text-zinc-200 font-mono">{trade.symbol}</span>'s records from <span className="font-bold text-zinc-200 font-mono">{trade.date}</span>. All diagnostic rule metrics, psychological spectrum states, and risk statistics will be erased. This is irreversible.
+            This action will permanently delete <span className="font-bold text-zinc-200 font-mono">{trade?.symbol}</span>'s records from <span className="font-bold text-zinc-200 font-mono">{trade?.date}</span>. All diagnostic rule metrics, psychological spectrum states, and risk statistics will be erased. This is irreversible.
           </p>
           
           <div className="flex items-center justify-center gap-3 mt-7">
@@ -3015,7 +3007,7 @@ const TradeTrackingPageContent: React.FC = () => {
 
       {viewerOpen && trade?.chart_image_url && (
         <ChartImageViewer
-          imageUrl={trade.chart_image_url}
+          imageUrl={trade?.chart_image_url}
           onClose={() => setViewerOpen(false)}
         />
       )}
