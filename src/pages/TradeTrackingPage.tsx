@@ -1269,7 +1269,7 @@ const TradeTrackingPageContent: React.FC = () => {
 
         {/* PAGE BODY SCROLLER */}
         <main className="flex-1 overflow-y-auto px-0">
-          <div className="max-w-7xl mx-auto">
+          <div className="w-full px-4">
             {fetchError ? (
               <div className="min-h-[60vh] flex flex-col items-center justify-center p-6 text-zinc-100" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
                 <div className="p-6 rounded-2xl max-w-md w-full text-center shadow-2xl" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }}>

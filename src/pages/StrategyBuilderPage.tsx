@@ -787,7 +787,7 @@ export const StrategyBuilderPage: React.FC = () => {
           </div>
         ) : (
           <main className="flex-1 overflow-y-auto overflow-x-hidden px-0">
-            <div className="max-w-7xl mx-auto">
+            <div className="w-full px-4">
               
               {/* BREADCRUMB HEADER */}
               <Link
@@ -804,11 +804,11 @@ export const StrategyBuilderPage: React.FC = () => {
                 className="flex flex-row items-center justify-between gap-4"
                 style={{
                   background: 'var(--card)',
-                  width: 'calc(100% + 48px)',
-                  marginLeft: '-24px',
-                  marginRight: '-24px',
-                  paddingLeft: '24px',
-                  paddingRight: '24px',
+                  width: 'calc(100% + 32px)',
+                  marginLeft: '-16px',
+                  marginRight: '-16px',
+                  paddingLeft: '16px',
+                  paddingRight: '16px',
                   paddingTop: '7px',
                   paddingBottom: '7px',
                   marginBottom: '16px'

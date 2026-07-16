@@ -877,19 +877,19 @@ export default function SettingsPage() {
 
       {/* MAIN SCREEN AREA */}
       <main className="flex-1 overflow-y-auto overflow-x-hidden px-0">
-        <div className="max-w-7xl mx-auto">
+        <div className="w-full px-4">
         
         {/* TOP COMPONENT */}
         <div 
           style={{
             background: 'var(--card)',
-            width: 'calc(100% + 48px)',
-            marginLeft: '-24px',
-            marginRight: '-24px',
+            width: 'calc(100% + 32px)',
+            marginLeft: '-16px',
+            marginRight: '-16px',
             paddingTop: '3px',
             paddingBottom: '3px',
-            paddingLeft: '24px',
-            paddingRight: '24px',
+            paddingLeft: '16px',
+            paddingRight: '16px',
             borderRadius: 0,
             boxShadow: 'none',
             border: 'none',
@@ -915,7 +915,7 @@ export default function SettingsPage() {
         </div>
 
         {/* CONTAINER WITH SPACING */}
-        <div className="max-w-[1400px] mx-auto px-4 pt-2 pb-6 md:px-0 md:pt-3 md:pb-8">
+        <div className="w-full pt-2 pb-6 md:pt-3 md:pb-8">
           
           {/* SECURE BLOCK FOR EXPIRED SUBSCRIPTION */}
           {trialExpired && (

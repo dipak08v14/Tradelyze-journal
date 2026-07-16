@@ -994,19 +994,19 @@ export const DashboardPage: React.FC = () => {
 
         {/* CONTAINER CONTENT */}
         <main className="flex-1 overflow-y-auto overflow-x-hidden px-0">
-          <div className="max-w-7xl mx-auto p-0">
+          <div className="w-full px-4">
             {/* PAGE HEADER */}
             <div 
               className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
               style={{
                 background: 'var(--card)',
-                width: 'calc(100% + 48px)',
+                width: 'calc(100% + 32px)',
                 paddingTop: '3px',
                 paddingBottom: '3px',
-                paddingLeft: '24px',
-                paddingRight: '24px',
-                marginLeft: '-24px',
-                marginRight: '-24px',
+                paddingLeft: '16px',
+                paddingRight: '16px',
+                marginLeft: '-16px',
+                marginRight: '-16px',
                 borderRadius: '0',
                 boxShadow: 'none',
                 border: 'none',
@@ -2147,7 +2147,6 @@ export const DashboardPage: React.FC = () => {
                             cx="50%"
                             cy="50%"
                             outerRadius="88%"
-                            width={420}
                             height={220}
                             data={[
                               { metric: 'Technical', score: parseFloat(stats.avgTechScore.toFixed(1)) },

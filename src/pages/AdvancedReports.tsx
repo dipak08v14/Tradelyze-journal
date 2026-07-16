@@ -1527,18 +1527,18 @@ export const AdvancedReports: React.FC = () => {
 
         {/* WORKSPACE MAIN */}
         <main className="flex-1 overflow-y-auto overflow-x-hidden px-0">
-          <div className="max-w-7xl mx-auto" style={{ paddingBottom: '16px' }}>
+          <div className="w-full px-4" style={{ paddingBottom: '16px' }}>
             {/* PAGE HEADER & FILTERS */}
             <div
               style={{
                 background: 'var(--card)',
-                width: 'calc(100% + 48px)',
-                marginLeft: '-24px',
-                marginRight: '-24px',
+                width: 'calc(100% + 32px)',
+                marginLeft: '-16px',
+                marginRight: '-16px',
                 paddingTop: '3px',
                 paddingBottom: '3px',
-                paddingLeft: '24px',
-                paddingRight: '24px',
+                paddingLeft: '16px',
+                paddingRight: '16px',
                 borderRadius: 0,
                 boxShadow: 'none',
                 border: 'none',
