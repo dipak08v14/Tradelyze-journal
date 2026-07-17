@@ -464,12 +464,35 @@ export const DashboardPage: React.FC = () => {
 
     return () => clearInterval(interval);
   }, [userId]);
-  
+
   // Database States
   const [trades, setTrades] = useState<any[]>([]);
   const [allHistoryTrades, setAllHistoryTrades] = useState<any[]>([]);
   const [selectedCalendarDay, setSelectedCalendarDay] = useState<string | null>(null);
   const [isDayModalOpen, setIsDayModalOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (isDayModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isDayModalOpen]);
+
+  useEffect(() => {
+    if (isHeaderDatePickerOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isHeaderDatePickerOpen]);
+
   const [startingBalanceInput, setStartingBalanceInput] = useState<number>(() => {
     const saved = localStorage.getItem('tl-starting-balance');
     return saved ? parseFloat(saved) : 0;
@@ -1047,24 +1070,20 @@ export const DashboardPage: React.FC = () => {
                   {isHeaderDatePickerOpen && (
                     <div
                       style={{
-                        position: 'absolute',
-                        right: 0,
-                        top: 'calc(100% + 8px)',
                         zIndex: 1000,
                         backgroundColor: 'var(--card)',
                         border: '1px solid var(--border)',
                         borderRadius: '12px',
                         boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
-                        padding: '16px',
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'flex-start',
-                        gap: '16px'
+                        maxWidth: 'calc(100vw - 24px)',
+                        maxHeight: 'calc(100vh - 100px)',
+                        overflowY: 'auto'
                       }}
-                      className="select-none"
+                      className="select-none flex items-start gap-3 p-3 fixed top-20 left-1/2 -translate-x-1/2 sm:absolute sm:top-[calc(100%+8px)] sm:left-auto sm:right-0 sm:translate-x-0 sm:gap-4 sm:p-4 sm:max-h-none sm:overflow-visible"
                     >
-                      {/* LEFT CALENDAR COLUMN */}
-                      <div className="flex flex-col" style={{ padding: '0', minWidth: '0', flex: 'none' }}>
+                      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                        {/* LEFT CALENDAR COLUMN */}
+                        <div className="flex flex-col" style={{ padding: '0', minWidth: '0', flex: 'none' }}>
                         <div className="flex items-center justify-between mb-3 px-1">
                           <button
                             type="button"
@@ -1553,6 +1572,7 @@ export const DashboardPage: React.FC = () => {
                             });
                           })()}
                         </div>
+                      </div>
                       </div>
 
                       {/* PRESET COLUMN */}
