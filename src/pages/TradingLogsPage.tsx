@@ -942,7 +942,6 @@ export const TradingLogsPage: React.FC = () => {
         {/* CONTAINER CONTENT */}
         <main className="flex-1 overflow-y-auto px-0" style={{ overflowX: 'hidden' }}>
           <div className="w-full px-4">
-            {/* PAGE HEADER */}
             <div
               style={{
                 background: 'var(--card)',
@@ -956,11 +955,9 @@ export const TradingLogsPage: React.FC = () => {
                 borderRadius: '0',
                 boxShadow: 'none',
                 border: 'none',
-                borderBottom: '1px solid var(--border)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between'
+                borderBottom: '1px solid var(--border)'
               }}
+              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
             >
               <h1 className="font-display" style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }}>
                 Trading Logs
@@ -1349,7 +1346,7 @@ export const TradingLogsPage: React.FC = () => {
             )}
 
             {/* ADDITION 1 — SUMMARY STATS BAR */}
-            <div className="grid gap-4 md:grid animate-in fade-in duration-200" style={{ gridTemplateColumns: 'repeat(5, 1fr)', marginTop: '16px', marginBottom: '16px' }}>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 animate-in fade-in duration-200" style={{ marginTop: '16px', marginBottom: '16px' }}>
               {/* Card 1: TOTAL TRADES */}
               <div 
                 style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '20px', paddingBottom: '20px', position: 'relative' }}
