@@ -158,6 +158,17 @@ export const StrategyDetail: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [lightboxIndex, strategy?.reference_images]);
 
+  useEffect(() => {
+    if (addModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [addModalOpen]);
+
   // Executed trades pagination page state
   const [tradePage, setTradePage] = useState<number>(1);
   const tradesPerPage = 25;
@@ -600,7 +611,7 @@ export const StrategyDetail: React.FC = () => {
 
             {/* STRATEGY HEADER BLOCK */}
             <div
-              className="flex flex-row items-center justify-between gap-4"
+              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
               style={{
                 background: 'var(--card)',
                 width: 'calc(100% + 32px)',

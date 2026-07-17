@@ -801,7 +801,7 @@ export const StrategyBuilderPage: React.FC = () => {
 
               {/* TITLE AND CONTROL BUTTONS ROW */}
               <div 
-                className="flex flex-row items-center justify-between gap-4"
+                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
                 style={{
                   background: 'var(--card)',
                   width: 'calc(100% + 32px)',
@@ -809,8 +809,9 @@ export const StrategyBuilderPage: React.FC = () => {
                   marginRight: '-16px',
                   paddingLeft: '16px',
                   paddingRight: '16px',
-                  paddingTop: '7px',
-                  paddingBottom: '7px',
+                  paddingTop: '3px',
+                  paddingBottom: '3px',
+                  borderBottom: '1px solid var(--border)',
                   marginBottom: '16px'
                 }}
               >
@@ -823,7 +824,7 @@ export const StrategyBuilderPage: React.FC = () => {
                     <button
                       onClick={() => setDeleteModalOpen(true)}
                       disabled={saving}
-                      style={{ backgroundColor: '#ef4444', color: '#ffffff', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', padding: '10px 20px' }}
+                      style={{ backgroundColor: '#ef4444', color: '#ffffff', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', padding: '6px 20px' }}
                       className="max-sm:flex-1 hover:opacity-90 transition-all"
                     >
                       Delete Strategy

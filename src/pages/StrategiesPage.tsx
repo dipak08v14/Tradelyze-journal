@@ -60,9 +60,9 @@ export const StrategiesPage: React.FC = () => {
 
   const getTabStyle = (isActive: boolean) => {
     if (isActive) {
-      return { backgroundColor: 'var(--card)', color: 'var(--accent)', border: '0.5px solid var(--border)', borderRadius: '6px' };
+      return { backgroundColor: 'var(--card)', color: 'var(--accent)', border: '0.5px solid var(--border)', borderRadius: '6px', height: '36px', display: 'flex', alignItems: 'center' };
     }
-    return { backgroundColor: 'transparent', color: 'var(--text-sub)', border: '0.5px solid transparent' };
+    return { backgroundColor: 'transparent', color: 'var(--text-sub)', border: '0.5px solid transparent', height: '36px', display: 'flex', alignItems: 'center' };
   };
 
   // Filters State
@@ -521,6 +521,7 @@ export const StrategiesPage: React.FC = () => {
             
             {/* PAGE HEADER */}
             <div
+              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
               style={{
                 background: 'var(--card)',
                 width: 'calc(100% + 32px)',
@@ -533,10 +534,7 @@ export const StrategiesPage: React.FC = () => {
                 borderRadius: 0,
                 boxShadow: 'none',
                 border: 'none',
-                borderBottom: '1px solid var(--border)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between'
+                borderBottom: '1px solid var(--border)'
               }}
             >
               <h1 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }} className="font-display tracking-tight">
@@ -566,7 +564,7 @@ export const StrategiesPage: React.FC = () => {
             </div>
 
             {/* NEW PAGE HEADER ROW */}
-            <div className="flex items-center justify-between px-2 py-1 rounded-lg mt-4 mb-4 no-scrollbar" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-2 py-1 rounded-lg mt-4 mb-4 no-scrollbar" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
               {/* LEFT SIDE TABS */}
               <div className="flex items-center border-b sm:border-0 w-fit" style={{ borderColor: 'var(--border)' }}>
                 <button
@@ -596,8 +594,8 @@ export const StrategiesPage: React.FC = () => {
                 <div className="relative" ref={filterRef}>
                   <button
                     onClick={() => setFilterDropdownOpen(!filterDropdownOpen)}
-                    style={{ border: '1px solid var(--border)', backgroundColor: 'var(--card)', borderRadius: '8px', color: 'var(--text-sub)' }}
-                    className="px-3 py-2 text-sm font-semibold transition-all cursor-pointer inline-flex items-center gap-1.5"
+                    style={{ border: '1px solid var(--border)', backgroundColor: 'var(--card)', borderRadius: '8px', color: 'var(--text-sub)', height: '36px' }}
+                    className="px-3 text-sm font-semibold transition-all cursor-pointer inline-flex items-center gap-1.5"
                   >
                     <SlidersHorizontal className="w-3.5 h-3.5" />
                     <span>Filters</span>
@@ -610,7 +608,7 @@ export const StrategiesPage: React.FC = () => {
 
                   {filterDropdownOpen && (
                     <div
-                      className="absolute right-0 mt-2 w-72 shadow-xl z-40 p-4 animate-fade-in"
+                      className="absolute left-0 sm:left-auto sm:right-0 mt-2 w-72 max-w-[calc(100vw-2rem)] shadow-xl z-40 p-4 animate-fade-in"
                       style={{
                         backgroundColor: 'var(--card)',
                         border: '0.5px solid var(--border)',
@@ -741,9 +739,9 @@ export const StrategiesPage: React.FC = () => {
                       border: viewType === 'table' ? '0.5px solid var(--accent)' : '0.5px solid var(--border)',
                       color: viewType === 'table' ? 'var(--accent)' : 'var(--text-sub)',
                       borderRadius: '6px',
-                      padding: '8px 8px',
-                      cursor: 'pointer',
-                      alignSelf: 'stretch'
+                      padding: '0 8px',
+                      height: '36px',
+                      cursor: 'pointer'
                     }}
                     className={`transition-colors flex items-center justify-center ${
                       viewType !== 'table' ? 'hover:bg-[var(--bar)] hover:text-[var(--text)]' : ''
@@ -759,9 +757,9 @@ export const StrategiesPage: React.FC = () => {
                       border: viewType === 'grid' ? '0.5px solid var(--accent)' : '0.5px solid var(--border)',
                       color: viewType === 'grid' ? 'var(--accent)' : 'var(--text-sub)',
                       borderRadius: '6px',
-                      padding: '8px 8px',
-                      cursor: 'pointer',
-                      alignSelf: 'stretch'
+                      padding: '0 8px',
+                      height: '36px',
+                      cursor: 'pointer'
                     }}
                     className={`transition-colors flex items-center justify-center ${
                       viewType !== 'grid' ? 'hover:bg-[var(--bar)] hover:text-[var(--text)]' : ''
