@@ -711,7 +711,7 @@ export const DailyJournal: React.FC = () => {
                             <div className="flex items-center gap-4">
                               {/* Net P&L display */}
                               <span
-                                className="font-mono text-xs md:text-sm font-bold"
+                                className="font-mono text-xs md:text-sm font-bold whitespace-nowrap shrink-0"
                                 style={{
                                   color: dailyNetPnl >= 0 ? '#008F67' : '#DF1C30',
                                 }}
