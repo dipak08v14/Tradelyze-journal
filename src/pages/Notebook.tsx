@@ -1077,7 +1077,7 @@ export function Notebook() {
   };
 
   return (
-    <div id="notebook-page-layout" className="min-h-screen w-full flex flex-col md:flex-row md:items-start font-sans font-medium select-none" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+    <div id="notebook-page-layout" className="min-h-screen w-full flex flex-col lg:flex-row lg:items-start font-sans font-medium select-none" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
       <Sidebar userEmail={user?.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 

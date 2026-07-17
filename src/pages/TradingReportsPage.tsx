@@ -227,7 +227,7 @@ export const TradingReportsPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col md:flex-row font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+    <div className="min-h-screen w-full flex flex-col lg:flex-row font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
       <Sidebar userEmail={user?.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
@@ -235,7 +235,7 @@ export const TradingReportsPage: React.FC = () => {
       <div className="flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen">
         {/* MOBILE HEADER BAR */}
         <header 
-          className="flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20"
+          className="flex items-center justify-between px-6 py-4 lg:hidden sticky top-0 z-20"
           style={{ backgroundColor: 'var(--topbar)', borderBottom: '1px solid var(--border)' }}
         >
           <div className="text-xl font-bold tracking-wider font-display" style={{ color: 'var(--accent)' }}>TRADELYZE</div>

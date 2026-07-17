@@ -1,0 +1,77 @@
+[
+  {
+    "file": "AdvancedReports.tsx",
+    "line": 1506,
+    "className": "min-h-screen w-full flex flex-col md:flex-row md:items-start font-sans selection:bg-indigo-500/30"
+  },
+  {
+    "file": "AiTeacherPage.tsx",
+    "line": 514,
+    "className": "min-h-screen w-full flex flex-col md:flex-row font-sans selection:bg-indigo-500/30"
+  },
+  {
+    "file": "AnnualReportsPage.tsx",
+    "line": 335,
+    "className": "min-h-screen w-full flex flex-col md:flex-row font-sans selection:bg-indigo-500/30"
+  },
+  {
+    "file": "DailyJournal.tsx",
+    "line": 516,
+    "className": "min-h-screen w-full flex flex-col md:flex-row font-sans selection:bg-indigo-500/30"
+  },
+  {
+    "file": "DashboardPage.tsx",
+    "line": 973,
+    "className": "min-h-screen w-full flex flex-col md:flex-row md:items-start font-sans selection:bg-indigo-500/30"
+  },
+  {
+    "file": "Notebook.tsx",
+    "line": 1080,
+    "className": "min-h-screen w-full flex flex-col md:flex-row md:items-start font-sans font-medium select-none"
+  },
+  {
+    "file": "PlaceholderPage.tsx",
+    "line": 29,
+    "className": "min-h-screen w-full flex flex-col md:flex-row font-sans"
+  },
+  {
+    "file": "SettingsPage.tsx",
+    "line": 922,
+    "className": "bg-red-950/40 border-2 border-red-800 text-red-200 p-4 rounded-2xl mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4"
+  },
+  {
+    "file": "StrategiesPage.tsx",
+    "line": 497,
+    "className": "min-h-screen w-full flex flex-col md:flex-row font-sans"
+  },
+  {
+    "file": "StrategyBuilderPage.tsx",
+    "line": 758,
+    "className": "min-h-screen w-full flex flex-col md:flex-row"
+  },
+  {
+    "file": "StrategyDetail.tsx",
+    "line": 568,
+    "className": "min-h-screen w-full flex flex-col md:flex-row font-sans"
+  },
+  {
+    "file": "TradeEntryPage.tsx",
+    "line": 1121,
+    "className": "min-h-screen w-full flex flex-col md:flex-row font-sans selection:bg-indigo-500/30"
+  },
+  {
+    "file": "TradeTrackingPage.tsx",
+    "line": 1249,
+    "className": "min-h-screen w-full flex flex-col md:flex-row font-sans selection:bg-indigo-500/30"
+  },
+  {
+    "file": "TradingLogsPage.tsx",
+    "line": 920,
+    "className": "min-h-screen w-full flex flex-col md:flex-row md:items-start font-sans selection:bg-indigo-500/30"
+  },
+  {
+    "file": "TradingReportsPage.tsx",
+    "line": 230,
+    "className": "min-h-screen w-full flex flex-col md:flex-row font-sans selection:bg-indigo-500/30"
+  }
+]

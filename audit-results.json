@@ -1,0 +1,1225 @@
+{
+  "hardcoded": [
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2248,
+      "code": "<div className=\"h-[300px] w-full\">"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2289,
+      "code": "<div className=\"h-[300px] w-full\">"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2446,
+      "code": "<div className=\"h-[300px] w-full\">"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2481,
+      "code": "<div className=\"h-[300px] w-full\">"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2653,
+      "code": "<div className=\"h-[300px] w-full\">"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2698,
+      "code": "<div className=\"h-[300px] w-full\">"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2738,
+      "code": "<div className=\"h-[300px] w-full\">"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2912,
+      "code": "<div className=\"h-[300px] w-full\">"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2989,
+      "code": "<div className=\"h-[300px] w-full\">"
+    },
+    {
+      "file": "src\\pages\\AiTeacherPage.tsx",
+      "line": 595,
+      "code": "<aside style={{ backgroundColor: 'var(--bg-sub, #FAF9F6)', borderColor: 'var(--border)' }} className=\"w-full lg:w-[350px] border-r p-5 overflow-y-auto shrink-0 space-y-5\">"
+    },
+    {
+      "file": "src\\pages\\AnnualReportsPage.tsx",
+      "line": 416,
+      "code": "<div className=\"h-[400px] rounded-xl skeleton\" />"
+    },
+    {
+      "file": "src\\pages\\DashboardPage.tsx",
+      "line": 1920,
+      "code": "<div style={{ backgroundColor: 'var(--bar)', borderRadius: '12px' }} className=\"p-5 h-[340px] relative overflow-hidden flex flex-col justify-between\">"
+    },
+    {
+      "file": "src\\pages\\DashboardPage.tsx",
+      "line": 3438,
+      "code": "className=\"w-full max-w-[680px] p-6 relative flex flex-col gap-5 shadow-2xl\""
+    },
+    {
+      "file": "src\\pages\\LandingPage.tsx",
+      "line": 53,
+      "code": "<div className=\"absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-cyan-500/10 blur-[120px] rounded-full pointer-events-none\" />"
+    },
+    {
+      "file": "src\\pages\\Notebook.tsx",
+      "line": 1849,
+      "code": "<div className=\"flex-1 w-full relative min-h-[400px]\">"
+    },
+    {
+      "file": "src\\pages\\Notebook.tsx",
+      "line": 1858,
+      "code": "className=\"w-full h-full min-h-[400px] bg-transparent text-sm focus:outline-none focus:ring-0 leading-relaxed text-zinc-200 outline-none select-text\""
+    },
+    {
+      "file": "src\\pages\\StrategyDetail.tsx",
+      "line": 898,
+      "code": "<table className=\"w-full text-left border-collapse min-w-[700px]\">"
+    },
+    {
+      "file": "src\\pages\\StrategyDetail.tsx",
+      "line": 966,
+      "code": "<table className=\"w-full text-left border-collapse min-w-[700px]\">"
+    },
+    {
+      "file": "src\\pages\\StrategyDetail.tsx",
+      "line": 1030,
+      "code": "<table className=\"w-full text-left border-collapse min-w-[750px]\">"
+    },
+    {
+      "file": "src\\pages\\StrategyDetail.tsx",
+      "line": 1256,
+      "code": "className=\"relative w-full max-w-[480px] rounded-2xl border p-6 z-10 shadow-2xl animate-scale-in\""
+    },
+    {
+      "file": "src\\pages\\TradeTrackingPage.tsx",
+      "line": 2518,
+      "code": "<div className=\"shrink-0 mt-6 lg:mt-0 flex flex-col gap-6\" style={{ width: '778px' }}>"
+    },
+    {
+      "file": "src\\pages\\TradeTrackingPage.tsx",
+      "line": 2731,
+      "code": "<div className=\"rounded-xl px-5 pb-5 pt-2.5 w-full sm:w-[416px]\" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', height: '300px', flexShrink: 0, position: 'relative', overflow: 'hidden' }}>"
+    },
+    {
+      "file": "src\\pages\\TradingReportsPage.tsx",
+      "line": 333,
+      "code": "<div className=\"lg:col-span-2 rounded-xl h-[380px] skeleton\" />"
+    },
+    {
+      "file": "src\\components\\Toast.tsx",
+      "line": 38,
+      "code": "className={`rounded-xl p-4 flex items-start gap-3 shadow-2xl min-w-[300px] max-w-[400px] pointer-events-auto transition-all duration-300 ${cardStyle}`}"
+    }
+  ],
+  "grids": [
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 1438,
+      "code": "<div className=\"grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-zinc-400 mb-1\">",
+      "className": "grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-zinc-400 mb-1"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 1447,
+      "code": "<div className=\"grid grid-cols-7 gap-1\">",
+      "className": "grid grid-cols-7 gap-1"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 1619,
+      "code": "<div className=\"grid grid-cols-1 md:grid-cols-3 gap-3\">",
+      "className": "grid grid-cols-1 md:grid-cols-3 gap-3"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 1726,
+      "code": "<div className=\"grid grid-cols-1 lg:grid-cols-2 gap-4\">",
+      "className": "grid grid-cols-1 lg:grid-cols-2 gap-4"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 1943,
+      "code": "<div className=\"grid grid-cols-1 lg:grid-cols-2 gap-4\">",
+      "className": "grid grid-cols-1 lg:grid-cols-2 gap-4"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2073,
+      "code": "<div className=\"grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3\">",
+      "className": "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2236,
+      "code": "<div className=\"grid grid-cols-1 lg:grid-cols-2 gap-3\">",
+      "className": "grid grid-cols-1 lg:grid-cols-2 gap-3"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2440,
+      "code": "<div className=\"grid grid-cols-1 lg:grid-cols-2 gap-3\">",
+      "className": "grid grid-cols-1 lg:grid-cols-2 gap-3"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2597,
+      "code": "<div className=\"grid grid-cols-3 py-2 border-b items-center text-sm\" style={{ borderColor: 'var(--border)' }}>",
+      "className": "grid grid-cols-3 py-2 border-b items-center text-sm"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2603,
+      "code": "<div className=\"grid grid-cols-3 py-2 items-center\" style={{ borderBottom: '1px solid var(--border)' }}>",
+      "className": "grid grid-cols-3 py-2 items-center"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2608,
+      "code": "<div className=\"grid grid-cols-3 py-2 items-center\" style={{ borderBottom: '1px solid var(--border)' }}>",
+      "className": "grid grid-cols-3 py-2 items-center"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2613,
+      "code": "<div className=\"grid grid-cols-3 py-2 items-center\" style={{ borderBottom: '1px solid var(--border)' }}>",
+      "className": "grid grid-cols-3 py-2 items-center"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2618,
+      "code": "<div className=\"grid grid-cols-3 py-2 items-center\" style={{ borderBottom: '1px solid var(--border)' }}>",
+      "className": "grid grid-cols-3 py-2 items-center"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2623,
+      "code": "<div className=\"grid grid-cols-3 py-2 items-center\" style={{ borderBottom: '1px solid var(--border)' }}>",
+      "className": "grid grid-cols-3 py-2 items-center"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2628,
+      "code": "<div className=\"grid grid-cols-3 py-2 items-center\" style={{ borderBottom: '1px solid var(--border)' }}>",
+      "className": "grid grid-cols-3 py-2 items-center"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2633,
+      "code": "<div className=\"grid grid-cols-3 py-2 items-center\" style={{ borderBottom: '1px solid var(--border)' }}>",
+      "className": "grid grid-cols-3 py-2 items-center"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2638,
+      "code": "<div className=\"grid grid-cols-3 py-2 items-center\">",
+      "className": "grid grid-cols-3 py-2 items-center"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2647,
+      "code": "<div className=\"grid grid-cols-1 lg:grid-cols-2 gap-3\">",
+      "className": "grid grid-cols-1 lg:grid-cols-2 gap-3"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2903,
+      "code": "<div className=\"grid grid-cols-1 lg:grid-cols-2 gap-3\">",
+      "className": "grid grid-cols-1 lg:grid-cols-2 gap-3"
+    },
+    {
+      "file": "src\\pages\\AiTeacherPage.tsx",
+      "line": 643,
+      "code": "<div className=\"grid grid-cols-1 gap-2\">",
+      "className": "grid grid-cols-1 gap-2"
+    },
+    {
+      "file": "src\\pages\\AnnualReportsPage.tsx",
+      "line": 469,
+      "code": "<div className=\"grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-y-4 md:gap-y-0 text-center\">",
+      "className": "grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-y-4 md:gap-y-0 text-center"
+    },
+    {
+      "file": "src\\pages\\AnnualReportsPage.tsx",
+      "line": 778,
+      "code": "<div className=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3\">",
+      "className": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3"
+    },
+    {
+      "file": "src\\pages\\AnnualReportsPage.tsx",
+      "line": 919,
+      "code": "<div className=\"grid grid-cols-1 md:grid-cols-2 gap-8 items-start mt-4\">",
+      "className": "grid grid-cols-1 md:grid-cols-2 gap-8 items-start mt-4"
+    },
+    {
+      "file": "src\\pages\\DailyJournal.tsx",
+      "line": 618,
+      "code": "<div className=\"grid grid-cols-1 lg:grid-cols-4 gap-y-6 gap-x-4 mt-4\">",
+      "className": "grid grid-cols-1 lg:grid-cols-4 gap-y-6 gap-x-4 mt-4"
+    },
+    {
+      "file": "src\\pages\\DailyJournal.tsx",
+      "line": 838,
+      "code": "<div className=\"grid grid-cols-2 lg:grid-cols-4 gap-4 p-4 rounded-xl\" style={{ backgroundColor: 'var(--row)', border: '1px solid var(--border)' }}>",
+      "className": "grid grid-cols-2 lg:grid-cols-4 gap-4 p-4 rounded-xl"
+    },
+    {
+      "file": "src\\pages\\DailyJournal.tsx",
+      "line": 1088,
+      "code": "<div className=\"grid grid-cols-7 gap-1 text-center py-2 text-[10px] font-semibold text-zinc-500 uppercase tracking-wider\">",
+      "className": "grid grid-cols-7 gap-1 text-center py-2 text-[10px] font-semibold text-zinc-500 uppercase tracking-wider"
+    },
+    {
+      "file": "src\\pages\\DailyJournal.tsx",
+      "line": 1099,
+      "code": "<div className=\"grid grid-cols-7 gap-1 mt-1 text-center text-xs\">",
+      "className": "grid grid-cols-7 gap-1 mt-1 text-center text-xs"
+    },
+    {
+      "file": "src\\pages\\DashboardPage.tsx",
+      "line": 1909,
+      "code": "<div className=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3\">",
+      "className": "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3"
+    },
+    {
+      "file": "src\\pages\\DashboardPage.tsx",
+      "line": 1929,
+      "code": "<div className=\"grid grid-cols-2 md:grid-cols-3 gap-4\">",
+      "className": "grid grid-cols-2 md:grid-cols-3 gap-4"
+    },
+    {
+      "file": "src\\pages\\DashboardPage.tsx",
+      "line": 1963,
+      "code": "<div className=\"grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3\" style={{ marginBottom: '16px' }}>",
+      "className": "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3"
+    },
+    {
+      "file": "src\\pages\\DashboardPage.tsx",
+      "line": 2118,
+      "code": "<div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '16px', alignItems: 'stretch', marginBottom: '16px' }} className=\"grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch\">",
+      "className": "grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch"
+    },
+    {
+      "file": "src\\pages\\DashboardPage.tsx",
+      "line": 2486,
+      "code": "<div className=\"grid grid-cols-2 md:grid-cols-3 gap-4\" style={{ display: 'none' }}>",
+      "className": "grid grid-cols-2 md:grid-cols-3 gap-4"
+    },
+    {
+      "file": "src\\pages\\DashboardPage.tsx",
+      "line": 2579,
+      "code": "<div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '16px', alignItems: 'stretch' }} className=\"grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch\">",
+      "className": "grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch"
+    },
+    {
+      "file": "src\\pages\\DashboardPage.tsx",
+      "line": 2789,
+      "code": "<div className=\"grid grid-cols-7 gap-1 mb-1\" style={{ width: '100%', minWidth: '0px', overflow: 'hidden', boxSizing: 'border-box', display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))' }}>",
+      "className": "grid grid-cols-7 gap-1 mb-1"
+    },
+    {
+      "file": "src\\pages\\DashboardPage.tsx",
+      "line": 2814,
+      "code": "<div className=\"grid grid-cols-7 gap-1\" style={{ width: '100%', minWidth: '0px', overflow: 'hidden', boxSizing: 'border-box', display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))' }}>",
+      "className": "grid grid-cols-7 gap-1"
+    },
+    {
+      "file": "src\\pages\\DashboardPage.tsx",
+      "line": 2973,
+      "code": "<div className=\"grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3\">",
+      "className": "grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3"
+    },
+    {
+      "file": "src\\pages\\DashboardPage.tsx",
+      "line": 3017,
+      "code": "<div className=\"grid grid-cols-1 lg:grid-cols-3 gap-4\" style={{ display: 'none' }}>",
+      "className": "grid grid-cols-1 lg:grid-cols-3 gap-4"
+    },
+    {
+      "file": "src\\pages\\DashboardPage.tsx",
+      "line": 3024,
+      "code": "<div className=\"grid grid-cols-2 gap-x-8 gap-y-3.5 mt-5\">",
+      "className": "grid grid-cols-2 gap-x-8 gap-y-3.5 mt-5"
+    },
+    {
+      "file": "src\\pages\\DashboardPage.tsx",
+      "line": 3323,
+      "code": "<div className=\"grid grid-cols-1 md:grid-cols-2 gap-6 divide-y md:divide-y-0 md:divide-x\" style={{ borderColor: 'var(--border)' }}>",
+      "className": "grid grid-cols-1 md:grid-cols-2 gap-6 divide-y md:divide-y-0 md:divide-x"
+    },
+    {
+      "file": "src\\pages\\DashboardPage.tsx",
+      "line": 3490,
+      "code": "<div className=\"grid grid-cols-2 sm:grid-cols-4 gap-2\">",
+      "className": "grid grid-cols-2 sm:grid-cols-4 gap-2"
+    },
+    {
+      "file": "src\\pages\\LandingPage.tsx",
+      "line": 102,
+      "code": "<div className=\"grid grid-cols-2 md:grid-cols-5 gap-3 text-center mb-6\">",
+      "className": "grid grid-cols-2 md:grid-cols-5 gap-3 text-center mb-6"
+    },
+    {
+      "file": "src\\pages\\LandingPage.tsx",
+      "line": 142,
+      "code": "<div className=\"grid grid-cols-3 gap-4 justify-items-center py-2 text-center text-xs text-gray-400\">",
+      "className": "grid grid-cols-3 gap-4 justify-items-center py-2 text-center text-xs text-gray-400"
+    },
+    {
+      "file": "src\\pages\\LandingPage.tsx",
+      "line": 165,
+      "code": "<div className=\"grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 text-left\">",
+      "className": "grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 text-left"
+    },
+    {
+      "file": "src\\pages\\LandingPage.tsx",
+      "line": 230,
+      "code": "<div className=\"grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 text-left\">",
+      "className": "grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 text-left"
+    },
+    {
+      "file": "src\\pages\\OnboardingPage.tsx",
+      "line": 220,
+      "code": "<div className=\"grid grid-cols-1 sm:grid-cols-3 gap-4\">",
+      "className": "grid grid-cols-1 sm:grid-cols-3 gap-4"
+    },
+    {
+      "file": "src\\pages\\PricingPage.tsx",
+      "line": 94,
+      "code": "<div className=\"grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs md:text-sm text-gray-300\">",
+      "className": "grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs md:text-sm text-gray-300"
+    },
+    {
+      "file": "src\\pages\\PricingPage.tsx",
+      "line": 150,
+      "code": "<div className=\"grid grid-cols-1 md:grid-cols-2 gap-8\">",
+      "className": "grid grid-cols-1 md:grid-cols-2 gap-8"
+    },
+    {
+      "file": "src\\pages\\RiskCalculatorPage.tsx",
+      "line": 147,
+      "code": "<div className=\"grid grid-cols-1 lg:grid-cols-12 gap-8\">",
+      "className": "grid grid-cols-1 lg:grid-cols-12 gap-8"
+    },
+    {
+      "file": "src\\pages\\RiskCalculatorPage.tsx",
+      "line": 166,
+      "code": "<div className=\"grid grid-cols-1 sm:grid-cols-2 gap-4\">",
+      "className": "grid grid-cols-1 sm:grid-cols-2 gap-4"
+    },
+    {
+      "file": "src\\pages\\RiskCalculatorPage.tsx",
+      "line": 275,
+      "code": "<div className=\"grid grid-cols-1 sm:grid-cols-2 gap-4\">",
+      "className": "grid grid-cols-1 sm:grid-cols-2 gap-4"
+    },
+    {
+      "file": "src\\pages\\RiskCalculatorPage.tsx",
+      "line": 436,
+      "code": "<div className=\"grid grid-cols-2 gap-4\">",
+      "className": "grid grid-cols-2 gap-4"
+    },
+    {
+      "file": "src\\pages\\SettingsPage.tsx",
+      "line": 977,
+      "code": "<div className=\"grid grid-cols-1 lg:grid-cols-2 gap-y-6 gap-x-2 md:gap-x-3 items-start animate-fade-in\">",
+      "className": "grid grid-cols-1 lg:grid-cols-2 gap-y-6 gap-x-2 md:gap-x-3 items-start animate-fade-in"
+    },
+    {
+      "file": "src\\pages\\SettingsPage.tsx",
+      "line": 989,
+      "code": "<div className=\"grid grid-cols-1 sm:grid-cols-2 gap-4\">",
+      "className": "grid grid-cols-1 sm:grid-cols-2 gap-4"
+    },
+    {
+      "file": "src\\pages\\SettingsPage.tsx",
+      "line": 1019,
+      "code": "<div className=\"grid grid-cols-1 sm:grid-cols-2 gap-4\">",
+      "className": "grid grid-cols-1 sm:grid-cols-2 gap-4"
+    },
+    {
+      "file": "src\\pages\\SettingsPage.tsx",
+      "line": 1074,
+      "code": "<div className=\"grid grid-cols-1 sm:grid-cols-2 gap-4\">",
+      "className": "grid grid-cols-1 sm:grid-cols-2 gap-4"
+    },
+    {
+      "file": "src\\pages\\SettingsPage.tsx",
+      "line": 1493,
+      "code": "<div className=\"grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-[var(--border)] pt-4\">",
+      "className": "grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-[var(--border)] pt-4"
+    },
+    {
+      "file": "src\\pages\\StrategiesPage.tsx",
+      "line": 627,
+      "code": "<div className=\"grid grid-cols-2 gap-1.5\">",
+      "className": "grid grid-cols-2 gap-1.5"
+    },
+    {
+      "file": "src\\pages\\StrategiesPage.tsx",
+      "line": 667,
+      "code": "<div className=\"grid grid-cols-2 gap-1.5\">",
+      "className": "grid grid-cols-2 gap-1.5"
+    },
+    {
+      "file": "src\\pages\\StrategiesPage.tsx",
+      "line": 1024,
+      "code": "<div className=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-4\">",
+      "className": "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-4"
+    },
+    {
+      "file": "src\\pages\\StrategiesPage.tsx",
+      "line": 1194,
+      "code": "<div className=\"grid grid-cols-2 gap-x-4 gap-y-3 py-3 border-t border-b border-[rgba(0,0,0,0.06)] mb-3\">",
+      "className": "grid grid-cols-2 gap-x-4 gap-y-3 py-3 border-t border-b border-[rgba(0,0,0,0.06)] mb-3"
+    },
+    {
+      "file": "src\\pages\\StrategyBuilderPage.tsx",
+      "line": 860,
+      "code": "<div className=\"grid grid-cols-1 lg:grid-cols-3 gap-4\">",
+      "className": "grid grid-cols-1 lg:grid-cols-3 gap-4"
+    },
+    {
+      "file": "src\\pages\\StrategyBuilderPage.tsx",
+      "line": 901,
+      "code": "<div className=\"grid grid-cols-1 sm:grid-cols-2 gap-4 font-sans\">",
+      "className": "grid grid-cols-1 sm:grid-cols-2 gap-4 font-sans"
+    },
+    {
+      "file": "src\\pages\\StrategyBuilderPage.tsx",
+      "line": 963,
+      "code": "<div className=\"grid grid-cols-1 sm:grid-cols-2 gap-4\">",
+      "className": "grid grid-cols-1 sm:grid-cols-2 gap-4"
+    },
+    {
+      "file": "src\\pages\\StrategyBuilderPage.tsx",
+      "line": 1322,
+      "code": "<div className=\"grid grid-cols-2 gap-2.5 mt-4\">",
+      "className": "grid grid-cols-2 gap-2.5 mt-4"
+    },
+    {
+      "file": "src\\pages\\StrategyBuilderPage.tsx",
+      "line": 1444,
+      "code": "<div style={{ borderColor: 'var(--border)' }} className=\"grid grid-cols-3 gap-2 py-1.5 border-b\">",
+      "className": "grid grid-cols-3 gap-2 py-1.5 border-b"
+    },
+    {
+      "file": "src\\pages\\StrategyDetail.tsx",
+      "line": 709,
+      "code": "<div className=\"grid grid-cols-2 lg:grid-cols-4 gap-3\">",
+      "className": "grid grid-cols-2 lg:grid-cols-4 gap-3"
+    },
+    {
+      "file": "src\\pages\\StrategyDetail.tsx",
+      "line": 1133,
+      "code": "<div className=\"grid grid-cols-1 sm:grid-cols-3 gap-4 flex-1\">",
+      "className": "grid grid-cols-1 sm:grid-cols-3 gap-4 flex-1"
+    },
+    {
+      "file": "src\\pages\\StrategyDetail.tsx",
+      "line": 1338,
+      "code": "<div className=\"grid grid-cols-2 gap-2 font-sans\">",
+      "className": "grid grid-cols-2 gap-2 font-sans"
+    },
+    {
+      "file": "src\\pages\\StrategyDetail.tsx",
+      "line": 1504,
+      "code": "<div className=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[12px]\">",
+      "className": "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[12px]"
+    },
+    {
+      "file": "src\\pages\\TradeEntryPage.tsx",
+      "line": 1256,
+      "code": "<div className=\"grid grid-cols-1 lg:grid-cols-3 gap-3\">",
+      "className": "grid grid-cols-1 lg:grid-cols-3 gap-3"
+    },
+    {
+      "file": "src\\pages\\TradeEntryPage.tsx",
+      "line": 1267,
+      "code": "<div className=\"grid grid-cols-1 sm:grid-cols-2 gap-4\">",
+      "className": "grid grid-cols-1 sm:grid-cols-2 gap-4"
+    },
+    {
+      "file": "src\\pages\\TradeEntryPage.tsx",
+      "line": 1296,
+      "code": "<div className=\"grid grid-cols-1 md:grid-cols-3 gap-4\">",
+      "className": "grid grid-cols-1 md:grid-cols-3 gap-4"
+    },
+    {
+      "file": "src\\pages\\TradeEntryPage.tsx",
+      "line": 1352,
+      "code": "<div className=\"grid grid-cols-2 gap-1.5 font-sans\">",
+      "className": "grid grid-cols-2 gap-1.5 font-sans"
+    },
+    {
+      "file": "src\\pages\\TradeEntryPage.tsx",
+      "line": 1398,
+      "code": "<div className=\"grid grid-cols-3 gap-1.5 font-sans\">",
+      "className": "grid grid-cols-3 gap-1.5 font-sans"
+    },
+    {
+      "file": "src\\pages\\TradeEntryPage.tsx",
+      "line": 1456,
+      "code": "<div className=\"grid grid-cols-1 sm:grid-cols-3 gap-4\">",
+      "className": "grid grid-cols-1 sm:grid-cols-3 gap-4"
+    },
+    {
+      "file": "src\\pages\\TradeEntryPage.tsx",
+      "line": 1482,
+      "code": "<div className=\"grid grid-cols-3 gap-1 font-sans\">",
+      "className": "grid grid-cols-3 gap-1 font-sans"
+    },
+    {
+      "file": "src\\pages\\TradeEntryPage.tsx",
+      "line": 1532,
+      "code": "<div className=\"grid grid-cols-1 sm:grid-cols-2 gap-4\">",
+      "className": "grid grid-cols-1 sm:grid-cols-2 gap-4"
+    },
+    {
+      "file": "src\\pages\\TradeEntryPage.tsx",
+      "line": 1583,
+      "code": "<div className=\"grid grid-cols-1 sm:grid-cols-3 gap-4\">",
+      "className": "grid grid-cols-1 sm:grid-cols-3 gap-4"
+    },
+    {
+      "file": "src\\pages\\TradeEntryPage.tsx",
+      "line": 1641,
+      "code": "<div className=\"grid grid-cols-1 sm:grid-cols-3 gap-4\">",
+      "className": "grid grid-cols-1 sm:grid-cols-3 gap-4"
+    },
+    {
+      "file": "src\\pages\\TradeEntryPage.tsx",
+      "line": 1690,
+      "code": "<div className=\"grid grid-cols-1 sm:grid-cols-3 gap-4\">",
+      "className": "grid grid-cols-1 sm:grid-cols-3 gap-4"
+    },
+    {
+      "file": "src\\pages\\TradeEntryPage.tsx",
+      "line": 1741,
+      "code": "<div className=\"grid grid-cols-1 sm:grid-cols-3 gap-4\">",
+      "className": "grid grid-cols-1 sm:grid-cols-3 gap-4"
+    },
+    {
+      "file": "src\\pages\\TradeEntryPage.tsx",
+      "line": 1805,
+      "code": "<div className=\"grid grid-cols-2 sm:grid-cols-3 gap-3\">",
+      "className": "grid grid-cols-2 sm:grid-cols-3 gap-3"
+    },
+    {
+      "file": "src\\pages\\TradeEntryPage.tsx",
+      "line": 2011,
+      "code": "<div className=\"grid grid-cols-1 sm:grid-cols-2 gap-4\">",
+      "className": "grid grid-cols-1 sm:grid-cols-2 gap-4"
+    },
+    {
+      "file": "src\\pages\\TradeTrackingPage.tsx",
+      "line": 2911,
+      "code": "<div className=\"grid grid-cols-1 gap-6\">",
+      "className": "grid grid-cols-1 gap-6"
+    },
+    {
+      "file": "src\\pages\\TradingLogsPage.tsx",
+      "line": 1019,
+      "code": "<div className=\"grid grid-cols-4 gap-3\">",
+      "className": "grid grid-cols-4 gap-3"
+    },
+    {
+      "file": "src\\pages\\TradingLogsPage.tsx",
+      "line": 1109,
+      "code": "<div className=\"grid grid-cols-2 gap-3\" style={{ marginTop: '12px' }}>",
+      "className": "grid grid-cols-2 gap-3"
+    },
+    {
+      "file": "src\\pages\\TradingLogsPage.tsx",
+      "line": 1879,
+      "code": "<div className=\"grid grid-cols-2 gap-3 text-xs\">",
+      "className": "grid grid-cols-2 gap-3 text-xs"
+    },
+    {
+      "file": "src\\pages\\TradingReportsPage.tsx",
+      "line": 332,
+      "code": "<div className=\"grid grid-cols-1 lg:grid-cols-3 gap-5\">",
+      "className": "grid grid-cols-1 lg:grid-cols-3 gap-5"
+    },
+    {
+      "file": "src\\pages\\TradingReportsPage.tsx",
+      "line": 380,
+      "code": "<div className=\"grid grid-cols-1 lg:grid-cols-3 gap-5 items-start\">",
+      "className": "grid grid-cols-1 lg:grid-cols-3 gap-5 items-start"
+    },
+    {
+      "file": "src\\components\\ExecutionPicker.tsx",
+      "line": 64,
+      "code": "<div className=\"grid grid-cols-5 gap-2 mt-2\">",
+      "className": "grid grid-cols-5 gap-2 mt-2"
+    },
+    {
+      "file": "src\\components\\SkeletonCard.tsx",
+      "line": 19,
+      "code": "<div className=\"grid grid-cols-4 gap-3 mt-6\">",
+      "className": "grid grid-cols-4 gap-3 mt-6"
+    },
+    {
+      "file": "src\\components\\StrategyCard.tsx",
+      "line": 250,
+      "code": "<div className=\"grid grid-cols-2 gap-3 md:grid-cols-4\">",
+      "className": "grid grid-cols-2 gap-3 md:grid-cols-4"
+    },
+    {
+      "file": "src\\components\\StrategyCard.tsx",
+      "line": 267,
+      "code": "<div className=\"grid grid-cols-2 gap-3 md:grid-cols-4\">",
+      "className": "grid grid-cols-2 gap-3 md:grid-cols-4"
+    }
+  ],
+  "overflow": [
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 1511,
+      "code": "<div className=\"flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen\">",
+      "type": "hidden"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 1529,
+      "code": "<main className=\"flex-1 overflow-y-auto overflow-x-hidden px-0\">",
+      "type": "hidden"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2098,
+      "code": "<table className=\"w-full text-left border-collapse\">",
+      "type": "table"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2334,
+      "code": "<table className=\"w-full text-left border-collapse\">",
+      "type": "table"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2520,
+      "code": "<table className=\"w-full text-left border-collapse\">",
+      "type": "table"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2789,
+      "code": "<table className=\"w-full text-left border-collapse\">",
+      "type": "table"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 3038,
+      "code": "<table className=\"w-full text-left border-collapse\">",
+      "type": "table"
+    },
+    {
+      "file": "src\\pages\\AiTeacherPage.tsx",
+      "line": 519,
+      "code": "<div className=\"flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen\">",
+      "type": "hidden"
+    },
+    {
+      "file": "src\\pages\\AnnualReportsPage.tsx",
+      "line": 340,
+      "code": "<div className=\"flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen\">",
+      "type": "hidden"
+    },
+    {
+      "file": "src\\pages\\AnnualReportsPage.tsx",
+      "line": 358,
+      "code": "<main className=\"flex-1 overflow-y-auto overflow-x-hidden px-0\">",
+      "type": "hidden"
+    },
+    {
+      "file": "src\\pages\\AnnualReportsPage.tsx",
+      "line": 601,
+      "code": "<table className=\"w-full text-left border-collapse text-sm\">",
+      "type": "table"
+    },
+    {
+      "file": "src\\pages\\AnnualReportsPage.tsx",
+      "line": 996,
+      "code": "<table className=\"w-full text-left\">",
+      "type": "table"
+    },
+    {
+      "file": "src\\pages\\DailyJournal.tsx",
+      "line": 521,
+      "code": "<div className=\"flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen\">",
+      "type": "hidden"
+    },
+    {
+      "file": "src\\pages\\DailyJournal.tsx",
+      "line": 539,
+      "code": "<main className=\"flex-1 overflow-y-auto overflow-x-hidden px-0\">",
+      "type": "hidden"
+    },
+    {
+      "file": "src\\pages\\DailyJournal.tsx",
+      "line": 904,
+      "code": "<table className=\"w-full text-left border-collapse text-xs\">",
+      "type": "table"
+    },
+    {
+      "file": "src\\pages\\DashboardPage.tsx",
+      "line": 978,
+      "code": "<div className=\"flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen\" style={{ overflowX: 'hidden' }}>",
+      "type": "hidden"
+    },
+    {
+      "file": "src\\pages\\DashboardPage.tsx",
+      "line": 996,
+      "code": "<main className=\"flex-1 overflow-y-auto overflow-x-hidden px-0\">",
+      "type": "hidden"
+    },
+    {
+      "file": "src\\pages\\DashboardPage.tsx",
+      "line": 2627,
+      "code": "<table className=\"w-full text-left border-collapse text-xs\">",
+      "type": "table"
+    },
+    {
+      "file": "src\\pages\\DashboardPage.tsx",
+      "line": 2685,
+      "code": "<table className=\"w-full text-left border-collapse text-xs\">",
+      "type": "table"
+    },
+    {
+      "file": "src\\pages\\DashboardPage.tsx",
+      "line": 3541,
+      "code": "<table className=\"w-full text-left border-collapse\">",
+      "type": "table"
+    },
+    {
+      "file": "src\\pages\\LandingPage.tsx",
+      "line": 290,
+      "code": "<table className=\"w-full text-left font-mono text-sm\">",
+      "type": "table"
+    },
+    {
+      "file": "src\\pages\\PlaceholderPage.tsx",
+      "line": 34,
+      "code": "<div className=\"flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen\">",
+      "type": "hidden"
+    },
+    {
+      "file": "src\\pages\\RiskCalculatorPage.tsx",
+      "line": 107,
+      "code": "<main className=\"flex-1 overflow-y-auto overflow-x-hidden px-0\">",
+      "type": "hidden"
+    },
+    {
+      "file": "src\\pages\\SettingsPage.tsx",
+      "line": 879,
+      "code": "<main className=\"flex-1 overflow-y-auto overflow-x-hidden px-0\">",
+      "type": "hidden"
+    },
+    {
+      "file": "src\\pages\\SettingsPage.tsx",
+      "line": 1989,
+      "code": "<table className=\"w-full text-left text-xs border-collapse\">",
+      "type": "table"
+    },
+    {
+      "file": "src\\pages\\SettingsPage.tsx",
+      "line": 2173,
+      "code": "<table className=\"w-full text-left text-xs border-collapse\">",
+      "type": "table"
+    },
+    {
+      "file": "src\\pages\\StrategiesPage.tsx",
+      "line": 502,
+      "code": "<div className=\"flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen\">",
+      "type": "hidden"
+    },
+    {
+      "file": "src\\pages\\StrategiesPage.tsx",
+      "line": 519,
+      "code": "<main className=\"flex-1 overflow-y-auto overflow-x-hidden px-0\">",
+      "type": "hidden"
+    },
+    {
+      "file": "src\\pages\\StrategiesPage.tsx",
+      "line": 813,
+      "code": "<table className=\"w-full text-left border-collapse\" style={{ tableLayout: 'auto', width: '100%', minWidth: '900px' }}>",
+      "type": "table"
+    },
+    {
+      "file": "src\\pages\\StrategyBuilderPage.tsx",
+      "line": 763,
+      "code": "<div className=\"flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen\">",
+      "type": "hidden"
+    },
+    {
+      "file": "src\\pages\\StrategyBuilderPage.tsx",
+      "line": 789,
+      "code": "<main className=\"flex-1 overflow-y-auto overflow-x-hidden px-0\">",
+      "type": "hidden"
+    },
+    {
+      "file": "src\\pages\\StrategyDetail.tsx",
+      "line": 573,
+      "code": "<div className=\"flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen\">",
+      "type": "hidden"
+    },
+    {
+      "file": "src\\pages\\StrategyDetail.tsx",
+      "line": 589,
+      "code": "<main className=\"flex-1 overflow-y-auto overflow-x-hidden px-0\">",
+      "type": "hidden"
+    },
+    {
+      "file": "src\\pages\\StrategyDetail.tsx",
+      "line": 898,
+      "code": "<table className=\"w-full text-left border-collapse min-w-[700px]\">",
+      "type": "table"
+    },
+    {
+      "file": "src\\pages\\StrategyDetail.tsx",
+      "line": 966,
+      "code": "<table className=\"w-full text-left border-collapse min-w-[700px]\">",
+      "type": "table"
+    },
+    {
+      "file": "src\\pages\\StrategyDetail.tsx",
+      "line": 1030,
+      "code": "<table className=\"w-full text-left border-collapse min-w-[750px]\">",
+      "type": "table"
+    },
+    {
+      "file": "src\\pages\\StrategyDetail.tsx",
+      "line": 1179,
+      "code": "<table className=\"w-full text-left border-collapse\">",
+      "type": "table"
+    },
+    {
+      "file": "src\\pages\\TradeEntryPage.tsx",
+      "line": 1126,
+      "code": "<div className=\"flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen\">",
+      "type": "hidden"
+    },
+    {
+      "file": "src\\pages\\TradeTrackingPage.tsx",
+      "line": 1254,
+      "code": "<div className=\"flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen\">",
+      "type": "hidden"
+    },
+    {
+      "file": "src\\pages\\TradingLogsPage.tsx",
+      "line": 925,
+      "code": "<div className=\"flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen\">",
+      "type": "hidden"
+    },
+    {
+      "file": "src\\pages\\TradingLogsPage.tsx",
+      "line": 943,
+      "code": "<main className=\"flex-1 overflow-y-auto px-0\" style={{ overflowX: 'hidden' }}>",
+      "type": "hidden"
+    },
+    {
+      "file": "src\\pages\\TradingLogsPage.tsx",
+      "line": 1560,
+      "code": "<table",
+      "type": "table"
+    },
+    {
+      "file": "src\\pages\\TradingReportsPage.tsx",
+      "line": 235,
+      "code": "<div className=\"flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen\">",
+      "type": "hidden"
+    },
+    {
+      "file": "src\\pages\\TradingReportsPage.tsx",
+      "line": 253,
+      "code": "<main className=\"flex-1 overflow-y-auto overflow-x-hidden px-0\">",
+      "type": "hidden"
+    },
+    {
+      "file": "src\\pages\\TradingReportsPage.tsx",
+      "line": 416,
+      "code": "<table className=\"w-full text-left border-collapse text-sm\">",
+      "type": "table"
+    }
+  ],
+  "maxWidth": [
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 1927,
+      "code": "<span className=\"font-sans font-bold text-indigo-400 truncate max-w-[150px]\" title={overviewStats.bestSetup}>"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 1934,
+      "code": "<span className=\"font-sans font-bold text-zinc-300 truncate max-w-[150px]\" title={overviewStats.mostCommonMistake}>"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2366,
+      "code": "<div className=\"flex items-center justify-center gap-2 max-w-[150px] mx-auto\">"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 2554,
+      "code": "<div className=\"flex items-center justify-center gap-2 max-w-[150px] mx-auto\">"
+    },
+    {
+      "file": "src\\pages\\AdvancedReports.tsx",
+      "line": 3070,
+      "code": "<div className=\"flex items-center justify-center gap-2 max-w-[150px] mx-auto\">"
+    },
+    {
+      "file": "src\\pages\\AiTeacherPage.tsx",
+      "line": 701,
+      "code": "<span style={{ color: 'var(--text)', fontSize: '13px', fontWeight: 600 }} className=\"truncate max-w-[140px]\">{stats.topMistake ? `\"${stats.topMistake[0]}\"` : 'None'}</span>"
+    },
+    {
+      "file": "src\\pages\\AiTeacherPage.tsx",
+      "line": 782,
+      "code": "<form onSubmit={handleSend} className=\"max-w-4xl mx-auto flex gap-3 relative\">"
+    },
+    {
+      "file": "src\\pages\\DailyJournal.tsx",
+      "line": 957,
+      "code": "<td className=\"px-4 py-2.5 truncate max-w-[120px]\" style={{ color: 'var(--text-sub)' }}>"
+    },
+    {
+      "file": "src\\pages\\DashboardPage.tsx",
+      "line": 2093,
+      "code": "<div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }} className=\"flex-grow max-w-[100px]\">"
+    },
+    {
+      "file": "src\\pages\\DashboardPage.tsx",
+      "line": 3438,
+      "code": "className=\"w-full max-w-[680px] p-6 relative flex flex-col gap-5 shadow-2xl\""
+    },
+    {
+      "file": "src\\pages\\LandingPage.tsx",
+      "line": 51,
+      "code": "<section className=\"relative px-6 pt-24 pb-20 md:pt-32 md:pb-28 text-center max-w-6xl mx-auto overflow-hidden\">"
+    },
+    {
+      "file": "src\\pages\\LandingPage.tsx",
+      "line": 60,
+      "code": "<h1 className=\"text-4xl md:text-7xl font-extrabold tracking-tight leading-tight max-w-4xl mx-auto text-white\">"
+    },
+    {
+      "file": "src\\pages\\LandingPage.tsx",
+      "line": 161,
+      "code": "<div className=\"max-w-5xl mx-auto text-center\">"
+    },
+    {
+      "file": "src\\pages\\LandingPage.tsx",
+      "line": 224,
+      "code": "<div className=\"max-w-6xl mx-auto text-center\">"
+    },
+    {
+      "file": "src\\pages\\LandingPage.tsx",
+      "line": 286,
+      "code": "<div className=\"max-w-4xl mx-auto text-center\">"
+    },
+    {
+      "file": "src\\pages\\LandingPage.tsx",
+      "line": 346,
+      "code": "<div className=\"max-w-4xl mx-auto text-center\">"
+    },
+    {
+      "file": "src\\pages\\LandingPage.tsx",
+      "line": 401,
+      "code": "<section className=\"px-6 py-24 text-center max-w-4xl mx-auto relative overflow-hidden\" style={{ backgroundColor: '#060b18' }}>"
+    },
+    {
+      "file": "src\\pages\\LandingPage.tsx",
+      "line": 425,
+      "code": "<div className=\"max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-8\">"
+    },
+    {
+      "file": "src\\pages\\LandingPage.tsx",
+      "line": 445,
+      "code": "<p className=\"max-w-6xl mx-auto text-center mt-12 text-[10px] text-gray-600 leading-relaxed border-t border-white/5 pt-6 select-none\">"
+    },
+    {
+      "file": "src\\pages\\Notebook.tsx",
+      "line": 1581,
+      "code": "<div id=\"notebook-active-note-view\" className=\"flex-1 flex flex-col gap-5 max-w-4xl mx-auto w-full\">"
+    },
+    {
+      "file": "src\\pages\\PlaceholderPage.tsx",
+      "line": 52,
+      "code": "<div className=\"flex-1 max-w-4xl mx-auto px-6 py-12 flex flex-col justify-center items-center w-full\">"
+    },
+    {
+      "file": "src\\pages\\PricingPage.tsx",
+      "line": 64,
+      "code": "<section className=\"px-6 pt-16 pb-8 text-center max-w-4xl mx-auto\">"
+    },
+    {
+      "file": "src\\pages\\RiskCalculatorPage.tsx",
+      "line": 144,
+      "code": "<div className=\"max-w-4xl mx-auto p-6 md:p-8 space-y-8\">"
+    },
+    {
+      "file": "src\\pages\\StrategyBuilderPage.tsx",
+      "line": 1437,
+      "code": "<p style={{ color: 'var(--text-muted)' }} className=\"text-[10px] max-w-[180px] mx-auto mt-2\">"
+    },
+    {
+      "file": "src\\pages\\StrategyDetail.tsx",
+      "line": 1256,
+      "code": "className=\"relative w-full max-w-[480px] rounded-2xl border p-6 z-10 shadow-2xl animate-scale-in\""
+    },
+    {
+      "file": "src\\pages\\TradeTrackingPage.tsx",
+      "line": 2129,
+      "code": "<span style={{ fontSize: '13px' }} className=\"text-left break-words max-w-[220px] font-medium\">{opt}</span>"
+    },
+    {
+      "file": "src\\pages\\TradingReportsPage.tsx",
+      "line": 466,
+      "code": "<td className=\"px-3 py-3 font-mono text-xs max-w-[100px] truncate\" style={{ color: 'var(--text)' }} title={row.symbols}>"
+    },
+    {
+      "file": "src\\pages\\TradingReportsPage.tsx",
+      "line": 471,
+      "code": "<td className=\"px-3 py-3 text-xs max-w-[120px] truncate\" style={{ color: 'var(--text-sub)' }} title={row.setups}>"
+    },
+    {
+      "file": "src\\pages\\TradingReportsPage.tsx",
+      "line": 873,
+      "code": "<span className=\"leading-tight block break-words max-w-[200px]\" style={{ color: 'var(--text-sub)' }}>"
+    },
+    {
+      "file": "src\\components\\DonutChart.tsx",
+      "line": 86,
+      "code": "<span className=\"truncate max-w-[80px]\" title={item.name}>"
+    },
+    {
+      "file": "src\\components\\Toast.tsx",
+      "line": 38,
+      "code": "className={`rounded-xl p-4 flex items-start gap-3 shadow-2xl min-w-[300px] max-w-[400px] pointer-events-auto transition-all duration-300 ${cardStyle}`}"
+    }
+  ],
+  "fixed": [
+    {
+      "file": "src\\pages\\DashboardPage.tsx",
+      "line": 3427,
+      "code": "className=\"fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm\""
+    },
+    {
+      "file": "src\\pages\\LandingPage.tsx",
+      "line": 339,
+      "code": "\"The wall cannot be fixed by better Pine Script code. It is architectural.\""
+    },
+    {
+      "file": "src\\pages\\Notebook.tsx",
+      "line": 1874,
+      "code": "<div id=\"notebook-folder-modal-overlay\" className=\"fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4\">"
+    },
+    {
+      "file": "src\\pages\\Notebook.tsx",
+      "line": 1950,
+      "code": "<div id=\"notebook-log-day-modal-overlay\" className=\"fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4\">"
+    },
+    {
+      "file": "src\\pages\\Notebook.tsx",
+      "line": 2003,
+      "code": "<div id=\"notebook-log-day-confirm-modal-overlay\" className=\"fixed inset-0 bg-black/75 backdrop-blur-md z-[60] flex items-center justify-center p-4\">"
+    },
+    {
+      "file": "src\\pages\\Notebook.tsx",
+      "line": 2042,
+      "code": "<div id=\"notebook-coming-soon-modal-overlay\" className=\"fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4\">"
+    },
+    {
+      "file": "src\\pages\\SettingsPage.tsx",
+      "line": 1881,
+      "code": "<div className=\"fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm\">"
+    },
+    {
+      "file": "src\\pages\\SettingsPage.tsx",
+      "line": 1927,
+      "code": "<div className=\"fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm\">"
+    },
+    {
+      "file": "src\\pages\\SettingsPage.tsx",
+      "line": 2300,
+      "code": "<div className=\"fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm\">"
+    },
+    {
+      "file": "src\\pages\\StrategyBuilderPage.tsx",
+      "line": 1574,
+      "code": "className=\"fixed inset-0 bg-black/90 z-[99999] flex items-center justify-center p-4 select-none animate-in fade-in duration-200\""
+    },
+    {
+      "file": "src\\pages\\StrategyDetail.tsx",
+      "line": 1247,
+      "code": "<div className=\"fixed inset-0 z-50 flex items-center justify-center p-4\">"
+    },
+    {
+      "file": "src\\pages\\StrategyDetail.tsx",
+      "line": 1557,
+      "code": "position: 'fixed',"
+    },
+    {
+      "file": "src\\pages\\StrategyDetail.tsx",
+      "line": 1576,
+      "code": "position: 'fixed',"
+    },
+    {
+      "file": "src\\pages\\StrategyDetail.tsx",
+      "line": 1599,
+      "code": "position: 'fixed',"
+    },
+    {
+      "file": "src\\pages\\StrategyDetail.tsx",
+      "line": 1638,
+      "code": "position: 'fixed',"
+    },
+    {
+      "file": "src\\pages\\StrategyDetail.tsx",
+      "line": 1657,
+      "code": "position: 'fixed',"
+    },
+    {
+      "file": "src\\pages\\TradingLogsPage.tsx",
+      "line": 1854,
+      "code": "className=\"fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200\""
+    },
+    {
+      "file": "src\\components\\ChartImageViewer.jsx",
+      "line": 249,
+      "code": "position: 'fixed',"
+    },
+    {
+      "file": "src\\components\\ChartImageViewer.jsx",
+      "line": 477,
+      "code": "position: 'fixed',"
+    },
+    {
+      "file": "src\\components\\Modal.tsx",
+      "line": 31,
+      "code": "className=\"fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 transition-all duration-200\""
+    },
+    {
+      "file": "src\\components\\Toast.tsx",
+      "line": 11,
+      "code": "<div className=\"fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none\">"
+    },
+    {
+      "file": "src\\components\\TradeChart.jsx",
+      "line": 894,
+      "code": "position: 'fixed',"
+    }
+  ]
+}

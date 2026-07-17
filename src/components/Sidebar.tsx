@@ -90,7 +90,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
         {mobileOpen && (
           <button
             onClick={() => setMobileOpen(false)}
-            className="md:hidden p-1 bg-transparent rounded-lg cursor-pointer absolute"
+            className="lg:hidden p-1 bg-transparent rounded-lg cursor-pointer absolute"
             style={{ 
               color: 'var(--text-sub)',
               top: '20px',
@@ -204,7 +204,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
     <>
       {/* Desktop sidebar */}
       <aside 
-        className="hidden md:flex flex-col w-[220px] h-screen sticky top-0 overflow-y-hidden flex-shrink-0"
+        className="hidden lg:flex flex-col w-[220px] h-screen sticky top-0 overflow-y-hidden flex-shrink-0"
         style={{ backgroundColor: 'var(--topbar)', borderRight: '1px solid rgba(0, 0, 0, 0.08)', boxShadow: '1px 0 3px rgba(0, 0, 0, 0.04)' }}
       >
         {sidebarContent}
@@ -213,7 +213,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
       {/* Mobile Drawer Backdrop */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 z-40 md:hidden transition-opacity backdrop-blur-sm"
+          className="fixed inset-0 z-40 lg:hidden transition-opacity backdrop-blur-sm"
           style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}
           onClick={() => setMobileOpen(false)}
         />
@@ -221,7 +221,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
 
       {/* Mobile Drawer */}
       <div
-        className={`fixed inset-y-0 left-0 w-[220px] z-50 md:hidden shadow-2xl transition-transform duration-250 ease-in-out ${
+        className={`fixed inset-y-0 left-0 w-[220px] z-50 lg:hidden shadow-2xl transition-transform duration-250 ease-in-out ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
         style={{ backgroundColor: 'var(--topbar)', borderRight: '1px solid rgba(0, 0, 0, 0.08)', boxShadow: '1px 0 3px rgba(0, 0, 0, 0.04)' }}

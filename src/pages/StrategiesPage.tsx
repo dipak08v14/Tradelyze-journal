@@ -494,7 +494,7 @@ export const StrategiesPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col md:flex-row font-sans" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+    <div className="min-h-screen w-full flex flex-col lg:flex-row font-sans" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
       <Sidebar userEmail={user?.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
@@ -502,7 +502,7 @@ export const StrategiesPage: React.FC = () => {
       <div className="flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen">
         {/* MOBILE HEADER */}
         <header
-          className="flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20"
+          className="flex items-center justify-between px-6 py-4 lg:hidden sticky top-0 z-20"
           style={{ backgroundColor: 'var(--topbar)', borderBottom: '1px solid var(--border)' }}
         >
           <div className="text-xl font-bold tracking-wider font-display" style={{ color: 'var(--accent)' }}>TRADELYZE</div>
@@ -801,7 +801,7 @@ export const StrategiesPage: React.FC = () => {
             ) : viewType === 'table' ? (
               /* CLEAN TRADEZELLA-STYLE TABLE VIEW */
               <div
-                className="w-full select-none mt-2"
+                className="w-full select-none mt-2 overflow-x-auto"
                 style={{
                   background: 'var(--card)',
                   boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',

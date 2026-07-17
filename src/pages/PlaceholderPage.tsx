@@ -26,7 +26,7 @@ export const PlaceholderPage: React.FC<PlaceholderPageProps> = ({ title, message
   }
 
   return (
-    <div className="min-h-screen w-full flex flex-col md:flex-row font-sans" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+    <div className="min-h-screen w-full flex flex-col lg:flex-row font-sans" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR */}
       <Sidebar userEmail={user.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 

@@ -1,0 +1,104 @@
+[
+  {
+    "file": "src\\components\\Sidebar.tsx",
+    "line": 93,
+    "before": "className=\"md:hidden p-1 bg-transparent rounded-lg cursor-pointer absolute\"",
+    "after": "className=\"lg:hidden p-1 bg-transparent rounded-lg cursor-pointer absolute\""
+  },
+  {
+    "file": "src\\components\\Sidebar.tsx",
+    "line": 207,
+    "before": "className=\"hidden md:flex flex-col w-[220px] h-screen sticky top-0 overflow-y-hidden flex-shrink-0\"",
+    "after": "className=\"hidden lg:flex flex-col w-[220px] h-screen sticky top-0 overflow-y-hidden flex-shrink-0\""
+  },
+  {
+    "file": "src\\components\\Sidebar.tsx",
+    "line": 216,
+    "before": "className=\"fixed inset-0 z-40 md:hidden transition-opacity backdrop-blur-sm\"",
+    "after": "className=\"fixed inset-0 z-40 lg:hidden transition-opacity backdrop-blur-sm\""
+  },
+  {
+    "file": "src\\components\\Sidebar.tsx",
+    "line": 224,
+    "before": "className={`fixed inset-y-0 left-0 w-[220px] z-50 md:hidden shadow-2xl transition-transform duration-250 ease-in-out ${",
+    "after": "className={`fixed inset-y-0 left-0 w-[220px] z-50 lg:hidden shadow-2xl transition-transform duration-250 ease-in-out ${"
+  },
+  {
+    "file": "src\\pages\\DashboardPage.tsx",
+    "line": 981,
+    "before": "className=\"flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20\"",
+    "after": "className=\"flex items-center justify-between px-6 py-4 lg:hidden sticky top-0 z-20\""
+  },
+  {
+    "file": "src\\pages\\DailyJournal.tsx",
+    "line": 524,
+    "before": "className=\"flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20\"",
+    "after": "className=\"flex items-center justify-between px-6 py-4 lg:hidden sticky top-0 z-20\""
+  },
+  {
+    "file": "src\\pages\\TradingLogsPage.tsx",
+    "line": 928,
+    "before": "className=\"flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20\"",
+    "after": "className=\"flex items-center justify-between px-6 py-4 lg:hidden sticky top-0 z-20\""
+  },
+  {
+    "file": "src\\pages\\TradeTrackingPage.tsx",
+    "line": 1257,
+    "before": "className=\"flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-25\"",
+    "after": "className=\"flex items-center justify-between px-6 py-4 lg:hidden sticky top-0 z-25\""
+  },
+  {
+    "file": "src\\pages\\StrategiesPage.tsx",
+    "line": 505,
+    "before": "className=\"flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20\"",
+    "after": "className=\"flex items-center justify-between px-6 py-4 lg:hidden sticky top-0 z-20\""
+  },
+  {
+    "file": "src\\pages\\StrategyDetail.tsx",
+    "line": 576,
+    "before": "className=\"flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20\"",
+    "after": "className=\"flex items-center justify-between px-6 py-4 lg:hidden sticky top-0 z-20\""
+  },
+  {
+    "file": "src\\pages\\StrategyBuilderPage.tsx",
+    "line": 766,
+    "before": "className=\"flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-25\"",
+    "after": "className=\"flex items-center justify-between px-6 py-4 lg:hidden sticky top-0 z-25\""
+  },
+  {
+    "file": "src\\pages\\TradingReportsPage.tsx",
+    "line": 238,
+    "before": "className=\"flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20\"",
+    "after": "className=\"flex items-center justify-between px-6 py-4 lg:hidden sticky top-0 z-20\""
+  },
+  {
+    "file": "src\\pages\\AdvancedReports.tsx",
+    "line": 1514,
+    "before": "className=\"flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20\"",
+    "after": "className=\"flex items-center justify-between px-6 py-4 lg:hidden sticky top-0 z-20\""
+  },
+  {
+    "file": "src\\pages\\AnnualReportsPage.tsx",
+    "line": 343,
+    "before": "className=\"flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20\"",
+    "after": "className=\"flex items-center justify-between px-6 py-4 lg:hidden sticky top-0 z-20\""
+  },
+  {
+    "file": "src\\pages\\TradeEntryPage.tsx",
+    "line": 1129,
+    "before": "className=\"flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20\"",
+    "after": "className=\"flex items-center justify-between px-6 py-4 lg:hidden sticky top-0 z-20\""
+  },
+  {
+    "file": "src\\pages\\RiskCalculatorPage.tsx",
+    "line": 133,
+    "before": "className=\"md:hidden p-2 rounded-lg\"",
+    "after": "className=\"lg:hidden p-2 rounded-lg\""
+  },
+  {
+    "file": "src\\pages\\SettingsPage.tsx",
+    "line": 905,
+    "before": "className=\"md:hidden p-2 rounded-lg\"",
+    "after": "className=\"lg:hidden p-2 rounded-lg\""
+  }
+]

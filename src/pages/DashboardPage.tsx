@@ -78,7 +78,7 @@ const SemicircleGauge: React.FC<{
   const cx = 50, cy = 48, R = 38;
   const arcPath = `M ${cx - R},${cy} A ${R},${R} 0 0,1 ${cx + R},${cy}`;
   return (
-    <svg width="100" height="62" viewBox="0 0 100 62" overflow="visible">
+    <svg width="100" height="62" viewBox="0 0 100 62" overflow="visible" className="lg:w-[70px] lg:h-[43px] 2xl:w-[100px] 2xl:h-[62px]">
       {/* Full red arc: background */}
       <path
         d={arcPath}
@@ -970,7 +970,7 @@ export const DashboardPage: React.FC = () => {
   const zeroPercent = range > 0 ? (maxVal / range) * 100 : 0;
 
   return (
-    <div className="min-h-screen w-full flex flex-col md:flex-row md:items-start font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+    <div className="min-h-screen w-full flex flex-col lg:flex-row lg:items-start font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
       <Sidebar userEmail={user?.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
@@ -978,7 +978,7 @@ export const DashboardPage: React.FC = () => {
       <div className="flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen" style={{ overflowX: 'hidden' }}>
         {/* MOBILE HEADER BAR */}
         <header 
-          className="flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20"
+          className="flex items-center justify-between px-6 py-4 lg:hidden sticky top-0 z-20"
           style={{ backgroundColor: 'var(--topbar)', borderBottom: '1px solid var(--border)' }}
         >
           <div className="text-xl font-bold tracking-wider font-display" style={{ color: 'var(--accent)' }}>TRADELYZE</div>
@@ -1960,7 +1960,7 @@ export const DashboardPage: React.FC = () => {
               /* ACTIVE DASHBOARD RENDER OUT */
               <div className="space-y-5">
                 {/* SECTION 2: KEY STATS ROW */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3" style={{ marginBottom: '16px' }}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3" style={{ marginBottom: '16px' }}>
                   {/* Card 1 — NET P&L */}
                   <div 
                     style={{ 

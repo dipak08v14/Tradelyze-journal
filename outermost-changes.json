@@ -1,0 +1,86 @@
+[
+  {
+    "file": "AdvancedReports.tsx",
+    "line": 1506,
+    "before": "<div className=\"min-h-screen w-full flex flex-col md:flex-row md:items-start font-sans selection:bg-indigo-500/30\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>",
+    "after": "<div className=\"min-h-screen w-full flex flex-col lg:flex-row lg:items-start font-sans selection:bg-indigo-500/30\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>"
+  },
+  {
+    "file": "DashboardPage.tsx",
+    "line": 973,
+    "before": "<div className=\"min-h-screen w-full flex flex-col md:flex-row md:items-start font-sans selection:bg-indigo-500/30\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>",
+    "after": "<div className=\"min-h-screen w-full flex flex-col lg:flex-row lg:items-start font-sans selection:bg-indigo-500/30\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>"
+  },
+  {
+    "file": "Notebook.tsx",
+    "line": 1080,
+    "before": "<div id=\"notebook-page-layout\" className=\"min-h-screen w-full flex flex-col md:flex-row md:items-start font-sans font-medium select-none\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>",
+    "after": "<div id=\"notebook-page-layout\" className=\"min-h-screen w-full flex flex-col lg:flex-row lg:items-start font-sans font-medium select-none\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>"
+  },
+  {
+    "file": "TradingLogsPage.tsx",
+    "line": 920,
+    "before": "<div className=\"min-h-screen w-full flex flex-col md:flex-row md:items-start font-sans selection:bg-indigo-500/30\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>",
+    "after": "<div className=\"min-h-screen w-full flex flex-col lg:flex-row lg:items-start font-sans selection:bg-indigo-500/30\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>"
+  },
+  {
+    "file": "AiTeacherPage.tsx",
+    "line": 514,
+    "before": "<div className=\"min-h-screen w-full flex flex-col md:flex-row font-sans selection:bg-indigo-500/30\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>",
+    "after": "<div className=\"min-h-screen w-full flex flex-col lg:flex-row font-sans selection:bg-indigo-500/30\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>"
+  },
+  {
+    "file": "AnnualReportsPage.tsx",
+    "line": 335,
+    "before": "<div className=\"min-h-screen w-full flex flex-col md:flex-row font-sans selection:bg-indigo-500/30\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>",
+    "after": "<div className=\"min-h-screen w-full flex flex-col lg:flex-row font-sans selection:bg-indigo-500/30\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>"
+  },
+  {
+    "file": "DailyJournal.tsx",
+    "line": 516,
+    "before": "<div className=\"min-h-screen w-full flex flex-col md:flex-row font-sans selection:bg-indigo-500/30\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>",
+    "after": "<div className=\"min-h-screen w-full flex flex-col lg:flex-row font-sans selection:bg-indigo-500/30\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>"
+  },
+  {
+    "file": "PlaceholderPage.tsx",
+    "line": 29,
+    "before": "<div className=\"min-h-screen w-full flex flex-col md:flex-row font-sans\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>",
+    "after": "<div className=\"min-h-screen w-full flex flex-col lg:flex-row font-sans\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>"
+  },
+  {
+    "file": "StrategiesPage.tsx",
+    "line": 497,
+    "before": "<div className=\"min-h-screen w-full flex flex-col md:flex-row font-sans\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>",
+    "after": "<div className=\"min-h-screen w-full flex flex-col lg:flex-row font-sans\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>"
+  },
+  {
+    "file": "StrategyBuilderPage.tsx",
+    "line": 758,
+    "before": "<div className=\"min-h-screen w-full flex flex-col md:flex-row\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>",
+    "after": "<div className=\"min-h-screen w-full flex flex-col lg:flex-row\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>"
+  },
+  {
+    "file": "StrategyDetail.tsx",
+    "line": 568,
+    "before": "<div className=\"min-h-screen w-full flex flex-col md:flex-row font-sans\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>",
+    "after": "<div className=\"min-h-screen w-full flex flex-col lg:flex-row font-sans\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>"
+  },
+  {
+    "file": "TradeEntryPage.tsx",
+    "line": 1121,
+    "before": "<div className=\"min-h-screen w-full flex flex-col md:flex-row font-sans selection:bg-indigo-500/30\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>",
+    "after": "<div className=\"min-h-screen w-full flex flex-col lg:flex-row font-sans selection:bg-indigo-500/30\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>"
+  },
+  {
+    "file": "TradeTrackingPage.tsx",
+    "line": 1249,
+    "before": "<div className=\"min-h-screen w-full flex flex-col md:flex-row font-sans selection:bg-indigo-500/30\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>",
+    "after": "<div className=\"min-h-screen w-full flex flex-col lg:flex-row font-sans selection:bg-indigo-500/30\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>"
+  },
+  {
+    "file": "TradingReportsPage.tsx",
+    "line": 230,
+    "before": "<div className=\"min-h-screen w-full flex flex-col md:flex-row font-sans selection:bg-indigo-500/30\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>",
+    "after": "<div className=\"min-h-screen w-full flex flex-col lg:flex-row font-sans selection:bg-indigo-500/30\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>"
+  }
+]

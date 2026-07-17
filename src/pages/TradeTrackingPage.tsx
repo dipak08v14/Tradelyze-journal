@@ -1246,7 +1246,7 @@ const TradeTrackingPageContent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col md:flex-row font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+    <div className="min-h-screen w-full flex flex-col lg:flex-row font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
       <Sidebar userEmail={user?.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
@@ -1254,7 +1254,7 @@ const TradeTrackingPageContent: React.FC = () => {
       <div className="flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen">
         {/* MOBILE HEADER BAR */}
         <header 
-          className="flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-25"
+          className="flex items-center justify-between px-6 py-4 lg:hidden sticky top-0 z-25"
           style={{ backgroundColor: 'var(--topbar)', borderBottom: '1px solid var(--border)' }}
         >
           <div className="text-xl font-bold tracking-wider font-display" style={{ color: 'var(--accent)' }}>TRADELYZE</div>
@@ -2728,7 +2728,7 @@ const TradeTrackingPageContent: React.FC = () => {
 
                     {/* CARD E: KEY PERFORMANCE SCOREBOARD + SPIDER RADAR */}
                     <div className="flex gap-6 items-start">
-                      <div className="rounded-xl px-5 pb-5 pt-2.5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', height: '300px', width: '416px', flexShrink: 0, position: 'relative', overflow: 'hidden' }}>
+                      <div className="rounded-xl px-5 pb-5 pt-2.5 w-full sm:w-[416px]" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', height: '300px', flexShrink: 0, position: 'relative', overflow: 'hidden' }}>
                         <div style={{ position: 'absolute', top: '8px', left: '16px', zIndex: 1, margin: 0, textAlign: 'left', width: 'calc(100% - 32px)', paddingTop: '0px', borderBottom: '1px solid rgba(0,0,0,0.07)', paddingBottom: '4px', marginBottom: '8px' }}>
                           <h2 style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-muted)', marginBottom: '4px' }}>
                             Performance Score

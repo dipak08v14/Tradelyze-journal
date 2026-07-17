@@ -130,7 +130,7 @@ export default function RiskCalculatorPage() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setMobileOpen(true)}
-              className="md:hidden p-2 rounded-lg"
+              className="lg:hidden p-2 rounded-lg"
               style={{ color: 'var(--text-sub)' }}
             >
               <Menu className="w-5 h-5" />

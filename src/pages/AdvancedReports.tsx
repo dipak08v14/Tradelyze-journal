@@ -1503,7 +1503,7 @@ export const AdvancedReports: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col md:flex-row md:items-start font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+    <div className="min-h-screen w-full flex flex-col lg:flex-row lg:items-start font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
       <Sidebar userEmail={user?.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
@@ -1511,7 +1511,7 @@ export const AdvancedReports: React.FC = () => {
       <div className="flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen">
         {/* MOBILE HEADER BAR */}
         <header
-          className="flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20"
+          className="flex items-center justify-between px-6 py-4 lg:hidden sticky top-0 z-20"
           style={{ backgroundColor: 'var(--topbar)', borderBottom: '1px solid var(--border)' }}
         >
           <div className="text-xl font-bold tracking-wider font-display" style={{ color: 'var(--accent)' }}>TRADELYZE</div>
@@ -2594,48 +2594,48 @@ export const AdvancedReports: React.FC = () => {
               <div className="space-y-3 animate-in fade-in duration-300">
                 {/* HEAD TO HEAD STAT CARDS */}
                 <div className="rounded-2xl px-4 py-2 shadow-sm border border-[var(--border)]" style={{ backgroundColor: 'var(--card)' }}>
-                  <div className="grid grid-cols-3 py-2 border-b items-center text-sm" style={{ borderColor: 'var(--border)' }}>
+                  <div className="grid grid-cols-[2fr_3fr_2fr] py-2 border-b items-center text-sm" style={{ borderColor: 'var(--border)' }}>
                     <div className="font-mono text-left" style={{ color: '#008F67' }}>WINS</div>
                     <div className="text-center font-mono" style={{ color: 'var(--text-muted)' }}>HEAD TO HEAD</div>
                     <div className="font-mono text-right" style={{ color: '#DF1C30' }}>LOSSES</div>
                   </div>
                   <div className="text-sm">
-                    <div className="grid grid-cols-3 py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
+                    <div className="grid grid-cols-[2fr_3fr_2fr] py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
                       <div className="font-sans whitespace-nowrap" style={{ color: '#008F67' }}>{winsLossesStats.totalCountWins}</div>
                       <div className="text-center text-zinc-400 font-mono text-[11px] uppercase tracking-wider">Total Count</div>
                       <div className="font-sans text-right whitespace-nowrap" style={{ color: '#DF1C30' }}>{winsLossesStats.totalCountLosses}</div>
                     </div>
-                    <div className="grid grid-cols-3 py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
+                    <div className="grid grid-cols-[2fr_3fr_2fr] py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
                       <div className="font-sans whitespace-nowrap" style={{ color: '#008F67' }}>{formatINR(winsLossesStats.totalPnlWins)}</div>
                       <div className="text-center text-zinc-400 font-mono text-[11px] uppercase tracking-wider">Total P&L</div>
                       <div className="font-sans text-right whitespace-nowrap" style={{ color: '#DF1C30' }}>{formatINR(winsLossesStats.totalPnlLosses)}</div>
                     </div>
-                    <div className="grid grid-cols-3 py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
+                    <div className="grid grid-cols-[2fr_3fr_2fr] py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
                       <div className="font-sans whitespace-nowrap" style={{ color: '#008F67' }}>{formatINR(winsLossesStats.avgPnlWins)}</div>
                       <div className="text-center text-zinc-400 font-mono text-[11px] uppercase tracking-wider">Average Per Trade</div>
                       <div className="font-sans text-right whitespace-nowrap" style={{ color: '#DF1C30' }}>{formatINR(winsLossesStats.avgPnlLosses)}</div>
                     </div>
-                    <div className="grid grid-cols-3 py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
+                    <div className="grid grid-cols-[2fr_3fr_2fr] py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
                       <div className="font-sans whitespace-nowrap" style={{ color: '#008F67' }}>{winsLossesStats.avgRMultipleWins !== null ? `+${winsLossesStats.avgRMultipleWins.toFixed(2)}R` : '—'}</div>
                       <div className="text-center text-zinc-400 font-mono text-[11px] uppercase tracking-wider">Average R-Multiple</div>
                       <div className="font-sans text-right whitespace-nowrap" style={{ color: '#DF1C30' }}>{winsLossesStats.avgRMultipleLosses !== null ? `${winsLossesStats.avgRMultipleLosses.toFixed(2)}R` : '—'}</div>
                     </div>
-                    <div className="grid grid-cols-3 py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
+                    <div className="grid grid-cols-[2fr_3fr_2fr] py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
                       <div className="font-sans whitespace-nowrap" style={{ color: '#008F67' }}>{formatMins(winsLossesStats.avgHoldWins)}</div>
                       <div className="text-center text-zinc-400 font-mono text-[11px] uppercase tracking-wider">Average Hold Time</div>
                       <div className="font-sans text-right whitespace-nowrap" style={{ color: '#DF1C30' }}>{formatMins(winsLossesStats.avgHoldLosses)}</div>
                     </div>
-                    <div className="grid grid-cols-3 py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
+                    <div className="grid grid-cols-[2fr_3fr_2fr] py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
                       <div className="font-sans whitespace-nowrap" style={{ color: '#008F67' }}>{formatINR(winsLossesStats.largestWin)}</div>
                       <div className="text-center text-zinc-400 font-mono text-[11px] uppercase tracking-wider">Largest</div>
                       <div className="font-sans text-right whitespace-nowrap" style={{ color: '#DF1C30' }}>{formatINR(winsLossesStats.largestLoss)}</div>
                     </div>
-                    <div className="grid grid-cols-3 py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
+                    <div className="grid grid-cols-[2fr_3fr_2fr] py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
                       <div className="font-sans truncate pr-2" style={{ color: 'var(--text)' }} title={winsLossesStats.topWinSetup}>{winsLossesStats.topWinSetup}</div>
                       <div className="text-center text-zinc-400 font-mono text-[11px] uppercase tracking-wider">Most Common Setup</div>
                       <div className="font-sans text-right truncate pl-2" style={{ color: 'var(--text)' }} title={winsLossesStats.topLossSetup}>{winsLossesStats.topLossSetup}</div>
                     </div>
-                    <div className="grid grid-cols-3 py-2 items-center">
+                    <div className="grid grid-cols-[2fr_3fr_2fr] py-2 items-center">
                       <div className="font-sans truncate pr-2" style={{ color: 'var(--text)' }} title={winsLossesStats.topWinMistake}>{winsLossesStats.topWinMistake}</div>
                       <div className="text-center text-zinc-400 font-mono text-[11px] uppercase tracking-wider">Most Common Mistake</div>
                       <div className="font-sans text-right truncate pl-2" style={{ color: 'var(--text)' }} title={winsLossesStats.topLossMistake}>{winsLossesStats.topLossMistake}</div>

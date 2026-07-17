@@ -1,0 +1,26 @@
+[
+  {
+    "line": 973,
+    "code": "<div className=\"min-h-screen w-full flex flex-col md:flex-row md:items-start font-sans selection:bg-indigo-500/30\" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>"
+  },
+  {
+    "line": 1929,
+    "code": "<div className=\"grid grid-cols-2 md:grid-cols-3 gap-4\">"
+  },
+  {
+    "line": 1963,
+    "code": "<div className=\"grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3\" style={{ marginBottom: '16px' }}>"
+  },
+  {
+    "line": 2486,
+    "code": "<div className=\"grid grid-cols-2 md:grid-cols-3 gap-4\" style={{ display: 'none' }}>"
+  },
+  {
+    "line": 3323,
+    "code": "<div className=\"grid grid-cols-1 md:grid-cols-2 gap-6 divide-y md:divide-y-0 md:divide-x\" style={{ borderColor: 'var(--border)' }}>"
+  },
+  {
+    "line": 3343,
+    "code": "<div className=\"flex items-center gap-5 pt-5 md:pt-0 md:pl-6\" style={{ borderColor: 'var(--border)' }}>"
+  }
+]
