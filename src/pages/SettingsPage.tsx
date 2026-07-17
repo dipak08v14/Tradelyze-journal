@@ -871,12 +871,30 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="flex h-screen w-full overflow-hidden" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+    <div className="min-h-screen w-full flex flex-col lg:flex-row lg:items-start font-sans" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR CONTAINER */}
       <Sidebar userEmail={user?.email || ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
-      {/* MAIN SCREEN AREA */}
-      <main className="flex-1 overflow-y-auto overflow-x-hidden px-0">
+      {/* RIGHT SIDE WRAPPER (holds mobile header + main together) */}
+      <div className="flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen" style={{ overflowX: 'hidden' }}>
+        {/* MOBILE HEADER BAR */}
+        <header 
+          className="flex items-center justify-between px-6 py-4 lg:hidden sticky top-0 z-20"
+          style={{ backgroundColor: 'var(--topbar)', borderBottom: '1px solid var(--border)' }}
+        >
+          <div className="text-xl font-bold tracking-wider font-display" style={{ color: 'var(--accent)' }}>TRADELYZE</div>
+          <button
+            onClick={() => setMobileOpen(true)}
+            className="p-1.5 rounded-lg cursor-pointer"
+            style={{ color: 'var(--text-sub)' }}
+            aria-label="Open sidebar menu"
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+        </header>
+
+        {/* MAIN SCREEN AREA */}
+        <main className="flex-1 overflow-y-auto overflow-x-hidden px-0">
         <div className="w-full px-4">
         
         {/* TOP COMPONENT */}
@@ -899,19 +917,9 @@ export default function SettingsPage() {
             justifyContent: 'space-between'
           }}
         >
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setMobileOpen(true)}
-              className="lg:hidden p-2 rounded-lg"
-              style={{ color: 'var(--text-sub)' }}
-            >
-              <Menu className="w-5 h-5" />
-            </button>
-            <h1 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }} className="font-display tracking-tight">
-              Settings
-            </h1>
-          </div>
-          <div />
+          <h1 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }} className="font-display tracking-tight">
+            Settings
+          </h1>
         </div>
 
         {/* CONTAINER WITH SPACING */}
@@ -1655,7 +1663,7 @@ export default function SettingsPage() {
                   {/* BACKGROUND THEME PICKER */}
                   <div>
                     <h4 className="text-sm font-semibold mb-3">Choose Your Background Theme</h4>
-                    <div className="flex flex-row" style={{ gap: '8px' }}>
+                    <div className="flex flex-row flex-wrap" style={{ gap: '8px' }}>
                       {['warm', 'cloud', 'slate', 'charcoal', 'navy', 'midnight'].map((themeKey) => {
                         const th = THEMES[themeKey as keyof typeof THEMES];
                         const isActive = selectedTheme === themeKey;
@@ -1713,7 +1721,7 @@ export default function SettingsPage() {
                   </div>
 
                   {/* SAVE */}
-                  <div className="pt-6 border-t border-[var(--border)] flex justify-between items-center bg-[var(--row)] -mx-6 -mb-6 p-6 rounded-b-2xl">
+                  <div className="pt-6 border-t border-[var(--border)] flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 bg-[var(--row)] -mx-6 -mb-6 p-6 rounded-b-2xl">
                     <span className="text-[11px] text-[var(--text-muted)] italic">Changes apply and synchronize instantly. Saved permanently on record.</span>
                     <button
                       onClick={handleSaveAppearance}
@@ -1738,7 +1746,7 @@ export default function SettingsPage() {
                   {/* FREE PLAN */}
                   {userData?.subscription_plan === 'free' && (
                     <div className="border border-amber-800 bg-amber-950/20 p-6 rounded-2xl space-y-6">
-                      <div className="flex justify-between items-start">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
                         <div>
                           <span className="bg-amber-600 text-slate-950 text-[10px] uppercase font-black tracking-widest px-2.5 py-0.5 rounded-full">
                             Free Trial Active
@@ -1846,7 +1854,7 @@ export default function SettingsPage() {
                         className="w-full h-1.5 bg-[var(--bar)] rounded-lg appearance-none cursor-pointer accent-[var(--accent)] focus:outline-none"
                       />
                       
-                      <div className="flex justify-between text-[10px] text-[var(--text-muted)] font-mono mt-2">
+                      <div className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0 text-[10px] text-[var(--text-muted)] font-mono mt-2">
                         <span>50% (Noise/More Alerts)</span>
                         <span>70% (Default)</span>
                         <span>90% (Strict High Confidence Only)</span>
@@ -1875,6 +1883,7 @@ export default function SettingsPage() {
         </div>
       </div>
     </main>
+        </div>
 
       {/* ACCOUNT PURGE DESTROY MODAL */}
       {showDeleteModal && (

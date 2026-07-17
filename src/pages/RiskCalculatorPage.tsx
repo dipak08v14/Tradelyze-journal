@@ -99,12 +99,30 @@ export default function RiskCalculatorPage() {
   const activeInst = INSTRUMENTS.find((inst) => inst.name === selectedInstName) || INSTRUMENTS[0];
 
   return (
-    <div className="flex h-screen w-full overflow-hidden" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+    <div className="min-h-screen w-full flex flex-col lg:flex-row lg:items-start font-sans" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR CONTAINER */}
       <Sidebar userEmail={user?.email || ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
-      {/* MAIN SCREEN AREA */}
-      <main className="flex-1 overflow-y-auto overflow-x-hidden px-0">
+      {/* RIGHT SIDE WRAPPER (holds mobile header + main together) */}
+      <div className="flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen" style={{ overflowX: 'hidden' }}>
+        {/* MOBILE HEADER BAR */}
+        <header 
+          className="flex items-center justify-between px-6 py-4 lg:hidden sticky top-0 z-20"
+          style={{ backgroundColor: 'var(--topbar)', borderBottom: '1px solid var(--border)' }}
+        >
+          <div className="text-xl font-bold tracking-wider font-display" style={{ color: 'var(--accent)' }}>TRADELYZE</div>
+          <button
+            onClick={() => setMobileOpen(true)}
+            className="p-1.5 rounded-lg cursor-pointer"
+            style={{ color: 'var(--text-sub)' }}
+            aria-label="Open sidebar menu"
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+        </header>
+
+        {/* MAIN SCREEN AREA */}
+        <main className="flex-1 overflow-y-auto overflow-x-hidden px-0">
         <div className="w-full px-4">
         
         {/* HEADER */}
@@ -127,17 +145,7 @@ export default function RiskCalculatorPage() {
             justifyContent: 'space-between'
           }}
         >
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setMobileOpen(true)}
-              className="lg:hidden p-2 rounded-lg"
-              style={{ color: 'var(--text-sub)' }}
-            >
-              <Menu className="w-5 h-5" />
-            </button>
-            <h1 className="tracking-tight" style={{ color: 'var(--text)', fontSize: '28px', fontWeight: 700, letterSpacing: '-0.3px' }}>Risk Calculator</h1>
-          </div>
-          <div />
+          <h1 className="tracking-tight" style={{ color: 'var(--text)', fontSize: '28px', fontWeight: 700, letterSpacing: '-0.3px' }}>Risk Calculator</h1>
         </div>
 
         {/* CONTAINER FOR SPACING */}
@@ -561,6 +569,7 @@ export default function RiskCalculatorPage() {
         </div>
       </div>
     </main>
+        </div>
     </div>
   );
 }
