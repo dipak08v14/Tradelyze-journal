@@ -2115,7 +2115,7 @@ export const DashboardPage: React.FC = () => {
                 </div>
 
                 {/* NEW 3-COLUMN ROW: Trading Metrics | Cumulative P&L | Daily P&L */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '16px', alignItems: 'stretch', marginBottom: '16px' }} className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
+                <div style={{ gap: '16px', alignItems: 'stretch', marginBottom: '16px' }} className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
                   {/* Column 1: Trading Metrics */}
                   <div className="rounded-xl px-5 pb-5 pt-2.5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', height: '300px', position: 'relative', overflow: 'hidden' }}>
                     <style>{`
@@ -2576,9 +2576,9 @@ export const DashboardPage: React.FC = () => {
                 </div>
 
                 {/* NEW 2-COLUMN ROW: Dhan Live + Recent Trades (Left 1/3) & Monthly Calendar (Right 2/3) */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '16px', alignItems: 'stretch' }} className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
+                <div style={{ gap: '16px', alignItems: 'stretch' }} className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
                   {/* Left Column (33%): Tabbed Info Card */}
-                  <div className="rounded-xl px-5 pb-5 pt-0 flex flex-col justify-between lg:col-span-1" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', gridColumn: 'span 1' }}>
+                  <div className="rounded-xl px-5 pb-5 pt-0 flex flex-col justify-between lg:col-span-1" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
                     <div>
                       {/* Tab Bar */}
                       <div className="flex gap-4 border-b pb-2 mb-4" style={{ borderColor: 'var(--border)', paddingTop: '0px', marginTop: '0px' }}>
@@ -2741,7 +2741,7 @@ export const DashboardPage: React.FC = () => {
 
                   {/* Right Column (2/3): Monthly Calendar */}
                   {/* ADDITION 4 — Monthly Calendar section */}
-                  <div className="rounded-xl px-5 pb-5 pt-2.5 lg:col-span-2" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%', minWidth: '0px', overflow: 'hidden', boxSizing: 'border-box', gridColumn: 'span 2' }}>
+                  <div className="rounded-xl px-5 pb-5 pt-2.5 lg:col-span-2" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%', minWidth: '0px', overflow: 'hidden', boxSizing: 'border-box' }}>
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4" style={{ paddingTop: '0px', paddingBottom: '4px', borderBottom: '1px solid rgba(0,0,0,0.07)', marginBottom: '8px' }}>
                       <h2 style={{ fontSize: '16px', fontWeight: 500, color: 'var(--text-muted)' }}>
                         Monthly Calendar

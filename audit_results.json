@@ -1,0 +1,1207 @@
+{
+  "layouts": [
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 1438,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-zinc-400 mb-1\">"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 1447,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-7 gap-1\">"
+    },
+    {
+      "file": "AnnualReportsPage.tsx",
+      "lineNum": 469,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-y-4 md:gap-y-0 text-center\">"
+    },
+    {
+      "file": "DailyJournal.tsx",
+      "lineNum": 838,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-2 lg:grid-cols-4 gap-4 p-4 rounded-xl\" style={{ backgroundColor: 'var(--row)', border: '1px solid var(--border)' }}>"
+    },
+    {
+      "file": "DailyJournal.tsx",
+      "lineNum": 1088,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-7 gap-1 text-center py-2 text-[10px] font-semibold text-zinc-500 uppercase tracking-wider\">"
+    },
+    {
+      "file": "DailyJournal.tsx",
+      "lineNum": 1099,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-7 gap-1 mt-1 text-center text-xs\">"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 1929,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-2 md:grid-cols-3 gap-4\">"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 2486,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-2 md:grid-cols-3 gap-4\" style={{ display: 'none' }}>"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 2789,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-7 gap-1 mb-1\" style={{ width: '100%', minWidth: '0px', overflow: 'hidden', boxSizing: 'border-box', display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))' }}>"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 2814,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-7 gap-1\" style={{ width: '100%', minWidth: '0px', overflow: 'hidden', boxSizing: 'border-box', display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))' }}>"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 3024,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-2 gap-x-8 gap-y-3.5 mt-5\">"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 3490,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-2 sm:grid-cols-4 gap-2\">"
+    },
+    {
+      "file": "LandingPage.tsx",
+      "lineNum": 102,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-2 md:grid-cols-5 gap-3 text-center mb-6\">"
+    },
+    {
+      "file": "LandingPage.tsx",
+      "lineNum": 142,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-3 gap-4 justify-items-center py-2 text-center text-xs text-gray-400\">"
+    },
+    {
+      "file": "Notebook.tsx",
+      "lineNum": 1106,
+      "type": "flex-row",
+      "code": "<div id=\"notebook-three-panels\" className=\"flex-1 flex flex-row overflow-hidden w-full h-full\">"
+    },
+    {
+      "file": "RiskCalculatorPage.tsx",
+      "lineNum": 436,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-2 gap-4\">"
+    },
+    {
+      "file": "SettingsPage.tsx",
+      "lineNum": 1658,
+      "type": "flex-row",
+      "code": "<div className=\"flex flex-row\" style={{ gap: '8px' }}>"
+    },
+    {
+      "file": "SettingsPage.tsx",
+      "lineNum": 1690,
+      "type": "flex-row",
+      "code": "<div className=\"flex flex-row\" style={{ gap: '8px', marginTop: '16px' }}>"
+    },
+    {
+      "file": "StrategiesPage.tsx",
+      "lineNum": 627,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-2 gap-1.5\">"
+    },
+    {
+      "file": "StrategiesPage.tsx",
+      "lineNum": 667,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-2 gap-1.5\">"
+    },
+    {
+      "file": "StrategiesPage.tsx",
+      "lineNum": 1194,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-2 gap-x-4 gap-y-3 py-3 border-t border-b border-[rgba(0,0,0,0.06)] mb-3\">"
+    },
+    {
+      "file": "StrategyBuilderPage.tsx",
+      "lineNum": 804,
+      "type": "flex-row",
+      "code": "className=\"flex flex-row items-center justify-between gap-4\""
+    },
+    {
+      "file": "StrategyBuilderPage.tsx",
+      "lineNum": 821,
+      "type": "flex-row",
+      "code": "<div className=\"flex flex-row items-center gap-2.5\">"
+    },
+    {
+      "file": "StrategyBuilderPage.tsx",
+      "lineNum": 1322,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-2 gap-2.5 mt-4\">"
+    },
+    {
+      "file": "StrategyBuilderPage.tsx",
+      "lineNum": 1444,
+      "type": "grid",
+      "code": "<div style={{ borderColor: 'var(--border)' }} className=\"grid grid-cols-3 gap-2 py-1.5 border-b\">"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 603,
+      "type": "flex-row",
+      "code": "className=\"flex flex-row items-center justify-between gap-4\""
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 709,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-2 lg:grid-cols-4 gap-3\">"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 1338,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-2 gap-2 font-sans\">"
+    },
+    {
+      "file": "TradeEntryPage.tsx",
+      "lineNum": 1352,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-2 gap-1.5 font-sans\">"
+    },
+    {
+      "file": "TradeEntryPage.tsx",
+      "lineNum": 1398,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-3 gap-1.5 font-sans\">"
+    },
+    {
+      "file": "TradeEntryPage.tsx",
+      "lineNum": 1482,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-3 gap-1 font-sans\">"
+    },
+    {
+      "file": "TradeEntryPage.tsx",
+      "lineNum": 1805,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-2 sm:grid-cols-3 gap-3\">"
+    },
+    {
+      "file": "TradingLogsPage.tsx",
+      "lineNum": 1019,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-4 gap-3\">"
+    },
+    {
+      "file": "TradingLogsPage.tsx",
+      "lineNum": 1109,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-2 gap-3\" style={{ marginTop: '12px' }}>"
+    },
+    {
+      "file": "TradingLogsPage.tsx",
+      "lineNum": 1879,
+      "type": "grid",
+      "code": "<div className=\"grid grid-cols-2 gap-3 text-xs\">"
+    }
+  ],
+  "tables": [
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2098,
+      "type": "table-start",
+      "code": "<table className=\"w-full text-left border-collapse\">"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2099,
+      "type": "table-header",
+      "code": "<thead>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2101,
+      "type": "table-header",
+      "code": "<th className=\"py-2.5 px-3\">Symbol</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2102,
+      "type": "table-header",
+      "code": "<th className=\"py-2.5 px-3\">Direction</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2103,
+      "type": "table-header",
+      "code": "<th className=\"py-2.5 px-3\">Setup</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2104,
+      "type": "table-header",
+      "code": "<th className=\"py-2.5 px-3 text-right\">P&L</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2105,
+      "type": "table-header",
+      "code": "<th className=\"py-2.5 px-3 text-center\">Status</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2334,
+      "type": "table-start",
+      "code": "<table className=\"w-full text-left border-collapse\">"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2335,
+      "type": "table-header",
+      "code": "<thead>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2337,
+      "type": "table-header",
+      "code": "<th className=\"py-2 px-4 font-bold\">Category</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2338,
+      "type": "table-header",
+      "code": "<th className=\"py-2 px-4 font-bold text-right\">Net Profits</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2339,
+      "type": "table-header",
+      "code": "<th className=\"py-2 px-4 font-bold text-center\">Win %</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2340,
+      "type": "table-header",
+      "code": "<th className=\"py-2 px-4 font-bold text-right bg-green-500/5\">Total Profits</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2341,
+      "type": "table-header",
+      "code": "<th className=\"py-2 px-4 font-bold text-right bg-red-500/5\">Total Loss</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2342,
+      "type": "table-header",
+      "code": "<th className=\"py-2 px-4 font-bold text-center\">Trades</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2520,
+      "type": "table-start",
+      "code": "<table className=\"w-full text-left border-collapse\">"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2521,
+      "type": "table-header",
+      "code": "<thead>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2523,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4 font-bold\">"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2526,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4 font-bold text-right font-mono\">Net Profits</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2527,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4 font-bold text-center font-mono\">Win %</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2528,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4 font-bold text-right font-mono bg-green-500/5\">Total Profits</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2529,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4 font-bold text-right font-mono bg-red-500/5\">Total Loss</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2530,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4 font-bold text-center font-mono\">Trades</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2789,
+      "type": "table-start",
+      "code": "<table className=\"w-full text-left border-collapse\">"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2790,
+      "type": "table-header",
+      "code": "<thead>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2792,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4 font-bold\">Setup</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2793,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4 font-bold text-center font-mono\">Trades</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2794,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4 font-bold text-center font-mono\">Wins</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2795,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4 font-bold text-center font-mono\">Losses</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2796,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4 font-bold text-center font-mono\">Win Rate</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2797,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4 font-bold text-right font-mono bg-green-500/5\">Avg Win</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2798,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4 font-bold text-right font-mono bg-red-500/5\">Avg Loss</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 2799,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4 font-bold text-right font-mono\">Net P&L</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 3038,
+      "type": "table-start",
+      "code": "<table className=\"w-full text-left border-collapse\">"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 3039,
+      "type": "table-header",
+      "code": "<thead>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 3041,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4 font-bold\">Category</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 3042,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4 font-bold text-right font-mono\">Net Profits</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 3043,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4 font-bold text-center font-mono\">Win %</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 3044,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4 font-bold text-right font-mono bg-green-500/5\">Total Profits</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 3045,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4 font-bold text-right font-mono bg-red-500/5\">Total Loss</th>"
+    },
+    {
+      "file": "AdvancedReports.tsx",
+      "lineNum": 3046,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4 font-bold text-center font-mono\">Trades</th>"
+    },
+    {
+      "file": "AnnualReportsPage.tsx",
+      "lineNum": 601,
+      "type": "table-start",
+      "code": "<table className=\"w-full text-left border-collapse text-sm\">"
+    },
+    {
+      "file": "AnnualReportsPage.tsx",
+      "lineNum": 602,
+      "type": "table-header",
+      "code": "<thead>"
+    },
+    {
+      "file": "AnnualReportsPage.tsx",
+      "lineNum": 604,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-3\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Month</th>"
+    },
+    {
+      "file": "AnnualReportsPage.tsx",
+      "lineNum": 605,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-3 text-center\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Trades</th>"
+    },
+    {
+      "file": "AnnualReportsPage.tsx",
+      "lineNum": 606,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-3 text-center\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Win</th>"
+    },
+    {
+      "file": "AnnualReportsPage.tsx",
+      "lineNum": 607,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-3 text-center\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Loss</th>"
+    },
+    {
+      "file": "AnnualReportsPage.tsx",
+      "lineNum": 608,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-3 text-center\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Win Rate</th>"
+    },
+    {
+      "file": "AnnualReportsPage.tsx",
+      "lineNum": 609,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-3 text-right\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>P&L</th>"
+    },
+    {
+      "file": "AnnualReportsPage.tsx",
+      "lineNum": 610,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-3 text-right\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Avg R</th>"
+    },
+    {
+      "file": "AnnualReportsPage.tsx",
+      "lineNum": 611,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-3 text-center\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>PF</th>"
+    },
+    {
+      "file": "AnnualReportsPage.tsx",
+      "lineNum": 612,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-3 text-center\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Score</th>"
+    },
+    {
+      "file": "AnnualReportsPage.tsx",
+      "lineNum": 996,
+      "type": "table-start",
+      "code": "<table className=\"w-full text-left\">"
+    },
+    {
+      "file": "AnnualReportsPage.tsx",
+      "lineNum": 997,
+      "type": "table-header",
+      "code": "<thead>"
+    },
+    {
+      "file": "AnnualReportsPage.tsx",
+      "lineNum": 999,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-2.5 font-sans\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Setup Name</th>"
+    },
+    {
+      "file": "AnnualReportsPage.tsx",
+      "lineNum": 1000,
+      "type": "table-header",
+      "code": "<th className=\"px-3 py-2.5 text-center font-sans\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Trades</th>"
+    },
+    {
+      "file": "AnnualReportsPage.tsx",
+      "lineNum": 1001,
+      "type": "table-header",
+      "code": "<th className=\"px-3 py-2.5 text-center font-sans\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Win Rate</th>"
+    },
+    {
+      "file": "AnnualReportsPage.tsx",
+      "lineNum": 1002,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-2.5 text-right font-sans\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>P&L</th>"
+    },
+    {
+      "file": "DailyJournal.tsx",
+      "lineNum": 904,
+      "type": "table-start",
+      "code": "<table className=\"w-full text-left border-collapse text-xs\">"
+    },
+    {
+      "file": "DailyJournal.tsx",
+      "lineNum": 905,
+      "type": "table-header",
+      "code": "<thead>"
+    },
+    {
+      "file": "DailyJournal.tsx",
+      "lineNum": 907,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-2.5\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Time</th>"
+    },
+    {
+      "file": "DailyJournal.tsx",
+      "lineNum": 908,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-2.5\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Symbol</th>"
+    },
+    {
+      "file": "DailyJournal.tsx",
+      "lineNum": 909,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-2.5\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Dir</th>"
+    },
+    {
+      "file": "DailyJournal.tsx",
+      "lineNum": 910,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-2.5\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Setup</th>"
+    },
+    {
+      "file": "DailyJournal.tsx",
+      "lineNum": 911,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-2.5\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Qty</th>"
+    },
+    {
+      "file": "DailyJournal.tsx",
+      "lineNum": 912,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-2.5\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Net P&L</th>"
+    },
+    {
+      "file": "DailyJournal.tsx",
+      "lineNum": 913,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-2.5\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>R</th>"
+    },
+    {
+      "file": "DailyJournal.tsx",
+      "lineNum": 914,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-2.5\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Execution</th>"
+    },
+    {
+      "file": "DailyJournal.tsx",
+      "lineNum": 915,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-2.5\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Hold</th>"
+    },
+    {
+      "file": "DailyJournal.tsx",
+      "lineNum": 916,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-2.5\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Result</th>"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 2627,
+      "type": "table-start",
+      "code": "<table className=\"w-full text-left border-collapse text-xs\">"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 2628,
+      "type": "table-header",
+      "code": "<thead>"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 2630,
+      "type": "table-header",
+      "code": "<th className=\"pb-3 font-semibold uppercase tracking-wider\" style={{ color: 'var(--text-muted)' }}>Symbol</th>"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 2631,
+      "type": "table-header",
+      "code": "<th className=\"pb-3 font-semibold uppercase tracking-wider text-center\" style={{ color: 'var(--text-muted)' }}>Direction</th>"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 2632,
+      "type": "table-header",
+      "code": "<th className=\"pb-3 font-semibold uppercase tracking-wider text-center\" style={{ color: 'var(--text-muted)' }}>Product</th>"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 2633,
+      "type": "table-header",
+      "code": "<th className=\"pb-3 font-semibold uppercase tracking-wider text-right\" style={{ color: 'var(--text-muted)' }}>Qty</th>"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 2634,
+      "type": "table-header",
+      "code": "<th className=\"pb-3 font-semibold uppercase tracking-wider text-right\" style={{ color: 'var(--text-muted)' }}>Avg. Price</th>"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 2635,
+      "type": "table-header",
+      "code": "<th className=\"pb-3 font-semibold uppercase tracking-wider text-right\" style={{ color: 'var(--text-muted)' }}>Total Cost</th>"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 2685,
+      "type": "table-start",
+      "code": "<table className=\"w-full text-left border-collapse text-xs\">"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 2686,
+      "type": "table-header",
+      "code": "<thead>"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 2688,
+      "type": "table-header",
+      "code": "<th className=\"p-3 text-left\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Date</th>"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 2689,
+      "type": "table-header",
+      "code": "<th className=\"p-3 text-left\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Symbol</th>"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 2690,
+      "type": "table-header",
+      "code": "<th className=\"p-3 text-left\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Type</th>"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 2691,
+      "type": "table-header",
+      "code": "<th className=\"p-3 text-right\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>P&L</th>"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 3541,
+      "type": "table-start",
+      "code": "<table className=\"w-full text-left border-collapse\">"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 3542,
+      "type": "table-header",
+      "code": "<thead>"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 3544,
+      "type": "table-header",
+      "code": "<th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className=\"p-2.5 px-3 uppercase\">TIME</th>"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 3545,
+      "type": "table-header",
+      "code": "<th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className=\"p-2.5 px-3 uppercase\">SYMBOL</th>"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 3546,
+      "type": "table-header",
+      "code": "<th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className=\"p-2.5 px-3 uppercase\">DIRECTION</th>"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 3547,
+      "type": "table-header",
+      "code": "<th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className=\"p-2.5 px-3 uppercase\">SETUP</th>"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 3548,
+      "type": "table-header",
+      "code": "<th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className=\"p-2.5 px-3 uppercase text-right\">P&L</th>"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 3549,
+      "type": "table-header",
+      "code": "<th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className=\"p-2.5 px-3 uppercase text-center\">R-MULTIPLE</th>"
+    },
+    {
+      "file": "DashboardPage.tsx",
+      "lineNum": 3550,
+      "type": "table-header",
+      "code": "<th className=\"w-5\"></th>"
+    },
+    {
+      "file": "LandingPage.tsx",
+      "lineNum": 290,
+      "type": "table-start",
+      "code": "<table className=\"w-full text-left font-mono text-sm\">"
+    },
+    {
+      "file": "LandingPage.tsx",
+      "lineNum": 291,
+      "type": "table-header",
+      "code": "<thead>"
+    },
+    {
+      "file": "LandingPage.tsx",
+      "lineNum": 293,
+      "type": "table-header",
+      "code": "<th className=\"p-4\">Feature</th>"
+    },
+    {
+      "file": "LandingPage.tsx",
+      "lineNum": 294,
+      "type": "table-header",
+      "code": "<th className=\"p-4 text-center\">Pine Script</th>"
+    },
+    {
+      "file": "LandingPage.tsx",
+      "lineNum": 295,
+      "type": "table-header",
+      "code": "<th className=\"p-4 text-center text-cyan-400\">Tradelyze</th>"
+    },
+    {
+      "file": "SettingsPage.tsx",
+      "lineNum": 1989,
+      "type": "table-start",
+      "code": "<table className=\"w-full text-left text-xs border-collapse\">"
+    },
+    {
+      "file": "SettingsPage.tsx",
+      "lineNum": 1990,
+      "type": "table-header",
+      "code": "<thead>"
+    },
+    {
+      "file": "SettingsPage.tsx",
+      "lineNum": 1992,
+      "type": "table-header",
+      "code": "<th className=\"p-2 pl-3\">Column Name</th>"
+    },
+    {
+      "file": "SettingsPage.tsx",
+      "lineNum": 1993,
+      "type": "table-header",
+      "code": "<th className=\"p-2 text-center\">Required</th>"
+    },
+    {
+      "file": "SettingsPage.tsx",
+      "lineNum": 1994,
+      "type": "table-header",
+      "code": "<th className=\"p-2 pr-3\">Format & Rules</th>"
+    },
+    {
+      "file": "SettingsPage.tsx",
+      "lineNum": 2173,
+      "type": "table-start",
+      "code": "<table className=\"w-full text-left text-xs border-collapse\">"
+    },
+    {
+      "file": "SettingsPage.tsx",
+      "lineNum": 2174,
+      "type": "table-header",
+      "code": "<thead>"
+    },
+    {
+      "file": "SettingsPage.tsx",
+      "lineNum": 2176,
+      "type": "table-header",
+      "code": "<th className=\"p-2 pl-3\">Date</th>"
+    },
+    {
+      "file": "SettingsPage.tsx",
+      "lineNum": 2177,
+      "type": "table-header",
+      "code": "<th className=\"p-2\">Symbol</th>"
+    },
+    {
+      "file": "SettingsPage.tsx",
+      "lineNum": 2178,
+      "type": "table-header",
+      "code": "<th className=\"p-2\">Direction</th>"
+    },
+    {
+      "file": "SettingsPage.tsx",
+      "lineNum": 2179,
+      "type": "table-header",
+      "code": "<th className=\"p-2\">P&L</th>"
+    },
+    {
+      "file": "SettingsPage.tsx",
+      "lineNum": 2180,
+      "type": "table-header",
+      "code": "<th className=\"p-2 pr-3 text-right\">Status</th>"
+    },
+    {
+      "file": "StrategiesPage.tsx",
+      "lineNum": 813,
+      "type": "table-start",
+      "code": "<table className=\"w-full text-left border-collapse\" style={{ tableLayout: 'auto', width: '100%', minWidth: '900px' }}>"
+    },
+    {
+      "file": "StrategiesPage.tsx",
+      "lineNum": 814,
+      "type": "table-header",
+      "code": "<thead>"
+    },
+    {
+      "file": "StrategiesPage.tsx",
+      "lineNum": 816,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4 text-center\" style={{ width: '40px', whiteSpace: 'nowrap', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>#</th>"
+    },
+    {
+      "file": "StrategiesPage.tsx",
+      "lineNum": 827,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4\" style={{ whiteSpace: 'nowrap' }}></th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 898,
+      "type": "table-start",
+      "code": "<table className=\"w-full text-left border-collapse min-w-[700px]\">"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 899,
+      "type": "table-header",
+      "code": "<thead>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 901,
+      "type": "table-header",
+      "code": "<th className=\"py-2.5 px-4\">Rule Text</th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 902,
+      "type": "table-header",
+      "code": "<th className=\"py-2.5 px-4 text-center\">Follow Rate</th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 903,
+      "type": "table-header",
+      "code": "<th className=\"py-2.5 px-4 text-right\">P&L Followed</th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 904,
+      "type": "table-header",
+      "code": "<th className=\"py-2.5 px-4 text-right\">P&L Not Followed</th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 905,
+      "type": "table-header",
+      "code": "<th className=\"py-2.5 px-4 text-center\">Win Rate Followed</th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 906,
+      "type": "table-header",
+      "code": "<th className=\"py-2.5 px-4 text-center\">Evaluated Trades</th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 966,
+      "type": "table-start",
+      "code": "<table className=\"w-full text-left border-collapse min-w-[700px]\">"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 967,
+      "type": "table-header",
+      "code": "<thead>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 969,
+      "type": "table-header",
+      "code": "<th className=\"py-2.5 px-4\">Rule Text</th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 970,
+      "type": "table-header",
+      "code": "<th className=\"py-2.5 px-4 text-center\">Follow Rate</th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 971,
+      "type": "table-header",
+      "code": "<th className=\"py-2.5 px-4 text-right\">P&L Followed</th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 972,
+      "type": "table-header",
+      "code": "<th className=\"py-2.5 px-4 text-right\">P&L Not Followed</th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 973,
+      "type": "table-header",
+      "code": "<th className=\"py-2.5 px-4 text-center\">Win Rate Followed</th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 974,
+      "type": "table-header",
+      "code": "<th className=\"py-2.5 px-4 text-center\">Evaluated Trades</th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 1030,
+      "type": "table-start",
+      "code": "<table className=\"w-full text-left border-collapse min-w-[750px]\">"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 1031,
+      "type": "table-header",
+      "code": "<thead>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 1033,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4\">Date</th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 1034,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4\">Symbol</th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 1035,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4\">Direction</th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 1036,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4 text-right\">Net P&L</th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 1037,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4 text-center\">R-Multiple</th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 1038,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4 text-center\">Status</th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 1039,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4\">Execution</th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 1040,
+      "type": "table-header",
+      "code": "<th className=\"py-3 px-4\">Hold Time</th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 1179,
+      "type": "table-start",
+      "code": "<table className=\"w-full text-left border-collapse\">"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 1180,
+      "type": "table-header",
+      "code": "<thead>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 1182,
+      "type": "table-header",
+      "code": "<th className=\"py-3.5 px-4 font-bold\">Date</th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 1183,
+      "type": "table-header",
+      "code": "<th className=\"py-3.5 px-4 font-bold\">Symbol</th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 1184,
+      "type": "table-header",
+      "code": "<th className=\"py-3.5 px-4 font-bold\">Direction</th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 1185,
+      "type": "table-header",
+      "code": "<th className=\"py-3.5 px-4 font-bold text-right\">Potential P&L</th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 1186,
+      "type": "table-header",
+      "code": "<th className=\"py-3.5 px-4 font-bold\">Notes</th>"
+    },
+    {
+      "file": "StrategyDetail.tsx",
+      "lineNum": 1187,
+      "type": "table-header",
+      "code": "<th className=\"py-3.5 px-4 font-bold text-center w-20\">Actions</th>"
+    },
+    {
+      "file": "TradingLogsPage.tsx",
+      "lineNum": 1560,
+      "type": "table-start",
+      "code": "<table"
+    },
+    {
+      "file": "TradingLogsPage.tsx",
+      "lineNum": 1565,
+      "type": "table-header",
+      "code": "<thead>"
+    },
+    {
+      "file": "TradingLogsPage.tsx",
+      "lineNum": 1568,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-4 w-12 text-center\">"
+    },
+    {
+      "file": "TradingLogsPage.tsx",
+      "lineNum": 1633,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-4 w-10 text-center\">#</th>"
+    },
+    {
+      "file": "TradingLogsPage.tsx",
+      "lineNum": 1641,
+      "type": "table-header",
+      "code": "<th"
+    },
+    {
+      "file": "TradingLogsPage.tsx",
+      "lineNum": 1655,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-4 w-12 text-center\">AI</th>"
+    },
+    {
+      "file": "TradingReportsPage.tsx",
+      "lineNum": 416,
+      "type": "table-start",
+      "code": "<table className=\"w-full text-left border-collapse text-sm\">"
+    },
+    {
+      "file": "TradingReportsPage.tsx",
+      "lineNum": 417,
+      "type": "table-header",
+      "code": "<thead>"
+    },
+    {
+      "file": "TradingReportsPage.tsx",
+      "lineNum": 419,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-3\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Date</th>"
+    },
+    {
+      "file": "TradingReportsPage.tsx",
+      "lineNum": 420,
+      "type": "table-header",
+      "code": "<th className=\"px-3 py-3 text-center\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Trades</th>"
+    },
+    {
+      "file": "TradingReportsPage.tsx",
+      "lineNum": 421,
+      "type": "table-header",
+      "code": "<th className=\"px-3 py-3\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Symbols</th>"
+    },
+    {
+      "file": "TradingReportsPage.tsx",
+      "lineNum": 422,
+      "type": "table-header",
+      "code": "<th className=\"px-3 py-3\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Setups</th>"
+    },
+    {
+      "file": "TradingReportsPage.tsx",
+      "lineNum": 423,
+      "type": "table-header",
+      "code": "<th className=\"px-3 py-3 text-center\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>W/L/BE</th>"
+    },
+    {
+      "file": "TradingReportsPage.tsx",
+      "lineNum": 424,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-3 text-right\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>P&L (Day)</th>"
+    },
+    {
+      "file": "TradingReportsPage.tsx",
+      "lineNum": 425,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-3 text-right\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Cumulative</th>"
+    },
+    {
+      "file": "TradingReportsPage.tsx",
+      "lineNum": 426,
+      "type": "table-header",
+      "code": "<th className=\"px-4 py-3 text-center\" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Status</th>"
+    }
+  ],
+  "touchTargets": [
+    {
+      "file": "Notebook.tsx",
+      "lineNum": 1399,
+      "code": "<button type=\"button\" className=\"p-1 px-1.5 rounded hover:bg-[var(--bar)] text-zinc-400\"><ArrowUpDown className=\"w-4 h-4\" /></button>"
+    }
+  ]
+}

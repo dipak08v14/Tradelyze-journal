@@ -1268,7 +1268,7 @@ const TradeTrackingPageContent: React.FC = () => {
         </header>
 
         {/* PAGE BODY SCROLLER */}
-        <main className="flex-1 overflow-y-auto px-0">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden px-0" style={{ overflowX: 'hidden' }}>
           <div className="w-full px-4">
             {fetchError ? (
               <div className="min-h-[60vh] flex flex-col items-center justify-center p-6 text-zinc-100" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
@@ -1341,13 +1341,13 @@ const TradeTrackingPageContent: React.FC = () => {
             </div>
 
             {/* HEADER STRIP */}
-            <div style={{ backgroundColor: 'var(--card)', paddingTop: '6px', paddingBottom: '6px' }} className="-mx-6 px-6 mb-4 flex items-center justify-between border-b-0">
+            <div style={{ backgroundColor: 'var(--card)', paddingTop: '6px', paddingBottom: '6px' }} className="-mx-6 px-6 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b-0">
               <div>
                 <h1 style={{ color: 'var(--text)', fontSize: '24px', fontWeight: 700 }} className="text-xl md:text-2xl font-bold font-display">
                   Trade Tracking
                 </h1>
               </div>
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-2.5 flex-wrap">
                 {/* Ask AI - Placeholder */}
                 <button
                   type="button"
@@ -2407,13 +2407,13 @@ const TradeTrackingPageContent: React.FC = () => {
                           <div>
                             <div className="flex items-center justify-between py-1.5">
                               <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Market Phase</span>
-                              <div className="relative" ref={phaseRef}>
+                              <div className="relative flex-1 min-w-0 max-w-[280px]" ref={phaseRef}>
                                 <button
                                   type="button"
                                   onClick={() => { if (!isPhaseOpen) { const fullOptions = ['Add Tags', ...PHASE_OPTIONS]; setActivePhaseIndex(fullOptions.indexOf(trade?.phase || 'Add Tags') >= 0 ? fullOptions.indexOf(trade?.phase || 'Add Tags') : 0); } setIsPhaseOpen(!isPhaseOpen); }}
                                   onKeyDown={handlePhaseKeyDown}
-                                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)', outline: 'none', fontSize: '13px', borderRadius: '6px', padding: '4px 8px', width: '280px', minHeight: '29px' }}
-                                  className="font-sans cursor-pointer flex items-center justify-between gap-1 hover:border-[var(--accent)] transition-all focus:outline-none focus:border-[var(--accent)]"
+                                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)', outline: 'none', fontSize: '13px', borderRadius: '6px', padding: '4px 8px', minHeight: '29px' }}
+                                  className="font-sans cursor-pointer flex items-center justify-between gap-1 hover:border-[var(--accent)] transition-all focus:outline-none focus:border-[var(--accent)] w-full"
                                 >
                                   <span className="flex-1 min-w-0 text-left truncate">
                                     {trade?.phase || <span style={{ color: 'var(--text-muted)' }}>Add Tags</span>}
@@ -2433,13 +2433,13 @@ const TradeTrackingPageContent: React.FC = () => {
                             </div>
                             <div className="flex items-center justify-between py-1.5">
                               <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Trend Location</span>
-                              <div className="relative" ref={trendRef}>
+                              <div className="relative flex-1 min-w-0 max-w-[280px]" ref={trendRef}>
                                 <button
                                   type="button"
                                   onClick={() => { if (!isTrendOpen) { const fullOptions = ['Add Tags', ...TREND_OPTIONS]; setActiveTrendIndex(fullOptions.indexOf(trade?.trend_position || 'Add Tags') >= 0 ? fullOptions.indexOf(trade?.trend_position || 'Add Tags') : 0); } setIsTrendOpen(!isTrendOpen); }}
                                   onKeyDown={handleTrendKeyDown}
-                                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)', outline: 'none', fontSize: '13px', borderRadius: '6px', padding: '4px 8px', width: '280px', minHeight: '29px' }}
-                                  className="font-sans cursor-pointer flex items-center justify-between gap-1 hover:border-[var(--accent)] transition-all focus:outline-none focus:border-[var(--accent)]"
+                                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)', outline: 'none', fontSize: '13px', borderRadius: '6px', padding: '4px 8px', minHeight: '29px' }}
+                                  className="font-sans cursor-pointer flex items-center justify-between gap-1 hover:border-[var(--accent)] transition-all focus:outline-none focus:border-[var(--accent)] w-full"
                                 >
                                   <span className="flex-1 min-w-0 text-left truncate">
                                     {trade?.trend_position || <span style={{ color: 'var(--text-muted)' }}>Add Tags</span>}
@@ -2459,13 +2459,13 @@ const TradeTrackingPageContent: React.FC = () => {
                             </div>
                             <div className="flex items-center justify-between py-1.5">
                               <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Opening State</span>
-                              <div className="relative" ref={openingRef}>
+                              <div className="relative flex-1 min-w-0 max-w-[280px]" ref={openingRef}>
                                 <button
                                   type="button"
                                   onClick={() => { if (!isOpeningOpen) { const fullOptions = ['Add Tags', ...OPENING_OPTIONS]; setActiveOpeningIndex(fullOptions.indexOf(trade?.opening_condition || 'Add Tags') >= 0 ? fullOptions.indexOf(trade?.opening_condition || 'Add Tags') : 0); } setIsOpeningOpen(!isOpeningOpen); }}
                                   onKeyDown={handleOpeningKeyDown}
-                                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)', outline: 'none', fontSize: '13px', borderRadius: '6px', padding: '4px 8px', width: '280px', minHeight: '29px' }}
-                                  className="font-sans cursor-pointer flex items-center justify-between gap-1 hover:border-[var(--accent)] transition-all focus:outline-none focus:border-[var(--accent)]"
+                                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)', outline: 'none', fontSize: '13px', borderRadius: '6px', padding: '4px 8px', minHeight: '29px' }}
+                                  className="font-sans cursor-pointer flex items-center justify-between gap-1 hover:border-[var(--accent)] transition-all focus:outline-none focus:border-[var(--accent)] w-full"
                                 >
                                   <span className="flex-1 min-w-0 text-left truncate">
                                     {trade?.opening_condition || <span style={{ color: 'var(--text-muted)' }}>Add Tags</span>}
@@ -2485,13 +2485,13 @@ const TradeTrackingPageContent: React.FC = () => {
                             </div>
                             <div className="flex items-center justify-between py-1.5">
                               <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Hourly Trend</span>
-                              <div className="relative" ref={hourlyRef}>
+                              <div className="relative flex-1 min-w-0 max-w-[280px]" ref={hourlyRef}>
                                 <button
                                   type="button"
                                   onClick={() => { if (!isHourlyOpen) { const fullOptions = ['Add Tags', ...HOURLY_OPTIONS]; setActiveHourlyIndex(fullOptions.indexOf(trade?.hourly_trend || 'Add Tags') >= 0 ? fullOptions.indexOf(trade?.hourly_trend || 'Add Tags') : 0); } setIsHourlyOpen(!isHourlyOpen); }}
                                   onKeyDown={handleHourlyKeyDown}
-                                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)', outline: 'none', fontSize: '13px', borderRadius: '6px', padding: '4px 8px', width: '280px', minHeight: '29px' }}
-                                  className="font-sans cursor-pointer flex items-center justify-between gap-1 hover:border-[var(--accent)] transition-all focus:outline-none focus:border-[var(--accent)]"
+                                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)', outline: 'none', fontSize: '13px', borderRadius: '6px', padding: '4px 8px', minHeight: '29px' }}
+                                  className="font-sans cursor-pointer flex items-center justify-between gap-1 hover:border-[var(--accent)] transition-all focus:outline-none focus:border-[var(--accent)] w-full"
                                 >
                                   <span className="flex-1 min-w-0 text-left truncate">
                                     {trade?.hourly_trend ? (HOURLY_DISPLAY_LABELS[trade.hourly_trend] || trade.hourly_trend) : <span style={{ color: 'var(--text-muted)' }}>Add Tags</span>}
@@ -2515,7 +2515,7 @@ const TradeTrackingPageContent: React.FC = () => {
                     </section>
 
                     {/* TRADINGVIEW CHART CARD COLUMN */}
-                    <div className="shrink-0 mt-6 lg:mt-0 flex flex-col gap-6" style={{ width: '778px' }}>
+                    <div className="shrink-0 mt-6 lg:mt-0 w-full lg:w-[778px] flex flex-col gap-6" style={{}}>
                       <div 
                         style={{ 
                           backgroundColor: 'var(--card)', 
@@ -2727,7 +2727,7 @@ const TradeTrackingPageContent: React.FC = () => {
 
 
                     {/* CARD E: KEY PERFORMANCE SCOREBOARD + SPIDER RADAR */}
-                    <div className="flex gap-6 items-start">
+                    <div className="flex flex-col sm:flex-row gap-6 items-start">
                       <div className="rounded-xl px-5 pb-5 pt-2.5 w-full sm:w-[416px]" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', height: '300px', flexShrink: 0, position: 'relative', overflow: 'hidden' }}>
                         <div style={{ position: 'absolute', top: '8px', left: '16px', zIndex: 1, margin: 0, textAlign: 'left', width: 'calc(100% - 32px)', paddingTop: '0px', borderBottom: '1px solid rgba(0,0,0,0.07)', paddingBottom: '4px', marginBottom: '8px' }}>
                           <h2 style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-muted)', marginBottom: '4px' }}>
@@ -2761,7 +2761,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
                           height: '300px'
                         }} 
-                        className="px-5 pb-5 pt-2.5 overflow-hidden flex-1 min-w-0"
+                        className="px-5 pb-5 pt-2.5 overflow-hidden flex-1 min-w-0 w-full sm:w-auto"
                       >
                       <div className="flex items-center justify-between mb-1" style={{ borderBottom: '1px solid rgba(0,0,0,0.07)', paddingBottom: '4px', marginBottom: '8px' }}>
                         <h2 style={{ color: 'var(--text-muted)', fontSize: '14px', fontWeight: 500 }} className="font-display">

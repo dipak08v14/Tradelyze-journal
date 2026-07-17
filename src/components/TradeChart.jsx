@@ -59,12 +59,15 @@ function getPnlColor(pnl) {
 export default function TradeChart({ trade, userTheme }) {
   const [interval, setActiveInterval] = useState('5');
   const [isMaximized, setIsMaximized] = useState(false);
+  const [showTimeframeDropdown, setShowTimeframeDropdown] = useState(false);
+  const timeframeDropdownRef = useRef(null);
   const [capturedFile, setCapturedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [showReplaceConfirm, setShowReplaceConfirm] = useState(false);
   const iframeRef = useRef(null);
+  const fileInputRef = useRef(null);
   const [chartData, setChartData] = useState(null);
   const [chartLoading, setChartLoading] = useState(false);
   const [chartError, setChartError] = useState(null);
@@ -368,10 +371,11 @@ export default function TradeChart({ trade, userTheme }) {
 
     const ro = new ResizeObserver(() => {
       if (indianChartContainerRef.current && lwChartRef.current) {
-        lwChartRef.current.applyOptions({
-          width:  indianChartContainerRef.current.clientWidth,
-          height: indianChartContainerRef.current.clientHeight || 400,
-        })
+        lwChartRef.current.resize(
+          indianChartContainerRef.current.clientWidth,
+          indianChartContainerRef.current.clientHeight || 400,
+          true
+        )
       }
     })
     ro.observe(indianChartContainerRef.current)
@@ -385,6 +389,20 @@ export default function TradeChart({ trade, userTheme }) {
       lwVolumeRef.current = null
     }
   }, [chartData, userTheme, isIndianMarket, chartFrom, chartTo, trade, chartType])
+
+  useEffect(() => {
+    if (!lwChartRef.current || !indianChartContainerRef.current) return;
+    const timeoutId = setTimeout(() => {
+      if (indianChartContainerRef.current && lwChartRef.current) {
+        lwChartRef.current.resize(
+          indianChartContainerRef.current.clientWidth,
+          indianChartContainerRef.current.clientHeight || 400,
+          true
+        );
+      }
+    }, 50);
+    return () => clearTimeout(timeoutId);
+  }, [isMaximized]);
 
   useEffect(() => {
     if (!lwChartRef.current) return
@@ -437,6 +455,14 @@ export default function TradeChart({ trade, userTheme }) {
     setCapturedFile(blob);
     setUploadSuccess(false);
     setShowReplaceConfirm(false);
+  };
+
+  const handleFileInputChange = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      handleCapturedImage(file);
+    }
+    e.target.value = ''; // reset so selecting the same file again still triggers onChange
   };
 
   async function uploadScreenshot() {
@@ -512,74 +538,97 @@ export default function TradeChart({ trade, userTheme }) {
     };
   }, []);
 
-  const renderTimeframeButtons = (isDark = false) => {
-    return (
-      <div style={{ overflowX: 'auto', display: 'flex', gap: '4px' }}>
-        {TIMEFRAMES.map((tf) => {
-          const isActive = interval === tf.value;
-          let btnStyle;
-          if (isDark) {
-            btnStyle = isActive ? {
-              background: 'var(--accent)',
-              color: '#ffffff',
-              border: 'none',
-              borderRadius: '6px',
-              padding: '3px 9px',
-              fontSize: '11px',
-              fontWeight: 600,
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-              outline: 'none'
-            } : {
-              background: 'rgba(255,255,255,0.1)',
-              color: 'rgba(255,255,255,0.7)',
-              border: '0.5px solid rgba(255,255,255,0.2)',
-              borderRadius: '6px',
-              padding: '3px 9px',
-              fontSize: '11px',
-              fontWeight: 600,
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-              outline: 'none'
-            };
-          } else {
-            btnStyle = isActive ? {
-              background: 'var(--accent-muted)',
-              color: 'var(--accent)',
-              border: '1px solid var(--accent)',
-              borderRadius: '6px',
-              padding: '3px 9px',
-              fontSize: '11px',
-              fontWeight: 600,
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-              outline: 'none'
-            } : {
-              background: 'transparent',
-              color: 'var(--text-sub)',
-              border: '0.5px solid var(--border)',
-              borderRadius: '6px',
-              padding: '3px 9px',
-              fontSize: '11px',
-              fontWeight: 600,
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-              outline: 'none'
-            };
-          }
+  useEffect(() => {
+    const handlePopState = () => { setIsMaximized(false); };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
-          return (
-            <button
-              key={tf.value}
-              type="button"
-              onClick={() => setActiveInterval(tf.value)}
-              style={btnStyle}
-            >
-              {tf.label}
-            </button>
-          );
-        })}
-      </div>
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (timeframeDropdownRef.current && !timeframeDropdownRef.current.contains(e.target)) {
+        setShowTimeframeDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const renderTimeframeButtons = (isDark = false) => {
+    const activeLabel = TIMEFRAMES.find(tf => tf.value === interval)?.label || TIMEFRAMES[0].label;
+    return (
+      <>
+        {/* Desktop/tablet: existing scrollable row, unchanged, 640px and up */}
+        <div className="hidden sm:flex" style={{ overflowX: 'auto', gap: '4px' }}>
+          {TIMEFRAMES.map((tf) => {
+            const isActive = interval === tf.value;
+            let btnStyle;
+            if (isDark) {
+              btnStyle = isActive ? {
+                background: 'var(--accent)', color: '#ffffff', border: 'none', borderRadius: '6px',
+                padding: '3px 9px', fontSize: '11px', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', outline: 'none'
+              } : {
+                background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)', border: '0.5px solid rgba(255,255,255,0.2)',
+                borderRadius: '6px', padding: '3px 9px', fontSize: '11px', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', outline: 'none'
+              };
+            } else {
+              btnStyle = isActive ? {
+                background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent)', borderRadius: '6px',
+                padding: '3px 9px', fontSize: '11px', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', outline: 'none'
+              } : {
+                background: 'transparent', color: 'var(--text-sub)', border: '0.5px solid var(--border)', borderRadius: '6px',
+                padding: '3px 9px', fontSize: '11px', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', outline: 'none'
+              };
+            }
+            return (
+              <button key={tf.value} type="button" onClick={() => setActiveInterval(tf.value)} style={btnStyle}>
+                {tf.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Mobile: dropdown, below 640px */}
+        <div className="relative flex sm:hidden" ref={timeframeDropdownRef}>
+          <button
+            type="button"
+            onClick={() => setShowTimeframeDropdown(!showTimeframeDropdown)}
+            style={{
+              background: isDark ? 'rgba(255,255,255,0.1)' : 'var(--card)',
+              color: isDark ? '#ffffff' : 'var(--text)',
+              border: isDark ? '0.5px solid rgba(255,255,255,0.2)' : '0.5px solid var(--border)',
+              borderRadius: '6px', padding: '3px 9px', fontSize: '11px', fontWeight: 600,
+              cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', outline: 'none'
+            }}
+          >
+            {activeLabel} ▾
+          </button>
+          {showTimeframeDropdown && (
+            <div style={{
+              position: 'absolute', top: '100%', right: 0, marginTop: '4px', zIndex: 50,
+              background: isDark ? '#1a1a1a' : 'var(--card)',
+              border: isDark ? '0.5px solid rgba(255,255,255,0.2)' : '0.5px solid var(--border)',
+              borderRadius: '6px', overflow: 'hidden', minWidth: '80px',
+              boxShadow: '0 4px 6px -1px rgba(0,0,0,0.15)'
+            }}>
+              {TIMEFRAMES.map((tf) => (
+                <div
+                  key={tf.value}
+                  onClick={() => { setActiveInterval(tf.value); setShowTimeframeDropdown(false); }}
+                  style={{
+                    padding: '6px 12px', fontSize: '12px', cursor: 'pointer',
+                    color: interval === tf.value ? 'var(--accent)' : (isDark ? '#ffffff' : 'var(--text)'),
+                    background: interval === tf.value ? (isDark ? 'rgba(255,255,255,0.08)' : 'var(--accent-muted)') : 'transparent',
+                    fontWeight: interval === tf.value ? 600 : 400
+                  }}
+                >
+                  {tf.label}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </>
     );
   };
 
@@ -781,6 +830,23 @@ export default function TradeChart({ trade, userTheme }) {
               Drag and drop a file here also works
             </div>
           )}
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); fileInputRef.current && fileInputRef.current.click(); }}
+            style={{
+              marginTop: '8px',
+              fontSize: '12px',
+              fontWeight: 600,
+              color: 'var(--accent)',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              textDecoration: 'underline',
+              padding: 0
+            }}
+          >
+            Or browse files
+          </button>
         </div>
       );
     }
@@ -800,6 +866,13 @@ export default function TradeChart({ trade, userTheme }) {
         }}
       >
         {content}
+        <input
+          type="file"
+          accept="image/*"
+          ref={fileInputRef}
+          onChange={handleFileInputChange}
+          style={{ display: 'none' }}
+        />
       </div>
     );
   };
@@ -828,7 +901,7 @@ export default function TradeChart({ trade, userTheme }) {
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
             <button
               type="button"
-              onClick={() => setIsMaximized(true)}
+              onClick={() => { setIsMaximized(true); window.history.pushState({ chartMaximized: true }, ''); }}
               title="Expand chart"
               style={{
                 background: 'var(--card)',
@@ -908,28 +981,10 @@ export default function TradeChart({ trade, userTheme }) {
               {"TRADE CHART  ·  " + tvSymbol}
             </span>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              {TIMEFRAMES.map(tf => (
-                <button
-                  key={tf.value}
-                  type="button"
-                  onClick={() => setActiveInterval(tf.value)}
-                  style={{
-                    borderRadius: 6,
-                    padding: '3px 9px',
-                    fontSize: 11,
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    whiteSpace: 'nowrap',
-                    outline: 'none',
-                    background: interval === tf.value ? 'var(--accent)' : 'rgba(255,255,255,0.1)',
-                    color: interval === tf.value ? '#ffffff' : 'rgba(255,255,255,0.7)',
-                    border: interval === tf.value ? 'none' : '0.5px solid rgba(255,255,255,0.2)'
-                  }}
-                >{tf.label}</button>
-              ))}
+              {renderTimeframeButtons(true)}
               <button
                 type="button"
-                onClick={() => setIsMaximized(false)}
+                onClick={() => { setIsMaximized(false); if (window.history.state && window.history.state.chartMaximized) { window.history.back(); } }}
                 style={{ background: 'rgba(255,255,255,0.12)', color: '#fff', border: '0.5px solid rgba(255,255,255,0.25)', borderRadius: '6px', padding: '5px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer', marginLeft: 4 }}
               >✕ Close</button>
             </div>
@@ -1130,7 +1185,7 @@ export default function TradeChart({ trade, userTheme }) {
 
                     <div style={{ flex: 1, minHeight: 0, position: 'relative' }}>
                       {ohlcLegend && (
-                        <div style={{ position: 'absolute', top: 6, left: 6, zIndex: 5, pointerEvents: 'none', fontFamily: FONT }}>
+                        <div className="hidden sm:block" style={{ position: 'absolute', top: 6, left: 6, zIndex: 5, pointerEvents: 'none', fontFamily: FONT }}>
                           <div style={{ fontSize: 12, fontWeight: 700, color: chartIsDark ? '#d1d4dc' : '#131722', lineHeight: 1.4, marginBottom: 1 }}>
                             {symbolName + "  ·  " + displayInterval}
                           </div>
@@ -1180,7 +1235,7 @@ export default function TradeChart({ trade, userTheme }) {
 
                       <div
                         ref={indianChartContainerRef}
-                        style={{ width: '100%', height: '100%' }}
+                        style={{ position: 'absolute', inset: 0 }}
                       />
                     </div>
                   </div>
@@ -1190,7 +1245,7 @@ export default function TradeChart({ trade, userTheme }) {
             ) : (
               <div
                 ref={indianChartContainerRef}
-                style={{ width: '100%', height: '100%' }}
+                style={{ position: 'absolute', inset: 0 }}
               />
             )}
           </div>
