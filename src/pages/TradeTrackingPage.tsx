@@ -1238,7 +1238,7 @@ const TradeTrackingPageContent: React.FC = () => {
         {Array.from({ length: 5 }).map((_, idx) => (
           <Star
             key={idx}
-            className={`w-4 h-4 ${idx < rating ? 'fill-current text-amber-400' : 'text-zinc-700'}`}
+            className={`w-4 h-4 ${idx < rating ? 'fill-current text-amber-400' : 'text-[var(--text-muted)]'}`}
           />
         ))}
       </div>
@@ -1246,7 +1246,7 @@ const TradeTrackingPageContent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-dvh w-full flex flex-col lg:flex-row font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+    <div className="min-h-dvh w-full flex flex-col lg:flex-row font-sans selection:bg-[var(--accent-muted)]" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
       <Sidebar userEmail={user?.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
@@ -2582,7 +2582,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                     style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', color: 'var(--text-sub)' }}
                                     className="w-full hover:opacity-90 font-semibold rounded-xl px-4 py-2.5 flex items-center justify-center gap-2 cursor-pointer transition-all"
                                   >
-                                    <ExternalLink className="w-3.5 h-3.5 text-cyan-500" />
+                                    <ExternalLink className="w-3.5 h-3.5 text-[var(--accent)]" />
                                     <span>Watch Playback Recording</span>
                                   </button>
                                 </div>
@@ -2601,7 +2601,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                       style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', color: 'var(--text-sub)' }}
                                       className="w-full hover:opacity-90 font-semibold rounded-xl px-4 py-2.5 flex items-center justify-center gap-2 cursor-pointer transition-all"
                                     >
-                                      <FileText className="w-3.5 h-3.5 text-cyan-500" />
+                                      <FileText className="w-3.5 h-3.5 text-[var(--accent)]" />
                                       <span>Read Trade Plan (PDF)</span>
                                     </button>
                                   ) : (

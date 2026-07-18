@@ -227,7 +227,7 @@ export const TradingReportsPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-dvh w-full flex flex-col lg:flex-row font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+    <div className="min-h-dvh w-full flex flex-col lg:flex-row font-sans selection:bg-[var(--accent-muted)]" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
       <Sidebar userEmail={user?.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
@@ -292,7 +292,7 @@ export const TradingReportsPage: React.FC = () => {
                     color: 'var(--text)',
                     padding: '6px 12px'
                   }}
-                  className="focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer transition-all font-medium"
+                  className="focus:outline-none focus:ring-1 focus:ring-[var(--accent)] cursor-pointer transition-all font-medium"
                 >
                   {MONTH_NAMES.map((name) => (
                     <option key={name} value={name}>
@@ -313,7 +313,7 @@ export const TradingReportsPage: React.FC = () => {
                     color: 'var(--text)',
                     padding: '6px 12px'
                   }}
-                  className="focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer transition-all font-medium font-mono"
+                  className="focus:outline-none focus:ring-1 focus:ring-[var(--accent)] cursor-pointer transition-all font-medium font-mono"
                 >
                   {availableYears.map((y) => (
                     <option key={y} value={y}>
@@ -486,7 +486,7 @@ export const TradingReportsPage: React.FC = () => {
                                     </span>
                                   )}
                                   {row.breakevens > 0 && (
-                                    <span className="text-zinc-500 bg-zinc-500/10 px-1.5 py-0.5 rounded border border-zinc-500/20 font-mono">
+                                    <span className="text-zinc-500 bg-zinc-500/10 px-1.5 py-0.5 rounded border border-[var(--border-md)] font-mono">
                                       {row.breakevens}BE
                                     </span>
                                   )}
@@ -526,7 +526,7 @@ export const TradingReportsPage: React.FC = () => {
                                     LOSS
                                   </span>
                                 ) : (
-                                  <span className="bg-zinc-500/10 text-zinc-500 border border-zinc-500/20 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                                  <span className="bg-zinc-500/10 text-zinc-500 border border-[var(--border-md)] rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">
                                     BE
                                   </span>
                                 )}
@@ -841,7 +841,7 @@ export const TradingReportsPage: React.FC = () => {
                     <div className="mt-4 space-y-2.5 text-xs text-zinc-400">
                       <div className="flex justify-between border-b pb-1.5 font-medium" style={{ borderColor: 'var(--border)' }}>
                         <span style={{ color: 'var(--text-sub)' }}>Technical Setup</span>
-                        <span className="font-mono text-indigo-500 font-bold">{mistakeMap.Technical}</span>
+                        <span className="font-mono text-[var(--accent)] font-bold">{mistakeMap.Technical}</span>
                       </div>
                       <div className="flex justify-between border-b pb-1.5 font-medium" style={{ borderColor: 'var(--border)' }}>
                         <span style={{ color: 'var(--text-sub)' }}>Psychological Control</span>

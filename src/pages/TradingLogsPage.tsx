@@ -800,7 +800,7 @@ export const TradingLogsPage: React.FC = () => {
             </span>
           )}
           {item.status === 'Breakeven' && (
-            <span className="px-2.5 py-0.5 text-[10px] font-extrabold bg-zinc-150 border border-zinc-200 text-zinc-650 rounded-lg">
+            <span className="px-2.5 py-0.5 text-[10px] font-extrabold bg-zinc-150 border border-[var(--border)] text-zinc-650 rounded-lg">
               BE
             </span>
           )}
@@ -928,7 +928,7 @@ export const TradingLogsPage: React.FC = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-dvh w-full flex flex-col lg:flex-row lg:items-start font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+    <div className="min-h-dvh w-full flex flex-col lg:flex-row lg:items-start font-sans selection:bg-[var(--accent-muted)]" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
       <Sidebar userEmail={user?.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
@@ -1032,7 +1032,7 @@ export const TradingLogsPage: React.FC = () => {
                             value={pendingMonth}
                             onChange={(e) => setPendingMonth(e.target.value)}
                             style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
-                            className="w-full focus:border-indigo-500 focus:outline-none cursor-pointer"
+                            className="w-full focus:border-[var(--accent)] focus:outline-none cursor-pointer"
                           >
                             <option value="All">All Months</option>
                             {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((m) => (
@@ -1052,7 +1052,7 @@ export const TradingLogsPage: React.FC = () => {
                             value={pendingYear}
                             onChange={(e) => setPendingYear(e.target.value)}
                             style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
-                            className="w-full focus:border-indigo-500 focus:outline-none cursor-pointer"
+                            className="w-full focus:border-[var(--accent)] focus:outline-none cursor-pointer"
                           >
                             <option value="All">All Years</option>
                             {uniqueYears.map((y) => (
@@ -1075,7 +1075,7 @@ export const TradingLogsPage: React.FC = () => {
                               onChange={(e) => setPendingSymbol(e.target.value.toUpperCase())}
                               placeholder="e.g. BTC"
                               style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
-                              className="placeholder-zinc-500 w-full focus:border-indigo-500 focus:outline-none font-mono text-xs"
+                              className="placeholder-zinc-500 w-full focus:border-[var(--accent)] focus:outline-none font-mono text-xs"
                             />
                             {pendingSymbol && (
                               <button
@@ -1099,7 +1099,7 @@ export const TradingLogsPage: React.FC = () => {
                             value={pendingSetup}
                             onChange={(e) => setPendingSetup(e.target.value)}
                             style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
-                            className="w-full focus:border-indigo-500 focus:outline-none cursor-pointer text-xs"
+                            className="w-full focus:border-[var(--accent)] focus:outline-none cursor-pointer text-xs"
                           >
                             <option value="All">All Setups</option>
                             {uniqueSetups.map((setupName) => (
@@ -1122,7 +1122,7 @@ export const TradingLogsPage: React.FC = () => {
                             value={pendingExecution}
                             onChange={(e) => setPendingExecution(e.target.value)}
                             style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
-                            className="w-full focus:border-indigo-500 focus:outline-none cursor-pointer"
+                            className="w-full focus:border-[var(--accent)] focus:outline-none cursor-pointer"
                           >
                             <option value="All">All Executions</option>
                             <option value="BEST TRADE">BEST TRADE</option>
@@ -1142,7 +1142,7 @@ export const TradingLogsPage: React.FC = () => {
                             value={pendingMistakeType}
                             onChange={(e) => setPendingMistakeType(e.target.value)}
                             style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
-                            className="w-full focus:border-indigo-500 focus:outline-none cursor-pointer"
+                            className="w-full focus:border-[var(--accent)] focus:outline-none cursor-pointer"
                           >
                             <option value="All">All Mistakes</option>
                             <option value="Technical">Technical</option>
@@ -1453,7 +1453,7 @@ export const TradingLogsPage: React.FC = () => {
                 </p>
                 <Link
                   to="/trade-entry"
-                  className="mt-8 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-xl px-6 py-3.5 text-xs uppercase tracking-widest font-mono transition-all inline-flex items-center gap-2 shadow-lg shadow-indigo-600/15"
+                  className="mt-8 bg-[var(--accent)] hover:bg-[var(--accent)] text-white font-extrabold rounded-xl px-6 py-3.5 text-xs uppercase tracking-widest font-mono transition-all inline-flex items-center gap-2 shadow-lg shadow-indigo-600/15"
                 >
                   <span>Log Your First Trade</span>
                   <Plus className="w-4 h-4" />
@@ -1514,7 +1514,7 @@ export const TradingLogsPage: React.FC = () => {
                           padding: '6px 12px',
                           fontSize: '12px'
                         }}
-                        className="focus:border-indigo-500 focus:outline-none cursor-pointer w-48 font-mono"
+                        className="focus:border-[var(--accent)] focus:outline-none cursor-pointer w-48 font-mono"
                       >
                         <option value="" disabled>Select a setup...</option>
                         {strategiesList.map((st) => (
@@ -1647,12 +1647,12 @@ export const TradingLogsPage: React.FC = () => {
                             <th
                               key={col.id}
                               onClick={isSortable ? () => toggleSort(colDef.sortField) : undefined}
-                              className={`px-4 py-4 ${isSortable ? 'cursor-pointer hover:text-indigo-400 transition-colors' : ''} whitespace-nowrap`}
+                              className={`px-4 py-4 ${isSortable ? 'cursor-pointer hover:text-[var(--accent)] transition-colors' : ''} whitespace-nowrap`}
                             >
                               <div className="flex items-center gap-1">
                                 <span>{col.label}</span>
                                 {isSortable && sortColumn === colDef.sortField && (
-                                  sortDirection === 'asc' ? <ChevronUp className="w-3 h-3 text-[#818cf8]" /> : <ChevronDown className="w-3 h-3 text-[#818cf8]" />
+                                  sortDirection === 'asc' ? <ChevronUp className="w-3 h-3 text-[var(--accent)]" /> : <ChevronDown className="w-3 h-3 text-[var(--accent)]" />
                                 )}
                               </div>
                             </th>
@@ -1903,7 +1903,7 @@ export const TradingLogsPage: React.FC = () => {
                               [col.id]: !prev[col.id],
                             }));
                           }}
-                          className="rounded border-[var(--border)] text-indigo-600 focus:ring-indigo-500 cursor-pointer h-4 w-4"
+                          className="rounded border-[var(--border)] text-[var(--accent)] focus:ring-[var(--accent)] cursor-pointer h-4 w-4"
                         />
                         <span className="font-semibold text-[var(--text-sub)]">
                           {col.label}
@@ -1931,7 +1931,7 @@ export const TradingLogsPage: React.FC = () => {
                     localStorage.setItem('tl-log-columns', JSON.stringify(pendingColumns));
                     setIsColumnModalOpen(false);
                   }}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer transition-all shadow-md shadow-indigo-600/10"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-[var(--accent)] hover:bg-[var(--accent)] cursor-pointer transition-all shadow-md shadow-indigo-600/10"
                 >
                   Save Changes
                 </button>

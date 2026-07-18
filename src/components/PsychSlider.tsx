@@ -16,7 +16,7 @@ export const PsychSlider: React.FC<PsychSliderProps> = ({
   value,
   onChange,
   hint,
-  valueColorClass = 'text-indigo-600',
+  valueColorClass = 'text-[var(--accent)]',
   accentClass = 'accent-indigo-500',
   accentColor,
   id

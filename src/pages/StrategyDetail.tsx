@@ -1106,11 +1106,11 @@ export const StrategyDetail: React.FC = () => {
 
                     {/* PAGINATION ROW CONTROLLER */}
                     {totalTradePages > 1 && (
-                      <div className="flex items-center justify-between border-t border-[#2c2d3c] pt-4 px-1">
+                      <div className="flex items-center justify-between border-t border-[var(--border-md)] pt-4 px-1">
                         <button
                           disabled={tradePage === 1}
                           onClick={() => setTradePage(prev => Math.max(prev - 1, 1))}
-                          className="px-3.5 py-1.5 text-xs font-bold uppercase rounded-lg border border-[#2c2d3c] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors inline-flex items-center gap-1"
+                          className="px-3.5 py-1.5 text-xs font-bold uppercase rounded-lg border border-[var(--border-md)] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors inline-flex items-center gap-1"
                           style={{ color: 'var(--text-sub)' }}
                         >
                           <ChevronLeft className="w-4 h-4" />
@@ -1124,7 +1124,7 @@ export const StrategyDetail: React.FC = () => {
                         <button
                           disabled={tradePage === totalTradePages}
                           onClick={() => setTradePage(prev => Math.min(prev + 1, totalTradePages))}
-                          className="px-3.5 py-1.5 text-xs font-bold uppercase rounded-lg border border-[#2c2d3c] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors inline-flex items-center gap-1"
+                          className="px-3.5 py-1.5 text-xs font-bold uppercase rounded-lg border border-[var(--border-md)] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors inline-flex items-center gap-1"
                           style={{ color: 'var(--text-sub)' }}
                         >
                           Next
@@ -1291,7 +1291,7 @@ export const StrategyDetail: React.FC = () => {
                                 required
                                 value={mtDate}
                                 onChange={(e) => setMtDate(e.target.value)}
-                                className="w-full rounded-lg border px-3.5 py-2 text-sm font-sans placeholder-zinc-500 transition-colors focus:outline-none focus:border-cyan-500"
+                                className="w-full rounded-lg border px-3.5 py-2 text-sm font-sans placeholder-zinc-500 transition-colors focus:outline-none focus:border-[var(--accent)]"
                                 style={{ backgroundColor: 'rgba(255,255,255,0.01)', borderColor: 'var(--border)', color: 'var(--text)' }}
                               />
                             </div>
@@ -1313,7 +1313,7 @@ export const StrategyDetail: React.FC = () => {
                                   setShowMtSuggestions(true);
                                 }}
                                 onFocus={() => setShowMtSuggestions(true)}
-                                className="w-full rounded-lg border px-3.5 py-2 text-sm font-sans placeholder-zinc-500 transition-colors focus:outline-none focus:border-cyan-500 uppercase"
+                                className="w-full rounded-lg border px-3.5 py-2 text-sm font-sans placeholder-zinc-500 transition-colors focus:outline-none focus:border-[var(--accent)] uppercase"
                                 style={{ backgroundColor: 'rgba(255,255,255,0.01)', borderColor: 'var(--border)', color: 'var(--text)' }}
                               />
 
@@ -1393,7 +1393,7 @@ export const StrategyDetail: React.FC = () => {
                                 placeholder="e.g. 5000 or -2500"
                                 value={mtPotentialPnl}
                                 onChange={(e) => setMtPotentialPnl(e.target.value)}
-                                className="w-full rounded-lg border px-3.5 py-2 text-sm font-sans placeholder-zinc-500 transition-colors focus:outline-none focus:border-cyan-500"
+                                className="w-full rounded-lg border px-3.5 py-2 text-sm font-sans placeholder-zinc-500 transition-colors focus:outline-none focus:border-[var(--accent)]"
                                 style={{ backgroundColor: 'rgba(255,255,255,0.01)', borderColor: 'var(--border)', color: 'var(--text)' }}
                               />
                             </div>
@@ -1409,7 +1409,7 @@ export const StrategyDetail: React.FC = () => {
                                 rows={3}
                                 value={mtNotes}
                                 onChange={(e) => setMtNotes(e.target.value)}
-                                className="w-full rounded-lg border px-3.5 py-2 text-sm font-sans placeholder-zinc-500 transition-colors focus:outline-none focus:border-cyan-500 leading-relaxed"
+                                className="w-full rounded-lg border px-3.5 py-2 text-sm font-sans placeholder-zinc-500 transition-colors focus:outline-none focus:border-[var(--accent)] leading-relaxed"
                                 style={{ backgroundColor: 'rgba(255,255,255,0.01)', borderColor: 'var(--border)', color: 'var(--text)' }}
                               />
                             </div>
@@ -1470,7 +1470,7 @@ export const StrategyDetail: React.FC = () => {
                         onChange={(e) => setNotesText(e.target.value)}
                         placeholder="Write down details for your playbook setup, entry rules logic, core signals, checklist rules..."
                         rows={10}
-                        className="w-full rounded-xl border p-4 font-sans text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500 leading-relaxed"
+                        className="w-full rounded-xl border p-4 font-sans text-sm focus:outline-none focus:ring-1 focus:ring-[var(--accent)] leading-relaxed"
                         style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)', color: 'var(--text)' }}
                       />
                     </div>

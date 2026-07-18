@@ -13,7 +13,7 @@ export const ScoreBar: React.FC<ScoreBarProps> = ({
   label,
   value,
   subLabel,
-  fillColorClass = 'bg-indigo-600',
+  fillColorClass = 'bg-[var(--accent)]',
   fillColor,
   id
 }) => {

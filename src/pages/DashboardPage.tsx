@@ -993,7 +993,7 @@ export const DashboardPage: React.FC = () => {
   const zeroPercent = range > 0 ? (maxVal / range) * 100 : 0;
 
   return (
-    <div className="min-h-dvh w-full flex flex-col lg:flex-row lg:items-start font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+    <div className="min-h-dvh w-full flex flex-col lg:flex-row lg:items-start font-sans selection:bg-[var(--accent-muted)]" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
       <Sidebar userEmail={user?.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
@@ -3199,7 +3199,7 @@ export const DashboardPage: React.FC = () => {
 
                       <div className="flex justify-between items-center mb-1.5">
                         <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>Avg Win:Loss Ratio</span>
-                        <span className="text-xs font-mono font-black text-indigo-500">
+                        <span className="text-xs font-mono font-black text-[var(--accent)]">
                           {stats.avgWinLossRatio === 999 ? '∞' : `${stats.avgWinLossRatio.toFixed(2)}:1`}
                         </span>
                       </div>
@@ -3207,7 +3207,7 @@ export const DashboardPage: React.FC = () => {
                         {/* 1.0 Breakeven center marker at 33.3% */}
                         <div className="absolute left-[33.3%] top-0 bottom-0 w-0.5 bg-zinc-450 z-10" />
                         <div
-                          className="h-full bg-indigo-500 rounded-full transition-all duration-500"
+                          className="h-full bg-[var(--accent)] rounded-full transition-all duration-500"
                           style={{ width: `${Math.min((stats.avgWinLossRatio / 3) * 100, 100)}%` }}
                         />
                       </div>
@@ -3400,7 +3400,7 @@ export const DashboardPage: React.FC = () => {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                       <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5 font-display" style={{ color: 'var(--text)' }}>
-                        <Sparkles className="w-5 h-5 text-indigo-500 animate-pulse" />
+                        <Sparkles className="w-5 h-5 text-[var(--accent)] animate-pulse" />
                         Visual Pattern Database
                       </h2>
                       <p className="text-xs mt-1" style={{ color: 'var(--text-sub)' }}>
@@ -3413,7 +3413,7 @@ export const DashboardPage: React.FC = () => {
                         <div className="text-[10px] uppercase tracking-widest font-mono font-bold" style={{ color: 'var(--text-muted)' }}>
                           Global Indexed Charts
                         </div>
-                        <div className="text-xl font-black text-indigo-500 font-mono mt-0.5">
+                        <div className="text-xl font-black text-[var(--accent)] font-mono mt-0.5">
                           {visualLibraryCount}
                         </div>
                       </div>

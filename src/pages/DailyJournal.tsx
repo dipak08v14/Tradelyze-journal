@@ -513,7 +513,7 @@ export const DailyJournal: React.FC = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-dvh w-full flex flex-col lg:flex-row font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+    <div className="min-h-dvh w-full flex flex-col lg:flex-row font-sans selection:bg-[var(--accent-muted)]" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
       <Sidebar userEmail={user?.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
@@ -569,7 +569,7 @@ export const DailyJournal: React.FC = () => {
                   value={selectedMonth}
                   onChange={(e) => setSelectedMonth(e.target.value)}
                   style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
-                  className="rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer transition-all font-medium"
+                  className="rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--accent)] cursor-pointer transition-all font-medium"
                 >
                   {MONTH_NAMES.map((name) => (
                     <option key={name} value={name}>
@@ -582,7 +582,7 @@ export const DailyJournal: React.FC = () => {
                   value={selectedYear}
                   onChange={(e) => setSelectedYear(parseInt(e.target.value, 10))}
                   style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
-                  className="rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer transition-all font-medium"
+                  className="rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--accent)] cursor-pointer transition-all font-medium"
                 >
                   {yearsList.map((yr) => (
                     <option key={yr} value={yr}>
@@ -694,7 +694,7 @@ export const DailyJournal: React.FC = () => {
                           {/* CARD HEADER */}
                           <div
                             onClick={() => toggleDayCard(dateStr)}
-                            className="flex items-center justify-between px-4 py-[10px] cursor-pointer hover:bg-zinc-50/10 transition-colors select-none"
+                            className="flex items-center justify-between px-4 py-[10px] cursor-pointer hover:bg-[var(--card)] transition-colors select-none"
                           >
                             <div className="flex items-center gap-3">
                               {/* Expand/collapse icon */}
@@ -947,7 +947,7 @@ export const DailyJournal: React.FC = () => {
                                                 {t.direction}
                                               </span>
                                               {t.option_type && (
-                                                <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded font-bold uppercase bg-zinc-800 text-zinc-300">
+                                                <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded font-bold uppercase bg-[var(--card)] text-zinc-300">
                                                   {t.option_type}
                                                 </span>
                                               )}
@@ -1029,7 +1029,7 @@ export const DailyJournal: React.FC = () => {
                                                 </span>
                                               )}
                                               {t.status === 'Breakeven' && (
-                                                <span className="px-2 py-0.5 text-[10px] font-extrabold bg-zinc-800 border border-zinc-700 text-zinc-300 rounded">
+                                                <span className="px-2 py-0.5 text-[10px] font-extrabold bg-[var(--card)] border border-zinc-700 text-zinc-300 rounded">
                                                   BE
                                                 </span>
                                               )}

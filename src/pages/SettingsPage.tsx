@@ -1221,7 +1221,7 @@ export default function SettingsPage() {
                                   <button
                                     onClick={() => handleToggleActive(conn.id, conn.is_active)}
                                     className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors ${
-                                      conn.is_active ? 'bg-[#22c55e]' : 'bg-zinc-700'
+                                      conn.is_active ? 'bg-[#22c55e]' : 'bg-[var(--card)]'
                                     }`}
                                   >
                                     <span
@@ -1287,7 +1287,7 @@ export default function SettingsPage() {
                               {!dhanConnecting ? (
                                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                                   <div className="flex items-center gap-4">
-                                    <div style={{ backgroundColor: 'rgba(6,182,212,0.13)', color: '#06b6d4' }} className="w-11 h-11 rounded-full flex items-center justify-center font-bold text-lg font-display">
+                                    <div style={{ backgroundColor: 'rgba(6,182,212,0.13)', color: 'var(--accent)' }} className="w-11 h-11 rounded-full flex items-center justify-center font-bold text-lg font-display">
                                       D
                                     </div>
                                     <div>
@@ -1781,7 +1781,7 @@ export default function SettingsPage() {
                           userId={userId || ''}
                           userEmail={user?.email || ''}
                           userName={userData?.full_name || ''}
-                          className="bg-cyan-500 hover:bg-cyan-400 text-black font-extrabold px-6 py-3 rounded-xl cursor-pointer text-sm shadow-md transition-all whitespace-nowrap"
+                          className="bg-[var(--accent)] hover:bg-[var(--accent)] text-black font-extrabold px-6 py-3 rounded-xl cursor-pointer text-sm shadow-md transition-all whitespace-nowrap"
                         />
                       </div>
                     </div>

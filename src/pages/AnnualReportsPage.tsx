@@ -332,7 +332,7 @@ export const AnnualReportsPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-dvh w-full flex flex-col lg:flex-row font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+    <div className="min-h-dvh w-full flex flex-col lg:flex-row font-sans selection:bg-[var(--accent-muted)]" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
       <Sidebar userEmail={user?.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
@@ -395,7 +395,7 @@ export const AnnualReportsPage: React.FC = () => {
                     color: 'var(--text)',
                     padding: '6px 12px'
                   }}
-                  className="font-medium font-mono focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer transition-all"
+                  className="font-medium font-mono focus:outline-none focus:ring-1 focus:ring-[var(--accent)] cursor-pointer transition-all"
                 >
                   {availableYears.map((yr) => (
                     <option key={yr} value={yr}>
@@ -847,7 +847,7 @@ export const AnnualReportsPage: React.FC = () => {
                       <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="font-sans leading-none">
                         Best Setup of Year
                       </span>
-                      <Target className="w-5 h-5 text-indigo-500 shrink-0" />
+                      <Target className="w-5 h-5 text-[var(--accent)] shrink-0" />
                     </div>
                     <div className="mt-3 overflow-hidden">
                       <div style={{ color: 'var(--text)' }} className="text-2xl font-black font-display truncate pr-1" title={bestSetup?.name || '—'}>

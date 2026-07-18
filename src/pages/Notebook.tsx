@@ -1375,7 +1375,7 @@ export function Notebook() {
                   placeholder="Search notes..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full text-xs pl-9 pr-8 py-2 bg-[var(--card)] border border-[var(--border)] rounded-[8px] text-white placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-cyan-500/40"
+                  className="w-full text-xs pl-9 pr-8 py-2 bg-[var(--card)] border border-[var(--border)] rounded-[8px] text-white placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-[var(--accent-muted)]"
                 />
                 {searchQuery && (
                   <button
@@ -1574,13 +1574,13 @@ export function Notebook() {
             {!activeNote ? (
               dateFromDashboard ? (
                 <div id="notebook-no-note-date-prompt" className="flex-1 flex flex-col items-center justify-center text-center p-12 max-w-sm mx-auto">
-                  <Calendar className="w-12 h-12 text-cyan-500 animate-none mb-3 shrink-0" />
+                  <Calendar className="w-12 h-12 text-[var(--accent)] animate-none mb-3 shrink-0" />
                   <h4 className="text-zinc-200 font-sans font-bold text-sm tracking-wide uppercase mb-2">
                     NO NOTE LINKED
                   </h4>
                   <p className="text-xs text-zinc-400 font-sans leading-relaxed mb-6">
                     No note linked to <strong className="text-white">{formatLogDateLabel(dateFromDashboard)}</strong> yet.<br/><br/>
-                    Click Log Day below to create one, or open an existing note and use <strong className="text-cyan-400">Set trade date</strong> to link it to this day.
+                    Click Log Day below to create one, or open an existing note and use <strong className="text-[var(--accent)]">Set trade date</strong> to link it to this day.
                   </p>
                   <button
                     type="button"
@@ -1588,7 +1588,7 @@ export function Notebook() {
                       setLogDateInput(dateFromDashboard);
                       setIsLogDayModalOpen(true);
                     }}
-                    className="px-4 py-2 text-xs font-mono font-bold rounded-lg text-white bg-cyan-600 hover:bg-cyan-500 hover:shadow-lg hover:shadow-cyan-500/10 cursor-pointer transition-all shrink-0"
+                    className="px-4 py-2 text-xs font-mono font-bold rounded-lg text-white bg-[var(--accent)] hover:bg-[var(--accent)] hover:shadow-lg hover:shadow-cyan-500/10 cursor-pointer transition-all shrink-0"
                   >
                     Log Day &rarr;
                   </button>
@@ -1698,7 +1698,7 @@ export function Notebook() {
                                 type="date"
                                 value={selectedLogDate}
                                 onChange={(e) => setSelectedLogDate(e.target.value)}
-                                className="bg-zinc-800 border border-[var(--border)] rounded px-1.5 py-0.5 text-xs text-white focus:outline-none"
+                                className="bg-[var(--card)] border border-[var(--border)] rounded px-1.5 py-0.5 text-xs text-white focus:outline-none"
                               />
                               <button
                                 type="button"
@@ -1781,7 +1781,7 @@ export function Notebook() {
                       value={tagInput}
                       onChange={(e) => setTagInput(e.target.value)}
                       onKeyDown={handleTagKeyDown}
-                      className="px-2.5 py-0.5 rounded-full bg-zinc-800 border border-[var(--border)] text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 w-44 font-mono font-medium"
+                      className="px-2.5 py-0.5 rounded-full bg-[var(--card)] border border-[var(--border)] text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent-muted)] w-44 font-mono font-medium"
                     />
                   )}
                 </div>
@@ -1818,7 +1818,7 @@ export function Notebook() {
                         id="notebook-btn-add-template-trigger"
                         type="button"
                         onClick={() => setIsAddTemplateModalOpen(true)}
-                        className="text-zinc-500 hover:text-cyan-500 text-[11px] font-semibold ml-1 flex items-center gap-0.5 border border-dashed border-zinc-600 px-2.5 py-1 rounded-full cursor-pointer transition-all bg-transparent"
+                        className="text-zinc-500 hover:text-[var(--accent)] text-[11px] font-semibold ml-1 flex items-center gap-0.5 border border-dashed border-[var(--border-md)] px-2.5 py-1 rounded-full cursor-pointer transition-all bg-transparent"
                       >
                         <Plus className="w-3 h-3" /> Add Template
                       </button>
@@ -1856,7 +1856,7 @@ export function Notebook() {
                     >
                       <Underline className="w-3.5 h-3.5" />
                     </button>
-                    <span className="w-[1px] h-4 bg-zinc-800 dark:bg-zinc-700 mx-1 shrink-0" />
+                    <span className="w-[1px] h-4 bg-[var(--card)] dark:bg-[var(--card)] mx-1 shrink-0" />
                     <button
                       type="button"
                       onClick={() => triggerFormat('insertUnorderedList')}
@@ -1873,7 +1873,7 @@ export function Notebook() {
                     >
                       <ListOrdered className="w-3.5 h-3.5" />
                     </button>
-                    <span className="w-[1px] h-4 bg-zinc-800 dark:bg-zinc-700 mx-1 shrink-0" />
+                    <span className="w-[1px] h-4 bg-[var(--card)] dark:bg-[var(--card)] mx-1 shrink-0" />
                     <button
                       type="button"
                       onClick={triggerLinkFormat}
@@ -1933,7 +1933,7 @@ export function Notebook() {
                   placeholder="Enter folder name..."
                   value={folderNameInput}
                   onChange={(e) => setFolderNameInput(e.target.value)}
-                  className="w-full text-xs py-2.5 px-3 bg-zinc-900 border font-sans font-medium rounded-lg text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
+                  className="w-full text-xs py-2.5 px-3 bg-zinc-900 border font-sans font-medium rounded-lg text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-[var(--accent-muted)]"
                   style={{ borderColor: 'var(--border)' }}
                 />
               </div>
@@ -1952,7 +1952,7 @@ export function Notebook() {
                         type="button"
                         onClick={() => setFolderColorInput(swColor)}
                         className={`w-6 h-6 rounded-full transition-all flex items-center justify-center cursor-pointer border-none shrink-0 ${
-                          isSelected ? 'ring-2 ring-offset-2 ring-cyan-500' : 'hover:scale-105'
+                          isSelected ? 'ring-2 ring-offset-2 ring-[var(--accent)]' : 'hover:scale-105'
                         }`}
                         style={{ backgroundColor: swColor }}
                         title={swColor}
@@ -1975,7 +1975,7 @@ export function Notebook() {
                 <button
                   id="notebook-btn-modal-save"
                   type="submit"
-                  className="px-4 py-2 text-xs font-mono font-bold rounded-lg text-white bg-cyan-600 hover:bg-cyan-500 hover:shadow-lg hover:shadow-cyan-500/10 cursor-pointer transition-all shrink-0"
+                  className="px-4 py-2 text-xs font-mono font-bold rounded-lg text-white bg-[var(--accent)] hover:bg-[var(--accent)] hover:shadow-lg hover:shadow-cyan-500/10 cursor-pointer transition-all shrink-0"
                 >
                   SAVE FOLDER
                 </button>
@@ -2008,7 +2008,7 @@ export function Notebook() {
                   required
                   value={logDateInput}
                   onChange={(e) => setLogDateInput(e.target.value)}
-                  className="w-full text-xs py-2.5 px-3 bg-zinc-900 border font-sans font-medium rounded-lg text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
+                  className="w-full text-xs py-2.5 px-3 bg-zinc-900 border font-sans font-medium rounded-lg text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-[var(--accent-muted)]"
                   style={{ borderColor: 'var(--border)' }}
                 />
               </div>
@@ -2028,7 +2028,7 @@ export function Notebook() {
                   type="button"
                   disabled={isCreatingLog}
                   onClick={() => handleCreateLog(false)}
-                  className="px-4 py-2 text-xs font-mono font-bold rounded-lg text-white bg-cyan-600 hover:bg-cyan-500 hover:shadow-lg hover:shadow-cyan-500/10 cursor-pointer transition-all shrink-0 disabled:opacity-50"
+                  className="px-4 py-2 text-xs font-mono font-bold rounded-lg text-white bg-[var(--accent)] hover:bg-[var(--accent)] hover:shadow-lg hover:shadow-cyan-500/10 cursor-pointer transition-all shrink-0 disabled:opacity-50"
                 >
                   {isCreatingLog ? 'CREATING...' : 'CREATE LOG'}
                 </button>
@@ -2051,7 +2051,7 @@ export function Notebook() {
             
             <p className="text-xs text-zinc-300 font-sans leading-relaxed mb-6">
               A note is already linked to the trading day <strong className="text-white">{formatLogDateLabel(logDayConfirmData.date)}</strong>.<br/><br/>
-              There {logDayConfirmData.count === 1 ? 'is' : 'are'} currently <strong className="text-cyan-400">{logDayConfirmData.count}</strong> note{logDayConfirmData.count === 1 ? '' : 's'} linked to this date. Do you want to create another anyway?
+              There {logDayConfirmData.count === 1 ? 'is' : 'are'} currently <strong className="text-[var(--accent)]">{logDayConfirmData.count}</strong> note{logDayConfirmData.count === 1 ? '' : 's'} linked to this date. Do you want to create another anyway?
             </p>
 
             <div className="flex items-center justify-end gap-2.5">
@@ -2095,7 +2095,7 @@ export function Notebook() {
               <button
                 type="button"
                 onClick={() => setIsAddTemplateModalOpen(false)}
-                className="px-4 py-2 text-xs font-mono font-bold rounded-lg text-white bg-cyan-600 hover:bg-cyan-500 cursor-pointer transition-all"
+                className="px-4 py-2 text-xs font-mono font-bold rounded-lg text-white bg-[var(--accent)] hover:bg-[var(--accent)] cursor-pointer transition-all"
               >
                 CLOSE
               </button>

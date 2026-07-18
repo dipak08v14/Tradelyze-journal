@@ -1605,7 +1605,7 @@ export const AdvancedReports: React.FC = () => {
   };
 
   return (
-    <div className="min-h-dvh w-full flex flex-col lg:flex-row lg:items-start font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+    <div className="min-h-dvh w-full flex flex-col lg:flex-row lg:items-start font-sans selection:bg-[var(--accent-muted)]" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
       <Sidebar userEmail={user?.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
@@ -2364,7 +2364,7 @@ export const AdvancedReports: React.FC = () => {
 
                       <div className="flex justify-between items-center py-2 px-1 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/5 transition-colors rounded">
                         <span className="text-sm text-zinc-400">Best Setup</span>
-                        <span className="font-sans font-bold text-indigo-400 truncate max-w-[150px]" title={overviewStats.bestSetup}>
+                        <span className="font-sans font-bold text-[var(--accent)] truncate max-w-[150px]" title={overviewStats.bestSetup}>
                           {overviewStats.bestSetup}
                         </span>
                       </div>
@@ -2500,11 +2500,11 @@ export const AdvancedReports: React.FC = () => {
                     <span>Losing Day</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded bg-zinc-500/20 border border-zinc-500/45 inline-block" />
+                    <span className="w-2.5 h-2.5 rounded bg-zinc-500/20 border border-[var(--border-md)] inline-block" />
                     <span>Breakeven Day</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded border border-indigo-500 inline-block" />
+                    <span className="w-2.5 h-2.5 rounded border border-[var(--accent)] inline-block" />
                     <span>Today's Date</span>
                   </div>
                 </div>
@@ -3292,11 +3292,11 @@ export const AdvancedReports: React.FC = () => {
               <div className="space-y-3 animate-in fade-in duration-300">
                 {/* DATA QUALITY NOTE BANNER */}
                 {showMarketBehaviorDataQualityBanner && (
-                  <div className="flex items-start gap-3 p-4 rounded-xl border border-cyan-500/20 text-xs shadow-sm bg-cyan-950/10 text-cyan-200">
-                    <Info className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+                  <div className="flex items-start gap-3 p-4 rounded-xl border border-[var(--accent-muted)] text-xs shadow-sm bg-cyan-950/10 text-[var(--accent)]">
+                    <Info className="w-4 h-4 text-[var(--accent)] shrink-0 mt-0.5" />
                     <p className="font-mono leading-relaxed">
                       These insights are based on the context you recorded when logging trades. 
-                      Trades without this information are grouped as <span className="font-semibold text-cyan-300">"Not Recorded"</span>. 
+                      Trades without this information are grouped as <span className="font-semibold text-[var(--accent)]">"Not Recorded"</span>. 
                       Log more context fields in your trades to improve these insights.
                     </p>
                   </div>

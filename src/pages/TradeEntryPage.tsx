@@ -1118,7 +1118,7 @@ export const TradeEntryPage: React.FC = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-dvh w-full flex flex-col lg:flex-row font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+    <div className="min-h-dvh w-full flex flex-col lg:flex-row font-sans selection:bg-[var(--accent-muted)]" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
       <Sidebar userEmail={user.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
@@ -1224,9 +1224,9 @@ export const TradeEntryPage: React.FC = () => {
                   </button>
                 </div>
                 {embeddingStatus && embeddingStatus !== 'done' && (
-                  <div className="mt-3 bg-[#0F1117] border border-[#2A2D3A] rounded-lg px-4 py-3 w-full sm:w-80 text-left">
+                  <div className="mt-3 bg-[var(--card)] border border-[var(--border-md)] rounded-lg px-4 py-3 w-full sm:w-80 text-left">
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse flex-shrink-0" />
+                      <div className="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse flex-shrink-0" />
                       <span className="text-xs text-gray-400">
                         {embeddingStatus === 'loading-model' && `Loading AI Vision model... ${embeddingProgress > 0 ? embeddingProgress + '%' : ''}`}
                         {embeddingStatus === 'generating' && 'Analyzing chart pattern...'}
@@ -1235,8 +1235,8 @@ export const TradeEntryPage: React.FC = () => {
                       </span>
                     </div>
                     {embeddingStatus === 'loading-model' && embeddingProgress > 0 && (
-                      <div className="mt-2 bg-[#2A2D3A] rounded-full h-1.5 w-full">
-                        <div className="bg-indigo-600 rounded-full h-1.5 transition-all" style={{width: embeddingProgress + '%'}} />
+                      <div className="mt-2 bg-[var(--card)] rounded-full h-1.5 w-full">
+                        <div className="bg-[var(--accent)] rounded-full h-1.5 transition-all" style={{width: embeddingProgress + '%'}} />
                       </div>
                     )}
                   </div>
@@ -1797,7 +1797,7 @@ export const TradeEntryPage: React.FC = () => {
                       Auto-Calculated
                     </h2>
                     <span style={{ color: 'var(--text-muted)' }} className="text-xs animate-pulse flex items-center gap-1 font-medium">
-                      <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" style={{ backgroundColor: 'var(--accent)' }} />
+                     <span className="w-1.5 h-1.5 rounded-full " style={{ backgroundColor: 'var(--accent)' }} />
                       Updates as you type
                     </span>
                   </div>
@@ -1816,7 +1816,7 @@ export const TradeEntryPage: React.FC = () => {
                         </span>
                       )}
                       {calculatedStatus === 'Breakeven' && (
-                        <span className="bg-zinc-100 border border-zinc-400 text-zinc-650 text-xs font-extrabold px-3 py-1.5 rounded uppercase tracking-wider w-full">
+                        <span className="bg-[var(--card)] border border-[var(--border-md)] text-zinc-650 text-xs font-extrabold px-3 py-1.5 rounded uppercase tracking-wider w-full">
                           — BE
                         </span>
                       )}
@@ -2447,7 +2447,7 @@ export const TradeEntryPage: React.FC = () => {
                       {existingPlanUrl && !planRemoved ? (
                         <div style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)' }} className="p-3 rounded-lg flex items-center justify-between text-xs gap-2">
                           <div className="flex items-center gap-2 truncate">
-                            <CheckSquare className="w-4 h-4 text-indigo-500 flex-shrink-0" />
+                            <CheckSquare className="w-4 h-4 text-[var(--accent)] flex-shrink-0" />
                             <span style={{ color: 'var(--text)' }} className="truncate font-mono font-medium" title={existingPlanUrl.split('/').pop()}>
                               {existingPlanUrl.split('/').pop() || 'Original Archived Plan'}
                             </span>
@@ -2466,7 +2466,7 @@ export const TradeEntryPage: React.FC = () => {
                       ) : tradePlanFile ? (
                         <div style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)' }} className="p-3 rounded-lg flex items-center justify-between text-xs gap-2">
                           <div className="flex items-center gap-2 truncate">
-                            <CheckSquare className="w-4 h-4 text-indigo-500 flex-shrink-0" />
+                            <CheckSquare className="w-4 h-4 text-[var(--accent)] flex-shrink-0" />
                             <span style={{ color: 'var(--text)' }} className="truncate font-mono font-medium" title={tradePlanFile.name}>
                               {tradePlanFile.name}
                             </span>

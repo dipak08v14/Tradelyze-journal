@@ -46,7 +46,7 @@ function parseInline(text: string) {
     }
     if (part.startsWith('`') && part.endsWith('`')) {
       return (
-        <code key={idx} style={{ backgroundColor: 'var(--bg-muted, #F4F4F5)', borderColor: 'var(--border)', color: 'var(--accent)' }} className="font-mono border rounded px-1 py-0.5 text-xs">
+        <code key={idx} style={{ backgroundColor: 'var(--bg-muted, var(--card))', borderColor: 'var(--border)', color: 'var(--accent)' }} className="font-mono border rounded px-1 py-0.5 text-xs">
           {part.slice(1, -1)}
         </code>
       );
@@ -68,7 +68,7 @@ const SimpleMarkdown: React.FC<{ content: string }> = ({ content }) => {
           const code = match ? match[2] : part.slice(3, -3);
 
           return (
-            <div key={partIdx} style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-muted, #F4F5F7)' }} className="my-3 rounded-xl border overflow-hidden font-mono text-xs shadow-inner">
+            <div key={partIdx} style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-muted, var(--card))' }} className="my-3 rounded-xl border overflow-hidden font-mono text-xs shadow-inner">
               {lang && (
                 <div style={{ backgroundColor: 'var(--border)', color: 'var(--text-muted)' }} className="px-4 py-1.5 border-b text-[10px] font-sans font-bold uppercase tracking-wider flex justify-between items-center">
                   <span>{lang}</span>
@@ -526,7 +526,7 @@ export const AiTeacherPage: React.FC = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-dvh w-full flex flex-col lg:flex-row font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+    <div className="min-h-dvh w-full flex flex-col lg:flex-row font-sans selection:bg-[var(--accent-muted)]" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
       <Sidebar userEmail={user?.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
@@ -629,7 +629,7 @@ export const AiTeacherPage: React.FC = () => {
             >
 
               {/* LEFT DATA OVERVIEW & CONTROLS RAIL (1/3 Width) */}
-              <aside style={{ backgroundColor: 'var(--bg-sub, #FAF9F6)', borderColor: 'var(--border)' }} className="w-full lg:w-[350px] lg:border-r p-5 overflow-y-auto shrink-0 space-y-5">
+              <aside style={{ backgroundColor: 'var(--bg-sub, var(--card))', borderColor: 'var(--border)' }} className="w-full lg:w-[350px] lg:border-r p-5 overflow-y-auto shrink-0 space-y-5">
                 
                 {/* SPECIFIC TRADE SELECT BOX */}
                 <div style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }} className="p-4 space-y-2.5">
