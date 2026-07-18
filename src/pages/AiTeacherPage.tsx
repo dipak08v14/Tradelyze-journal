@@ -625,7 +625,7 @@ export const AiTeacherPage: React.FC = () => {
             <div
               className={`fixed inset-y-0 left-0 z-50 w-[85vw] max-w-[400px] overflow-y-auto shadow-2xl transition-transform duration-250 ease-in-out ${
                 aiDrawerOpen ? 'translate-x-0' : '-translate-x-full'
-              } lg:static lg:z-auto lg:w-auto lg:max-w-none lg:translate-x-0 lg:shadow-none lg:overflow-visible`}
+              } lg:contents`}
             >
 
               {/* LEFT DATA OVERVIEW & CONTROLS RAIL (1/3 Width) */}
