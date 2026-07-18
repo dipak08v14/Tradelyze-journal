@@ -154,6 +154,7 @@ export const AiTeacherPage: React.FC = () => {
 
   // UI state
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [aiDrawerOpen, setAiDrawerOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [askingAI, setAskingAI] = useState(false);
   const [question, setQuestion] = useState('');
@@ -208,6 +209,17 @@ export const AiTeacherPage: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('tradelyze_ai_total_tokens', totalTokens.toString());
   }, [totalTokens]);
+
+  useEffect(() => {
+    if (aiDrawerOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [aiDrawerOpen]);
 
   // Auth Redirection
   useEffect(() => {
@@ -408,6 +420,7 @@ export const AiTeacherPage: React.FC = () => {
   // Predefined prompts trigger handler
   const handlePredefined = (promptText: string) => {
     setQuestion(promptText);
+    setAiDrawerOpen(false);
   };
 
   // Submit trigger handler
@@ -508,15 +521,17 @@ export const AiTeacherPage: React.FC = () => {
 
 
 
+  const isMobileViewport = typeof window !== 'undefined' && window.innerWidth < 640;
+
   if (!user) return null;
 
   return (
-    <div className="min-h-screen w-full flex flex-col lg:flex-row font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+    <div className="min-h-dvh w-full flex flex-col lg:flex-row font-sans selection:bg-indigo-500/30" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
       <Sidebar userEmail={user?.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* MAIN CONTAINER AREA */}
-      <div className="flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen">
+      <div className="flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-dvh">
         {/* MOBILE TOPBAR HEADER */}
         <header 
           className="flex items-center justify-between px-6 py-4 md:hidden sticky top-0 z-20"
@@ -534,7 +549,7 @@ export const AiTeacherPage: React.FC = () => {
         </header>
 
         {/* CONTAINER CONTENT */}
-        <div className="flex-1 flex flex-col h-full max-h-screen overflow-hidden">
+        <div className="flex-1 flex flex-col h-full max-h-dvh overflow-hidden">
           {/* HEADER ROW WITH COUNTER */}
           <header 
             style={{
@@ -546,11 +561,9 @@ export const AiTeacherPage: React.FC = () => {
               borderRadius: 0,
               boxShadow: 'none',
               border: 'none',
-              borderBottom: '1px solid var(--border)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between'
+              borderBottom: '1px solid var(--border)'
             }}
+            className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
           >
             <div className="flex items-center gap-2">
               <Brain style={{ color: 'var(--accent)' }} className="w-6 h-6 animate-pulse" />
@@ -561,6 +574,15 @@ export const AiTeacherPage: React.FC = () => {
 
             {/* TOKEN & COST STAT COUNTER PILL */}
             <div className="flex-1 sm:flex-initial flex items-center gap-2 self-stretch sm:self-auto justify-between sm:justify-start">
+              <button
+                type="button"
+                onClick={() => setAiDrawerOpen(true)}
+                style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text-sub)' }}
+                className="lg:hidden px-3 py-2 rounded-lg border font-mono text-[11px] flex items-center gap-2 cursor-pointer hover:opacity-90 transition-all"
+              >
+                <Sparkles className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
+                <span>Trade Focus</span>
+              </button>
               <div style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text-sub)' }} className="px-3 py-2 rounded-lg border font-mono text-[11px] flex items-center gap-2">
                 <Sparkles style={{ color: 'var(--accent)' }} className="w-3.5 h-3.5" />
                 <span>
@@ -591,21 +613,36 @@ export const AiTeacherPage: React.FC = () => {
           {/* MAIN COLUMN SPLIT VIEW */}
           <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
             
-            {/* LEFT DATA OVERVIEW & CONTROLS RAIL (1/3 Width) */}
-            <aside style={{ backgroundColor: 'var(--bg-sub, #FAF9F6)', borderColor: 'var(--border)' }} className="w-full lg:w-[350px] border-r p-5 overflow-y-auto shrink-0 space-y-5">
-              
-              {/* SPECIFIC TRADE SELECT BOX */}
-              <div style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }} className="p-4 space-y-2.5">
-                <div style={{ color: 'var(--text)', fontSize: '14px', fontWeight: 600 }} className="flex items-center gap-1.5">
-                  <Compass style={{ color: 'var(--accent)' }} className="w-4 h-4" />
-                  <span>Trade Focus</span>
-                </div>
-                <p style={{ color: 'var(--text-sub)', fontSize: '12px' }} className="">
-                  Select a specific trade. Claude will parse its checklist, rules, stress parameters, and risk ratios.
-                </p>
-                <select
-                  value={selectedTradeId}
-                  onChange={(e) => setSelectedTradeId(e.target.value)}
+            {/* MOBILE DRAWER BACKDROP (AI Teacher aside) */}
+            {aiDrawerOpen && (
+              <div
+                className="fixed inset-0 z-40 lg:hidden transition-opacity backdrop-blur-sm"
+                style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}
+                onClick={() => setAiDrawerOpen(false)}
+              />
+            )}
+            {/* MOBILE DRAWER WRAPPER — Trade Focus, Suggested Prompts, Context Stats */}
+            <div
+              className={`fixed inset-y-0 left-0 z-50 w-[85vw] max-w-[400px] overflow-y-auto shadow-2xl transition-transform duration-250 ease-in-out ${
+                aiDrawerOpen ? 'translate-x-0' : '-translate-x-full'
+              } lg:static lg:z-auto lg:w-auto lg:max-w-none lg:translate-x-0 lg:shadow-none lg:overflow-visible`}
+            >
+
+              {/* LEFT DATA OVERVIEW & CONTROLS RAIL (1/3 Width) */}
+              <aside style={{ backgroundColor: 'var(--bg-sub, #FAF9F6)', borderColor: 'var(--border)' }} className="w-full lg:w-[350px] lg:border-r p-5 overflow-y-auto shrink-0 space-y-5">
+                
+                {/* SPECIFIC TRADE SELECT BOX */}
+                <div style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }} className="p-4 space-y-2.5">
+                  <div style={{ color: 'var(--text)', fontSize: '14px', fontWeight: 600 }} className="flex items-center gap-1.5">
+                    <Compass style={{ color: 'var(--accent)' }} className="w-4 h-4" />
+                    <span>Trade Focus</span>
+                  </div>
+                  <p style={{ color: 'var(--text-sub)', fontSize: '12px' }} className="">
+                    Select a specific trade. Claude will parse its checklist, rules, stress parameters, and risk ratios.
+                  </p>
+                  <select
+                    value={selectedTradeId}
+                    onChange={(e) => { setSelectedTradeId(e.target.value); setAiDrawerOpen(false); }}
                   style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)', color: 'var(--text)' }}
                   className="w-full rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-[var(--accent)] focus:border-[var(--accent)] cursor-pointer font-medium transition-colors"
                 >
@@ -640,7 +677,7 @@ export const AiTeacherPage: React.FC = () => {
                   <HelpCircle className="w-3.5 h-3.5" />
                   <span>Suggested Prompts</span>
                 </h3>
-                <div className="grid grid-cols-1 gap-2">
+                <div className="grid grid-cols-1 gap-4 sm:gap-2">
                   <button
                     onClick={() => handlePredefined("What is my top repeated mistake and how can I resolve it using ICT concepts?")}
                     style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', color: 'var(--text)' }}
@@ -671,6 +708,22 @@ export const AiTeacherPage: React.FC = () => {
                     className="w-full text-left transition-all cursor-pointer font-semibold hover:text-[var(--accent)] hover:border-[var(--accent)] flex items-center justify-between group"
                   >
                     <span>Get a plan to improve my risk ratio</span>
+                    <ArrowRight style={{ color: 'var(--accent)' }} className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transform translate-x-[-4px] group-hover:translate-x-0 transition-all font-bold" />
+                  </button>
+                  <button
+                    onClick={() => handlePredefined("Which of my trading setups has the best win rate and which one should I stop using?")}
+                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', color: 'var(--text)' }}
+                    className="w-full text-left transition-all cursor-pointer font-semibold hover:text-[var(--accent)] hover:border-[var(--accent)] flex items-center justify-between group"
+                  >
+                    <span>Which setup performs best or worst?</span>
+                    <ArrowRight style={{ color: 'var(--accent)' }} className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transform translate-x-[-4px] group-hover:translate-x-0 transition-all font-bold" />
+                  </button>
+                  <button
+                    onClick={() => handlePredefined("How does my performance change based on the time of day or session I trade?")}
+                    style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', color: 'var(--text)' }}
+                    className="w-full text-left transition-all cursor-pointer font-semibold hover:text-[var(--accent)] hover:border-[var(--accent)] flex items-center justify-between group"
+                  >
+                    <span>How does time of day affect my results?</span>
                     <ArrowRight style={{ color: 'var(--accent)' }} className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transform translate-x-[-4px] group-hover:translate-x-0 transition-all font-bold" />
                   </button>
                 </div>
@@ -708,10 +761,14 @@ export const AiTeacherPage: React.FC = () => {
                 </div>
               )}
 
-            </aside>
+              </aside>
+            </div>
 
             {/* RIGHT SIDE CHAT PANE (2/3 Width) */}
-            <main style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px' }} className="flex-1 flex flex-col overflow-hidden h-full mr-5 mb-5 ml-4">
+            <main
+              style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px' }}
+              className="flex-1 flex flex-col overflow-hidden h-full mx-2 mb-2 lg:mr-5 lg:mb-5 lg:ml-4"
+            >
               
               {/* THREAD CONTAINER */}
               <div className="flex-1 p-6 overflow-y-auto space-y-4">
@@ -791,8 +848,8 @@ export const AiTeacherPage: React.FC = () => {
                     }}
                     placeholder={
                       selectedTradeId 
-                        ? "Ask about this specific trade (e.g., 'What was my anxiety level compared to the rules followed?')" 
-                        : "Ask your AI Teacher about setups, mental indicators, or trading consistency..."
+                        ? (isMobileViewport ? "Ask about this trade..." : "Ask about this specific trade (e.g., 'What was my anxiety level compared to the rules followed?')")
+                        : (isMobileViewport ? "Ask your AI Teacher..." : "Ask your AI Teacher about setups, mental indicators, or trading consistency...")
                     }
                     style={{ 
                       backgroundColor: 'var(--card)', 

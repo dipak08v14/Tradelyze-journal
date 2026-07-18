@@ -129,7 +129,7 @@ export default function OnboardingPage() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center font-sans" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+      <div className="min-h-dvh flex items-center justify-center font-sans" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
         <div className="w-8 h-8 border-4 border-[var(--border)] border-t-[var(--accent)] rounded-full animate-spin" />
       </div>
     );
@@ -138,7 +138,7 @@ export default function OnboardingPage() {
   const progressPct = Math.round((step / 4) * 100);
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center p-4 font-sans select-none" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+    <div className="min-h-dvh flex flex-col justify-center items-center p-4 font-sans select-none" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       <div className="w-full max-w-2xl bg-[var(--card)] border border-[var(--border)] rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
         
         {/* PROGRESS INDICATOR */}

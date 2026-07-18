@@ -215,7 +215,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
     <>
       {/* Desktop sidebar */}
       <aside 
-        className="hidden lg:flex flex-col w-[220px] h-screen sticky top-0 overflow-y-hidden flex-shrink-0"
+        className="hidden lg:flex flex-col w-[220px] h-dvh sticky top-0 overflow-y-hidden flex-shrink-0"
         style={{ backgroundColor: 'var(--topbar)', borderRight: '1px solid rgba(0, 0, 0, 0.08)', boxShadow: '1px 0 3px rgba(0, 0, 0, 0.04)' }}
       >
         {sidebarContent}

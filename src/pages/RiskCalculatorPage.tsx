@@ -99,12 +99,12 @@ export default function RiskCalculatorPage() {
   const activeInst = INSTRUMENTS.find((inst) => inst.name === selectedInstName) || INSTRUMENTS[0];
 
   return (
-    <div className="min-h-screen w-full flex flex-col lg:flex-row lg:items-start font-sans" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+    <div className="min-h-dvh w-full flex flex-col lg:flex-row lg:items-start font-sans" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR CONTAINER */}
       <Sidebar userEmail={user?.email || ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* RIGHT SIDE WRAPPER (holds mobile header + main together) */}
-      <div className="flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-screen" style={{ overflowX: 'hidden' }}>
+      <div className="flex-1 min-w-0 overflow-x-hidden flex flex-col min-h-dvh" style={{ overflowX: 'hidden' }}>
         {/* MOBILE HEADER BAR */}
         <header 
           className="flex items-center justify-between px-6 py-4 lg:hidden sticky top-0 z-20"

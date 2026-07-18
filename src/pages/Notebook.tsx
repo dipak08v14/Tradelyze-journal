@@ -1091,12 +1091,12 @@ export function Notebook() {
   };
 
   return (
-    <div id="notebook-page-layout" className="min-h-screen w-full flex flex-col lg:flex-row lg:items-start font-sans font-medium select-none" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+    <div id="notebook-page-layout" className="min-h-dvh w-full flex flex-col lg:flex-row lg:items-start font-sans font-medium select-none" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
       <Sidebar userEmail={user?.email ?? ''} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* RIGHT SIDE CONTAINER */}
-      <div className="flex-1 min-w-0 flex flex-col h-screen overflow-hidden">
+      <div className="flex-1 min-w-0 flex flex-col h-dvh overflow-hidden">
         
         {/* MOBILE HEADER BAR */}
         <header

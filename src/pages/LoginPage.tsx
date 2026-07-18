@@ -92,7 +92,7 @@ export const LoginPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center font-sans" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+      <div className="min-h-dvh flex items-center justify-center font-sans" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
         <div className="flex flex-col items-center">
           <div className="w-10 h-10 border-4 rounded-full animate-spin" style={{ borderColor: 'var(--border-md)', borderTopColor: 'var(--accent)' }}></div>
           <span style={{ color: 'var(--text-muted)' }} className="text-sm mt-4 font-medium font-mono uppercase tracking-wider">Validating secure session...</span>
@@ -102,7 +102,7 @@ export const LoginPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 font-sans" style={{ backgroundColor: 'var(--bg)' }}>
+    <div className="min-h-dvh flex items-center justify-center p-4 font-sans" style={{ backgroundColor: 'var(--bg)' }}>
       <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }} className="w-full max-w-md rounded-3xl shadow-2xl p-8 relative overflow-hidden">
         
         {/* LOGO */}

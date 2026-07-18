@@ -17,7 +17,7 @@ export default function LandingPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen text-[#e2e8f0] font-sans antialiased select-none" style={{ backgroundColor: '#060b18' }}>
+    <div className="min-h-dvh text-[#e2e8f0] font-sans antialiased select-none" style={{ backgroundColor: '#060b18' }}>
       
       {/* NAVBAR */}
       <header className="sticky top-0 z-50 h-[60px] flex items-center justify-between px-6 md:px-12 border-b border-white/5 backdrop-blur-md" style={{ backgroundColor: '#060b18fb' }}>
