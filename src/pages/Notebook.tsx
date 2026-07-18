@@ -69,6 +69,7 @@ export function Notebook() {
   const [selectedFolderId, setSelectedFolderId] = useState<string | 'ALL' | 'TRASH'>('ALL');
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
+  const [notebookDrawerOpen, setNotebookDrawerOpen] = useState(false);
 
   // Clear dateFromDashboard when an active note is selected
   useEffect(() => {
@@ -76,6 +77,17 @@ export function Notebook() {
       setDateFromDashboard(null);
     }
   }, [activeNoteId]);
+
+  useEffect(() => {
+    if (notebookDrawerOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [notebookDrawerOpen]);
 
   // Search feature state
   const [searchQuery, setSearchQuery] = useState('');
@@ -484,6 +496,7 @@ export function Notebook() {
 
       if (data && data[0]) {
         setActiveNoteId(data[0].id);
+        setNotebookDrawerOpen(false);
         // Focus the title input using browser micro-tick
         setTimeout(() => {
           titleInputRef.current?.focus();
@@ -925,6 +938,7 @@ export function Notebook() {
         setSelectedFolderId('ALL');
         setSelectedTag(null);
         setActiveNoteId(newEntryData[0].id);
+        setNotebookDrawerOpen(false);
       }
     } catch (err: any) {
       console.error('Error creating Log Day note:', err);
@@ -983,7 +997,7 @@ export function Notebook() {
     return (
       <div
         key={note.id}
-        onClick={() => setActiveNoteId(note.id)}
+        onClick={() => { setActiveNoteId(note.id); setNotebookDrawerOpen(false); }}
         className="group transition-all relative flex items-start gap-3"
         style={{
           backgroundColor: isActive ? 'var(--accent-muted)' : (isHovered ? 'rgba(0,0,0,0.025)' : 'transparent'),
@@ -1105,12 +1119,28 @@ export function Notebook() {
         {/* THREE PANEL GRID CONTAINER */}
         <div id="notebook-three-panels" className="flex-1 flex flex-row overflow-hidden w-full h-full">
 
-          {/* PANEL 1: FOLDERS (220px) */}
-          <aside
-            id="notebook-panel-folders"
-            className="w-[220px] shrink-0 h-full overflow-y-auto flex flex-col justify-between p-4 flex-shrink-0"
-            style={{ borderRight: '1px solid var(--border)', backgroundColor: 'var(--card)' }}
+          {/* MOBILE DRAWER BACKDROP (Folders + Notes) */}
+          {notebookDrawerOpen && (
+            <div
+              className="fixed inset-0 z-40 lg:hidden transition-opacity backdrop-blur-sm"
+              style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}
+              onClick={() => setNotebookDrawerOpen(false)}
+            />
+          )}
+          {/* MOBILE DRAWER WRAPPER — Folders + Notes List (stacked on mobile, side-by-side on desktop) */}
+          <div
+            className={`fixed inset-y-0 left-0 z-50 w-[85vw] max-w-[400px] flex flex-col overflow-y-auto shadow-2xl transition-transform duration-250 ease-in-out ${
+              notebookDrawerOpen ? 'translate-x-0' : '-translate-x-full'
+            } lg:static lg:z-auto lg:w-auto lg:max-w-none lg:flex-row lg:translate-x-0 lg:shadow-none lg:overflow-visible`}
+            style={{ backgroundColor: 'var(--card)' }}
           >
+
+            {/* PANEL 1: FOLDERS (220px) */}
+            <aside
+              id="notebook-panel-folders"
+              className="w-full lg:w-[220px] lg:shrink-0 h-auto lg:h-full overflow-y-auto flex flex-col justify-between p-4 lg:flex-shrink-0 border-b lg:border-b-0 lg:border-r"
+              style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)' }}
+            >
             <div>
               {/* Add folder full width */}
               <button
@@ -1333,8 +1363,8 @@ export function Notebook() {
           {/* PANEL 2: NOTES LIST (280px) */}
           <section
             id="notebook-panel-notes"
-            className="w-[280px] shrink-0 h-full overflow-y-auto flex flex-col justify-start flex-shrink-0"
-            style={{ borderRight: '0.5px solid var(--border)', backgroundColor: 'var(--bg)' }}
+            className="w-full lg:w-[280px] lg:shrink-0 h-auto lg:h-full overflow-y-auto flex flex-col justify-start lg:flex-shrink-0 border-b lg:border-b-0 lg:border-r"
+            style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg)' }}
           >
             {/* Search notes box - added above top row nav actions */}
             <div className="p-3 shrink-0 border-b border-[var(--border)]/40">
@@ -1524,13 +1554,23 @@ export function Notebook() {
               )}
             </div>
           </section>
+        </div>
 
-          {/* PANEL 3: NOTE EDITOR (flex-1) */}
-          <main
-            id="notebook-panel-editor"
-            className="flex-1 h-full overflow-y-auto flex flex-col p-6 font-sans relative"
-            style={{ backgroundColor: 'var(--card)' }}
+        {/* PANEL 3: NOTE EDITOR (flex-1) */}
+        <main
+          id="notebook-panel-editor"
+          className="flex-1 h-full overflow-y-auto flex flex-col p-6 font-sans relative"
+          style={{ backgroundColor: 'var(--card)' }}
+        >
+          <button
+            type="button"
+            onClick={() => setNotebookDrawerOpen(true)}
+            className="lg:hidden inline-flex items-center gap-1.5 mb-4 px-3 py-1.5 rounded-lg text-xs font-semibold self-start"
+            style={{ border: '0.5px solid var(--border)', backgroundColor: 'var(--bar)', color: 'var(--text-sub)' }}
           >
+            <FileText className="w-3.5 h-3.5" />
+            Notes & Folders
+          </button>
             {!activeNote ? (
               dateFromDashboard ? (
                 <div id="notebook-no-note-date-prompt" className="flex-1 flex flex-col items-center justify-center text-center p-12 max-w-sm mx-auto">
