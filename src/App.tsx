@@ -136,7 +136,7 @@ export default function App() {
               {/* Other Authenticated Pages */}
               <Route path="/notebook" element={<Notebook />} />
               <Route path="/advanced-reports" element={<AdvancedReports />} />
-              <Route path="/reports" element={<TradingReportsPage />} />
+              <Route path="/reports" element={<Navigate to="/advanced-reports" replace />} />
               <Route path="/annual-reports" element={<AnnualReportsPage />} />
               <Route path="/ai-teacher" element={<AiTeacherPage />} />
               

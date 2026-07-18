@@ -55,7 +55,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
     { icon: BookOpen, label: 'Daily Journal', route: '/daily-journal' },
     { icon: ScrollText, label: 'Trading Logs', route: '/trading-logs' },
     { icon: TrendingUp, label: 'Reports', route: '/advanced-reports' },
-    { icon: BarChart2, label: 'Monthly Reports', route: '/reports' },
     { icon: Calendar, label: 'Annual Reports', route: '/annual-reports' },
     { icon: Target, label: 'Strategies', route: '/strategies' },
     { icon: Book, label: 'Notebook', route: '/notebook' },
