@@ -104,7 +104,7 @@ export default async function handler(req, res) {
             user_id,
             broker_ticket: String(trade.ticket),
             symbol: trade.symbol,
-            direction: trade.direction === 'Buy' ? 'LONG' : 'SHORT',
+            direction: trade.direction === 'Buy' ? 'SHORT' : 'LONG',
             option_type: null,
             raw_direction: trade.direction,
             pnl: trade.pnl,
