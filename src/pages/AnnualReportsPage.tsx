@@ -593,8 +593,7 @@ export const AnnualReportsPage: React.FC = () => {
                       background: 'var(--card)',
                       boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
                       border: '1px solid rgba(0,0,0,0.06)',
-                      borderRadius: '12px',
-                      overflow: 'hidden'
+                      borderRadius: '12px'
                     }}
                     className="overflow-x-auto"
                   >
