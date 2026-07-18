@@ -197,6 +197,17 @@ export const TradingLogsPage: React.FC = () => {
   const [tradesPerPage, setTradesPerPage] = useState<number>(50);
   const [isColumnModalOpen, setIsColumnModalOpen] = useState<boolean>(false);
 
+  useEffect(() => {
+    if (showFiltersPanel || isColumnModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showFiltersPanel, isColumnModalOpen]);
+
   const [selectedColumns, setSelectedColumns] = useState<Record<string, boolean>>(() => {
     const saved = localStorage.getItem('tl-log-columns');
     if (saved) {
@@ -1004,13 +1015,11 @@ export const TradingLogsPage: React.FC = () => {
                         borderRadius: '10px',
                         boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
                         padding: '16px',
-                        minWidth: '520px',
                         position: 'absolute',
                         top: 'calc(100% + 8px)',
-                        right: 0,
                         zIndex: 50
                       }}
-                      className="animate-in fade-in slide-in-from-top-1 duration-150"
+                      className="animate-in fade-in slide-in-from-top-1 duration-150 left-0 right-auto w-[calc(100vw-2rem)] sm:left-auto sm:right-0 sm:w-[520px]"
                     >
                       {/* ROW 1 — Filter dropdowns (4-column grid) */}
                       <div className="grid grid-cols-4 gap-3">
