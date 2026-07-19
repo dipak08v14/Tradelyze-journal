@@ -1129,10 +1129,10 @@ export function Notebook() {
           )}
           {/* MOBILE DRAWER WRAPPER — Folders + Notes List (stacked on mobile, side-by-side on desktop) */}
           <div
-            className={`fixed inset-y-0 left-0 z-50 w-[85vw] max-w-[400px] flex flex-col overflow-y-auto shadow-2xl transition-transform duration-250 ease-in-out ${
+            className={`fixed inset-y-0 left-0 z-50 w-[85vw] max-w-[400px] flex flex-col overflow-y-auto transition-transform duration-250 ease-in-out ${
               notebookDrawerOpen ? 'translate-x-0' : '-translate-x-full'
             } lg:static lg:z-auto lg:w-auto lg:max-w-none lg:flex-row lg:translate-x-0 lg:shadow-none lg:overflow-visible`}
-            style={{ backgroundColor: 'var(--card)' }}
+            style={{ backgroundColor: 'var(--card)', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }}
           >
 
             {/* PANEL 1: FOLDERS (220px) */}
@@ -1255,7 +1255,7 @@ export function Notebook() {
 
                           {/* Ellipsis menu dropdown */}
                           {folderMenuId === folder.id && (
-                            <div className="absolute top-5 right-0 mt-1 w-28 bg-[var(--card)] rounded-lg shadow-xl border border-[var(--border)] p-1 z-30 font-sans flex flex-col gap-0.5">
+                            <div className="absolute top-5 right-0 mt-1 w-28 bg-[var(--card)] rounded-lg border border-[var(--border)] p-1 z-30 font-sans flex flex-col gap-0.5" style={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }}>
                               <button
                                 type="button"
                                 onClick={(e) => handleOpenRenameFolderModal(e, folder)}
@@ -1430,7 +1430,7 @@ export function Notebook() {
             </div>
 
             {/* Select All Checkbox / Bulk Options Row */}
-            <div className="px-4 py-2 bg-[var(--bar)]/20 shadow-sm flex items-center justify-between select-none border-b border-[var(--border)]/40 shrink-0">
+            <div className="px-4 py-2 bg-[var(--bar)]/20 flex items-center justify-between select-none border-b border-[var(--border)]/40 shrink-0">
               <div className="flex items-center gap-2">
                 <button
                   type="button"
@@ -1915,8 +1915,8 @@ export function Notebook() {
         <div id="notebook-folder-modal-overlay" className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
           <div
             id="notebook-folder-modal-card"
-            className="w-full max-w-sm rounded-2xl shadow-xl border overflow-hidden p-6 animate-in scale-in duration-200"
-            style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
+            className="w-full max-w-sm rounded-2xl border overflow-hidden p-6 animate-in scale-in duration-200"
+            style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }}
           >
             <h3 id="notebook-modal-title" className="text-sm font-bold font-mono text-white tracking-wider uppercase mb-5">
               {folderModalMode === 'create' ? 'ADD NEW FOLDER' : 'RENAME FOLDER'}
@@ -1991,8 +1991,8 @@ export function Notebook() {
         <div id="notebook-log-day-modal-overlay" className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
           <div
             id="notebook-log-day-modal-card"
-            className="w-full max-w-sm rounded-2xl shadow-xl border overflow-hidden p-6 animate-in scale-in duration-200"
-            style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
+            className="w-full max-w-sm rounded-2xl border overflow-hidden p-6 animate-in scale-in duration-200"
+            style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }}
           >
             <h3 className="text-sm font-bold font-mono text-white tracking-wider uppercase mb-5">
               LOG DAY
@@ -2044,7 +2044,8 @@ export function Notebook() {
         <div id="notebook-log-day-confirm-modal-overlay" className="fixed inset-0 bg-black/75 backdrop-blur-md z-[60] flex items-center justify-center p-4">
           <div
             id="notebook-log-day-confirm-modal"
-            className="w-full max-w-sm rounded-2xl shadow-xl border overflow-hidden p-6 animate-in scale-in duration-200 border-amber-500/30" style={{ backgroundColor: 'var(--card)' }}
+            className="w-full max-w-sm rounded-2xl border overflow-hidden p-6 animate-in scale-in duration-200 border-amber-500/30"
+            style={{ backgroundColor: 'var(--card)', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }}
           >
             <div className="flex items-center gap-2 text-amber-500 mb-3 font-mono font-bold text-sm uppercase tracking-wider">
               <span>⚠️ Already Logged</span>
@@ -2083,8 +2084,8 @@ export function Notebook() {
         <div id="notebook-coming-soon-modal-overlay" className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
           <div
             id="notebook-coming-soon-modal-card"
-            className="w-full max-w-sm rounded-2xl shadow-xl border overflow-hidden p-6 animate-in scale-in duration-200"
-            style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
+            className="w-full max-w-sm rounded-2xl border overflow-hidden p-6 animate-in scale-in duration-200"
+            style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }}
           >
             <h3 className="text-sm font-bold font-mono text-white tracking-wider uppercase mb-3">
               SAVE AS TEMPLATE
