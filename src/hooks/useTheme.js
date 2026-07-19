@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { applyTheme } from '../styles/theme'
+import { applyTheme } from '../lib/theme'
 import { supabase } from '../lib/supabase'
 
 export function useTheme() {
