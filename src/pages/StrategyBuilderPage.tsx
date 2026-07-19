@@ -865,7 +865,7 @@ export const StrategyBuilderPage: React.FC = () => {
                   
                   {/* CARD 1: STRATEGY DETAILS */}
                   <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '20px' }} className="relative overflow-hidden">
-                    <h2 style={{ color: 'var(--text)', borderColor: 'var(--border)' }} className="text-lg font-bold border-b pb-3 font-display">
+                    <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">
                       Strategy Details
                     </h2>
 
@@ -1036,9 +1036,9 @@ export const StrategyBuilderPage: React.FC = () => {
 
                   {/* CARD 2: ENTRY RULES */}
                   <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '20px' }} className="relative overflow-hidden font-sans">
-                    <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between border-b pb-3">
+                    <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between">
                       <div>
-                        <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display">Entry Rules</h2>
+                        <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">Entry Rules</h2>
                         <p style={{ color: 'var(--text)' }} className="text-xs mt-0.5">
                           Criteria required BEFORE entering trades. These auto-populate as checklist items.
                         </p>
@@ -1135,9 +1135,9 @@ export const StrategyBuilderPage: React.FC = () => {
 
                   {/* CARD 3: EXIT RULES */}
                   <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '20px' }} className="relative overflow-hidden font-sans">
-                    <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between border-b pb-3">
+                    <div className="flex items-center justify-between">
                       <div>
-                        <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display">Exit Rules</h2>
+                        <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">Exit Rules</h2>
                         <p style={{ color: 'var(--text)' }} className="text-xs mt-0.5">
                           Criteria suggesting when to secure the trade. These auto-populate in checklists.
                         </p>
@@ -1268,9 +1268,9 @@ export const StrategyBuilderPage: React.FC = () => {
                   
                   {/* CARD 4: REFERENCE IMAGES */}
                   <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '20px' }} className="relative overflow-hidden font-sans">
-                    <div style={{ borderColor: 'var(--border)' }} className="flex justify-between items-center border-b pb-3">
+                    <div className="flex justify-between items-center">
                       <div>
-                        <h2 style={{ color: 'var(--text)' }} className="text-lg font-bold font-display">Reference Images</h2>
+                        <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">Reference Images</h2>
                         <p style={{ color: 'var(--text)' }} className="text-xs mt-0.5">
                           Screenshots showing ideal examples.
                         </p>
@@ -1417,7 +1417,7 @@ export const StrategyBuilderPage: React.FC = () => {
                   {/* CARD 5: PERFORMANCE STATS */}
                   {isEditMode && (
                     <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '20px' }} className="relative overflow-hidden font-sans">
-                      <h2 style={{ color: 'var(--text)', borderColor: 'var(--border)' }} className="text-lg font-bold border-b pb-3 font-display">
+                      <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">
                         Performance Stats
                       </h2>
                       <p style={{ color: 'var(--text)' }} className="text-xs mt-2 pb-1">
@@ -1540,7 +1540,7 @@ export const StrategyBuilderPage: React.FC = () => {
             <AlertTriangle className="w-6 h-6 text-red-500 animate-bounce" />
           </div>
           
-          <h3 className="text-zinc-100 text-base font-semibold">
+          <h3 className="text-base font-semibold" style={{ color: 'var(--text)' }}>
             Are you sure you want to delete this?
           </h3>
           

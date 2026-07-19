@@ -1164,7 +1164,7 @@ export const TradeEntryPage: React.FC = () => {
               }}
             >
               <div>
-                <h1 className="font-display tracking-tight" style={{ fontSize: '26px', fontWeight: 700, color: 'var(--text)' }}>
+                <h1 className="font-display tracking-tight" style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)' }}>
                   {isEditMode ? 'Edit Trade' : 'Log Trade'}
                 </h1>
               </div>

@@ -68,8 +68,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
       className="flex flex-col h-full min-h-0 font-sans"
       style={{ 
         backgroundColor: 'var(--topbar)', 
-        borderRight: '1px solid rgba(0, 0, 0, 0.08)', 
-        boxShadow: '1px 0 3px rgba(0, 0, 0, 0.04)',
+        borderRight: '1px solid var(--border)', 
+        boxShadow: '1px 0 3px var(--border)',
         color: 'var(--text)',
         fontFamily: 'Inter, system-ui, sans-serif'
       }}

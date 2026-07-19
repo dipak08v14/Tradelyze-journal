@@ -1343,7 +1343,7 @@ const TradeTrackingPageContent: React.FC = () => {
             {/* HEADER STRIP */}
             <div style={{ backgroundColor: 'var(--card)', paddingTop: '6px', paddingBottom: '6px' }} className="-mx-6 px-6 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b-0">
               <div>
-                <h1 style={{ color: 'var(--text)', fontSize: '24px', fontWeight: 700 }} className="text-xl md:text-2xl font-bold font-display">
+                <h1 style={{ color: 'var(--text)', fontSize: '28px', fontWeight: 700 }} className="font-display">
                   Trade Tracking
                 </h1>
               </div>
@@ -2730,7 +2730,7 @@ const TradeTrackingPageContent: React.FC = () => {
                     <div className="flex flex-col sm:flex-row gap-6 items-start">
                       <div className="rounded-xl px-5 pb-5 pt-2.5 w-full sm:w-[416px]" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', height: '300px', flexShrink: 0, position: 'relative', overflow: 'hidden' }}>
                         <div style={{ position: 'absolute', top: '8px', left: '16px', zIndex: 1, margin: 0, textAlign: 'left', width: 'calc(100% - 32px)', paddingTop: '0px', borderBottom: '1px solid rgba(0,0,0,0.07)', paddingBottom: '4px', marginBottom: '8px' }}>
-                          <h2 style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-muted)', marginBottom: '4px' }}>
+                          <h2 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', marginBottom: '4px' }}>
                             Performance Score
                           </h2>
                         </div>
@@ -2764,7 +2764,7 @@ const TradeTrackingPageContent: React.FC = () => {
                         className="px-5 pb-5 pt-2.5 overflow-hidden flex-1 min-w-0 w-full sm:w-auto"
                       >
                       <div className="flex items-center justify-between mb-1" style={{ borderBottom: '1px solid rgba(0,0,0,0.07)', paddingBottom: '4px', marginBottom: '8px' }}>
-                        <h2 style={{ color: 'var(--text-muted)', fontSize: '14px', fontWeight: 500 }} className="font-display">
+                        <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">
                           Running P&L Chart
                         </h2>
                         {chartLoading ? (
