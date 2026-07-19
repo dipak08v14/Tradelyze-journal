@@ -631,7 +631,7 @@ export const StrategyDetail: React.FC = () => {
                     {strategy ? strategy.name : 'Strategy details'}
                   </h1>
                   {strategy && (
-                    <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider border shadow-sm shrink-0" style={{ backgroundColor: 'var(--accent-muted)', color: 'var(--accent)', borderColor: 'var(--accent)' }}>
+                    <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider border shrink-0" style={{ backgroundColor: 'var(--accent-muted)', color: 'var(--accent)', borderColor: 'var(--accent)' }}>
                       {strategy.type_of_strategy}
                     </span>
                   )}
@@ -719,7 +719,7 @@ export const StrategyDetail: React.FC = () => {
                     {/* STATS MATRIX */}
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                       {/* CARD 1 */}
-                      <div className="rounded-2xl border p-5" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
+                      <div className="rounded-2xl border p-5" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                         <span className="text-[10px] font-bold font-mono uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Net P&L</span>
                         <div className="text-2xl font-extrabold font-mono mt-1.5" style={{ color: overviewStats.netPnl >= 0 ? '#008F67' : '#DF1C30' }}>
                           {formatCurrency(overviewStats.netPnl)}
@@ -727,7 +727,7 @@ export const StrategyDetail: React.FC = () => {
                       </div>
 
                       {/* CARD 2 */}
-                      <div className="rounded-2xl border p-5" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
+                      <div className="rounded-2xl border p-5" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                         <span className="text-[10px] font-bold font-mono uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Total Trades</span>
                         <div className="text-2xl font-extrabold font-mono mt-1.5" style={{ color: 'var(--text)' }}>
                           {overviewStats.totalTrades}
@@ -735,7 +735,7 @@ export const StrategyDetail: React.FC = () => {
                       </div>
 
                       {/* CARD 3 */}
-                      <div className="rounded-2xl border p-5" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
+                      <div className="rounded-2xl border p-5" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                         <span className="text-[10px] font-bold font-mono uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Win Rate</span>
                         <div 
                           className={`text-2xl font-extrabold font-mono mt-1.5 ${
@@ -752,7 +752,7 @@ export const StrategyDetail: React.FC = () => {
                       </div>
 
                       {/* CARD 4 */}
-                      <div className="rounded-2xl border p-5" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
+                      <div className="rounded-2xl border p-5" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                         <span className="text-[10px] font-bold font-mono uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Profit Factor</span>
                         <div className="text-2xl font-extrabold font-mono mt-1.5" style={{ color: 'var(--text)' }}>
                           {typeof overviewStats.profitFactor === 'number' ? overviewStats.profitFactor.toFixed(2) : overviewStats.profitFactor}
@@ -760,7 +760,7 @@ export const StrategyDetail: React.FC = () => {
                       </div>
 
                       {/* CARD 5 */}
-                      <div className="rounded-2xl border p-5" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
+                      <div className="rounded-2xl border p-5" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                         <span className="text-[10px] font-bold font-mono uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Avg R-Multiple</span>
                         <div className="text-2xl font-extrabold font-mono mt-1.5" style={{ color: overviewStats.avgR >= 0 ? '#008F67' : '#DF1C30' }}>
                           {overviewStats.avgR >= 0 ? '+' : ''}{overviewStats.avgR.toFixed(2)}R
@@ -768,7 +768,7 @@ export const StrategyDetail: React.FC = () => {
                       </div>
 
                       {/* CARD 6 */}
-                      <div className="rounded-2xl border p-5" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
+                      <div className="rounded-2xl border p-5" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                         <span className="text-[10px] font-bold font-mono uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Expectancy</span>
                         <div className="text-2xl font-extrabold font-mono mt-1.5" style={{ color: overviewStats.expectancy >= 0 ? '#008F67' : '#DF1C30' }}>
                           {formatCurrency(overviewStats.expectancy)}
@@ -776,7 +776,7 @@ export const StrategyDetail: React.FC = () => {
                       </div>
 
                       {/* CARD 7 */}
-                      <div className="rounded-2xl border p-5" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
+                      <div className="rounded-2xl border p-5" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                         <span className="text-[10px] font-bold font-mono uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Avg Winner</span>
                         <div className="text-2xl font-extrabold font-mono mt-1.5" style={{ color: '#008F67' }}>
                           {formatCurrency(overviewStats.avgWinner)}
@@ -784,7 +784,7 @@ export const StrategyDetail: React.FC = () => {
                       </div>
 
                       {/* CARD 8 */}
-                      <div className="rounded-2xl border p-5" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
+                      <div className="rounded-2xl border p-5" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                         <span className="text-[10px] font-bold font-mono uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Avg Loser</span>
                         <div className="text-2xl font-extrabold font-mono mt-1.5" style={{ color: '#DF1C30' }}>
                           {formatCurrency(overviewStats.avgLoser)}
@@ -793,7 +793,7 @@ export const StrategyDetail: React.FC = () => {
                     </div>
 
                     {/* CHARTS GRAPH COMPONENT */}
-                    <div className="rounded-2xl border p-6" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
+                    <div className="rounded-2xl border p-6" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                       <h3 className="text-sm font-bold font-mono uppercase tracking-wider mb-5" style={{ color: 'var(--text)' }}>
                         Cumulative P&L — {strategy?.name || 'Strategy'}
                       </h3>
@@ -1143,19 +1143,19 @@ export const StrategyDetail: React.FC = () => {
                       {/* Stats Cards */}
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 flex-1">
                         {/* CARD 1 */}
-                        <div className="p-4 rounded-xl border flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
+                        <div className="p-4 rounded-xl border flex flex-col justify-between" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                           <span className="text-[11px] font-mono font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Total Missed</span>
                           <span className="text-2xl font-bold font-sans mt-1.5" style={{ color: 'var(--text)' }}>{missedTradesStats.totalMissed}</span>
                         </div>
                         {/* CARD 2 */}
-                        <div className="p-4 rounded-xl border flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
+                        <div className="p-4 rounded-xl border flex flex-col justify-between" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                           <span className="text-[11px] font-mono font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Potential P&L</span>
                           <span className="text-2xl font-bold font-sans mt-1.5" style={{ color: missedTradesStats.potentialPnlSum >= 0 ? '#008F67' : '#DF1C30' }}>
                             {formatCurrency(missedTradesStats.potentialPnlSum)}
                           </span>
                         </div>
                         {/* CARD 3 */}
-                        <div className="p-4 rounded-xl border flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
+                        <div className="p-4 rounded-xl border flex flex-col justify-between" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                           <span className="text-[11px] font-mono font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Avg Potential</span>
                           <span className="text-2xl font-bold font-sans mt-1.5" style={{ color: missedTradesStats.avgPotential >= 0 ? '#008F67' : '#DF1C30' }}>
                             {formatCurrency(missedTradesStats.avgPotential)}
@@ -1264,8 +1264,8 @@ export const StrategyDetail: React.FC = () => {
                         
                         {/* Modal Box */}
                         <div 
-                          className="relative w-full max-w-[480px] rounded-2xl border p-6 z-10 shadow-2xl animate-scale-in"
-                          style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
+                          className="relative w-full max-w-[480px] rounded-2xl border p-6 z-10 animate-scale-in"
+                          style={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
                         >
                           {/* Header */}
                           <div className="flex items-center justify-between mb-5">
@@ -1320,8 +1320,8 @@ export const StrategyDetail: React.FC = () => {
                               {/* Autocomplete suggestions dropdown */}
                               {showMtSuggestions && mtSuggestions.length > 0 && (
                                 <div 
-                                  className="absolute left-0 right-0 mt-1 max-h-40 overflow-y-auto rounded-lg border z-50 shadow-xl text-xs" 
-                                  style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
+                                  className="absolute left-0 right-0 mt-1 max-h-40 overflow-y-auto rounded-lg border z-50 text-xs" 
+                                  style={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
                                 >
                                   {mtSuggestions.map((sym) => (
                                     <button
@@ -1442,7 +1442,7 @@ export const StrategyDetail: React.FC = () => {
                 {/* TAB 5: NOTES */}
                 {activeTab === 'NOTES' && (
                   <div className="space-y-4 animate-fade-in">
-                    <div className="rounded-2xl border p-5" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
+                    <div className="rounded-2xl border p-5" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                       <div className="flex items-center justify-between mb-3.5">
                         <label htmlFor="strategy-notes-area" className="text-xs font-mono uppercase tracking-wider font-bold flex items-center gap-1.5" style={{ color: 'var(--text-muted)' }}>
                           <FileText className="w-4 h-4" />
@@ -1489,7 +1489,7 @@ export const StrategyDetail: React.FC = () => {
                         return (
                           <div
                             className="flex flex-col items-center justify-center p-12 py-20 text-center rounded-2xl border"
-                            style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
+                            style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
                           >
                             <div className="p-4 rounded-full mb-4" style={{ backgroundColor: 'var(--bar)', color: 'var(--text-muted)' }}>
                               <Image className="w-8 h-8" />
@@ -1517,7 +1517,7 @@ export const StrategyDetail: React.FC = () => {
                               <div
                                 key={index}
                                 onClick={() => setLightboxIndex(index)}
-                                className="relative aspect-[4/3] rounded-[8px] overflow-hidden cursor-pointer hover:opacity-90 hover:scale-[1.01] transition-all group border shadow-sm"
+                                className="relative aspect-[4/3] rounded-[8px] overflow-hidden cursor-pointer hover:opacity-90 hover:scale-[1.01] transition-all group border "
                                 style={{
                                   border: '0.5px solid var(--border)',
                                   backgroundColor: 'var(--bar)'
