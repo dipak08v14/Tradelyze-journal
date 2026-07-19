@@ -1227,7 +1227,7 @@ export const TradeEntryPage: React.FC = () => {
                   <div className="mt-3 bg-[var(--card)] border border-[var(--border-md)] rounded-lg px-4 py-3 w-full sm:w-80 text-left">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse flex-shrink-0" />
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
                         {embeddingStatus === 'loading-model' && `Loading AI Vision model... ${embeddingProgress > 0 ? embeddingProgress + '%' : ''}`}
                         {embeddingStatus === 'generating' && 'Analyzing chart pattern...'}
                         {embeddingStatus === 'saving' && 'Saving to visual library...'}
@@ -1816,7 +1816,7 @@ export const TradeEntryPage: React.FC = () => {
                         </span>
                       )}
                       {calculatedStatus === 'Breakeven' && (
-                        <span className="bg-[var(--card)] border border-[var(--border-md)] text-zinc-650 text-xs font-extrabold px-3 py-1.5 rounded uppercase tracking-wider w-full">
+                        <span className="bg-[var(--card)] border border-[var(--border-md)] text-xs font-extrabold px-3 py-1.5 rounded uppercase tracking-wider w-full" style={{ color: 'var(--text-sub)' }}>
                           — BE
                         </span>
                       )}
@@ -1835,12 +1835,12 @@ export const TradeEntryPage: React.FC = () => {
                       <span
                         className={`text-xl font-black font-display ${
                           calculatedRMultiple === null
-                            ? 'text-zinc-400'
+                            ? 'text-[var(--text-muted)]'
                             : calculatedRMultiple > 0
                             ? 'text-[#008F67]'
                             : calculatedRMultiple < 0
                             ? 'text-[#DF1C30]'
-                            : 'text-zinc-650'
+                            : 'text-[var(--text-sub)]'
                         }`}
                       >
                         {calculatedRMultiple !== null
@@ -1857,12 +1857,12 @@ export const TradeEntryPage: React.FC = () => {
                       <span
                         className={`text-xl font-black font-display ${
                           calculatedPlannedR === null
-                            ? 'text-zinc-400'
+                            ? 'text-[var(--text-muted)]'
                             : calculatedPlannedR > 0
                             ? 'text-[#008F67]'
                             : calculatedPlannedR < 0
                             ? 'text-[#DF1C30]'
-                            : 'text-zinc-650'
+                            : 'text-[var(--text-sub)]'
                         }`}
                       >
                         {calculatedPlannedR !== null
@@ -1879,12 +1879,12 @@ export const TradeEntryPage: React.FC = () => {
                       <span
                         className={`text-xl font-black font-display ${
                           calculatedRoi === null
-                            ? 'text-zinc-400'
+                            ? 'text-[var(--text-muted)]'
                             : calculatedRoi > 0
                             ? 'text-[#008F67]'
                             : calculatedRoi < 0
                             ? 'text-[#DF1C30]'
-                            : 'text-zinc-650'
+                            : 'text-[var(--text-sub)]'
                         }`}
                       >
                         {calculatedRoi !== null ? `${calculatedRoi.toFixed(2)}%` : '—'}
@@ -1898,7 +1898,7 @@ export const TradeEntryPage: React.FC = () => {
                     <div style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)' }} className="flex flex-col items-center justify-center p-3 rounded-lg text-center min-h-[85px]">
                       <span
                         className={`text-xl font-black font-display ${
-                          calculatedRor === null ? 'text-zinc-400' : 'text-amber-600'
+                          calculatedRor === null ? 'text-[var(--text-muted)]' : 'text-amber-600'
                         }`}
                       >
                         {calculatedRor !== null ? `${calculatedRor.toFixed(2)}%` : '—'}
@@ -1912,7 +1912,7 @@ export const TradeEntryPage: React.FC = () => {
                     <div style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)' }} className="flex flex-col items-center justify-center p-3 rounded-lg text-center min-h-[85px]">
                       <span
                         className={`text-xl font-black font-display ${
-                          calculatedMddPct === null ? 'text-zinc-400' : 'text-amber-600'
+                          calculatedMddPct === null ? 'text-[var(--text-muted)]' : 'text-amber-600'
                         }`}
                       >
                         {calculatedMddPct !== null ? `${calculatedMddPct.toFixed(2)}%` : '—'}
@@ -2396,7 +2396,7 @@ export const TradeEntryPage: React.FC = () => {
                               : 'hover:border-[var(--accent)] hover:bg-[var(--bar)]'
                           }`}
                         >
-                          <ImagePlus className="w-8 h-8 text-zinc-400 mx-auto mb-2 animate-pulse" />
+                          <ImagePlus className="w-8 h-8 mx-auto mb-2 animate-pulse" style={{ color: 'var(--text-muted)' }} />
                           <p style={{ color: 'var(--text)' }} className="text-xs font-bold font-display">
                             Drop chart screenshot here
                           </p>
@@ -2457,7 +2457,7 @@ export const TradeEntryPage: React.FC = () => {
                             onClick={() => {
                               setPlanRemoved(true);
                             }}
-                            className="text-zinc-400 hover:text-red-500 p-1 cursor-pointer"
+                            className="hover:text-red-500 p-1 cursor-pointer" style={{ color: 'var(--text-muted)' }}
                             title="Remove archived plan"
                           >
                             <X className="w-4 h-4" />
@@ -2480,7 +2480,7 @@ export const TradeEntryPage: React.FC = () => {
                               setTradePlanFile(null);
                               setTradePlanPreview(null);
                             }}
-                            className="text-zinc-400 hover:text-red-500 p-1 cursor-pointer"
+                            className="hover:text-red-500 p-1 cursor-pointer" style={{ color: 'var(--text-muted)' }}
                           >
                             <X className="w-4 h-4" />
                           </button>
