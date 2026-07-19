@@ -139,7 +139,7 @@ export default function OnboardingPage() {
 
   return (
     <div className="min-h-dvh flex flex-col justify-center items-center p-4 font-sans select-none" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
-      <div className="w-full max-w-2xl bg-[var(--card)] border border-[var(--border)] rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
+      <div className="w-full max-w-2xl bg-[var(--card)] border border-[var(--border)] rounded-3xl p-6 md:p-8 relative overflow-hidden" style={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }}>
         
         {/* PROGRESS INDICATOR */}
         <div className="mb-8">

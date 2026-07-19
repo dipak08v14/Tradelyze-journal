@@ -1,0 +1,15 @@
+
+======================================
+FILE: OnboardingPage.tsx
+======================================
+[Line 133] (Flat Candidate): className="w-8 h-8 border-4 border-[var(--border)] border-t-[var(--accent)] rounded-full animate-spin"
+[Line 142] (Has Shadow): className="w-full max-w-2xl bg-[var(--card)] border border-[var(--border)] rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden"
+[Line 173] (Flat Candidate): className="flex items-start gap-3 bg-[var(--bar)] p-3 rounded-xl border border-[var(--border)]"
+[Line 180] (Flat Candidate): className="flex items-start gap-3 bg-[var(--bar)] p-3 rounded-xl border border-[var(--border)]"
+[Line 187] (Flat Candidate): className="flex items-start gap-3 bg-[var(--bar)] p-3 rounded-xl border border-[var(--border)]"
+[Line 197] (Flat Candidate): className="bg-amber-950/40 border border-amber-800 text-amber-200 text-xs p-4 rounded-xl max-w-md mx-auto mb-8 font-medium"
+[Line 204] (Has Shadow): className="bg-[var(--accent)] hover:bg-[var(--accent-light)] text-slate-950 font-bold px-6 py-3 rounded-xl cursor-pointer text-sm transition-all inline-flex items-center gap-2 shadow-md hover:scale-[1.01]"
+[Line 318] (Has Shadow): className="bg-[var(--accent)] hover:bg-[var(--accent-light)] text-slate-950 font-bold p-3 rounded-xl cursor-pointer text-sm shadow-md transition-all"
+[Line 349] (Flat Candidate): className="text-left max-w-md mx-auto space-y-3 bg-[var(--bar)] p-4 rounded-xl border border-[var(--border)] mb-8 text-xs md:text-sm"
+[Line 369] (Has Shadow): className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold p-3 rounded-xl cursor-pointer text-sm shadow-md transition-all block text-center"
+[Line 377] (Has Shadow): className="bg-[var(--accent)] hover:bg-[var(--accent-light)] text-slate-950 font-black p-3.5 rounded-xl cursor-pointer text-sm shadow-md"
