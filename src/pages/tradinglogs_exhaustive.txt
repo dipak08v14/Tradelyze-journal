@@ -1,0 +1,308 @@
+
+--- MATCH AT LINE 957 (Has Shadow) ---
+Code: style={{                 background: 'var(--card)',                 width: 'calc(100% + 32px)',                 marginLeft: '-16px',                 marginRight: '-16px',                 paddingTop: '3px',                 paddingBottom: '3px',                 paddingLeft: '16px',                 paddingRight: '16px',                 borderRadius: '0',                 boxShadow: 'none',                 border: 'none',                 borderBottom: '1px solid var(--border)'               }}
+Context:
+955:           <div className="w-full px-4">
+956:             <div
+957:               style={{
+958:                 background: 'var(--card)',
+959:                 width: 'calc(100% + 32px)',
+960:                 marginLeft: '-16px',
+961:                 marginRight: '-16px',
+
+--- MATCH AT LINE 1012 (Has Shadow) ---
+Code: style={{                         backgroundColor: 'var(--card)',                         border: '1px solid var(--border)',                         borderRadius: '10px',                         boxShadow: '0 4px 20px rgba(0,0,0,0.12)',                         padding: '16px',                         position: 'absolute',                         top: 'calc(100% + 8px)',                         zIndex: 50                       }}
+Context:
+1010:                       onClick={(e) => e.stopPropagation()}
+1011:                       onMouseLeave={() => setShowFiltersPanel(false)}
+1012:                       style={{
+1013:                         backgroundColor: 'var(--card)',
+1014:                         border: '1px solid var(--border)',
+1015:                         borderRadius: '10px',
+1016:                         boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
+
+--- MATCH AT LINE 1034 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
+Context:
+1032:                             value={pendingMonth}
+1033:                             onChange={(e) => setPendingMonth(e.target.value)}
+1034:                             style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
+1035:                             className="w-full focus:border-[var(--accent)] focus:outline-none cursor-pointer"
+1036:                           >
+1037:                             <option value="All">All Months</option>
+1038:                             {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((m) => (
+
+--- MATCH AT LINE 1054 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
+Context:
+1052:                             value={pendingYear}
+1053:                             onChange={(e) => setPendingYear(e.target.value)}
+1054:                             style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
+1055:                             className="w-full focus:border-[var(--accent)] focus:outline-none cursor-pointer"
+1056:                           >
+1057:                             <option value="All">All Years</option>
+1058:                             {uniqueYears.map((y) => (
+
+--- MATCH AT LINE 1077 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
+Context:
+1075:                               onChange={(e) => setPendingSymbol(e.target.value.toUpperCase())}
+1076:                               placeholder="e.g. BTC"
+1077:                               style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
+1078:                               className="placeholder-zinc-500 w-full focus:border-[var(--accent)] focus:outline-none font-mono text-xs"
+1079:                             />
+1080:                             {pendingSymbol && (
+1081:                               <button
+
+--- MATCH AT LINE 1101 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
+Context:
+1099:                             value={pendingSetup}
+1100:                             onChange={(e) => setPendingSetup(e.target.value)}
+1101:                             style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
+1102:                             className="w-full focus:border-[var(--accent)] focus:outline-none cursor-pointer text-xs"
+1103:                           >
+1104:                             <option value="All">All Setups</option>
+1105:                             {uniqueSetups.map((setupName) => (
+
+--- MATCH AT LINE 1124 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
+Context:
+1122:                             value={pendingExecution}
+1123:                             onChange={(e) => setPendingExecution(e.target.value)}
+1124:                             style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
+1125:                             className="w-full focus:border-[var(--accent)] focus:outline-none cursor-pointer"
+1126:                           >
+1127:                             <option value="All">All Executions</option>
+1128:                             <option value="BEST TRADE">BEST TRADE</option>
+
+--- MATCH AT LINE 1144 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
+Context:
+1142:                             value={pendingMistakeType}
+1143:                             onChange={(e) => setPendingMistakeType(e.target.value)}
+1144:                             style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px 10px' }}
+1145:                             className="w-full focus:border-[var(--accent)] focus:outline-none cursor-pointer"
+1146:                           >
+1147:                             <option value="All">All Mistakes</option>
+1148:                             <option value="Technical">Technical</option>
+
+--- MATCH AT LINE 1283 (Has Shadow) ---
+Code: className="hover:opacity-90 transition-all font-display shadow-lg shadow-cyan-500/10"
+Context:
+1281:                     gap: '6px'
+1282:                   }}
+1283:                   className="hover:opacity-90 transition-all font-display shadow-lg shadow-cyan-500/10"
+1284:                 >
+1285:                   <Plus className="w-4 h-4" />
+1286:                   <span>Log New Trade</span>
+1287:                 </Link>
+
+--- MATCH AT LINE 1361 (Has Shadow) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '20px', paddingBottom: '20px', position: 'relative' }}
+Context:
+1359:               {/* Card 1: TOTAL TRADES */}
+1360:               <div 
+1361:                 style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '20px', paddingBottom: '20px', position: 'relative' }}
+1362:                 className="px-4"
+1363:               >
+1364:                 <div style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>
+1365:                   TOTAL TRADES
+
+--- MATCH AT LINE 1381 (Has Shadow) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '20px', paddingBottom: '20px' }}
+Context:
+1379:               {/* Card 2: NET P&L */}
+1380:               <div 
+1381:                 style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '20px', paddingBottom: '20px' }}
+1382:                 className="px-4"
+1383:               >
+1384:                 <div style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>
+1385:                   NET P&L
+
+--- MATCH AT LINE 1397 (Has Shadow) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '20px', paddingBottom: '20px' }}
+Context:
+1395:               {/* Card 3: PROFIT FACTOR */}
+1396:               <div 
+1397:                 style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '20px', paddingBottom: '20px' }}
+1398:                 className="px-4"
+1399:               >
+1400:                 <div style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>
+1401:                   PROFIT FACTOR
+
+--- MATCH AT LINE 1413 (Has Shadow) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '20px', paddingBottom: '20px' }}
+Context:
+1411:               {/* Card 4: WIN RATE */}
+1412:               <div 
+1413:                 style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '20px', paddingBottom: '20px' }}
+1414:                 className="px-4"
+1415:               >
+1416:                 <div style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>
+1417:                   WIN RATE
+
+--- MATCH AT LINE 1426 (Has Shadow) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '20px', paddingBottom: '20px' }}
+Context:
+1424:               {/* Card 5: AVG R */}
+1425:               <div 
+1426:                 style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', paddingTop: '20px', paddingBottom: '20px' }}
+1427:                 className="px-4"
+1428:               >
+1429:                 <div style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>
+1430:                   AVG R
+
+--- MATCH AT LINE 1446 (Has Shadow) ---
+Code: className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20 shadow-sm"
+Context:
+1444:             {loading ? null : allTrades.length === 0 ? (
+1445:               /* EMPTY JOURNAL NO TRADES YET */
+1446:               <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+1447:                 <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 animate-pulse" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}>
+1448:                   <BarChart className="w-8 h-8" style={{ color: 'var(--text-muted)' }} />
+1449:                 </div>
+1450:                 <h3 className="text-xl font-bold font-display" style={{ color: 'var(--text)' }}>Your Trading Journal is Empty</h3>
+
+--- MATCH AT LINE 1446 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+Context:
+1444:             {loading ? null : allTrades.length === 0 ? (
+1445:               /* EMPTY JOURNAL NO TRADES YET */
+1446:               <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+1447:                 <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 animate-pulse" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}>
+1448:                   <BarChart className="w-8 h-8" style={{ color: 'var(--text-muted)' }} />
+1449:                 </div>
+1450:                 <h3 className="text-xl font-bold font-display" style={{ color: 'var(--text)' }}>Your Trading Journal is Empty</h3>
+
+--- MATCH AT LINE 1456 (Has Shadow) ---
+Code: className="mt-8 bg-[var(--accent)] hover:bg-[var(--accent)] text-white font-extrabold rounded-xl px-6 py-3.5 text-xs uppercase tracking-widest font-mono transition-all inline-flex items-center gap-2 shadow-lg shadow-indigo-600/15"
+Context:
+1454:                 <Link
+1455:                   to="/trade-entry"
+1456:                   className="mt-8 bg-[var(--accent)] hover:bg-[var(--accent)] text-white font-extrabold rounded-xl px-6 py-3.5 text-xs uppercase tracking-widest font-mono transition-all inline-flex items-center gap-2 shadow-lg shadow-indigo-600/15"
+1457:                 >
+1458:                   <span>Log Your First Trade</span>
+1459:                   <Plus className="w-4 h-4" />
+1460:                 </Link>
+
+--- MATCH AT LINE 1464 (Has Shadow) ---
+Code: className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-16 shadow-sm"
+Context:
+1462:             ) : filteredTrades.length === 0 ? (
+1463:               /* EMPTY LOG RESULTS FILTER ZERO */
+1464:               <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-16 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+1465:                 <div className="w-14 h-14 rounded-full flex items-center justify-center mb-3" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)', color: 'var(--text-muted)' }}>
+1466:                   <TrendingUp className="w-6 h-6" />
+1467:                 </div>
+1468:                 <h3 className="text-lg font-bold font-display" style={{ color: 'var(--text)' }}>No Trades Match Filters</h3>
+
+--- MATCH AT LINE 1464 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+Context:
+1462:             ) : filteredTrades.length === 0 ? (
+1463:               /* EMPTY LOG RESULTS FILTER ZERO */
+1464:               <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-16 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+1465:                 <div className="w-14 h-14 rounded-full flex items-center justify-center mb-3" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)', color: 'var(--text-muted)' }}>
+1466:                   <TrendingUp className="w-6 h-6" />
+1467:                 </div>
+1468:                 <h3 className="text-lg font-bold font-display" style={{ color: 'var(--text)' }}>No Trades Match Filters</h3>
+
+--- MATCH AT LINE 1485 (Has Shadow) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderBottom: 'none', borderTopLeftRadius: '12px', borderTopRightRadius: '12px', boxShadow: '0 1px 4px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.05)' }}
+Context:
+1483:               /* MAIN INTERACTIVE SORTABLE DATATABLE */
+1484:               <div className="flex flex-col animate-in fade-in duration-200">
+1485:                 <div id="trading-logs-datatable-container" className="overflow-hidden" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderBottom: 'none', borderTopLeftRadius: '12px', borderTopRightRadius: '12px', boxShadow: '0 1px 4px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.05)' }}>
+1486:                   {/* BULK ACTION BAR */}
+1487:                   {selectedTradeIds.length > 0 && (
+1488:                     <div 
+1489:                       style={{ 
+
+--- MATCH AT LINE 1489 (Flat Candidate) ---
+Code: style={{                          backgroundColor: 'var(--card)',                          border: '0.5px solid var(--accent)',                         borderRadius: '10px'                       }}
+Context:
+1487:                   {selectedTradeIds.length > 0 && (
+1488:                     <div 
+1489:                       style={{ 
+1490:                         backgroundColor: 'var(--card)', 
+1491:                         border: '0.5px solid var(--accent)',
+1492:                         borderRadius: '10px'
+1493:                       }} 
+
+--- MATCH AT LINE 1509 (Flat Candidate) ---
+Code: style={{                            backgroundColor: 'var(--card)',                            border: '0.5px solid var(--border)',                            color: 'var(--text)',                           borderRadius: '6px',                           padding: '6px 12px',                           fontSize: '12px'                         }}
+Context:
+1507:                         value={selectedStrategyId}
+1508:                         onChange={(e) => setSelectedStrategyId(e.target.value)}
+1509:                         style={{ 
+1510:                           backgroundColor: 'var(--card)', 
+1511:                           border: '0.5px solid var(--border)', 
+1512:                           color: 'var(--text)',
+1513:                           borderRadius: '6px',
+
+--- MATCH AT LINE 1784 (Has Shadow) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderTop: 'none', borderBottomLeftRadius: '12px', borderBottomRightRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}
+Context:
+1782:               {calculatedStats.totalCount > 0 && (
+1783:                 <div 
+1784:                   style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderTop: 'none', borderBottomLeftRadius: '12px', borderBottomRightRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}
+1785:                   className="px-5 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-medium"
+1786:                 >
+1787:                   <div className="flex items-center gap-2">
+1788:                     <span style={{ color: 'var(--text-muted)' }}>Trades per page:</span>
+
+--- MATCH AT LINE 1795 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
+Context:
+1793:                         setCurrentPage(1);
+1794:                       }}
+1795:                       style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
+1796:                       className="rounded-lg px-2.5 py-1 focus:outline-none cursor-pointer text-xs font-bold"
+1797:                     >
+1798:                       {[10, 25, 50, 100].map((size) => (
+1799:                         <option key={size} value={size}>
+
+--- MATCH AT LINE 1863 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1.5px solid var(--border)', borderRadius: '16px' }}
+Context:
+1861:           >
+1862:             <div 
+1863:               style={{ backgroundColor: 'var(--card)', border: '1.5px solid var(--border)', borderRadius: '16px' }}
+1864:               className="w-full max-w-md overflow-hidden shadow-2xl flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
+1865:             >
+1866:               {/* Header */}
+1867:               <div className="flex items-center justify-between p-4 border-b border-[var(--border)]">
+
+--- MATCH AT LINE 1864 (Has Shadow) ---
+Code: className="w-full max-w-md overflow-hidden shadow-2xl flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
+Context:
+1862:             <div 
+1863:               style={{ backgroundColor: 'var(--card)', border: '1.5px solid var(--border)', borderRadius: '16px' }}
+1864:               className="w-full max-w-md overflow-hidden shadow-2xl flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
+1865:             >
+1866:               {/* Header */}
+1867:               <div className="flex items-center justify-between p-4 border-b border-[var(--border)]">
+1868:                 <h3 className="text-sm font-bold tracking-wide uppercase font-mono text-[var(--text)]">
+
+--- MATCH AT LINE 1922 (Flat Candidate) ---
+Code: style={{ border: '0.5px solid var(--border)', backgroundColor: 'var(--card)', color: 'var(--text-sub)' }}
+Context:
+1920:                   type="button"
+1921:                   onClick={() => setIsColumnModalOpen(false)}
+1922:                   style={{ border: '0.5px solid var(--border)', backgroundColor: 'var(--card)', color: 'var(--text-sub)' }}
+1923:                   className="px-4 py-2 rounded-xl text-xs font-semibold hover:bg-[var(--bar)] cursor-pointer transition-all"
+1924:                 >
+1925:                   Cancel
+1926:                 </button>
+
+--- MATCH AT LINE 1934 (Has Shadow) ---
+Code: className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-[var(--accent)] hover:bg-[var(--accent)] cursor-pointer transition-all shadow-md shadow-indigo-600/10"
+Context:
+1932:                     setIsColumnModalOpen(false);
+1933:                   }}
+1934:                   className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-[var(--accent)] hover:bg-[var(--accent)] cursor-pointer transition-all shadow-md shadow-indigo-600/10"
+1935:                 >
+1936:                   Save Changes
+1937:                 </button>
+1938:               </div>

@@ -1013,7 +1013,7 @@ export const TradingLogsPage: React.FC = () => {
                         backgroundColor: 'var(--card)',
                         border: '1px solid var(--border)',
                         borderRadius: '10px',
-                        boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)',
                         padding: '16px',
                         position: 'absolute',
                         top: 'calc(100% + 8px)',
@@ -1443,7 +1443,7 @@ export const TradingLogsPage: React.FC = () => {
             {/* ERROR SKELETON OR DYNAMIC TABLES LAYOUT */}
             {loading ? null : allTrades.length === 0 ? (
               /* EMPTY JOURNAL NO TRADES YET */
-              <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+              <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
                 <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 animate-pulse" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}>
                   <BarChart className="w-8 h-8" style={{ color: 'var(--text-muted)' }} />
                 </div>
@@ -1461,7 +1461,7 @@ export const TradingLogsPage: React.FC = () => {
               </div>
             ) : filteredTrades.length === 0 ? (
               /* EMPTY LOG RESULTS FILTER ZERO */
-              <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-16 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+              <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-16" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
                 <div className="w-14 h-14 rounded-full flex items-center justify-center mb-3" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)', color: 'var(--text-muted)' }}>
                   <TrendingUp className="w-6 h-6" />
                 </div>
@@ -1482,7 +1482,7 @@ export const TradingLogsPage: React.FC = () => {
             ) : (
               /* MAIN INTERACTIVE SORTABLE DATATABLE */
               <div className="flex flex-col animate-in fade-in duration-200">
-                <div id="trading-logs-datatable-container" className="overflow-hidden" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderBottom: 'none', borderTopLeftRadius: '12px', borderTopRightRadius: '12px', boxShadow: '0 1px 4px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.05)' }}>
+                <div id="trading-logs-datatable-container" className="overflow-hidden" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderBottom: 'none', borderTopLeftRadius: '12px', borderTopRightRadius: '12px' }}>
                   {/* BULK ACTION BAR */}
                   {selectedTradeIds.length > 0 && (
                     <div 
@@ -1781,7 +1781,7 @@ export const TradingLogsPage: React.FC = () => {
               {/* ADDITION 2 — PAGINATION CONTROLS */}
               {calculatedStats.totalCount > 0 && (
                 <div 
-                  style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderTop: 'none', borderBottomLeftRadius: '12px', borderBottomRightRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}
+                  style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderTop: 'none', borderBottomLeftRadius: '12px', borderBottomRightRadius: '12px' }}
                   className="px-5 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-medium"
                 >
                   <div className="flex items-center gap-2">
@@ -1860,8 +1860,8 @@ export const TradingLogsPage: React.FC = () => {
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
           >
             <div 
-              style={{ backgroundColor: 'var(--card)', border: '1.5px solid var(--border)', borderRadius: '16px' }}
-              className="w-full max-w-md overflow-hidden shadow-2xl flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
+              style={{ backgroundColor: 'var(--card)', border: '1.5px solid var(--border)', borderRadius: '16px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }}
+              className="w-full max-w-md overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
             >
               {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-[var(--border)]">
