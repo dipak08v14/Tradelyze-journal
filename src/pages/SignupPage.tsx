@@ -117,7 +117,7 @@ export function SignupPage() {
 
   return (
     <div className="min-h-dvh flex items-center justify-center p-4 font-sans" style={{ backgroundColor: 'var(--bg)' }}>
-      <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }} className="w-full max-w-md rounded-3xl shadow-2xl p-8 relative overflow-hidden">
+      <div style={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }} className="w-full max-w-md rounded-3xl p-8 relative overflow-hidden">
         
         {/* LOGO */}
         <div className="text-center mb-6 flex flex-col items-center">

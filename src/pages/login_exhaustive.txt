@@ -1,0 +1,10 @@
+
+======================================
+FILE: LoginPage.tsx
+======================================
+[Line 97] (Flat Candidate): className="w-10 h-10 border-4 rounded-full animate-spin"
+[Line 106] (Has Shadow): className="w-full max-w-md rounded-3xl shadow-2xl p-8 relative overflow-hidden"
+[Line 106] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+[Line 166] (Flat Candidate): className="bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl p-3 text-xs font-semibold leading-relaxed"
+[Line 175] (Has Shadow): className="w-full bg-[var(--accent)] hover:bg-[var(--accent-light)] text-slate-950 rounded-xl px-4 py-2.5 font-bold transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm shadow-md"
+[Line 179] (Flat Candidate): className="w-4 h-4 border-2 border-slate-950/30 border-t-slate-950 rounded-full animate-spin"

@@ -1,0 +1,9 @@
+
+======================================
+FILE: SignupPage.tsx
+======================================
+[Line 111] (Flat Candidate): className="w-10 h-10 border-4 rounded-full animate-spin"
+[Line 120] (Has Shadow): className="w-full max-w-md rounded-3xl shadow-2xl p-8 relative overflow-hidden"
+[Line 120] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+[Line 211] (Flat Candidate): className="bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl p-3 text-xs font-semibold leading-relaxed"
+[Line 220] (Has Shadow): className="w-full bg-[var(--accent)] hover:bg-[var(--accent-light)] text-slate-950 rounded-xl px-4 py-2.5 font-bold transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm shadow-md"
