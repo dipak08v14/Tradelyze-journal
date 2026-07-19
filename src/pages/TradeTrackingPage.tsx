@@ -1328,22 +1328,10 @@ const TradeTrackingPageContent: React.FC = () => {
             ) : (
               <>
             
-            {/* BREADCRUMB ROW WITH TRADE NAVIGATION */}
-            <div className="mb-1 flex items-center justify-between">
-              <Link
-                to="/trading-logs"
-                style={{ color: 'var(--accent)' }}
-                className="hover:opacity-90 text-sm inline-flex items-center gap-1 font-medium transition-all group"
-              >
-                <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
-                <span>Trading Logs</span>
-              </Link>
-            </div>
-
             {/* HEADER STRIP */}
-            <div style={{ backgroundColor: 'var(--card)', paddingTop: '6px', paddingBottom: '6px' }} className="-mx-6 px-6 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b-0">
+            <div style={{ backgroundColor: 'var(--card)', width: 'calc(100% + 32px)', marginLeft: '-16px', marginRight: '-16px', paddingLeft: '16px', paddingRight: '16px', paddingTop: '3px', paddingBottom: '3px', borderBottom: '1px solid var(--border)' }} className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div>
-                <h1 style={{ color: 'var(--text)', fontSize: '28px', fontWeight: 700 }} className="font-display">
+                <h1 style={{ color: 'var(--text)', fontSize: '28px', fontWeight: 700, letterSpacing: '-0.3px' }} className="font-display">
                   Trade Tracking
                 </h1>
               </div>

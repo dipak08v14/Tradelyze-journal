@@ -599,16 +599,6 @@ export const StrategyDetail: React.FC = () => {
 
         <main className="flex-1 overflow-y-auto overflow-x-hidden px-0">
           <div className="w-full px-4">
-            {/* BREADCRUMB ROW */}
-            <Link
-              to="/strategies"
-              style={{ color: 'var(--accent)' }}
-              className="hover:opacity-90 text-sm inline-flex items-center gap-1 font-medium transition-all group mb-1"
-            >
-              <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
-              <span>Strategies</span>
-            </Link>
-
             {/* STRATEGY HEADER BLOCK */}
             <div
               className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
@@ -626,32 +616,9 @@ export const StrategyDetail: React.FC = () => {
               }}
             >
               <div>
-                <div className="flex items-center gap-2.5 flex-wrap">
-                  <h1 className="text-2xl font-bold tracking-tight font-display" style={{ color: 'var(--text)' }}>
-                    {strategy ? strategy.name : 'Strategy details'}
-                  </h1>
-                  {strategy && (
-                    <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider border shrink-0" style={{ backgroundColor: 'var(--accent-muted)', color: 'var(--accent)', borderColor: 'var(--accent)' }}>
-                      {strategy.type_of_strategy}
-                    </span>
-                  )}
-                </div>
-                <p className="text-xs font-mono" style={{ color: 'var(--text-muted)', marginLeft: '8px' }}>
-                  STATUS:{' '}
-                  <span
-                    className="font-bold uppercase animate-fade-in"
-                    style={{
-                      color:
-                        strategy?.status?.toLowerCase() === 'active'
-                          ? '#008F67'
-                          : strategy?.status?.toLowerCase() === 'not working'
-                          ? '#f59e0b'
-                          : '#71717a'
-                    }}
-                  >
-                    {strategy?.status ? strategy.status.toUpperCase() : 'ACTIVE'}
-                  </span>
-                </p>
+                <h1 className="font-bold tracking-tight font-display" style={{ color: 'var(--text)', fontSize: '28px', letterSpacing: '-0.3px' }}>
+                  {strategy ? strategy.name : 'Strategy details'}
+                </h1>
               </div>
 
               <div>
@@ -679,6 +646,30 @@ export const StrategyDetail: React.FC = () => {
                 </Link>
               </div>
             </div>
+
+            {strategy && (
+              <div className="flex items-center gap-2.5 mb-3">
+                <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider border shrink-0" style={{ backgroundColor: 'var(--accent-muted)', color: 'var(--accent)', borderColor: 'var(--accent)' }}>
+                  {strategy.type_of_strategy}
+                </span>
+                <p className="text-xs font-mono" style={{ color: 'var(--text-muted)' }}>
+                  STATUS:{' '}
+                  <span
+                    className="font-bold uppercase"
+                    style={{
+                      color:
+                        strategy?.status?.toLowerCase() === 'active'
+                          ? '#008F67'
+                          : strategy?.status?.toLowerCase() === 'not working'
+                          ? '#f59e0b'
+                          : '#71717a'
+                    }}
+                  >
+                    {strategy?.status ? strategy.status.toUpperCase() : 'ACTIVE'}
+                  </span>
+                </p>
+              </div>
+            )}
 
             {/* TAB SELECTORS ACTIONS */}
             <div className="flex items-center overflow-x-auto gap-1 sticky top-0 z-10 scrollbar-none mb-3 px-1 py-1 rounded-lg" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>

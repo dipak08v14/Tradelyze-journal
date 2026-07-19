@@ -1150,8 +1150,8 @@ export const TradeEntryPage: React.FC = () => {
                 width: 'calc(100% + 32px)',
                 marginLeft: '-16px',
                 marginRight: '-16px',
-                paddingTop: '6px',
-                paddingBottom: '6px',
+                paddingTop: '3px',
+                paddingBottom: '3px',
                 paddingLeft: '16px',
                 paddingRight: '16px',
                 borderRadius: 0,
@@ -1164,7 +1164,7 @@ export const TradeEntryPage: React.FC = () => {
               }}
             >
               <div>
-                <h1 className="font-display tracking-tight" style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)' }}>
+                <h1 className="font-display tracking-tight" style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px' }}>
                   {isEditMode ? 'Edit Trade' : 'Log Trade'}
                 </h1>
               </div>
@@ -1181,7 +1181,7 @@ export const TradeEntryPage: React.FC = () => {
                         padding: '0 20px',
                         height: '34px',
                         borderRadius: '8px',
-                                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)',
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)',
                         fontSize: '13px',
                         fontWeight: 600,
                         cursor: 'pointer',

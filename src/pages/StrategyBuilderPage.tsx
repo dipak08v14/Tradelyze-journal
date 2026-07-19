@@ -44,6 +44,8 @@ export const StrategyBuilderPage: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [showErrors, setShowErrors] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [initialSnapshot, setInitialSnapshot] = useState<string>('');
+  const [showUnsavedWarning, setShowUnsavedWarning] = useState(false);
 
   // Core Form Fields
   const [name, setName] = useState('');
@@ -177,11 +179,26 @@ export const StrategyBuilderPage: React.FC = () => {
     };
   }, [isEditMode, strategyId, userId, navigate]);
 
+  useEffect(() => {
+    if (!isEditMode) {
+      setInitialSnapshot(JSON.stringify({ 
+        name: '', srNo: 1, typeOfStrategy: '', subType: '', status: 'active', notes: '', 
+        entryRules: [{ id: 'initial-entry-1', rule_text: '', rule_order: 1 }], 
+        exitRules: [{ id: 'initial-exit-1', rule_text: '', rule_order: 1 }] 
+      }));
+    }
+  }, [isEditMode]);
+
+  const isDirty = 
+    JSON.stringify({ name, srNo, typeOfStrategy, subType, status, notes, entryRules, exitRules }) !== initialSnapshot ||
+    markedForDeletion.length > 0 ||
+    pendingUploads.length > 0;
+
   // Max sr_no calculations (Create Mode Only)
   useEffect(() => {
     if (isEditMode || !userId) return;
 
-    const findMaxSrNo = async () => {
+        const findMaxSrNo = async () => {
       try {
         const { data, error } = await supabase
           .from('strategies')
@@ -192,14 +209,22 @@ export const StrategyBuilderPage: React.FC = () => {
 
         if (error) throw error;
 
-        if (data && data.length > 0) {
-          setSrNo(Number(data[0].sr_no || 0) + 1);
-        } else {
-          setSrNo(1);
-        }
+        const resolvedSrNo = data && data.length > 0 ? Number(data[0].sr_no || 0) + 1 : 1;
+        setSrNo(resolvedSrNo);
+        
+        setInitialSnapshot(prev => {
+          if (!prev) return prev;
+          const parsed = JSON.parse(prev);
+          return JSON.stringify({ ...parsed, srNo: resolvedSrNo });
+        });
       } catch (err) {
         console.warn('Could not determine next serial number:', err);
         setSrNo(1);
+        setInitialSnapshot(prev => {
+          if (!prev) return prev;
+          const parsed = JSON.parse(prev);
+          return JSON.stringify({ ...parsed, srNo: 1 });
+        });
       }
     };
 
@@ -789,16 +814,6 @@ export const StrategyBuilderPage: React.FC = () => {
           <main className="flex-1 overflow-y-auto overflow-x-hidden px-0">
             <div className="w-full px-4">
               
-              {/* BREADCRUMB HEADER */}
-              <Link
-                to="/strategies"
-                className="inline-flex items-center gap-1.5 text-sm hover:opacity-90 transition-all group mb-1"
-                style={{ color: 'var(--accent)' }}
-              >
-                <span className="transform group-hover:-translate-x-1 transition-transform inline-block">{'<'}</span>
-                <span>Back to Strategies</span>
-              </Link>
-
               {/* TITLE AND CONTROL BUTTONS ROW */}
               <div 
                 className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
@@ -815,8 +830,8 @@ export const StrategyBuilderPage: React.FC = () => {
                   marginBottom: '16px'
                 }}
               >
-                <h1 className="text-2xl font-bold tracking-tight font-display" style={{ color: 'var(--text)' }}>
-                  {isEditMode ? `Edit Strategy — ${name || 'Setup'}` : 'New Strategy'}
+                <h1 className="font-bold tracking-tight font-display" style={{ color: 'var(--text)', fontSize: '28px', letterSpacing: '-0.3px' }}>
+                  {isEditMode ? (name || 'Strategy') : 'New Strategy'}
                 </h1>
                 
                 <div className="flex flex-row items-center gap-2.5">
@@ -830,6 +845,20 @@ export const StrategyBuilderPage: React.FC = () => {
                       Delete Strategy
                     </button>
                   )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (isDirty) {
+                        setShowUnsavedWarning(true);
+                      } else {
+                        navigate(isEditMode ? `/strategies/${strategyId}` : '/strategies');
+                      }
+                    }}
+                    style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)', color: 'var(--text-sub)' }}
+                    className="max-sm:flex-1 hover:opacity-90 transition-all px-5 py-1.5 rounded-lg text-[13px] font-semibold cursor-pointer"
+                  >
+                    Cancel
+                  </button>
                   <button
                     onClick={handleSave}
                     disabled={saving || !name.trim() || !typeOfStrategy}
@@ -1528,6 +1557,42 @@ export const StrategyBuilderPage: React.FC = () => {
           </main>
         )}
       </div>
+
+      {/* UNSAVED CHANGES WARNING MODAL */}
+      {showUnsavedWarning && (
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-md z-[60] flex items-center justify-center p-4">
+          <div
+            className="w-full max-w-sm rounded-2xl border overflow-hidden p-6 animate-in scale-in duration-200 border-amber-500/30"
+            style={{ backgroundColor: 'var(--card)', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }}
+          >
+            <div className="flex items-center gap-2 text-amber-500 mb-3 font-mono font-bold text-sm uppercase tracking-wider">
+              <span>⚠️ Unsaved Changes</span>
+            </div>
+            
+            <p className="text-xs font-sans leading-relaxed mb-6" style={{ color: 'var(--text-sub)' }}>
+              You have unsaved changes to this strategy. If you leave now, these changes will be lost.
+            </p>
+
+            <div className="flex items-center justify-end gap-2.5">
+              <button
+                type="button"
+                onClick={() => setShowUnsavedWarning(false)}
+                className="px-4 py-2 text-xs font-mono font-bold hover:text-[var(--text)] cursor-pointer rounded-lg bg-transparent hover:bg-[var(--bar)] transition-colors"
+                style={{ color: 'var(--text-muted)' }}
+              >
+                Keep Editing
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate(isEditMode ? `/strategies/${strategyId}` : '/strategies')}
+                className="px-4 py-2 text-xs font-mono font-bold rounded-lg text-white bg-red-600 hover:bg-red-500 hover:shadow-lg hover:shadow-red-500/10 cursor-pointer transition-all shrink-0"
+              >
+                Discard Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* DELETE CONFIRMATION MODAL */}
       <Modal

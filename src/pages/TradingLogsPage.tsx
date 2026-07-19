@@ -985,7 +985,7 @@ export const TradingLogsPage: React.FC = () => {
                       border: '1px solid var(--border)',
                       background: 'var(--card)',
                       padding: '6px 12px',
-                      borderRadius: '6px',
+                      borderRadius: '8px',
                       fontSize: '13px',
                       color: 'var(--text-sub)',
                       display: 'inline-flex',

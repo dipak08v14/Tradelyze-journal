@@ -549,7 +549,7 @@ export const StrategiesPage: React.FC = () => {
                     fontWeight: 700,
                     borderRadius: '8px',
                     padding: '6px 20px',
-                    fontSize: '14px',
+                    fontSize: '13px',
                     border: 'none',
                     display: 'inline-flex',
                     alignItems: 'center',
