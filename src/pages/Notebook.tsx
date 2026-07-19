@@ -1012,7 +1012,7 @@ export function Notebook() {
         <button
           type="button"
           onClick={(e) => handleToggleSelectNote(e, note.id)}
-          className="mt-0.5 text-zinc-500 hover:text-zinc-200 transition-colors shrink-0 cursor-pointer bg-transparent border-none p-0"
+          style={{ color: 'var(--text-muted)' }} className="mt-0.5 hover:text-[var(--text)] transition-colors shrink-0 cursor-pointer bg-transparent border-none p-0"
         >
           {isChecked ? (
             <CheckSquare className="w-4 h-4 text-[var(--accent)]" />
@@ -1250,7 +1250,7 @@ export function Notebook() {
                             }}
                             className="p-0.5 rounded hover:bg-zinc-700/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
                           >
-                            <MoreHorizontal className="w-3.5 h-3.5 text-zinc-400" />
+                            <MoreHorizontal className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />
                           </button>
 
                           {/* Ellipsis menu dropdown */}
@@ -1259,7 +1259,7 @@ export function Notebook() {
                               <button
                                 type="button"
                                 onClick={(e) => handleOpenRenameFolderModal(e, folder)}
-                                className="w-full text-left font-medium rounded px-2 py-1 text-xs text-zinc-350 hover:bg-[var(--bar)] hover:text-white cursor-pointer"
+                                style={{ color: 'var(--text-sub)' }} className="w-full text-left font-medium rounded px-2 py-1 text-xs hover:bg-[var(--bar)] hover:text-[var(--text)] cursor-pointer"
                               >
                                 Rename
                               </button>
@@ -1297,7 +1297,7 @@ export function Notebook() {
               {/* Tags List */}
               <div className="flex flex-wrap gap-1.5">
                 {Object.keys(tagsWithCounts).length === 0 ? (
-                  <div className="text-[11px] font-sans font-medium text-zinc-500 italic px-1">
+                  <div className="text-[11px] font-sans font-medium italic px-1" style={{ color: 'var(--text-muted)' }}>
                     No tags logged
                   </div>
                 ) : (
@@ -1369,19 +1369,19 @@ export function Notebook() {
             {/* Search notes box - added above top row nav actions */}
             <div className="p-3 shrink-0 border-b border-[var(--border)]/40">
               <div className="relative w-full">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-muted)' }} />
                 <input
                   type="text"
                   placeholder="Search notes..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full text-xs pl-9 pr-8 py-2 bg-[var(--card)] border border-[var(--border)] rounded-[8px] text-white placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-[var(--accent-muted)]"
+                  style={{ color: 'var(--text)' }} className="w-full text-xs pl-9 pr-8 py-2 bg-[var(--card)] border border-[var(--border)] rounded-[8px]  placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-muted)]"
                 />
                 {searchQuery && (
                   <button
                     type="button"
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white p-0.5 bg-transparent border-none cursor-pointer"
+                    style={{ color: 'var(--text-muted)' }} className="absolute right-2.5 top-1/2 -translate-y-1/2 hover:text-[var(--text)] p-0.5 bg-transparent border-none cursor-pointer"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -1421,12 +1421,12 @@ export function Notebook() {
                   </button>
                 </div>
               ) : (
-                <span className="text-[11px] font-bold font-mono text-zinc-400 dark:text-zinc-500 tracking-wider">
+                <span className="text-[11px] font-bold font-mono tracking-wider" style={{ color: 'var(--text-muted)' }}>
                   TRASH CORNER
                 </span>
               )}
               {/* decorative sort button */}
-              <button type="button" className="p-1 px-1.5 rounded hover:bg-[var(--bar)] text-zinc-400"><ArrowUpDown className="w-4 h-4" /></button>
+              <button type="button" className="p-1 px-1.5 rounded hover:bg-[var(--bar)]" style={{ color: 'var(--text-muted)' }}><ArrowUpDown className="w-4 h-4" /></button>
             </div>
 
             {/* Select All Checkbox / Bulk Options Row */}
@@ -1435,7 +1435,7 @@ export function Notebook() {
                 <button
                   type="button"
                   onClick={handleToggleSelectAll}
-                  className="text-zinc-400 hover:text-zinc-200 transition-colors p-0.5 cursor-pointer"
+                  className="hover:text-[var(--text)] transition-colors p-0.5 cursor-pointer" style={{ color: 'var(--text-muted)' }}
                   title="Toggle select all"
                 >
                   {isAllSelected ? (
@@ -1444,7 +1444,7 @@ export function Notebook() {
                     <Square className="w-4 h-4" />
                   )}
                 </button>
-                <span className="text-[10px] font-bold font-mono text-zinc-400 uppercase tracking-widest mt-0.5">
+                <span style={{ color: 'var(--text-muted)' }} className="text-[10px] font-bold font-mono uppercase tracking-widest mt-0.5">
                   {selectedNoteIds.length > 0 ? `${selectedNoteIds.length} SELECTED` : 'SELECT ALL'}
                 </span>
               </div>
@@ -1489,8 +1489,8 @@ export function Notebook() {
             <div className="flex-1 divide-y divide-[var(--border)]/30 overflow-y-auto">
               {filteredEntries.length === 0 ? (
                 <div className="p-8 text-center" id="notebook-empty-notes-prompt">
-                  <HelpCircle className="w-8 h-8 text-zinc-600 mx-auto mb-2.5" />
-                  <p className="text-xs text-zinc-500 font-mono italic leading-relaxed">
+                  <HelpCircle className="w-8 h-8 mx-auto mb-2.5" style={{ color: 'var(--text-muted)' }} />
+                  <p className="text-xs font-mono italic leading-relaxed" style={{ color: 'var(--text-muted)' }}>
                     {searchQuery.trim() !== ''
                       ? 'No notes match your search.'
                       : selectedFolderId === 'TRASH'
@@ -1575,10 +1575,10 @@ export function Notebook() {
               dateFromDashboard ? (
                 <div id="notebook-no-note-date-prompt" className="flex-1 flex flex-col items-center justify-center text-center p-12 max-w-sm mx-auto">
                   <Calendar className="w-12 h-12 text-[var(--accent)] animate-none mb-3 shrink-0" />
-                  <h4 className="text-zinc-200 font-sans font-bold text-sm tracking-wide uppercase mb-2">
+                  <h4 className="font-sans font-bold text-sm tracking-wide uppercase mb-2" style={{ color: 'var(--text-sub)' }}>
                     NO NOTE LINKED
                   </h4>
-                  <p className="text-xs text-zinc-400 font-sans leading-relaxed mb-6">
+                  <p className="text-xs font-sans leading-relaxed mb-6" style={{ color: 'var(--text-muted)' }}>
                     No note linked to <strong className="text-white">{formatLogDateLabel(dateFromDashboard)}</strong> yet.<br/><br/>
                     Click Log Day below to create one, or open an existing note and use <strong className="text-[var(--accent)]">Set trade date</strong> to link it to this day.
                   </p>
@@ -1595,7 +1595,7 @@ export function Notebook() {
                 </div>
               ) : (
                 <div id="notebook-no-note-prompt" className="flex-1 flex flex-col items-center justify-center text-center p-12">
-                  <FileText className="w-12 h-12 text-zinc-600 animate-none mb-3" />
+                  <FileText className="w-12 h-12 animate-none mb-3" style={{ color: 'var(--text-muted)' }} />
                   <h4
                     className="font-sans uppercase mb-1"
                     style={{
@@ -1625,7 +1625,7 @@ export function Notebook() {
                   
                   {/* Indicators line */}
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold font-mono text-zinc-500 uppercase tracking-widest bg-zinc-800/20 px-2 py-0.5 rounded border border-[var(--border)]">
+                    <span style={{ color: 'var(--text-muted)' }} className="text-[10px] font-bold font-mono uppercase tracking-widest bg-[var(--bar)] px-2 py-0.5 rounded border border-[var(--border)]">
                       {(selectedFolderId === 'TRASH' || activeNote.is_deleted) ? 'READ-ONLY TRASH NOTE' : 'ACTIVE NOTE'}
                     </span>
                     
@@ -1637,7 +1637,7 @@ export function Notebook() {
                         ) : hasSavedRecently ? (
                           <span className="text-green-500 bg-green-500/5 px-2 py-0.5 rounded border border-green-500/10">Saved ✓</span>
                         ) : (
-                          <span className="text-zinc-500 bg-zinc-800/10 px-2 py-0.5 rounded border border-[var(--border)]">Idle</span>
+                          <span className="px-2 py-0.5 rounded border border-[var(--border)]" style={{ color: 'var(--text-muted)', backgroundColor: 'var(--bar)' }}>Idle</span>
                         )}
                       </div>
                     )}
@@ -1655,7 +1655,7 @@ export function Notebook() {
                       setLocalTitle(e.target.value);
                       triggerTitleSave(e.target.value);
                     }}
-                    className="text-2xl font-bold font-sans text-white focus:outline-none w-full bg-transparent border-none p-0 focus:ring-0 mt-1 placeholder:text-zinc-600"
+                    className="text-2xl font-bold font-sans focus:outline-none w-full bg-transparent border-none p-0 focus:ring-0 mt-1 placeholder:text-[var(--text-muted)]" style={{ color: 'var(--text)' }}
                   />
 
                   {/* Subtle link prompt if log_date is not set */}
@@ -1669,14 +1669,14 @@ export function Notebook() {
                         setSelectedLogDate(localToday.toISOString().split('T')[0]);
                         setShowDatePicker(true);
                       }}
-                      className="text-xs text-zinc-400 hover:text-[var(--accent)] transition-colors cursor-pointer text-left w-fit p-0 border-none bg-transparent flex items-center gap-1 mt-0.5"
+                      style={{ color: 'var(--text-muted)' }} className="text-xs hover:text-[var(--accent)] transition-colors cursor-pointer text-left w-fit p-0 border-none bg-transparent flex items-center gap-1 mt-0.5"
                     >
                       📅 Link this note to a trading day →
                     </button>
                   )}
 
                   {/* Dates created, updated & trash delete button */}
-                  <div className="flex flex-wrap items-center justify-between gap-2 mt-1 text-[11px] text-zinc-500 font-mono">
+                  <div style={{ color: 'var(--text-muted)' }} className="flex flex-wrap items-center justify-between gap-2 mt-1 text-[11px] font-mono">
                     <div className="flex items-center flex-wrap gap-2">
                       {!activeNote.is_deleted && (
                         <>
@@ -1693,7 +1693,7 @@ export function Notebook() {
                               </button>
                             </div>
                           ) : showDatePicker ? (
-                            <div className="flex items-center gap-1.5 bg-zinc-900 px-2 py-1 rounded border border-[var(--border)] animate-in fade-in zoom-in-95 duration-100">
+                            <div className="flex items-center gap-1.5 bg-[var(--card)] px-2 py-1 rounded border border-[var(--border)] animate-in fade-in zoom-in-95 duration-100">
                               <input
                                 type="date"
                                 value={selectedLogDate}
@@ -1710,7 +1710,7 @@ export function Notebook() {
                               <button
                                 type="button"
                                 onClick={() => setShowDatePicker(false)}
-                                className="text-zinc-400 hover:text-white px-1 text-xs cursor-pointer bg-transparent border-none"
+                                className="hover:text-[var(--text)] px-1 text-xs cursor-pointer bg-transparent border-none" style={{ color: 'var(--text-muted)' }}
                               >
                                 Cancel
                               </button>
@@ -1754,19 +1754,19 @@ export function Notebook() {
 
                 {/* TAGS BAR */}
                 <div id="notebook-note-tags-row" className="flex flex-wrap items-center gap-2 py-1 shrink-0">
-                  <span className="text-[10px] font-mono font-bold tracking-wider text-zinc-500">TAGS:</span>
+                  <span className="text-[10px] font-mono font-bold tracking-wider" style={{ color: 'var(--text-muted)' }}>TAGS:</span>
                   
                   {activeNote.tags && activeNote.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="px-2 py-0.5 text-xs font-medium rounded-full bg-[var(--bar)] text-zinc-300 inline-flex items-center gap-1 group border border-[var(--border)]"
+                      style={{ color: 'var(--text)' }} className="px-2 py-0.5 text-xs font-medium rounded-full bg-[var(--bar)] inline-flex items-center gap-1 group border border-[var(--border)]"
                     >
                       <span>{tag}</span>
                       {!activeNote.is_deleted && (
                         <button
                           type="button"
                           onClick={() => removeTag(tag)}
-                          className="hover:text-red-400 p-0 text-xs shrink-0 line-height-none border-none bg-transparent cursor-pointer font-bold select-none text-zinc-500"
+                          style={{ color: 'var(--text-muted)' }} className="hover:text-red-400 p-0 text-xs shrink-0 line-height-none border-none bg-transparent cursor-pointer font-bold select-none"
                         >
                           &times;
                         </button>
@@ -1781,7 +1781,7 @@ export function Notebook() {
                       value={tagInput}
                       onChange={(e) => setTagInput(e.target.value)}
                       onKeyDown={handleTagKeyDown}
-                      className="px-2.5 py-0.5 rounded-full bg-[var(--card)] border border-[var(--border)] text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent-muted)] w-44 font-mono font-medium"
+                      style={{ color: 'var(--text)' }} className="px-2.5 py-0.5 rounded-full bg-[var(--card)] border border-[var(--border)] text-xs  placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent-muted)] w-44 font-mono font-medium"
                     />
                   )}
                 </div>
@@ -1789,26 +1789,26 @@ export function Notebook() {
                 {/* RECENTLY USED TEMPLATES ROW */}
                 {!activeNote.is_deleted && (
                   <div id="notebook-templates-row" className="flex flex-col gap-1.5 py-1.5 shrink-0 border-t border-b border-[var(--border)]/30">
-                    <span className="text-[10px] font-mono font-bold tracking-wider text-zinc-500 uppercase">Recently used templates</span>
+                    <span className="text-[10px] font-mono font-bold tracking-wider uppercase" style={{ color: 'var(--text-muted)' }}>Recently used templates</span>
                     <div className="flex flex-wrap items-center gap-2">
                       <button
                         type="button"
                         onClick={() => handleApplyTemplate(`PRE-MARKET BIAS:<br/><br/><br/>KEY LEVELS TO WATCH:<br/><br/><br/>SETUPS I'M LOOKING FOR:<br/><br/><br/>RISK MANAGEMENT TODAY:<br/>- Max loss: <br/>- Max trades: <br/><br/><br/>SESSION NOTES:<br/>`)}
-                        className="px-2.5 py-1 text-[11px] font-medium rounded-full bg-[var(--bar)] hover:bg-[var(--bar)]/80 text-zinc-350 border border-[var(--border)] transition-all cursor-pointer"
+                        style={{ color: 'var(--text-muted)' }} className="px-2.5 py-1 text-[11px] font-medium rounded-full bg-[var(--bar)] hover:bg-[var(--bar)]/80 border border-[var(--border)] transition-all cursor-pointer"
                       >
                         Daily Game Plan
                       </button>
                       <button
                         type="button"
                         onClick={() => handleApplyTemplate(`SYMBOL: <br/>DIRECTION: <br/>SETUP: <br/><br/>WHAT I SAW:<br/><br/><br/>ENTRY REASONING:<br/><br/><br/>WHAT ACTUALLY HAPPENED:<br/><br/><br/>LESSON:<br/>`)}
-                        className="px-2.5 py-1 text-[11px] font-medium rounded-full bg-[var(--bar)] hover:bg-[var(--bar)]/80 text-zinc-350 border border-[var(--border)] transition-all cursor-pointer"
+                        style={{ color: 'var(--text-muted)' }} className="px-2.5 py-1 text-[11px] font-medium rounded-full bg-[var(--bar)] hover:bg-[var(--bar)]/80 border border-[var(--border)] transition-all cursor-pointer"
                       >
                         Trade Review
                       </button>
                       <button
                         type="button"
                         onClick={() => handleApplyTemplate(`WEEK OF: <br/><br/>BEST TRADE THIS WEEK:<br/>WORST TRADE THIS WEEK:<br/>TOTAL P&L: <br/><br/>WHAT WORKED:<br/><br/><br/>WHAT DIDN'T WORK:<br/><br/><br/>FOCUS FOR NEXT WEEK:<br/>`)}
-                        className="px-2.5 py-1 text-[11px] font-medium rounded-full bg-[var(--bar)] hover:bg-[var(--bar)]/80 text-zinc-350 border border-[var(--border)] transition-all cursor-pointer"
+                        style={{ color: 'var(--text-muted)' }} className="px-2.5 py-1 text-[11px] font-medium rounded-full bg-[var(--bar)] hover:bg-[var(--bar)]/80 border border-[var(--border)] transition-all cursor-pointer"
                       >
                         Weekly Recap
                       </button>
@@ -1818,7 +1818,7 @@ export function Notebook() {
                         id="notebook-btn-add-template-trigger"
                         type="button"
                         onClick={() => setIsAddTemplateModalOpen(true)}
-                        className="text-zinc-500 hover:text-[var(--accent)] text-[11px] font-semibold ml-1 flex items-center gap-0.5 border border-dashed border-[var(--border-md)] px-2.5 py-1 rounded-full cursor-pointer transition-all bg-transparent"
+                        style={{ color: 'var(--text-muted)' }} className="hover:text-[var(--accent)] text-[11px] font-semibold ml-1 flex items-center gap-0.5 border border-dashed border-[var(--border-md)] px-2.5 py-1 rounded-full cursor-pointer transition-all bg-transparent"
                       >
                         <Plus className="w-3 h-3" /> Add Template
                       </button>
@@ -1830,12 +1830,12 @@ export function Notebook() {
                 {!activeNote.is_deleted && (
                   <div
                     id="notebook-toolbar"
-                    className="flex items-center gap-1 p-1 rounded-xl bg-zinc-900 border border-[var(--border)] overflow-x-auto select-none shrink-0"
+                    className="flex items-center gap-1 p-1 rounded-xl bg-[var(--card)] border border-[var(--border)] overflow-x-auto select-none shrink-0"
                   >
                     <button
                       type="button"
                       onClick={() => triggerFormat('bold')}
-                      className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[var(--bar)] border border-transparent hover:border-[var(--border)] text-zinc-300 hover:text-white transition-all cursor-pointer"
+                      style={{ color: 'var(--text-muted)' }} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[var(--bar)] border border-transparent hover:border-[var(--border)] hover:text-[var(--text)] transition-all cursor-pointer"
                       title="Bold"
                     >
                       <Bold className="w-3.5 h-3.5" />
@@ -1843,7 +1843,7 @@ export function Notebook() {
                     <button
                       type="button"
                       onClick={() => triggerFormat('italic')}
-                      className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[var(--bar)] border border-transparent hover:border-[var(--border)] text-zinc-300 hover:text-white transition-all cursor-pointer"
+                      style={{ color: 'var(--text-muted)' }} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[var(--bar)] border border-transparent hover:border-[var(--border)] hover:text-[var(--text)] transition-all cursor-pointer"
                       title="Italic"
                     >
                       <Italic className="w-3.5 h-3.5" />
@@ -1851,7 +1851,7 @@ export function Notebook() {
                     <button
                       type="button"
                       onClick={() => triggerFormat('underline')}
-                      className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[var(--bar)] border border-transparent hover:border-[var(--border)] text-zinc-300 hover:text-white transition-all cursor-pointer"
+                      style={{ color: 'var(--text-muted)' }} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[var(--bar)] border border-transparent hover:border-[var(--border)] hover:text-[var(--text)] transition-all cursor-pointer"
                       title="Underline"
                     >
                       <Underline className="w-3.5 h-3.5" />
@@ -1860,7 +1860,7 @@ export function Notebook() {
                     <button
                       type="button"
                       onClick={() => triggerFormat('insertUnorderedList')}
-                      className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[var(--bar)] border border-transparent hover:border-[var(--border)] text-zinc-300 hover:text-white transition-all cursor-pointer"
+                      style={{ color: 'var(--text-muted)' }} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[var(--bar)] border border-transparent hover:border-[var(--border)] hover:text-[var(--text)] transition-all cursor-pointer"
                       title="Bullet List"
                     >
                       <List className="w-3.5 h-3.5" />
@@ -1868,7 +1868,7 @@ export function Notebook() {
                     <button
                       type="button"
                       onClick={() => triggerFormat('insertOrderedList')}
-                      className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[var(--bar)] border border-transparent hover:border-[var(--border)] text-zinc-300 hover:text-white transition-all cursor-pointer"
+                      style={{ color: 'var(--text-muted)' }} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[var(--bar)] border border-transparent hover:border-[var(--border)] hover:text-[var(--text)] transition-all cursor-pointer"
                       title="Numbered List"
                     >
                       <ListOrdered className="w-3.5 h-3.5" />
@@ -1877,7 +1877,7 @@ export function Notebook() {
                     <button
                       type="button"
                       onClick={triggerLinkFormat}
-                      className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[var(--bar)] border border-transparent hover:border-[var(--border)] text-zinc-300 hover:text-white transition-all cursor-pointer"
+                      style={{ color: 'var(--text-muted)' }} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[var(--bar)] border border-transparent hover:border-[var(--border)] hover:text-[var(--text)] transition-all cursor-pointer"
                       title="Insert Link"
                     >
                       <Link2 className="w-3.5 h-3.5" />
@@ -1895,8 +1895,9 @@ export function Notebook() {
                     onInput={(e) => {
                       triggerContentSave(e.currentTarget.innerHTML);
                     }}
-                    className="w-full h-full min-h-[400px] bg-transparent text-sm focus:outline-none focus:ring-0 leading-relaxed text-zinc-200 outline-none select-text"
+                    className="w-full h-full min-h-[400px] bg-transparent text-sm focus:outline-none focus:ring-0 leading-relaxed outline-none select-text"
                     style={{
+                      color: 'var(--text)',
                       fontFamily: 'system-ui, -apple-system, sans-serif'
                     }}
                   />
@@ -1923,7 +1924,7 @@ export function Notebook() {
 
             <form onSubmit={handleSaveFolder} className="space-y-5">
               <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-bold font-mono uppercase tracking-widest text-zinc-400">
+                <label className="text-[10px] font-bold font-mono uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
                   Folder Name
                 </label>
                 <input
@@ -1933,14 +1934,14 @@ export function Notebook() {
                   placeholder="Enter folder name..."
                   value={folderNameInput}
                   onChange={(e) => setFolderNameInput(e.target.value)}
-                  className="w-full text-xs py-2.5 px-3 bg-zinc-900 border font-sans font-medium rounded-lg text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-[var(--accent-muted)]"
-                  style={{ borderColor: 'var(--border)' }}
+                  className="w-full text-xs py-2.5 px-3 bg-[var(--card)] border font-sans font-medium rounded-lg placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-muted)]"
+                  style={{ color: 'var(--text)', borderColor: 'var(--border)' }}
                 />
               </div>
 
               {/* Color swatch selector */}
               <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-bold font-mono uppercase tracking-widest text-zinc-400">
+                <label className="text-[10px] font-bold font-mono uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
                   Select Accent Color
                 </label>
                 <div id="notebook-swatches-grid" className="flex flex-wrap gap-2 pt-1">
@@ -1968,7 +1969,7 @@ export function Notebook() {
                   id="notebook-btn-modal-cancel"
                   type="button"
                   onClick={() => setIsFolderModalOpen(false)}
-                  className="px-4 py-2 text-xs font-mono font-bold text-zinc-400 hover:text-white cursor-pointer rounded-lg bg-transparent hover:bg-[var(--bar)] transition-colors"
+                  className="px-4 py-2 text-xs font-mono font-bold hover:text-[var(--text)] cursor-pointer rounded-lg bg-transparent hover:bg-[var(--bar)] transition-colors" style={{ color: 'var(--text-muted)' }}
                 >
                   CANCEL
                 </button>
@@ -1999,7 +2000,7 @@ export function Notebook() {
 
             <div className="space-y-5">
               <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-bold font-mono uppercase tracking-widest text-zinc-400">
+                <label className="text-[10px] font-bold font-mono uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
                   Select Date
                 </label>
                 <input
@@ -2008,8 +2009,8 @@ export function Notebook() {
                   required
                   value={logDateInput}
                   onChange={(e) => setLogDateInput(e.target.value)}
-                  className="w-full text-xs py-2.5 px-3 bg-zinc-900 border font-sans font-medium rounded-lg text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-[var(--accent-muted)]"
-                  style={{ borderColor: 'var(--border)' }}
+                  className="w-full text-xs py-2.5 px-3 bg-[var(--card)] border font-sans font-medium rounded-lg placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-muted)]"
+                  style={{ color: 'var(--text)', borderColor: 'var(--border)' }}
                 />
               </div>
 
@@ -2019,7 +2020,7 @@ export function Notebook() {
                   id="notebook-btn-log-cancel"
                   type="button"
                   onClick={() => setIsLogDayModalOpen(false)}
-                  className="px-4 py-2 text-xs font-mono font-bold text-zinc-400 hover:text-white cursor-pointer rounded-lg bg-transparent hover:bg-[var(--bar)] transition-colors"
+                  className="px-4 py-2 text-xs font-mono font-bold hover:text-[var(--text)] cursor-pointer rounded-lg bg-transparent hover:bg-[var(--bar)] transition-colors" style={{ color: 'var(--text-muted)' }}
                 >
                   CANCEL
                 </button>
@@ -2043,13 +2044,13 @@ export function Notebook() {
         <div id="notebook-log-day-confirm-modal-overlay" className="fixed inset-0 bg-black/75 backdrop-blur-md z-[60] flex items-center justify-center p-4">
           <div
             id="notebook-log-day-confirm-modal"
-            className="w-full max-w-sm rounded-2xl shadow-xl border overflow-hidden p-6 animate-in scale-in duration-200 bg-zinc-950 border-amber-500/30"
+            className="w-full max-w-sm rounded-2xl shadow-xl border overflow-hidden p-6 animate-in scale-in duration-200 border-amber-500/30" style={{ backgroundColor: 'var(--card)' }}
           >
             <div className="flex items-center gap-2 text-amber-500 mb-3 font-mono font-bold text-sm uppercase tracking-wider">
               <span>⚠️ Already Logged</span>
             </div>
             
-            <p className="text-xs text-zinc-300 font-sans leading-relaxed mb-6">
+            <p className="text-xs font-sans leading-relaxed mb-6" style={{ color: 'var(--text-sub)' }}>
               A note is already linked to the trading day <strong className="text-white">{formatLogDateLabel(logDayConfirmData.date)}</strong>.<br/><br/>
               There {logDayConfirmData.count === 1 ? 'is' : 'are'} currently <strong className="text-[var(--accent)]">{logDayConfirmData.count}</strong> note{logDayConfirmData.count === 1 ? '' : 's'} linked to this date. Do you want to create another anyway?
             </p>
@@ -2058,7 +2059,7 @@ export function Notebook() {
               <button
                 type="button"
                 onClick={() => setLogDayConfirmData(null)}
-                className="px-4 py-2 text-xs font-mono font-bold text-zinc-400 hover:text-white cursor-pointer rounded-lg bg-transparent hover:bg-zinc-900 transition-colors"
+                className="px-4 py-2 text-xs font-mono font-bold hover:text-[var(--text)] cursor-pointer rounded-lg bg-transparent hover:bg-[var(--bar)] transition-colors" style={{ color: 'var(--text-muted)' }}
               >
                 Cancel
               </button>
@@ -2088,7 +2089,7 @@ export function Notebook() {
             <h3 className="text-sm font-bold font-mono text-white tracking-wider uppercase mb-3">
               SAVE AS TEMPLATE
             </h3>
-            <p className="text-xs text-zinc-400 font-sans mb-5 leading-normal">
+            <p className="text-xs font-sans mb-5 leading-normal" style={{ color: 'var(--text-muted)' }}>
               Coming soon — template saving will be available soon.
             </p>
             <div className="flex items-center justify-end">
