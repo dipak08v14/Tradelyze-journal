@@ -847,7 +847,7 @@ export const StrategyBuilderPage: React.FC = () => {
                   >
                     {saving ? (
                       <>
-                        <Loader2 className="w-4 h-4 animate-spin text-white" />
+                        <Loader2 className="w-4 h-4 animate-spin" />
                         <span>Saving...</span>
                       </>
                     ) : (
@@ -1252,7 +1252,7 @@ export const StrategyBuilderPage: React.FC = () => {
                     >
                       {saving ? (
                         <>
-                          <Loader2 className="w-4 h-4 animate-spin text-white" />
+                          <Loader2 className="w-4 h-4 animate-spin" />
                           <span>Saving Strategy...</span>
                         </>
                       ) : (
@@ -1544,8 +1544,8 @@ export const StrategyBuilderPage: React.FC = () => {
             Are you sure you want to delete this?
           </h3>
           
-          <p className="text-zinc-400 text-sm mt-3 leading-relaxed">
-            You are about to delete <strong className="text-zinc-100 font-semibold">"{name || 'this strategy'}"</strong>. 
+          <p className="text-sm mt-3 leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+            You are about to delete <strong className="font-semibold" style={{ color: 'var(--text)' }}>"{name || 'this strategy'}"</strong>. 
             This will permanently remove the strategy and all associated rules. 
             This operation is irreversible.
           </p>
@@ -1554,7 +1554,7 @@ export const StrategyBuilderPage: React.FC = () => {
             <button
               onClick={() => setDeleteModalOpen(false)}
               disabled={saving}
-              className="flex-1 bg-transparent hover:bg-zinc-850 text-zinc-300 border border-zinc-800 rounded-xl px-4 py-2.5 font-semibold transition-all cursor-pointer"
+              className="flex-1 bg-transparent hover:bg-[var(--bar)] border border-[var(--border)] rounded-xl px-4 py-2.5 font-semibold transition-all cursor-pointer" style={{ color: 'var(--text-sub)' }}
             >
               Cancel
             </button>
