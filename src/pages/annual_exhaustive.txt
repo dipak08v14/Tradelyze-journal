@@ -1,0 +1,13 @@
+
+======================================
+FILE: AnnualReportsPage.tsx
+======================================
+[Line 308] (Flat Candidate): style={{           backgroundColor: 'var(--card)',           border: '1px solid var(--border)',           borderRadius: '8px',           padding: '6px 8px',           fontSize: '11px',         }}
+[Line 315] (Has Shadow): className="shadow-sm font-sans"
+[Line 362] (Has Shadow): style={{                 background: 'var(--card)',                 width: 'calc(100% + 32px)',                 marginLeft: '-16px',                 marginRight: '-16px',                 paddingTop: '3px',                 paddingBottom: '3px',                 paddingLeft: '16px',                 paddingRight: '16px',                 borderRadius: 0,                 boxShadow: 'none',                 border: 'none',                 borderBottom: '1px solid var(--border)',                 display: 'flex',                 alignItems: 'center',                 justifyContent: 'space-between'               }}
+[Line 429] (Flat Candidate): className="w-16 h-16 rounded-full flex items-center justify-center border mb-4"
+[Line 670] (Flat Candidate): className="bg-green-500/10 text-green-600 text-[9px] font-bold rounded-lg px-2 py-0.5 border border-green-500/20 whitespace-nowrap"
+[Line 675] (Flat Candidate): className="bg-red-500/10 text-red-600 text-[9px] font-bold rounded-lg px-2 py-0.5 border border-red-500/20 whitespace-nowrap"
+[Line 939] (Flat Candidate): className="w-full h-2.5 rounded-full border overflow-hidden"
+[Line 955] (Flat Candidate): className="w-full h-2.5 rounded-full border overflow-hidden"
+[Line 971] (Flat Candidate): className="w-full h-2.5 rounded-full border overflow-hidden"

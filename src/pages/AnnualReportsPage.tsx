@@ -311,8 +311,9 @@ export const AnnualReportsPage: React.FC = () => {
           borderRadius: '8px',
           padding: '6px 8px',
           fontSize: '11px',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)'
         }}
-        className="shadow-sm font-sans"
+        className="font-sans"
       >
         <p className="font-semibold mb-1" style={{ color: 'var(--text)' }}>{label}</p>
         {payload.map((entry: any, index: number) => {
