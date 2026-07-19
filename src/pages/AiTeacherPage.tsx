@@ -595,8 +595,8 @@ export const AiTeacherPage: React.FC = () => {
               </div>
               <button
                 onClick={handleResetConversation}
-                style={{ borderColor: 'var(--border)' }}
-                className="p-1.5 text-zinc-500 hover:text-red-500 hover:bg-red-50 rounded-xl border transition-all cursor-pointer"
+                style={{ borderColor: 'var(--border)', color: 'var(--text-muted)' }}
+                className="p-1.5 hover:text-red-500 hover:bg-red-50 rounded-xl border transition-all cursor-pointer"
                 title="Clear current coaching history"
               >
                 <Trash2 className="w-4 h-4" />

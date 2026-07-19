@@ -640,8 +640,9 @@ export const AnnualReportsPage: React.FC = () => {
                                   background: idx % 2 === 1 ? 'rgba(0, 0, 0, 0.018)' : 'transparent',
                                   borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
                                   borderTop: idx === 0 ? '1px solid rgba(0, 0, 0, 0.06)' : undefined,
-                                }}
-                                className="border-b text-zinc-400 transition-colors hover:bg-[rgba(0, 0, 0, 0.03)] cursor-pointer"
+                                    color: 'var(--text-muted)'
+                                  }}
+                                  className="border-b transition-colors hover:bg-[rgba(0, 0, 0, 0.03)] cursor-pointer"
                               >
                                 <td style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="px-4 py-3">{month}</td>
                                 <td className="px-4 py-3 text-center font-mono">—</td>
