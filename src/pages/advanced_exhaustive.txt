@@ -1,0 +1,79 @@
+
+======================================
+FILE: AdvancedReports.tsx
+======================================
+[Line 1536] (Has Shadow): className="p-3 rounded-xl shadow-sm transition-all hover:shadow duration-200"
+[Line 1536] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+[Line 1635] (Has Shadow): style={{                 background: 'var(--card)',                 width: 'calc(100% + 32px)',                 marginLeft: '-16px',                 marginRight: '-16px',                 paddingTop: '3px',                 paddingBottom: '3px',                 paddingLeft: '16px',                 paddingRight: '16px',                 borderRadius: 0,                 boxShadow: 'none',                 border: 'none',                 borderBottom: '1px solid var(--border)',                 display: 'flex',                 alignItems: 'center',                 justifyContent: 'space-between'               }}
+[Line 1662] (Flat Candidate): style={{                       border: '1px solid var(--border)',                       backgroundColor: 'var(--card)',                       borderRadius: '8px',                       padding: '6px 12px',                       fontSize: '13px',                       color: 'var(--text)',                       cursor: 'pointer'                     }}
+[Line 1681] (Has Shadow): style={{                         zIndex: 1000,                         backgroundColor: 'var(--card)',                         border: '1px solid var(--border)',                         borderRadius: '12px',                         boxShadow: '0 8px 24px rgba(0,0,0,0.15)',                         maxWidth: 'calc(100vw - 24px)',                         maxHeight: 'calc(100vh - 100px)',                         overflowY: 'auto'                       }}
+[Line 2037] (Flat Candidate): style={{                       backgroundColor: isActive ? 'var(--card)' : 'transparent',                       color: isActive ? 'var(--accent)' : 'var(--text-sub)',                       border: isActive ? '0.5px solid var(--border)' : '0.5px solid transparent',                       borderRadius: isActive ? '6px' : undefined                     }}
+[Line 2053] (Flat Candidate): className="w-8 h-8 border-4 border-[var(--border)] border-t-[var(--accent)] rounded-full animate-spin"
+[Line 2061] (Has Shadow): className="px-5 py-2 rounded-2xl shadow-sm"
+[Line 2061] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+[Line 2074] (Has Shadow): className="px-5 py-2 rounded-2xl shadow-sm"
+[Line 2074] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+[Line 2087] (Has Shadow): className="px-5 py-2 rounded-2xl shadow-sm"
+[Line 2087] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+[Line 2101] (Has Shadow): className="rounded-2xl p-5 shadow-sm"
+[Line 2101] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+[Line 2123] (Flat Candidate): className="w-full h-2 rounded-full overflow-hidden border"
+[Line 2139] (Flat Candidate): className="w-full h-2 rounded-full overflow-hidden border"
+[Line 2155] (Flat Candidate): className="w-full h-2 rounded-full overflow-hidden border"
+[Line 2168] (Has Shadow): className="rounded-2xl p-4 shadow-sm"
+[Line 2168] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+[Line 2270] (Has Shadow): className="rounded-2xl p-4 shadow-sm"
+[Line 2270] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+[Line 2385] (Has Shadow): className="rounded-2xl p-3 shadow-sm"
+[Line 2385] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+[Line 2403] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '6px 10px', fontSize: '11px', fontFamily: 'monospace' }}
+[Line 2425] (Has Shadow): className="rounded-2xl p-3 shadow-sm"
+[Line 2425] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+[Line 2443] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '6px 10px', fontSize: '11px', fontFamily: 'monospace' }}
+[Line 2495] (Flat Candidate): className="w-2.5 h-2.5 rounded bg-green-500/20 border border-green-500/40 inline-block"
+[Line 2499] (Flat Candidate): className="w-2.5 h-2.5 rounded bg-red-500/20 border border-red-500/40 inline-block"
+[Line 2503] (Flat Candidate): className="w-2.5 h-2.5 rounded bg-zinc-500/20 border border-[var(--border-md)] inline-block"
+[Line 2507] (Flat Candidate): className="w-2.5 h-2.5 rounded border border-[var(--accent)] inline-block"
+[Line 2520] (Has Shadow): className="p-5 rounded-2xl shadow-lg animate-in fade-in slide-in-from-top-4 duration-300"
+[Line 2521] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+[Line 2605] (Flat Candidate): style={{                           backgroundColor: isActive ? 'var(--card)' : 'transparent',                           color: isActive ? 'var(--accent)' : 'var(--text-sub)',                           border: isActive ? '0.5px solid var(--border)' : '0.5px solid transparent'                         }}
+[Line 2670] (Has Shadow): className="p-12 rounded-2xl text-center shadow-sm"
+[Line 2670] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+[Line 2678] (Has Shadow): className="rounded-2xl p-3 shadow-sm"
+[Line 2678] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+[Line 2704] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '6px 10px', fontSize: '11px', fontFamily: 'monospace' }}
+[Line 2719] (Has Shadow): className="rounded-2xl p-3 shadow-sm"
+[Line 2719] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+[Line 2745] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '6px 10px', fontSize: '11px', fontFamily: 'monospace' }}
+[Line 2772] (Has Shadow): className="rounded-2xl overflow-hidden shadow-sm border border-[var(--border)]"
+[Line 2860] (Flat Candidate): style={{                           backgroundColor: isActive ? 'var(--card)' : 'transparent',                           color: isActive ? 'var(--accent)' : 'var(--text-sub)',                           border: isActive ? '0.5px solid var(--border)' : '0.5px solid transparent'                         }}
+[Line 2874] (Has Shadow): className="p-12 rounded-2xl text-center shadow-sm"
+[Line 2874] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+[Line 2882] (Has Shadow): className="rounded-2xl p-3 shadow-sm"
+[Line 2882] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+[Line 2902] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '6px 10px', fontSize: '11px', fontFamily: 'monospace' }}
+[Line 2917] (Has Shadow): className="rounded-2xl p-3 shadow-sm"
+[Line 2917] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+[Line 2937] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '6px 10px', fontSize: '11px', fontFamily: 'monospace' }}
+[Line 2958] (Has Shadow): className="rounded-2xl overflow-hidden shadow-sm border border-[var(--border)]"
+[Line 3036] (Has Shadow): className="rounded-2xl px-4 py-2 shadow-sm border border-[var(--border)]"
+[Line 3089] (Has Shadow): className="rounded-2xl p-3 shadow-sm border border-[var(--border)]"
+[Line 3112] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '6px 10px', fontSize: '11px', fontFamily: 'monospace' }}
+[Line 3134] (Has Shadow): className="rounded-2xl p-3 shadow-sm border border-[var(--border)]"
+[Line 3152] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '6px 10px', fontSize: '11px', fontFamily: 'monospace' }}
+[Line 3174] (Has Shadow): className="rounded-2xl p-3 shadow-sm border border-[var(--border)]"
+[Line 3197] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '6px 10px', fontSize: '11px', fontFamily: 'monospace' }}
+[Line 3222] (Has Shadow): className="rounded-2xl overflow-hidden shadow-sm border border-[var(--border)]"
+[Line 3295] (Has Shadow): className="flex items-start gap-3 p-4 rounded-xl border border-[var(--accent-muted)] text-xs shadow-sm bg-cyan-950/10 text-[var(--accent)]"
+[Line 3320] (Flat Candidate): style={{                           backgroundColor: isActive ? 'var(--card)' : 'transparent',                           color: isActive ? 'var(--accent)' : 'var(--text-sub)',                           border: isActive ? '0.5px solid var(--border)' : '0.5px solid transparent'                         }}
+[Line 3334] (Has Shadow): className="p-12 rounded-2xl text-center shadow-sm"
+[Line 3334] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+[Line 3345] (Has Shadow): className="rounded-2xl p-3 shadow-sm"
+[Line 3345] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+[Line 3377] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '6px 10px', fontSize: '11px', fontFamily: 'monospace' }}
+[Line 3422] (Has Shadow): className="rounded-2xl p-3 shadow-sm"
+[Line 3422] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+[Line 3455] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '6px 10px', fontSize: '11px', fontFamily: 'monospace' }}
+[Line 3476] (Has Shadow): className="rounded-2xl overflow-hidden shadow-sm border border-[var(--border)]"
+[Line 3551] (Has Shadow): className="p-10 rounded-2xl text-center shadow-sm"
+[Line 3551] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
