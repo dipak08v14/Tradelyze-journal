@@ -86,7 +86,7 @@ export const DonutChart: React.FC<DonutChartProps> = ({
             <span className="truncate max-w-[80px]" title={item.name}>
               {item.name}
             </span>
-            <span className="font-mono text-zinc-550" style={{ color: 'var(--text-muted)' }}>({item.value})</span>
+            <span className="font-mono" style={{ color: 'var(--text-muted)' }}>({item.value})</span>
           </div>
         ))}
       </div>

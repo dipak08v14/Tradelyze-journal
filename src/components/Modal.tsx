@@ -32,24 +32,28 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }
       onClick={onClose}
     >
       <div
-        className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 w-full max-w-md shadow-2xl relative font-sans text-zinc-100"
+        className="border rounded-2xl p-6 w-full max-w-md shadow-2xl relative font-sans"
         onClick={(e) => e.stopPropagation()}
         style={{
+          backgroundColor: 'var(--card)',
+          borderColor: 'var(--border)',
+          color: 'var(--text)',
           animation: 'tradelyzeModalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards'
         }}
       >
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-bold font-display text-zinc-100">{title}</h3>
+          <h3 style={{ color: 'var(--text)' }} className="text-xl font-bold font-display">{title}</h3>
           <button
             onClick={onClose}
-            className="text-zinc-400 hover:text-white p-2 rounded-lg hover:bg-zinc-800 transition-colors cursor-pointer"
+            className="p-2 rounded-lg hover:bg-[var(--bar)] hover:text-[var(--text)] transition-colors cursor-pointer"
+            style={{ color: 'var(--text-muted)' }}
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="text-zinc-300">{children}</div>
+        <div style={{ color: 'var(--text-sub)' }}>{children}</div>
       </div>
       
       <style>{`

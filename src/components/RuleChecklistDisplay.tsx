@@ -20,7 +20,7 @@ export const RuleChecklistDisplay: React.FC<RuleChecklistDisplayProps> = ({
 }) => {
   if (rules.length === 0) {
     return (
-      <div className="text-zinc-500 text-sm italic py-4">
+      <div className="text-sm italic py-4" style={{ color: 'var(--text-muted)' }}>
         No {ruleType} rules recorded for this trade.
       </div>
     );
@@ -36,12 +36,12 @@ export const RuleChecklistDisplay: React.FC<RuleChecklistDisplayProps> = ({
           className="flex items-start gap-3 py-2.5 border-b border-zinc-800/60 last:border-0"
         >
           {/* Order Badge */}
-          <span className="text-xs font-mono font-bold bg-zinc-950 border border-zinc-800 text-zinc-500 rounded px-2 py-0.5 w-9 text-center shrink-0 mt-0.5">
+          <span className="text-xs font-mono font-bold border rounded px-2 py-0.5 w-9 text-center shrink-0 mt-0.5" style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
             #{rule.rule_order}
           </span>
 
           {/* Rule Text */}
-          <span className="text-sm text-zinc-200 flex-1 leading-snug">
+          <span className="text-sm flex-1 leading-snug" style={{ color: 'var(--text)' }}>
             {rule.rule_text}
           </span>
 
@@ -56,12 +56,12 @@ export const RuleChecklistDisplay: React.FC<RuleChecklistDisplayProps> = ({
                 N
               </span>
             ) : (
-              <span className="text-zinc-500 font-bold font-mono">—</span>
+              <span className="font-bold font-mono" style={{ color: 'var(--text-muted)' }}>—</span>
             )}
           </div>
         </div>
       ))}
-      <div className="text-xs text-zinc-500 mt-3 font-medium">
+      <div className="text-xs mt-3 font-medium" style={{ color: 'var(--text-muted)' }}>
         {followedCount} of {rules.length} {ruleType} rules followed
       </div>
     </div>

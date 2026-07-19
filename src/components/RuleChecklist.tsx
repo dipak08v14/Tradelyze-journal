@@ -20,7 +20,7 @@ export const RuleChecklist: React.FC<RuleChecklistProps> = ({
   if (!strategySelected) {
     return (
       <div className="py-8 text-center flex flex-col items-center">
-        <Target className="text-zinc-450 w-8 h-8 mx-auto" />
+        <Target className="w-8 h-8 mx-auto" style={{ color: 'var(--text-muted)' }} />
         <p style={{ color: 'var(--text-muted)' }} className="text-sm mt-2 font-medium">
           Select a strategy above to load {ruleType} rules
         </p>

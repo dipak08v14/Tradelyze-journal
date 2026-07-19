@@ -18,7 +18,7 @@ export const StarRating: React.FC<StarRatingProps> = ({ rating, onChange, id }) 
 
   return (
     <div id={id} className="space-y-2">
-      <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+      <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-sub)' }}>
         Trade Rating
       </label>
       
@@ -36,7 +36,7 @@ export const StarRating: React.FC<StarRatingProps> = ({ rating, onChange, id }) 
                 className={`w-7 h-7 transition-colors ${
                   isFilled
                     ? 'text-amber-400 fill-amber-400'
-                    : 'text-zinc-600 hover:text-amber-300'
+                    : 'text-[var(--text-muted)] hover:text-amber-300'
                 }`}
               />
             </button>
@@ -44,7 +44,7 @@ export const StarRating: React.FC<StarRatingProps> = ({ rating, onChange, id }) 
         })}
       </div>
       
-      <div className="text-xs text-zinc-400 font-medium">
+      <div className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>
         {rating > 0 ? `★ ${rating}/5` : 'Not rated'}
       </div>
     </div>

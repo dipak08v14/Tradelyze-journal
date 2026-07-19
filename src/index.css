@@ -59,7 +59,7 @@ body {
 
 /* Overrides for main app view page elements, panels and cards */
 section.bg-zinc-900,
-div.bg-[#1A1D27],
+div.bg-\[\#1A1D27\],
 div.bg-zinc-900,
 div.bg-zinc-950,
 aside.bg-zinc-950,
@@ -131,21 +131,16 @@ p, label,
 /* Darker row containers (used for visual patterns, checklists, metrics tables) */
 .bg-zinc-950,
 .bg-zinc-950\/40,
-.bg-[#0F1117],
 .bg-\[\#0F1117\],
 .bg-\[\#12131C\],
 .bg-\[\#12131A\],
-.bg-\[\#161821\],
-.bg-[#12131C],
-.bg-[#12131A],
-.bg-[#161821] {
+.bg-\[\#161821\] {
   background-color: var(--row) !important;
   border-color: var(--border) !important;
   color: var(--text) !important;
 }
 
 /* Specific table headers and rows */
-thead tr.bg-[#0F1117],
 thead tr.bg-\[\#0F1117\] {
   background-color: var(--bar) !important;
   color: var(--text) !important;
@@ -166,8 +161,7 @@ header.border-b {
 }
 
 /* User vs AI chat bubbles */
-div.bg-\[\#1D1E2C\],
-div.bg-[#1D1E2C] {
+div.bg-\[\#1D1E2C\] {
   background-color: var(--row) !important;
   border-color: var(--border) !important;
   color: var(--text) !important;
