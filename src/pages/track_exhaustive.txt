@@ -1,0 +1,53 @@
+
+======================================
+FILE: TradeTrackingPage.tsx
+======================================
+[Line 73] (Has Shadow): className="p-6 rounded-2xl max-w-md w-full text-center shadow-2xl"
+[Line 73] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }}
+[Line 1275] (Has Shadow): className="p-6 rounded-2xl max-w-md w-full text-center shadow-2xl"
+[Line 1275] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }}
+[Line 1309] (Flat Candidate): className="w-9 h-9 border-4 rounded-full animate-spin mb-3"
+[Line 1466] (Flat Candidate): style={{                     backgroundColor: 'var(--card)',                     border: '0.5px solid var(--border)',                     borderRadius: '8px',                     color: 'var(--text-sub)',                     fontSize: '12px',                     padding: '6px 14px',                     opacity: hasPrevious ? 1 : 0.4,                     cursor: hasPrevious ? 'pointer' : 'not-allowed'                   }}
+[Line 1484] (Flat Candidate): style={{                     backgroundColor: 'var(--card)',                     border: '0.5px solid var(--border)',                     borderRadius: '8px',                     color: 'var(--text-sub)',                     fontSize: '12px',                     padding: '6px 14px',                     opacity: hasNext ? 1 : 0.4,                     cursor: hasNext ? 'pointer' : 'not-allowed'                   }}
+[Line 1521] (Flat Candidate): style={{ border: '1px solid var(--accent)', backgroundColor: 'var(--card)' }}
+[Line 1900] (Flat Candidate): style={{                                    border: '0.5px solid var(--border)',                                    borderRadius: '6px',                                    backgroundColor: 'var(--card)',                                    color: 'var(--text)',                                    padding: '4px 8px',                                    width: '280px',                                    fontSize: '13px',                                    minHeight: '29px'                                  }}
+[Line 1926] (Has Shadow): style={{                                     borderColor: 'var(--border)',                                     backgroundColor: 'var(--card)',                                     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',                                     minWidth: '160px'                                   }}
+[Line 1932] (Flat Candidate): className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 max-h-60 overflow-y-auto animate-fadeIn"
+[Line 1985] (Flat Candidate): style={{                                    border: '0.5px solid var(--border)',                                    borderRadius: '6px',                                    backgroundColor: 'var(--card)',                                    color: 'var(--text)',                                    padding: '4px 8px',                                    width: '280px',                                    fontSize: '13px',                                    minHeight: '29px'                                  }}
+[Line 2011] (Has Shadow): style={{                                     borderColor: 'var(--border)',                                     backgroundColor: 'var(--card)',                                     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',                                     minWidth: '160px'                                   }}
+[Line 2017] (Flat Candidate): className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 max-h-60 overflow-y-auto animate-fadeIn"
+[Line 2076] (Flat Candidate): style={{                                     border: '0.5px solid var(--border)',                                     borderRadius: '6px',                                     backgroundColor: 'var(--card)',                                     color: 'var(--text)',                                     padding: '4px 8px',                                     width: '280px',                                     fontSize: '13px',                                     minHeight: '29px'                                   }}
+[Line 2098] (Has Shadow): style={{                                       borderColor: 'var(--border)',                                       backgroundColor: 'var(--card)',                                       boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',                                       width: '280px'                                     }}
+[Line 2104] (Flat Candidate): className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 max-h-60 overflow-y-auto animate-fadeIn"
+[Line 2192] (Flat Candidate): style={{                                 borderColor: 'var(--border)',                                 color: 'var(--text)',                                 backgroundColor: 'var(--card)'                               }}
+[Line 2197] (Flat Candidate): className="w-full flex items-center justify-between border rounded-lg px-1 py-2 text-sm hover:border-[var(--accent)] transition-all cursor-pointer focus:outline-none focus:border-[var(--accent)]"
+[Line 2207] (Has Shadow): style={{                                   borderColor: 'var(--border)',                                   backgroundColor: 'var(--card)',                                   boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'                                 }}
+[Line 2212] (Flat Candidate): className="absolute left-0 right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 max-h-60 overflow-y-auto animate-fadeIn"
+[Line 2307] (Flat Candidate): className="rounded border flex items-center justify-center transition-colors shrink-0"
+[Line 2383] (Flat Candidate): className="rounded border flex items-center justify-center transition-colors shrink-0"
+[Line 2415] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)', outline: 'none', fontSize: '13px', borderRadius: '6px', padding: '4px 8px', minHeight: '29px' }}
+[Line 2424] (Flat Candidate): className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 min-w-[140px] max-h-60 overflow-y-auto animate-fadeIn"
+[Line 2424] (Has Shadow): style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)' }}
+[Line 2441] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)', outline: 'none', fontSize: '13px', borderRadius: '6px', padding: '4px 8px', minHeight: '29px' }}
+[Line 2450] (Flat Candidate): className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 min-w-[140px] max-h-60 overflow-y-auto animate-fadeIn"
+[Line 2450] (Has Shadow): style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)' }}
+[Line 2467] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)', outline: 'none', fontSize: '13px', borderRadius: '6px', padding: '4px 8px', minHeight: '29px' }}
+[Line 2476] (Flat Candidate): className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 min-w-[140px] max-h-60 overflow-y-auto animate-fadeIn"
+[Line 2476] (Has Shadow): style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)' }}
+[Line 2493] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)', outline: 'none', fontSize: '13px', borderRadius: '6px', padding: '4px 8px', minHeight: '29px' }}
+[Line 2502] (Flat Candidate): className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 min-w-[140px] max-h-60 overflow-y-auto animate-fadeIn"
+[Line 2502] (Has Shadow): style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)' }}
+[Line 2534] (Has Shadow): className="rounded-xl p-6 shadow-sm"
+[Line 2534] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}
+[Line 2549] (Flat Candidate): className="group rounded-xl overflow-hidden border border-[var(--border)] bg-[var(--card)]"
+[Line 2608] (Flat Candidate): className="relative group rounded-xl overflow-hidden border bg-[var(--card)]"
+[Line 2617] (Flat Candidate): className="text-[10px] font-bold uppercase text-white font-mono flex items-center gap-1.5 bg-[var(--card)] px-3 py-1.5 rounded-lg border border-[var(--border)]"
+[Line 2645] (Flat Candidate): className="w-5 h-5 border-2 rounded-full animate-spin"
+[Line 2677] (Flat Candidate): className="w-16 h-12 rounded-lg overflow-hidden bg-[var(--card)] border flex-shrink-0 relative"
+[Line 2731] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', height: '300px', flexShrink: 0, position: 'relative', overflow: 'hidden' }}
+[Line 2782] (Flat Candidate): className="w-5 h-5 border-2 rounded-full animate-spin"
+[Line 2882] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '5px 10px', fontSize: '11px', fontFamily: 'monospace' }}
+[Line 2948] (Has Shadow): className="hover:opacity-90 transition-all shadow-sm"
+[Line 2969] (Flat Candidate): className="w-12 h-12 bg-red-950/60 border border-red-800/80 rounded-full flex items-center justify-center mx-auto text-red-400 mb-4 scale-110"
+[Line 2982] (Flat Candidate): className="border rounded-xl px-4 py-2.5 text-xs font-semibold cursor-pointer transition-colors min-w-[90px] hover:text-[var(--text)] hover:bg-[var(--card-hover)]"
+[Line 2994] (Flat Candidate): className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"

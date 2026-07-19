@@ -1,0 +1,13 @@
+
+======================================
+FILE: DailyJournal.tsx
+======================================
+[Line 543] (Has Shadow): style={{                 background: 'var(--card)',                 width: 'calc(100% + 32px)',                 marginLeft: '-16px',                 marginRight: '-16px',                 paddingTop: '3px',                 paddingBottom: '3px',                 paddingLeft: '16px',                 paddingRight: '16px',                 borderRadius: 0,                 boxShadow: 'none',                 border: 'none',                 borderBottom: '1px solid var(--border)',                 display: 'flex',                 alignItems: 'center',                 justifyContent: 'space-between'               }}
+[Line 571] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
+[Line 584] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
+[Line 611] (Has Shadow): className="mt-6 px-5 py-2.5 rounded-xl font-semibold text-xs tracking-wide shadow transition-all hover:opacity-90 inline-flex items-center gap-1.5 cursor-pointer"
+[Line 626] (Flat Candidate): style={{ border: '0.5px solid var(--border)', backgroundColor: 'var(--card)', color: 'var(--text-sub)' }}
+[Line 633] (Flat Candidate): style={{ border: '0.5px solid var(--border)', backgroundColor: 'var(--card)', color: 'var(--text-sub)' }}
+[Line 643] (Flat Candidate): className="w-6 h-6 border-2 rounded-full animate-spin"
+[Line 783] (Flat Candidate): style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '6px 10px', fontSize: '11px', fontFamily: 'monospace', color: 'var(--text)' }}
+[Line 1032] (Flat Candidate): className="px-2 py-0.5 text-[10px] font-extrabold bg-[var(--card)] border rounded"

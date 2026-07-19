@@ -70,7 +70,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     if (this.state.hasError) {
       return (
         <div className="min-h-dvh flex flex-col items-center justify-center p-6" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
-          <div className="p-6 rounded-2xl max-w-md w-full text-center shadow-2xl" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }}>
+          <div className="p-6 rounded-2xl max-w-md w-full text-center" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
             <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500" style={{ backgroundColor: 'var(--row)', border: '1px solid var(--border)' }}>
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -1272,7 +1272,7 @@ const TradeTrackingPageContent: React.FC = () => {
           <div className="w-full px-4">
             {fetchError ? (
               <div className="min-h-[60vh] flex flex-col items-center justify-center p-6" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
-                <div className="p-6 rounded-2xl max-w-md w-full text-center shadow-2xl" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }}>
+                <div className="p-6 rounded-2xl max-w-md w-full text-center" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
                   <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500" style={{ backgroundColor: 'var(--row)', border: '1px solid var(--border)' }}>
                     <AlertTriangle className="w-6 h-6" />
                   </div>
@@ -1926,7 +1926,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                   style={{
                                     borderColor: 'var(--border)',
                                     backgroundColor: 'var(--card)',
-                                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)',
                                     minWidth: '160px'
                                   }}
                                   className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 max-h-60 overflow-y-auto animate-fadeIn"
@@ -2011,7 +2011,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                   style={{
                                     borderColor: 'var(--border)',
                                     backgroundColor: 'var(--card)',
-                                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)',
                                     minWidth: '160px'
                                   }}
                                   className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 max-h-60 overflow-y-auto animate-fadeIn"
@@ -2098,7 +2098,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                     style={{
                                       borderColor: 'var(--border)',
                                       backgroundColor: 'var(--card)',
-                                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                                      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)',
                                       width: '280px'
                                     }}
                                     className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 max-h-60 overflow-y-auto animate-fadeIn"
@@ -2207,7 +2207,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                 style={{
                                   borderColor: 'var(--border)',
                                   backgroundColor: 'var(--card)',
-                                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+                                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)'
                                 }}
                                 className="absolute left-0 right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 max-h-60 overflow-y-auto animate-fadeIn"
                               >
@@ -2421,7 +2421,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                   <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'var(--text-muted)' }} />
                                 </button>
                                 {isPhaseOpen && (
-                                  <div style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)' }} className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 min-w-[140px] max-h-60 overflow-y-auto animate-fadeIn">
+                                  <div style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }} className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 min-w-[140px] max-h-60 overflow-y-auto animate-fadeIn">
                                     {['Add Tags', ...PHASE_OPTIONS].map((opt, idx) => (
                                       <div key={opt} onClick={() => { handlePhaseChange(opt === 'Add Tags' ? '' : opt); setIsPhaseOpen(false); }} onMouseEnter={() => setActivePhaseIndex(idx)} style={{ backgroundColor: idx === activePhaseIndex ? 'var(--accent-muted)' : 'transparent', color: opt === 'Add Tags' ? 'var(--text-muted)' : 'var(--text)' }} className="px-3 py-1.5 text-xs cursor-pointer transition-colors">
                                         {opt}
@@ -2447,7 +2447,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                   <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'var(--text-muted)' }} />
                                 </button>
                                 {isTrendOpen && (
-                                  <div style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)' }} className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 min-w-[140px] max-h-60 overflow-y-auto animate-fadeIn">
+                                  <div style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }} className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 min-w-[140px] max-h-60 overflow-y-auto animate-fadeIn">
                                     {['Add Tags', ...TREND_OPTIONS].map((opt, idx) => (
                                       <div key={opt} onClick={() => { handleTrendChange(opt === 'Add Tags' ? '' : opt); setIsTrendOpen(false); }} onMouseEnter={() => setActiveTrendIndex(idx)} style={{ backgroundColor: idx === activeTrendIndex ? 'var(--accent-muted)' : 'transparent', color: opt === 'Add Tags' ? 'var(--text-muted)' : 'var(--text)' }} className="px-3 py-1.5 text-xs cursor-pointer transition-colors">
                                         {opt}
@@ -2473,7 +2473,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                   <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'var(--text-muted)' }} />
                                 </button>
                                 {isOpeningOpen && (
-                                  <div style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)' }} className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 min-w-[140px] max-h-60 overflow-y-auto animate-fadeIn">
+                                  <div style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }} className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 min-w-[140px] max-h-60 overflow-y-auto animate-fadeIn">
                                     {['Add Tags', ...OPENING_OPTIONS].map((opt, idx) => (
                                       <div key={opt} onClick={() => { handleOpeningChange(opt === 'Add Tags' ? '' : opt); setIsOpeningOpen(false); }} onMouseEnter={() => setActiveOpeningIndex(idx)} style={{ backgroundColor: idx === activeOpeningIndex ? 'var(--accent-muted)' : 'transparent', color: opt === 'Add Tags' ? 'var(--text-muted)' : 'var(--text)' }} className="px-3 py-1.5 text-xs cursor-pointer transition-colors">
                                         {opt}
@@ -2499,7 +2499,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                   <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'var(--text-muted)' }} />
                                 </button>
                                 {isHourlyOpen && (
-                                  <div style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)' }} className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 min-w-[140px] max-h-60 overflow-y-auto animate-fadeIn">
+                                  <div style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }} className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 min-w-[140px] max-h-60 overflow-y-auto animate-fadeIn">
                                     {['Add Tags', ...HOURLY_OPTIONS].map((opt, idx) => (
                                       <div key={opt} onClick={() => { handleHourlyChange(opt === 'Add Tags' ? '' : opt); setIsHourlyOpen(false); }} onMouseEnter={() => setActiveHourlyIndex(idx)} style={{ backgroundColor: idx === activeHourlyIndex ? 'var(--accent-muted)' : 'transparent', color: opt === 'Add Tags' ? 'var(--text-muted)' : 'var(--text)' }} className="px-3 py-1.5 text-xs cursor-pointer transition-colors">
                                         {opt === 'Add Tags' ? opt : (HOURLY_DISPLAY_LABELS[opt] || opt)}
@@ -2531,7 +2531,7 @@ const TradeTrackingPageContent: React.FC = () => {
                       <div className="flex flex-col md:flex-row gap-6">
                         <div className="flex-1 min-w-0">
                           {/* CARD H: MEDIA VIEWER ZONE */}
-                          <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }} className="rounded-xl p-6 shadow-sm">
+                          <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }} className="rounded-xl p-6">
                             <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, textTransform: 'none' }} className="font-display mb-3">
                               Trade Attachments
                             </h2>
