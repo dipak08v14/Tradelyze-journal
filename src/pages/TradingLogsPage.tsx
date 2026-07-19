@@ -800,7 +800,7 @@ export const TradingLogsPage: React.FC = () => {
             </span>
           )}
           {item.status === 'Breakeven' && (
-            <span className="px-2.5 py-0.5 text-[10px] font-extrabold bg-zinc-150 border border-[var(--border)] text-zinc-650 rounded-lg">
+            <span className="px-2.5 py-0.5 text-[10px] font-extrabold border border-[var(--border)] rounded-lg" style={{ color: 'var(--text-sub)', backgroundColor: 'var(--bar)' }}>
               BE
             </span>
           )}
@@ -1445,7 +1445,7 @@ export const TradingLogsPage: React.FC = () => {
               /* EMPTY JOURNAL NO TRADES YET */
               <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                 <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 animate-pulse" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}>
-                  <BarChart className="w-8 h-8 text-zinc-500" />
+                  <BarChart className="w-8 h-8" style={{ color: 'var(--text-muted)' }} />
                 </div>
                 <h3 className="text-xl font-bold font-display" style={{ color: 'var(--text)' }}>Your Trading Journal is Empty</h3>
                 <p className="text-sm mt-3 max-w-sm" style={{ color: 'var(--text-sub)' }}>
@@ -1462,7 +1462,7 @@ export const TradingLogsPage: React.FC = () => {
             ) : filteredTrades.length === 0 ? (
               /* EMPTY LOG RESULTS FILTER ZERO */
               <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-16 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
-                <div className="w-14 h-14 rounded-full flex items-center justify-center mb-3 text-zinc-500" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}>
+                <div className="w-14 h-14 rounded-full flex items-center justify-center mb-3" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)', color: 'var(--text-muted)' }}>
                   <TrendingUp className="w-6 h-6" />
                 </div>
                 <h3 className="text-lg font-bold font-display" style={{ color: 'var(--text)' }}>No Trades Match Filters</h3>
