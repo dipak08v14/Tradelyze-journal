@@ -988,7 +988,7 @@ export default function SettingsPage() {
                   <div className="space-y-2 md:space-y-3 order-1 lg:order-1">
                   
                   {/* PROFILE CARD */}
-                  <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
+                  <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
                     <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-4 flex items-center gap-2">
                       <User className="w-4 h-4 text-[var(--accent)]" /> Profile Details
                     </h3>
@@ -1073,7 +1073,7 @@ export default function SettingsPage() {
                   </div>
 
                   {/* SECURITY CARD */}
-                  <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
+                  <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
                     <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-4 flex items-center gap-2">
                       <Lock className="w-4 h-4 text-[var(--accent)]" /> Security / Change Password
                     </h3>
@@ -1123,7 +1123,7 @@ export default function SettingsPage() {
                   </div>
 
                   {/* ACCOUNT EXPORT / DESTRUCTION */}
-                  <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
+                  <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
                     <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-1.5 flex items-center gap-2">
                        Account Management
                     </h3>
@@ -1163,7 +1163,7 @@ export default function SettingsPage() {
                   <div className="space-y-6 order-2 lg:order-2">
 
                   {/* BROKER CONNECTIONS SECTION */}
-                  <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
+                  <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
                     <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-1 flex items-center gap-2 font-display">
                        Broker Connections
                     </h3>
@@ -1654,7 +1654,7 @@ export default function SettingsPage() {
 
               {/* TAB 2: APPEARANCE */}
               {activeTab === 'appearance' && (
-                <div className="space-y-6 animate-fade-in bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
+                <div className="space-y-6 animate-fade-in bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
                   <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-2 flex items-center gap-2">
                     <Palette className="w-4 h-4 text-[var(--accent)]" /> Visual Themes Customization
                   </h3>
@@ -1737,7 +1737,7 @@ export default function SettingsPage() {
 
               {/* TAB 3: SUBSCRIPTION */}
               {activeTab === 'subscription' && (
-                <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md space-y-6 animate-fade-in animate-none">
+                <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 space-y-6 animate-fade-in animate-none" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
                   <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-1 flex items-center gap-2">
                     <CreditCard className="w-4 h-4 text-[var(--accent)]" /> Plan Workspace Billing
                   </h3>
@@ -1832,7 +1832,7 @@ export default function SettingsPage() {
 
               {/* TAB 4: NOTIFICATIONS */}
               {activeTab === 'notifications' && (
-                <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md space-y-6 animate-fade-in animate-none">
+                <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 space-y-6 animate-fade-in animate-none" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
                   <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-1 flex items-center gap-2">
                     <Bell className="w-4 h-4 text-[var(--accent)]" /> Extension Signals Threshold
                   </h3>
@@ -1888,7 +1888,7 @@ export default function SettingsPage() {
       {/* ACCOUNT PURGE DESTROY MODAL */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-[var(--card)] border border-red-500/30 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
+          <div className="bg-[var(--card)] border border-red-500/30 rounded-2xl max-w-md w-full p-6 space-y-4 relative" style={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }}>
             <h4 className="text-lg font-extrabold text-red-500 flex items-center gap-2">
               <AlertOctagon className="w-5 h-5 flex-shrink-0" /> Irreversible Account Purgation
             </h4>
@@ -1934,7 +1934,7 @@ export default function SettingsPage() {
       {/* CSV IMPORT MODAL */}
       {isCsvModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl max-w-2xl w-full p-6 space-y-4 shadow-2xl relative animate-fade-in max-h-[90vh] overflow-y-auto">
+          <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl max-w-2xl w-full p-6 space-y-4 relative animate-fade-in max-h-[90vh] overflow-y-auto" style={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }}>
             {/* Modal close */}
             <button
               onClick={() => {
@@ -2307,7 +2307,7 @@ export default function SettingsPage() {
       {/* CONNECT MT5 BROKER SETUP MODAL */}
       {isConnectModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm">
-          <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl relative animate-fade-in">
+          <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl max-w-lg w-full p-6 space-y-5 relative animate-fade-in" style={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }}>
             {/* Modal close */}
             <button
               onClick={() => {

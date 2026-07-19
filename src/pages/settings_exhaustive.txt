@@ -1,0 +1,187 @@
+
+--- MATCH AT LINE 902 (Has Shadow) ---
+Code: style={{             background: 'var(--card)',             width: 'calc(100% + 32px)',             marginLeft: '-16px',             marginRight: '-16px',             paddingTop: '3px',             paddingBottom: '3px',             paddingLeft: '16px',             paddingRight: '16px',             borderRadius: 0,             boxShadow: 'none',             border: 'none',             borderBottom: '1px solid var(--border)',             display: 'flex',             alignItems: 'center',             justifyContent: 'space-between'           }}
+Context:
+900:         {/* TOP COMPONENT */}
+901:         <div 
+902:           style={{
+903:             background: 'var(--card)',
+904:             width: 'calc(100% + 32px)',
+905:             marginLeft: '-16px',
+906:             marginRight: '-16px',
+
+--- MATCH AT LINE 944 (Has Shadow) ---
+Code: className="bg-red-600 hover:bg-red-500 text-white font-extrabold px-5 py-2.5 rounded-xl cursor-pointer shadow-md shadow-red-950/20"
+Context:
+942:                 userEmail={user?.email || ''} 
+943:                 userName={userData?.full_name || ''} 
+944:                 className="bg-red-600 hover:bg-red-500 text-white font-extrabold px-5 py-2.5 rounded-xl cursor-pointer shadow-md shadow-red-950/20"
+945:               />
+946:             </div>
+947:           )}
+948: 
+
+--- MATCH AT LINE 966 (Flat Candidate) ---
+Code: style={{                     backgroundColor: isActive ? 'var(--card)' : 'transparent',                     color: isActive ? 'var(--accent)' : 'var(--text-sub)',                     border: isActive ? '0.5px solid var(--border)' : '0.5px solid transparent',                     borderRadius: isActive ? '6px' : undefined                   }}
+Context:
+964:                   onClick={() => handleTabChange(tab.id as any)}
+965:                   className={`px-4 py-2 text-[13px] font-bold ${isActive ? 'rounded' : 'rounded-xl'} transition-all cursor-pointer whitespace-nowrap flex items-center gap-2`}
+966:                   style={{
+967:                     backgroundColor: isActive ? 'var(--card)' : 'transparent',
+968:                     color: isActive ? 'var(--accent)' : 'var(--text-sub)',
+969:                     border: isActive ? '0.5px solid var(--border)' : '0.5px solid transparent',
+970:                     borderRadius: isActive ? '6px' : undefined
+
+--- MATCH AT LINE 991 (Has Shadow) ---
+Code: className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md"
+Context:
+989:                   
+990:                   {/* PROFILE CARD */}
+991:                   <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
+992:                     <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-4 flex items-center gap-2">
+993:                       <User className="w-4 h-4 text-[var(--accent)]" /> Profile Details
+994:                     </h3>
+995:                     
+
+--- MATCH AT LINE 1076 (Has Shadow) ---
+Code: className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md"
+Context:
+1074: 
+1075:                   {/* SECURITY CARD */}
+1076:                   <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
+1077:                     <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-4 flex items-center gap-2">
+1078:                       <Lock className="w-4 h-4 text-[var(--accent)]" /> Security / Change Password
+1079:                     </h3>
+1080:                     
+
+--- MATCH AT LINE 1126 (Has Shadow) ---
+Code: className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md"
+Context:
+1124: 
+1125:                   {/* ACCOUNT EXPORT / DESTRUCTION */}
+1126:                   <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
+1127:                     <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-1.5 flex items-center gap-2">
+1128:                        Account Management
+1129:                     </h3>
+1130:                     <p className="text-xs text-[var(--text-sub)] mb-6">Backup raw structured database configurations, or permanently destroy telemetry sessions.</p>
+
+--- MATCH AT LINE 1166 (Has Shadow) ---
+Code: className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md"
+Context:
+1164: 
+1165:                   {/* BROKER CONNECTIONS SECTION */}
+1166:                   <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
+1167:                     <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-1 flex items-center gap-2 font-display">
+1168:                        Broker Connections
+1169:                     </h3>
+1170:                     <p className="text-xs text-[var(--text-sub)] mb-6">
+
+--- MATCH AT LINE 1657 (Has Shadow) ---
+Code: className="space-y-6 animate-fade-in bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md"
+Context:
+1655:               {/* TAB 2: APPEARANCE */}
+1656:               {activeTab === 'appearance' && (
+1657:                 <div className="space-y-6 animate-fade-in bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
+1658:                   <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-2 flex items-center gap-2">
+1659:                     <Palette className="w-4 h-4 text-[var(--accent)]" /> Visual Themes Customization
+1660:                   </h3>
+1661:                   <p className="text-xs text-[var(--text-sub)] mb-6">Select a visual theme palette and accent setup. Edits apply instantly on screen.</p>
+
+--- MATCH AT LINE 1707 (Has Shadow) ---
+Code: style={{                               width: '36px',                               height: '36px',                               borderRadius: '50%',                               backgroundColor: acc.color,                               cursor: 'pointer',                               border: isActive ? '3px solid #ffffff' : '3px solid transparent',                               boxShadow: isActive ? `0 0 0 3px ${acc.color}` : 'none',                               transition: 'all 0.2s ease',                             }}
+Context:
+1705:                             id={`accent-dot-${accentKey}`}
+1706:                             onClick={() => handlePreviewTheme(selectedTheme, accentKey)}
+1707:                             style={{
+1708:                               width: '36px',
+1709:                               height: '36px',
+1710:                               borderRadius: '50%',
+1711:                               backgroundColor: acc.color,
+
+--- MATCH AT LINE 1730 (Has Shadow) ---
+Code: className="hover:opacity-95 px-5 py-2.5 rounded-xl font-bold cursor-pointer text-sm shadow transition-all"
+Context:
+1728:                       disabled={saving}
+1729:                       style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
+1730:                       className="hover:opacity-95 px-5 py-2.5 rounded-xl font-bold cursor-pointer text-sm shadow transition-all"
+1731:                     >
+1732:                       {saving ? 'Saving...' : 'Save Theme'}
+1733:                     </button>
+1734:                   </div>
+
+--- MATCH AT LINE 1740 (Has Shadow) ---
+Code: className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md space-y-6 animate-fade-in animate-none"
+Context:
+1738:               {/* TAB 3: SUBSCRIPTION */}
+1739:               {activeTab === 'subscription' && (
+1740:                 <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md space-y-6 animate-fade-in animate-none">
+1741:                   <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-1 flex items-center gap-2">
+1742:                     <CreditCard className="w-4 h-4 text-[var(--accent)]" /> Plan Workspace Billing
+1743:                   </h3>
+1744:                   <p className="text-xs text-[var(--text-sub)]">Validate limits, trial duration, billing invoices, and payment integration cycles.</p>
+
+--- MATCH AT LINE 1784 (Has Shadow) ---
+Code: className="bg-[var(--accent)] hover:bg-[var(--accent)] text-black font-extrabold px-6 py-3 rounded-xl cursor-pointer text-sm shadow-md transition-all whitespace-nowrap"
+Context:
+1782:                           userEmail={user?.email || ''}
+1783:                           userName={userData?.full_name || ''}
+1784:                           className="bg-[var(--accent)] hover:bg-[var(--accent)] text-black font-extrabold px-6 py-3 rounded-xl cursor-pointer text-sm shadow-md transition-all whitespace-nowrap"
+1785:                         />
+1786:                       </div>
+1787:                     </div>
+1788:                   )}
+
+--- MATCH AT LINE 1835 (Has Shadow) ---
+Code: className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md space-y-6 animate-fade-in animate-none"
+Context:
+1833:               {/* TAB 4: NOTIFICATIONS */}
+1834:               {activeTab === 'notifications' && (
+1835:                 <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md space-y-6 animate-fade-in animate-none">
+1836:                   <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-1 flex items-center gap-2">
+1837:                     <Bell className="w-4 h-4 text-[var(--accent)]" /> Extension Signals Threshold
+1838:                   </h3>
+1839:                   <p className="text-xs text-[var(--text-sub)]">Manage alerts, push notifications, and live chart scanning triggers.</p>
+
+--- MATCH AT LINE 1872 (Has Shadow) ---
+Code: className="bg-[var(--accent)] hover:bg-[var(--accent-light)] text-slate-950 font-bold px-5 py-2.5 rounded-xl cursor-pointer text-sm shadow transition-all duration-200"
+Context:
+1870:                       <button
+1871:                         onClick={handleSaveNotifications}
+1872:                         className="bg-[var(--accent)] hover:bg-[var(--accent-light)] text-slate-950 font-bold px-5 py-2.5 rounded-xl cursor-pointer text-sm shadow transition-all duration-200"
+1873:                       >
+1874:                         Save Preferences
+1875:                       </button>
+1876:                     </div>
+
+--- MATCH AT LINE 1891 (Has Shadow) ---
+Code: className="bg-[var(--card)] border border-red-500/30 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative"
+Context:
+1889:       {showDeleteModal && (
+1890:         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+1891:           <div className="bg-[var(--card)] border border-red-500/30 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
+1892:             <h4 className="text-lg font-extrabold text-red-500 flex items-center gap-2">
+1893:               <AlertOctagon className="w-5 h-5 flex-shrink-0" /> Irreversible Account Purgation
+1894:             </h4>
+1895:             <p className="text-xs text-[var(--text-sub)] leading-relaxed">
+
+--- MATCH AT LINE 1937 (Has Shadow) ---
+Code: className="bg-[var(--card)] border border-[var(--border)] rounded-2xl max-w-2xl w-full p-6 space-y-4 shadow-2xl relative animate-fade-in max-h-[90vh] overflow-y-auto"
+Context:
+1935:       {isCsvModalOpen && (
+1936:         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+1937:           <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl max-w-2xl w-full p-6 space-y-4 shadow-2xl relative animate-fade-in max-h-[90vh] overflow-y-auto">
+1938:             {/* Modal close */}
+1939:             <button
+1940:               onClick={() => {
+1941:                 setIsCsvModalOpen(false);
+
+--- MATCH AT LINE 2310 (Has Shadow) ---
+Code: className="bg-[var(--card)] border border-[var(--border)] rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl relative animate-fade-in"
+Context:
+2308:       {isConnectModalOpen && (
+2309:         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm">
+2310:           <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl relative animate-fade-in">
+2311:             {/* Modal close */}
+2312:             <button
+2313:               onClick={() => {
+2314:                 setIsConnectModalOpen(false);
