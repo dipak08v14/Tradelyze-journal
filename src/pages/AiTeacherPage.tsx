@@ -623,13 +623,13 @@ export const AiTeacherPage: React.FC = () => {
             )}
             {/* MOBILE DRAWER WRAPPER — Trade Focus, Suggested Prompts, Context Stats */}
             <div
-              className={`fixed inset-y-0 left-0 z-50 w-[85vw] max-w-[400px] overflow-y-auto shadow-2xl transition-transform duration-250 ease-in-out ${
+              className={`fixed inset-y-0 left-0 z-50 w-[85vw] max-w-[400px] overflow-y-auto transition-transform duration-250 ease-in-out ${
                 aiDrawerOpen ? 'translate-x-0' : '-translate-x-full'
               } lg:contents`}
             >
 
               {/* LEFT DATA OVERVIEW & CONTROLS RAIL (1/3 Width) */}
-              <aside style={{ backgroundColor: 'var(--bg-sub, var(--card))', borderColor: 'var(--border)' }} className="w-full lg:w-[350px] lg:border-r p-5 overflow-y-auto shrink-0 space-y-5">
+              <aside style={{ backgroundColor: 'var(--bg-sub, var(--card))', borderColor: 'var(--border)', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }} className="w-full lg:w-[350px] lg:border-r p-5 overflow-y-auto shrink-0 space-y-5">
                 
                 {/* SPECIFIC TRADE SELECT BOX */}
                 <div style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }} className="p-4 space-y-2.5">

@@ -1181,6 +1181,7 @@ export const TradeEntryPage: React.FC = () => {
                         padding: '0 20px',
                         height: '34px',
                         borderRadius: '8px',
+                                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)',
                         fontSize: '13px',
                         fontWeight: 600,
                         cursor: 'pointer',
@@ -1320,7 +1321,7 @@ export const TradeEntryPage: React.FC = () => {
                               borderColor: 'var(--border)',
                               borderRadius: '8px'
                             }} 
-                            className="absolute left-0 right-0 mt-1 border shadow-xl z-50 overflow-hidden font-mono text-[13px]"
+                            className="absolute left-0 right-0 mt-1 border z-50 overflow-hidden font-mono text-[13px]"
                           >
                             {symbolSuggestions.map((sym) => (
                               <div

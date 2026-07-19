@@ -608,12 +608,12 @@ export const StrategiesPage: React.FC = () => {
 
                   {filterDropdownOpen && (
                     <div
-                      className="absolute left-0 sm:left-auto sm:right-0 mt-2 w-72 max-w-[calc(100vw-2rem)] shadow-xl z-40 p-4 animate-fade-in"
+                      className="absolute left-0 sm:left-auto sm:right-0 mt-2 w-72 max-w-[calc(100vw-2rem)] z-40 p-4 animate-fade-in"
                       style={{
                         backgroundColor: 'var(--card)',
                         border: '0.5px solid var(--border)',
                         color: 'var(--text)',
-                        boxShadow: '0 4px 16px rgba(0,0,0,0.10)',
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)',
                         borderRadius: '10px'
                       }}
                     >
@@ -939,12 +939,12 @@ export const StrategiesPage: React.FC = () => {
                             {isMenuOpen && (
                               <div
                                 ref={dropdownRef}
-                                className="absolute right-4 mt-1 w-40 shadow-xl z-30 p-1"
+                                className="absolute right-4 mt-1 w-40 z-30 p-1"
                                 style={{
                                   backgroundColor: 'var(--card)',
                                   border: '0.5px solid var(--border)',
                                   color: 'var(--text)',
-                                  boxShadow: '0 4px 16px rgba(0,0,0,0.10)',
+                                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)',
                                   borderRadius: '10px'
                                 }}
                               >
@@ -1111,12 +1111,12 @@ export const StrategiesPage: React.FC = () => {
                           {isMenuOpen && (
                             <div
                               ref={dropdownRef}
-                              className="absolute right-0 mt-1 w-36 shadow-xl z-30 p-1"
+                              className="absolute right-0 mt-1 w-36 z-30 p-1"
                               style={{
                                 backgroundColor: 'var(--card)',
                                 border: '0.5px solid var(--border)',
                                 color: 'var(--text)',
-                                boxShadow: '0 4px 16px rgba(0,0,0,0.10)',
+                                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)',
                                 borderRadius: '10px'
                               }}
                             >

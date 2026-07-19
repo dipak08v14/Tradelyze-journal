@@ -1,0 +1,1178 @@
+
+======================================
+FILE: TradeEntryPage.tsx
+======================================
+
+--- MATCH AT LINE 1113 (Flat Candidate) ---
+Code: className="w-8 h-8 border-4 rounded-full animate-spin"
+Context:
+1111:     return (
+1112:       <div className="min-h-dvh flex items-center justify-center" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+1113:         <div className="w-8 h-8 border-4 rounded-full animate-spin" style={{ borderColor: 'var(--border-md)', borderTopColor: 'var(--accent)' }} />
+1114:       </div>
+1115:     );
+1116:   }
+1117: 
+
+--- MATCH AT LINE 1148 (Has Shadow) ---
+Code: style={{                 background: 'var(--card)',                 width: 'calc(100% + 32px)',                 marginLeft: '-16px',                 marginRight: '-16px',                 paddingTop: '6px',                 paddingBottom: '6px',                 paddingLeft: '16px',                 paddingRight: '16px',                 borderRadius: 0,                 boxShadow: 'none',                 border: 'none',                 borderBottom: '1px solid var(--border)',                 display: 'flex',                 alignItems: 'center',                 justifyContent: 'space-between'               }}
+Context:
+1146:             {/* PAGE HEADER */}
+1147:             <div
+1148:               style={{
+1149:                 background: 'var(--card)',
+1150:                 width: 'calc(100% + 32px)',
+1151:                 marginLeft: '-16px',
+1152:                 marginRight: '-16px',
+
+--- MATCH AT LINE 1211 (Has Shadow) ---
+Code: className="w-full hover:opacity-90 disabled:opacity-50 transition-all font-display shadow-lg shadow-cyan-500/10 flex items-center justify-center gap-2"
+Context:
+1209:                       width: '100%'
+1210:                     }}
+1211:                     className="w-full hover:opacity-90 disabled:opacity-50 transition-all font-display shadow-lg shadow-cyan-500/10 flex items-center justify-center gap-2"
+1212:                   >
+1213:                     {saving ? (
+1214:                       <>
+1215:                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+
+--- MATCH AT LINE 1215 (Flat Candidate) ---
+Code: className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
+Context:
+1213:                     {saving ? (
+1214:                       <>
+1215:                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+1216:                         <span>{isEditMode ? 'Updating...' : 'Saving...'}</span>
+1217:                       </>
+1218:                     ) : (
+1219:                       <>
+
+--- MATCH AT LINE 1227 (Flat Candidate) ---
+Code: className="mt-3 bg-[var(--card)] border border-[var(--border-md)] rounded-lg px-4 py-3 w-full sm:w-80 text-left"
+Context:
+1225:                 </div>
+1226:                 {embeddingStatus && embeddingStatus !== 'done' && (
+1227:                   <div className="mt-3 bg-[var(--card)] border border-[var(--border-md)] rounded-lg px-4 py-3 w-full sm:w-80 text-left">
+1228:                     <div className="flex items-center gap-2">
+1229:                       <div className="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse flex-shrink-0" />
+1230:                       <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+1231:                         {embeddingStatus === 'loading-model' && `Loading AI Vision model... ${embeddingProgress > 0 ? embeddingProgress + '%' : ''}`}
+
+--- MATCH AT LINE 1260 (ALREADY CORRECT TARGET SPECS, IGNORING) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }}
+Context:
+1258:               <div className="lg:col-span-2 space-y-3">
+1259:                 {/* CARD 1: TRADE DETAILS */}
+1260:                 <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
+1261:                   <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight mb-4">
+1262:                     Trade Details
+1263:                   </h2>
+1264: 
+
+--- MATCH AT LINE 1276 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+Context:
+1274:                           value={date}
+1275:                           onChange={(e) => setDate(e.target.value)}
+1276:                           style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+1277:                           className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
+1278:                           required
+1279:                         />
+1280:                       </div>
+
+--- MATCH AT LINE 1289 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+Context:
+1287:                           value={entryTime}
+1288:                           onChange={(e) => setEntryTime(e.target.value)}
+1289:                           style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+1290:                           className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)] font-mono"
+1291:                         />
+1292:                       </div>
+1293:                     </div>
+
+--- MATCH AT LINE 1310 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+Context:
+1308:                           onFocus={() => setShowSymbolSuggestions(true)}
+1309:                           placeholder="e.g. XAUUSD, BANKNIFTY"
+1310:                           style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+1311:                           className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)] font-mono"
+1312:                           required
+1313:                         />
+1314: 
+
+--- MATCH AT LINE 1318 (Flat Candidate) ---
+Code: style={{                                backgroundColor: 'var(--card)',                                borderColor: 'var(--border)',                               borderRadius: '8px'                             }}
+Context:
+1316:                         {showSymbolSuggestions && symbolSuggestions.length > 0 && (
+1317:                           <div 
+1318:                             style={{ 
+1319:                               backgroundColor: 'var(--card)', 
+1320:                               borderColor: 'var(--border)',
+1321:                               borderRadius: '8px'
+1322:                             }} 
+
+--- MATCH AT LINE 1323 (Has Shadow) ---
+Code: className="absolute left-0 right-0 mt-1 border shadow-xl z-50 overflow-hidden font-mono text-[13px]"
+Context:
+1321:                               borderRadius: '8px'
+1322:                             }} 
+1323:                             className="absolute left-0 right-0 mt-1 border shadow-xl z-50 overflow-hidden font-mono text-[13px]"
+1324:                           >
+1325:                             {symbolSuggestions.map((sym) => (
+1326:                               <div
+1327:                                 key={sym}
+
+--- MATCH AT LINE 1443 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+Context:
+1441:                         value={strategyId}
+1442:                         onChange={handleStrategyChange}
+1443:                         style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+1444:                         className="focus:border-[var(--accent)] w-full focus:outline-none"
+1445:                       >
+1446:                         <option value="" style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}>— No Setup / Select Strategy —</option>
+1447:                         {strategies.map((st) => (
+
+--- MATCH AT LINE 1464 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+Context:
+1462:                           value={openingCondition}
+1463:                           onChange={(e) => setOpeningCondition(e.target.value)}
+1464:                           style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+1465:                           className="focus:border-[var(--accent)] w-full focus:outline-none"
+1466:                         >
+1467:                           <option value="" style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}>— Select —</option>
+1468:                           <option value="London Open" style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}>London Open</option>
+
+--- MATCH AT LINE 1504 (Flat Candidate) ---
+Code: className="rounded-lg py-2 px-1 text-[11px] font-semibold text-center cursor-pointer transition-all border truncate"
+Context:
+1502:                                 onClick={() => setHourlyTrend(hourlyTrend === trend ? null : trend)}
+1503:                                 style={isSel ? activeStyle : defaultStyle}
+1504:                                 className="rounded-lg py-2 px-1 text-[11px] font-semibold text-center cursor-pointer transition-all border truncate"
+1505:                               >
+1506:                                 {trend === 'CONSOLIDATION' ? 'BE/RNG' : trend}
+1507:                               </button>
+1508:                             );
+
+--- MATCH AT LINE 1520 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+Context:
+1518:                           value={phase}
+1519:                           onChange={(e) => setPhase(e.target.value)}
+1520:                           style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+1521:                           className="focus:border-[var(--accent)] w-full focus:outline-none"
+1522:                         >
+1523:                           <option value="" style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}>— Select —</option>
+1524:                           <option value="Accumulation" style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}>Accumulation</option>
+
+--- MATCH AT LINE 1540 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+Context:
+1538:                           value={trendPosition}
+1539:                           onChange={(e) => setTrendPosition(e.target.value)}
+1540:                           style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+1541:                           className="focus:border-[var(--accent)] w-full focus:outline-none"
+1542:                         >
+1543:                           <option value="" style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}>— Select —</option>
+1544:                           <option value="Trend Starting" style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}>Trend Starting</option>
+
+--- MATCH AT LINE 1562 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+Context:
+1560:                           onChange={(e) => setHoldingTimeMins(e.target.value)}
+1561:                           placeholder="e.g. 45"
+1562:                           style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+1563:                           className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
+1564:                         />
+1565:                       </div>
+1566:                     </div>
+
+--- MATCH AT LINE 1571 (ALREADY CORRECT TARGET SPECS, IGNORING) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }}
+Context:
+1569: 
+1570:                 {/* CARD 2: FINANCIAL DATA */}
+1571:                 <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
+1572:                   <div className="flex items-center justify-between mb-4">
+1573:                     <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight">
+1574:                       Financial Data
+1575:                     </h2>
+
+--- MATCH AT LINE 1595 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+Context:
+1593:                           onChange={(e) => setInvestment(e.target.value)}
+1594:                           placeholder="deployed capital"
+1595:                           style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+1596:                           className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
+1597:                         />
+1598:                       </div>
+1599: 
+
+--- MATCH AT LINE 1611 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+Context:
+1609:                           onChange={(e) => setRisk(e.target.value)}
+1610:                           placeholder="max risk amount"
+1611:                           style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+1612:                           className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
+1613:                         />
+1614:                       </div>
+1615: 
+
+--- MATCH AT LINE 1626 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', padding: '8px 12px' }}
+Context:
+1624:                           onChange={(e) => setPnl(e.target.value)}
+1625:                           placeholder="negative for loss"
+1626:                           style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', padding: '8px 12px' }}
+1627:                           className={`focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)] ${
+1628:                             pnl === ''
+1629:                               ? 'text-[var(--text)]'
+1630:                               : parseFloat(pnl) > 0
+
+--- MATCH AT LINE 1653 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+Context:
+1651:                           onChange={(e) => setMaxDrawdown(e.target.value)}
+1652:                           placeholder="worst adverse amount"
+1653:                           style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+1654:                           className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
+1655:                         />
+1656:                       </div>
+1657: 
+
+--- MATCH AT LINE 1668 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+Context:
+1666:                           onChange={(e) => setQuantity(e.target.value)}
+1667:                           placeholder="0.00"
+1668:                           style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+1669:                           className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
+1670:                         />
+1671:                       </div>
+1672: 
+
+--- MATCH AT LINE 1683 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+Context:
+1681:                           onChange={(e) => setPoints(e.target.value)}
+1682:                           placeholder="0.00"
+1683:                           style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+1684:                           className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
+1685:                         />
+1686:                       </div>
+1687:                     </div>
+
+--- MATCH AT LINE 1702 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+Context:
+1700:                           onChange={(e) => setEntryPrice(e.target.value)}
+1701:                           placeholder="average entry price"
+1702:                           style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+1703:                           className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
+1704:                         />
+1705:                       </div>
+1706: 
+
+--- MATCH AT LINE 1718 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+Context:
+1716:                           onChange={(e) => setProfitTarget(e.target.value)}
+1717:                           placeholder="profit target price"
+1718:                           style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+1719:                           className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
+1720:                         />
+1721:                       </div>
+1722: 
+
+--- MATCH AT LINE 1734 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+Context:
+1732:                           onChange={(e) => setStopLossPrice(e.target.value)}
+1733:                           placeholder="stop loss price"
+1734:                           style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+1735:                           className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
+1736:                         />
+1737:                       </div>
+1738:                     </div>
+
+--- MATCH AT LINE 1753 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+Context:
+1751:                           onChange={(e) => setMae(e.target.value)}
+1752:                           placeholder="max adverse excursion"
+1753:                           style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+1754:                           className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
+1755:                         />
+1756:                       </div>
+1757: 
+
+--- MATCH AT LINE 1769 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+Context:
+1767:                           onChange={(e) => setMfe(e.target.value)}
+1768:                           placeholder="max favorable excursion"
+1769:                           style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+1770:                           className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
+1771:                         />
+1772:                       </div>
+1773: 
+
+--- MATCH AT LINE 1785 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+Context:
+1783:                           onChange={(e) => setFees(e.target.value)}
+1784:                           placeholder="0.00"
+1785:                           style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+1786:                           className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
+1787:                         />
+1788:                       </div>
+1789:                     </div>
+
+--- MATCH AT LINE 1794 (ALREADY CORRECT TARGET SPECS, IGNORING) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }}
+Context:
+1792: 
+1793:                 {/* CARD 3: AUTO-CALCULATED RESULTS */}
+1794:                 <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
+1795:                   <div className="flex items-center justify-between mb-4">
+1796:                     <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight">
+1797:                       Auto-Calculated
+1798:                     </h2>
+
+--- MATCH AT LINE 1809 (Flat Candidate) ---
+Code: className="bg-[rgba(0,143,103,0.12)] border border-[#008F67]/30 text-[#008F67] text-xs font-extrabold px-3 py-1.5 rounded uppercase tracking-wider w-full"
+Context:
+1807:                     <div style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)' }} className="flex flex-col items-center justify-center p-3 rounded-lg text-center min-h-[85px]">
+1808:                       {calculatedStatus === 'Win' && (
+1809:                         <span className="bg-[rgba(0,143,103,0.12)] border border-[#008F67]/30 text-[#008F67] text-xs font-extrabold px-3 py-1.5 rounded uppercase tracking-wider w-full">
+1810:                           ✓ WIN
+1811:                         </span>
+1812:                       )}
+1813:                       {calculatedStatus === 'Loss' && (
+
+--- MATCH AT LINE 1814 (Flat Candidate) ---
+Code: className="bg-[rgba(223,28,48,0.12)] border border-[#DF1C30]/30 text-[#DF1C30] text-xs font-extrabold px-3 py-1.5 rounded uppercase tracking-wider w-full"
+Context:
+1812:                       )}
+1813:                       {calculatedStatus === 'Loss' && (
+1814:                         <span className="bg-[rgba(223,28,48,0.12)] border border-[#DF1C30]/30 text-[#DF1C30] text-xs font-extrabold px-3 py-1.5 rounded uppercase tracking-wider w-full">
+1815:                           ✗ LOSS
+1816:                         </span>
+1817:                       )}
+1818:                       {calculatedStatus === 'Breakeven' && (
+
+--- MATCH AT LINE 1819 (Flat Candidate) ---
+Code: className="bg-[var(--card)] border border-[var(--border-md)] text-xs font-extrabold px-3 py-1.5 rounded uppercase tracking-wider w-full"
+Context:
+1817:                       )}
+1818:                       {calculatedStatus === 'Breakeven' && (
+1819:                         <span className="bg-[var(--card)] border border-[var(--border-md)] text-xs font-extrabold px-3 py-1.5 rounded uppercase tracking-wider w-full" style={{ color: 'var(--text-sub)' }}>
+1820:                           — BE
+1821:                         </span>
+1822:                       )}
+1823:                       {calculatedStatus === null && (
+
+--- MATCH AT LINE 1824 (Flat Candidate) ---
+Code: className="border text-xs px-3 py-1.5 rounded uppercase tracking-wider w-full opacity-60"
+Context:
+1822:                       )}
+1823:                       {calculatedStatus === null && (
+1824:                         <span style={{ borderColor: 'var(--border)', color: 'var(--text-muted)' }} className="border text-xs px-3 py-1.5 rounded uppercase tracking-wider w-full opacity-60">
+1825:                           Status
+1826:                         </span>
+1827:                       )}
+1828:                       <span style={{ color: 'var(--text-muted)' }} className="text-[10px] uppercase tracking-widest font-bold mt-1.5">
+
+--- MATCH AT LINE 1938 (ALREADY CORRECT TARGET SPECS, IGNORING) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }}
+Context:
+1936: 
+1937:                 {/* CARD 4: ENTRY RULES CHECKLIST */}
+1938:                 <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
+1939:                   <div className="flex justify-between items-start mb-2">
+1940:                     <div>
+1941:                       <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight">
+1942:                         Entry Rules
+
+--- MATCH AT LINE 1951 (Flat Candidate) ---
+Code: className={`border rounded-full px-3.5 py-1 text-xs font-bold tracking-wider font-mono uppercase ${                           technicalScore >= 70                             ? '
+Context:
+1949:                     {strategyId && (
+1950:                       <span
+1951:                         className={`border rounded-full px-3.5 py-1 text-xs font-bold tracking-wider font-mono uppercase ${
+1952:                           technicalScore >= 70
+1953:                             ? 'bg-[rgba(0,143,103,0.1)] text-[#008F67] border-[rgba(0,143,103,0.2)]'
+1954:                             : technicalScore >= 50
+1955:                             ? 'bg-amber-550/10 text-[#f59e0b] border-[#f59e0b]/20'
+
+--- MATCH AT LINE 1982 (ALREADY CORRECT TARGET SPECS, IGNORING) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }}
+Context:
+1980: 
+1981:                 {/* CARD 5: EXIT RULES CHECKLIST */}
+1982:                 <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
+1983:                   <div className="mb-2">
+1984:                     <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight">
+1985:                       Exit Rules
+1986:                     </h2>
+
+--- MATCH AT LINE 2001 (ALREADY CORRECT TARGET SPECS, IGNORING) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }}
+Context:
+1999: 
+2000:                 {/* CARD 6: EXECUTION QUALITY */}
+2001:                 <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
+2002:                   <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight mb-4">
+2003:                     Execution Quality
+2004:                   </h2>
+2005: 
+
+--- MATCH AT LINE 2019 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+Context:
+2017:                           value={mistakeType}
+2018:                           onChange={(e) => setMistakeType(e.target.value)}
+2019:                           style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+2020:                           className="focus:border-[var(--accent)] w-full focus:outline-none"
+2021:                         >
+2022:                           <option value="" style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}>— Select —</option>
+2023:                           <option value="Technical" style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}>Technical</option>
+
+--- MATCH AT LINE 2039 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text-muted)', padding: '8px 12px' }}
+Context:
+2037:                             value="Clean trade execution"
+2038:                             disabled
+2039:                             style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text-muted)', padding: '8px 12px' }}
+2040:                             className="w-full opacity-60 focus:outline-none"
+2041:                           />
+2042:                         ) : (
+2043:                           <select
+
+--- MATCH AT LINE 2047 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+Context:
+2045:                             onChange={(e) => setMistakeText(e.target.value)}
+2046:                             disabled={!mistakeType}
+2047:                             style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+2048:                             className={`focus:border-[var(--accent)] w-full focus:outline-none ${
+2049:                               !mistakeType ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'
+2050:                             }`}
+2051:                           >
+
+--- MATCH AT LINE 2111 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+Context:
+2109:                         onChange={(e) => setNotes(e.target.value)}
+2110:                         placeholder="What happened on this trade? What did you observe? What would you do differently? Key lesson..."
+2111:                         style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+2112:                         className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)] resize-y"
+2113:                       />
+2114:                     </div>
+2115:                   </div>
+
+--- MATCH AT LINE 2122 (ALREADY CORRECT TARGET SPECS, IGNORING) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '20px', position: 'sticky', top: '24px' }}
+Context:
+2120:               <div className="space-y-4">
+2121:                 {/* CARD 7: LIVE TRADE SCORE CONTAINER */}
+2122:                 <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '20px', position: 'sticky', top: '24px' }} className="z-10 transition-all">
+2123:                   <div className="flex justify-between items-center mb-4">
+2124:                     <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight">
+2125:                       Trade Score
+2126:                     </h2>
+
+--- MATCH AT LINE 2127 (Flat Candidate) ---
+Code: className="bg-[rgba(0,143,103,0.12)] text-[#008F67] border border-[rgba(0,143,103,0.2)] text-[10px] font-mono tracking-widest uppercase font-bold rounded-full px-2.5 py-0.5 animate-pulse"
+Context:
+2125:                       Trade Score
+2126:                     </h2>
+2127:                     <span className="bg-[rgba(0,143,103,0.12)] text-[#008F67] border border-[rgba(0,143,103,0.2)] text-[10px] font-mono tracking-widest uppercase font-bold rounded-full px-2.5 py-0.5 animate-pulse">
+2128:                       LIVE
+2129:                     </span>
+2130:                   </div>
+2131: 
+
+--- MATCH AT LINE 2180 (ALREADY CORRECT TARGET SPECS, IGNORING) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }}
+Context:
+2178: 
+2179:                 {/* CARD 8: PSYCHOLOGY INDEX */}
+2180:                 <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
+2181:                   <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight">
+2182:                     Psychology Index
+2183:                   </h2>
+2184:                   <p style={{ color: 'var(--text-muted)' }} className="text-[11px] mt-1 mb-4">
+
+--- MATCH AT LINE 2270 (ALREADY CORRECT TARGET SPECS, IGNORING) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }}
+Context:
+2268: 
+2269:                 {/* CARD 9: RISK MANAGEMENT */}
+2270:                 <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
+2271:                   <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight mb-4">
+2272:                     Risk Management
+2273:                   </h2>
+2274: 
+
+--- MATCH AT LINE 2287 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+Context:
+2285:                         onChange={(e) => setDecidedRisk(e.target.value)}
+2286:                         placeholder={risk || 'Amount you planned to risk'}
+2287:                         style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+2288:                         className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)]"
+2289:                       />
+2290:                       <span style={{ color: 'var(--text-muted)' }} className="text-[10px] italic mt-1.5 block">
+2291:                         May differ from actual Risk field inside Card 2
+
+--- MATCH AT LINE 2328 (ALREADY CORRECT TARGET SPECS, IGNORING) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }}
+Context:
+2326: 
+2327:                 {/* CARD 10: TRADE MEDIA SECTION */}
+2328:                 <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
+2329:                   <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight mb-4">
+2330:                     Trade Media
+2331:                   </h2>
+2332: 
+
+--- MATCH AT LINE 2361 (Has Shadow) ---
+Code: className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full p-1.5 shadow-md cursor-pointer transition-all"
+Context:
+2359:                               setChartRemoved(true);
+2360:                             }}
+2361:                             className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full p-1.5 shadow-md cursor-pointer transition-all"
+2362:                             title="Remove archived screenshot"
+2363:                           >
+2364:                             <X className="w-4 h-4" />
+2365:                           </button>
+
+--- MATCH AT LINE 2380 (Has Shadow) ---
+Code: className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full p-1.5 shadow-md cursor-pointer"
+Context:
+2378:                               setChartImagePreview(null);
+2379:                             }}
+2380:                             className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full p-1.5 shadow-md cursor-pointer"
+2381:                           >
+2382:                             <X className="w-4 h-4" />
+2383:                           </button>
+2384:                         </div>
+
+--- MATCH AT LINE 2393 (Flat Candidate) ---
+Code: className={`border-[0.5px] border-dashed rounded-lg p-5 text-center transition-all cursor-pointer ${                             dragActiveChart                               ? '
+Context:
+2391:                           onClick={() => chartInputRef.current?.click()}
+2392:                           style={{ borderColor: 'var(--border)' }}
+2393:                           className={`border-[0.5px] border-dashed rounded-lg p-5 text-center transition-all cursor-pointer ${
+2394:                             dragActiveChart
+2395:                               ? 'border-[var(--accent)] bg-[var(--accent-muted)]'
+2396:                               : 'hover:border-[var(--accent)] hover:bg-[var(--bar)]'
+2397:                           }`}
+
+--- MATCH AT LINE 2427 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+Context:
+2425:                         onChange={(e) => setTradeVideoUrl(e.target.value)}
+2426:                         placeholder="YouTube, Loom, or other recording link"
+2427:                         style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px 12px' }}
+2428:                         className="focus:border-[var(--accent)] w-full focus:outline-none placeholder:text-[var(--text-muted)] font-mono"
+2429:                       />
+2430:                     </div>
+2431: 
+
+--- MATCH AT LINE 2496 (Flat Candidate) ---
+Code: className={`border-[0.5px] border-dashed rounded-lg p-3 text-center transition-all cursor-pointer ${                             dragActivePlan                               ? '
+Context:
+2494:                           onClick={() => planInputRef.current?.click()}
+2495:                           style={{ borderColor: 'var(--border)' }}
+2496:                           className={`border-[0.5px] border-dashed rounded-lg p-3 text-center transition-all cursor-pointer ${
+2497:                             dragActivePlan
+2498:                               ? 'border-[var(--accent)] bg-[var(--accent-muted)]'
+2499:                               : 'hover:border-[var(--accent)] hover:bg-[var(--bar)]'
+2500:                           }`}
+
+======================================
+FILE: AiTeacherPage.tsx
+======================================
+
+--- MATCH AT LINE 49 (Flat Candidate) ---
+Code: className="font-mono border rounded px-1 py-0.5 text-xs"
+Context:
+47:     if (part.startsWith('`') && part.endsWith('`')) {
+48:       return (
+49:         <code key={idx} style={{ backgroundColor: 'var(--bg-muted, var(--card))', borderColor: 'var(--border)', color: 'var(--accent)' }} className="font-mono border rounded px-1 py-0.5 text-xs">
+50:           {part.slice(1, -1)}
+51:         </code>
+52:       );
+53:     }
+
+--- MATCH AT LINE 49 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--bg-muted, var(--card))', borderColor: 'var(--border)', color: 'var(--accent)' }}
+Context:
+47:     if (part.startsWith('`') && part.endsWith('`')) {
+48:       return (
+49:         <code key={idx} style={{ backgroundColor: 'var(--bg-muted, var(--card))', borderColor: 'var(--border)', color: 'var(--accent)' }} className="font-mono border rounded px-1 py-0.5 text-xs">
+50:           {part.slice(1, -1)}
+51:         </code>
+52:       );
+53:     }
+
+--- MATCH AT LINE 71 (Has Shadow) ---
+Code: className="my-3 rounded-xl border overflow-hidden font-mono text-xs shadow-inner"
+Context:
+69: 
+70:           return (
+71:             <div key={partIdx} style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-muted, var(--card))' }} className="my-3 rounded-xl border overflow-hidden font-mono text-xs shadow-inner">
+72:               {lang && (
+73:                 <div style={{ backgroundColor: 'var(--border)', color: 'var(--text-muted)' }} className="px-4 py-1.5 border-b text-[10px] font-sans font-bold uppercase tracking-wider flex justify-between items-center">
+74:                   <span>{lang}</span>
+75:                 </div>
+
+--- MATCH AT LINE 71 (Flat Candidate) ---
+Code: style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-muted, var(--card))' }}
+Context:
+69: 
+70:           return (
+71:             <div key={partIdx} style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-muted, var(--card))' }} className="my-3 rounded-xl border overflow-hidden font-mono text-xs shadow-inner">
+72:               {lang && (
+73:                 <div style={{ backgroundColor: 'var(--border)', color: 'var(--text-muted)' }} className="px-4 py-1.5 border-b text-[10px] font-sans font-bold uppercase tracking-wider flex justify-between items-center">
+74:                   <span>{lang}</span>
+75:                 </div>
+
+--- MATCH AT LINE 555 (Has Shadow) ---
+Code: style={{               background: 'var(--card)',               paddingTop: '3px',               paddingBottom: '3px',               paddingLeft: '24px',               paddingRight: '24px',               borderRadius: 0,               boxShadow: 'none',               border: 'none',               borderBottom: '1px solid var(--border)'             }}
+Context:
+553:           {/* HEADER ROW WITH COUNTER */}
+554:           <header 
+555:             style={{
+556:               background: 'var(--card)',
+557:               paddingTop: '3px',
+558:               paddingBottom: '3px',
+559:               paddingLeft: '24px',
+
+--- MATCH AT LINE 580 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text-sub)' }}
+Context:
+578:                 type="button"
+579:                 onClick={() => setAiDrawerOpen(true)}
+580:                 style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text-sub)' }}
+581:                 className="lg:hidden px-3 py-2 rounded-lg border font-mono text-[11px] flex items-center gap-2 cursor-pointer hover:opacity-90 transition-all"
+582:               >
+583:                 <Sparkles className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
+584:                 <span>Trade Focus</span>
+
+--- MATCH AT LINE 581 (Flat Candidate) ---
+Code: className="lg:hidden px-3 py-2 rounded-lg border font-mono text-[11px] flex items-center gap-2 cursor-pointer hover:opacity-90 transition-all"
+Context:
+579:                 onClick={() => setAiDrawerOpen(true)}
+580:                 style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text-sub)' }}
+581:                 className="lg:hidden px-3 py-2 rounded-lg border font-mono text-[11px] flex items-center gap-2 cursor-pointer hover:opacity-90 transition-all"
+582:               >
+583:                 <Sparkles className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
+584:                 <span>Trade Focus</span>
+585:               </button>
+
+--- MATCH AT LINE 586 (Flat Candidate) ---
+Code: className="px-3 py-2 rounded-lg border font-mono text-[11px] flex items-center gap-2"
+Context:
+584:                 <span>Trade Focus</span>
+585:               </button>
+586:               <div style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text-sub)' }} className="px-3 py-2 rounded-lg border font-mono text-[11px] flex items-center gap-2">
+587:                 <Sparkles style={{ color: 'var(--accent)' }} className="w-3.5 h-3.5" />
+588:                 <span>
+589:                   {totalTokens.toLocaleString()} tokens
+590:                 </span>
+
+--- MATCH AT LINE 586 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text-sub)' }}
+Context:
+584:                 <span>Trade Focus</span>
+585:               </button>
+586:               <div style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text-sub)' }} className="px-3 py-2 rounded-lg border font-mono text-[11px] flex items-center gap-2">
+587:                 <Sparkles style={{ color: 'var(--accent)' }} className="w-3.5 h-3.5" />
+588:                 <span>
+589:                   {totalTokens.toLocaleString()} tokens
+590:                 </span>
+
+--- MATCH AT LINE 599 (Flat Candidate) ---
+Code: className="p-1.5 hover:text-red-500 hover:bg-red-50 rounded-xl border transition-all cursor-pointer"
+Context:
+597:                 onClick={handleResetConversation}
+598:                 style={{ borderColor: 'var(--border)', color: 'var(--text-muted)' }}
+599:                 className="p-1.5 hover:text-red-500 hover:bg-red-50 rounded-xl border transition-all cursor-pointer"
+600:                 title="Clear current coaching history"
+601:               >
+602:                 <Trash2 className="w-4 h-4" />
+603:               </button>
+
+--- MATCH AT LINE 626 (Has Shadow) ---
+Code: className={`fixed inset-y-0 left-0 z-50 w-[85vw] max-w-[400px] overflow-y-auto shadow-2xl transition-transform duration-250 ease-in-out ${                 aiDrawerOpen ? '
+Context:
+624:             {/* MOBILE DRAWER WRAPPER — Trade Focus, Suggested Prompts, Context Stats */}
+625:             <div
+626:               className={`fixed inset-y-0 left-0 z-50 w-[85vw] max-w-[400px] overflow-y-auto shadow-2xl transition-transform duration-250 ease-in-out ${
+627:                 aiDrawerOpen ? 'translate-x-0' : '-translate-x-full'
+628:               } lg:contents`}
+629:             >
+630: 
+
+--- MATCH AT LINE 632 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--bg-sub, var(--card))', borderColor: 'var(--border)' }}
+Context:
+630: 
+631:               {/* LEFT DATA OVERVIEW & CONTROLS RAIL (1/3 Width) */}
+632:               <aside style={{ backgroundColor: 'var(--bg-sub, var(--card))', borderColor: 'var(--border)' }} className="w-full lg:w-[350px] lg:border-r p-5 overflow-y-auto shrink-0 space-y-5">
+633:                 
+634:                 {/* SPECIFIC TRADE SELECT BOX */}
+635:                 <div style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }} className="p-4 space-y-2.5">
+636:                   <div style={{ color: 'var(--text)', fontSize: '14px', fontWeight: 600 }} className="flex items-center gap-1.5">
+
+--- MATCH AT LINE 635 (ALREADY CORRECT TARGET SPECS, IGNORING) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}
+Context:
+633:                 
+634:                 {/* SPECIFIC TRADE SELECT BOX */}
+635:                 <div style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }} className="p-4 space-y-2.5">
+636:                   <div style={{ color: 'var(--text)', fontSize: '14px', fontWeight: 600 }} className="flex items-center gap-1.5">
+637:                     <Compass style={{ color: 'var(--accent)' }} className="w-4 h-4" />
+638:                     <span>Trade Focus</span>
+639:                   </div>
+
+--- MATCH AT LINE 647 (Flat Candidate) ---
+Code: className="w-full rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-[var(--accent)] focus:border-[var(--accent)] cursor-pointer font-medium transition-colors"
+Context:
+645:                     onChange={(e) => { setSelectedTradeId(e.target.value); setAiDrawerOpen(false); }}
+646:                   style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)', color: 'var(--text)' }}
+647:                   className="w-full rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-[var(--accent)] focus:border-[var(--accent)] cursor-pointer font-medium transition-colors"
+648:                 >
+649:                   <option value="">No specific trade — Overall metrics</option>
+650:                   {trades.slice(0, 30).map((t) => (
+651:                     <option key={t.id} value={t.id}>
+
+--- MATCH AT LINE 662 (Flat Candidate) ---
+Code: className="p-2.5 rounded-xl border text-[10px] flex flex-col gap-1 space-y-0.5 animate-fadeIn font-medium"
+Context:
+660:                 </select>
+661:                 {selectedTradeId && specificTrade && (
+662:                   <div style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)' }} className="p-2.5 rounded-xl border text-[10px] flex flex-col gap-1 space-y-0.5 animate-fadeIn font-medium">
+663:                     <div style={{ color: 'var(--text)' }} className="font-semibold flex items-center justify-between">
+664:                       <span>Loaded Specific Focus:</span>
+665:                       <span style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }} className="text-[9px] uppercase px-1.5 py-0.5 rounded font-mono font-bold">ACTIVE</span>
+666:                     </div>
+
+--- MATCH AT LINE 683 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', color: 'var(--text)' }}
+Context:
+681:                   <button
+682:                     onClick={() => handlePredefined("What is my top repeated mistake and how can I resolve it using ICT concepts?")}
+683:                     style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', color: 'var(--text)' }}
+684:                     className="w-full text-left transition-all cursor-pointer font-semibold hover:text-[var(--accent)] hover:border-[var(--accent)] flex items-center justify-between group"
+685:                   >
+686:                     <span>What is my top repeated mistake?</span>
+687:                     <ArrowRight style={{ color: 'var(--accent)' }} className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transform translate-x-[-4px] group-hover:translate-x-0 transition-all font-bold" />
+
+--- MATCH AT LINE 691 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', color: 'var(--text)' }}
+Context:
+689:                   <button
+690:                     onClick={() => handlePredefined("Analyze my emotional condition and discipline scores. Are there patterns?")}
+691:                     style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', color: 'var(--text)' }}
+692:                     className="w-full text-left transition-all cursor-pointer font-semibold hover:text-[var(--accent)] hover:border-[var(--accent)] flex items-center justify-between group"
+693:                   >
+694:                     <span>Analyze emotional condition and scores?</span>
+695:                     <ArrowRight style={{ color: 'var(--accent)' }} className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transform translate-x-[-4px] group-hover:translate-x-0 transition-all font-bold" />
+
+--- MATCH AT LINE 699 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', color: 'var(--text)' }}
+Context:
+697:                   <button
+698:                     onClick={() => handlePredefined("Are my Win Rate and R-Multiple aligned for long-term consistency?")}
+699:                     style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', color: 'var(--text)' }}
+700:                     className="w-full text-left transition-all cursor-pointer font-semibold hover:text-[var(--accent)] hover:border-[var(--accent)] flex items-center justify-between group"
+701:                   >
+702:                     <span>Win Rate & R-Multiple long-term consistency?</span>
+703:                     <ArrowRight style={{ color: 'var(--accent)' }} className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transform translate-x-[-4px] group-hover:translate-x-0 transition-all font-bold" />
+
+--- MATCH AT LINE 707 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', color: 'var(--text)' }}
+Context:
+705:                   <button
+706:                     onClick={() => handlePredefined("Provide a step-by-step trading plan to improve my risk-to-reward ratio.")}
+707:                     style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', color: 'var(--text)' }}
+708:                     className="w-full text-left transition-all cursor-pointer font-semibold hover:text-[var(--accent)] hover:border-[var(--accent)] flex items-center justify-between group"
+709:                   >
+710:                     <span>Get a plan to improve my risk ratio</span>
+711:                     <ArrowRight style={{ color: 'var(--accent)' }} className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transform translate-x-[-4px] group-hover:translate-x-0 transition-all font-bold" />
+
+--- MATCH AT LINE 715 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', color: 'var(--text)' }}
+Context:
+713:                   <button
+714:                     onClick={() => handlePredefined("Which of my trading setups has the best win rate and which one should I stop using?")}
+715:                     style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', color: 'var(--text)' }}
+716:                     className="w-full text-left transition-all cursor-pointer font-semibold hover:text-[var(--accent)] hover:border-[var(--accent)] flex items-center justify-between group"
+717:                   >
+718:                     <span>Which setup performs best or worst?</span>
+719:                     <ArrowRight style={{ color: 'var(--accent)' }} className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transform translate-x-[-4px] group-hover:translate-x-0 transition-all font-bold" />
+
+--- MATCH AT LINE 723 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', color: 'var(--text)' }}
+Context:
+721:                   <button
+722:                     onClick={() => handlePredefined("How does my performance change based on the time of day or session I trade?")}
+723:                     style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', color: 'var(--text)' }}
+724:                     className="w-full text-left transition-all cursor-pointer font-semibold hover:text-[var(--accent)] hover:border-[var(--accent)] flex items-center justify-between group"
+725:                   >
+726:                     <span>How does time of day affect my results?</span>
+727:                     <ArrowRight style={{ color: 'var(--accent)' }} className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transform translate-x-[-4px] group-hover:translate-x-0 transition-all font-bold" />
+
+--- MATCH AT LINE 734 (ALREADY CORRECT TARGET SPECS, IGNORING) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}
+Context:
+732:               {/* QUICK STATS PANEL BOX */}
+733:               {!loading && stats && (
+734:                 <div style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }} className="p-4 space-y-3">
+735:                   <div style={{ color: 'var(--text)', fontSize: '14px', fontWeight: 600 }} className="flex items-center gap-1.5 font-bold">
+736:                     <Activity style={{ color: 'var(--accent)' }} className="w-3.5 h-3.5" />
+737:                     <span>Scanned Context Variables</span>
+738:                   </div>
+
+--- MATCH AT LINE 769 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px' }}
+Context:
+767:             {/* RIGHT SIDE CHAT PANE (2/3 Width) */}
+768:             <main
+769:               style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px' }}
+770:               className="flex-1 flex flex-col overflow-hidden h-full mx-2 mb-2 lg:mr-5 lg:mb-5 lg:ml-4"
+771:             >
+772:               
+773:               {/* THREAD CONTAINER */}
+
+--- MATCH AT LINE 782 (Flat Candidate) ---
+Code: className="w-8 h-8 rounded-xl border shrink-0 flex items-center justify-center"
+Context:
+780:                     {/* Assistant Icon */}
+781:                     {msg.role === 'assistant' && (
+782:                       <div style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)' }} className="w-8 h-8 rounded-xl border shrink-0 flex items-center justify-center">
+783:                         <Brain style={{ color: 'var(--accent)' }} className="w-4 h-4" />
+784:                       </div>
+785:                     )}
+786: 
+
+--- MATCH AT LINE 820 (Flat Candidate) ---
+Code: className="w-8 h-8 rounded-xl border shrink-0 flex items-center justify-center animate-spin"
+Context:
+818:                 {askingAI && (
+819:                    <div className="flex gap-4 justify-start animate-pulse">
+820:                      <div style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)' }} className="w-8 h-8 rounded-xl border shrink-0 flex items-center justify-center animate-spin">
+821:                        <RefreshCw style={{ color: 'var(--accent)' }} className="w-4 h-4" />
+822:                      </div>
+823:                      <div style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }} className="max-w-md border px-5 py-3.5 rounded-2xl rounded-tl-none flex flex-col gap-2">
+824:                        <div className="flex items-center gap-2 text-xs">
+
+--- MATCH AT LINE 823 (Flat Candidate) ---
+Code: className="max-w-md border px-5 py-3.5 rounded-2xl rounded-tl-none flex flex-col gap-2"
+Context:
+821:                        <RefreshCw style={{ color: 'var(--accent)' }} className="w-4 h-4" />
+822:                      </div>
+823:                      <div style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }} className="max-w-md border px-5 py-3.5 rounded-2xl rounded-tl-none flex flex-col gap-2">
+824:                        <div className="flex items-center gap-2 text-xs">
+825:                          <span style={{ backgroundColor: 'var(--accent)' }} className="w-2 h-2 rounded-full animate-ping" />
+826:                          <span style={{ color: 'var(--text)' }} className="font-semibold tracking-wide">Evaluating trading stages & setups...</span>
+827:                        </div>
+
+--- MATCH AT LINE 823 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
+Context:
+821:                        <RefreshCw style={{ color: 'var(--accent)' }} className="w-4 h-4" />
+822:                      </div>
+823:                      <div style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }} className="max-w-md border px-5 py-3.5 rounded-2xl rounded-tl-none flex flex-col gap-2">
+824:                        <div className="flex items-center gap-2 text-xs">
+825:                          <span style={{ backgroundColor: 'var(--accent)' }} className="w-2 h-2 rounded-full animate-ping" />
+826:                          <span style={{ color: 'var(--text)' }} className="font-semibold tracking-wide">Evaluating trading stages & setups...</span>
+827:                        </div>
+
+--- MATCH AT LINE 838 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
+Context:
+836: 
+837:               {/* INPUT BOX FORM BAR */}
+838:               <div style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }} className="p-4 border-t">
+839:                 <form onSubmit={handleSend} className="max-w-4xl mx-auto flex gap-3 relative">
+840:                   <textarea
+841:                     value={question}
+842:                     onChange={(e) => setQuestion(e.target.value)}
+
+--- MATCH AT LINE 854 (Flat Candidate) ---
+Code: style={{                        backgroundColor: 'var(--card)',                        border: '0.5px solid var(--border)',                        borderRadius: '8px',                        padding: '12px 14px',                        fontSize: '13px',                        color: 'var(--text)'                      }}
+Context:
+852:                         : (isMobileViewport ? "Ask your AI Teacher..." : "Ask your AI Teacher about setups, mental indicators, or trading consistency...")
+853:                     }
+854:                     style={{ 
+855:                       backgroundColor: 'var(--card)', 
+856:                       border: '0.5px solid var(--border)', 
+857:                       borderRadius: '8px', 
+858:                       padding: '12px 14px', 
+
+======================================
+FILE: StrategiesPage.tsx
+======================================
+
+--- MATCH AT LINE 525 (Has Shadow) ---
+Code: style={{                 background: 'var(--card)',                 width: 'calc(100% + 32px)',                 marginLeft: '-16px',                 marginRight: '-16px',                 paddingTop: '3px',                 paddingBottom: '3px',                 paddingLeft: '16px',                 paddingRight: '16px',                 borderRadius: 0,                 boxShadow: 'none',                 border: 'none',                 borderBottom: '1px solid var(--border)'               }}
+Context:
+523:             <div
+524:               className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
+525:               style={{
+526:                 background: 'var(--card)',
+527:                 width: 'calc(100% + 32px)',
+528:                 marginLeft: '-16px',
+529:                 marginRight: '-16px',
+
+--- MATCH AT LINE 558 (Has Shadow) ---
+Code: className="shadow-md hover:brightness-105 transition-all cursor-pointer font-sans"
+Context:
+556:                     gap: '6px'
+557:                   }}
+558:                   className="shadow-md hover:brightness-105 transition-all cursor-pointer font-sans"
+559:                 >
+560:                   <Plus className="w-3.5 h-3.5" />
+561:                   <span>Add New Strategy</span>
+562:                 </Link>
+
+--- MATCH AT LINE 597 (Flat Candidate) ---
+Code: style={{ border: '1px solid var(--border)', backgroundColor: 'var(--card)', borderRadius: '8px', color: 'var(--text-sub)', height: '36px' }}
+Context:
+595:                   <button
+596:                     onClick={() => setFilterDropdownOpen(!filterDropdownOpen)}
+597:                     style={{ border: '1px solid var(--border)', backgroundColor: 'var(--card)', borderRadius: '8px', color: 'var(--text-sub)', height: '36px' }}
+598:                     className="px-3 text-sm font-semibold transition-all cursor-pointer inline-flex items-center gap-1.5"
+599:                   >
+600:                     <SlidersHorizontal className="w-3.5 h-3.5" />
+601:                     <span>Filters</span>
+
+--- MATCH AT LINE 611 (Has Shadow) ---
+Code: className="absolute left-0 sm:left-auto sm:right-0 mt-2 w-72 max-w-[calc(100vw-2rem)] shadow-xl z-40 p-4 animate-fade-in"
+Context:
+609:                   {filterDropdownOpen && (
+610:                     <div
+611:                       className="absolute left-0 sm:left-auto sm:right-0 mt-2 w-72 max-w-[calc(100vw-2rem)] shadow-xl z-40 p-4 animate-fade-in"
+612:                       style={{
+613:                         backgroundColor: 'var(--card)',
+614:                         border: '0.5px solid var(--border)',
+615:                         color: 'var(--text)',
+
+--- MATCH AT LINE 612 (Has Shadow) ---
+Code: style={{                         backgroundColor: 'var(--card)',                         border: '0.5px solid var(--border)',                         color: 'var(--text)',                         boxShadow: '0 4px 16px rgba(0,0,0,0.10)',                         borderRadius: '10px'                       }}
+Context:
+610:                     <div
+611:                       className="absolute left-0 sm:left-auto sm:right-0 mt-2 w-72 max-w-[calc(100vw-2rem)] shadow-xl z-40 p-4 animate-fade-in"
+612:                       style={{
+613:                         backgroundColor: 'var(--card)',
+614:                         border: '0.5px solid var(--border)',
+615:                         color: 'var(--text)',
+616:                         boxShadow: '0 4px 16px rgba(0,0,0,0.10)',
+
+--- MATCH AT LINE 709 (Flat Candidate) ---
+Code: className="flex-1 py-1.5 text-center text-xs font-semibold rounded-lg border cursor-pointer transition-all"
+Context:
+707:                             setTempTypeFilter('All');
+708:                           }}
+709:                           className="flex-1 py-1.5 text-center text-xs font-semibold rounded-lg border cursor-pointer transition-all"
+710:                           style={{
+711:                             color: 'var(--text-sub)',
+712:                             borderColor: 'var(--border)',
+713:                             backgroundColor: 'transparent'
+
+--- MATCH AT LINE 779 (Flat Candidate) ---
+Code: className="w-8 h-8 border-4 rounded-full animate-spin"
+Context:
+777:             {loading ? (
+778:               <div className="flex flex-col gap-3 py-16 items-center justify-center">
+779:                 <div className="w-8 h-8 border-4 rounded-full animate-spin" style={{ borderTopColor: 'var(--accent)', borderColor: 'var(--border)' }}></div>
+780:                 <p className="text-xs font-mono" style={{ color: 'var(--text-muted)' }}>Aggregating playbook statistics...</p>
+781:               </div>
+782:             ) : sortedStrategies.length === 0 ? (
+783:               <div className="text-center py-16 flex flex-col items-center justify-center">
+
+--- MATCH AT LINE 784 (Flat Candidate) ---
+Code: className="w-12 h-12 rounded-xl flex items-center justify-center border mb-4"
+Context:
+782:             ) : sortedStrategies.length === 0 ? (
+783:               <div className="text-center py-16 flex flex-col items-center justify-center">
+784:                 <div className="w-12 h-12 rounded-xl flex items-center justify-center border mb-4" style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)' }}>
+785:                   <Target className="w-6 h-6" style={{ color: 'var(--text-muted)' }} />
+786:                 </div>
+787:                 <h3 className="text-sm font-semibold mb-1" style={{ color: 'var(--text-sub)' }}>No strategies yet</h3>
+788:                 <p className="text-xs max-w-xs mb-4" style={{ color: 'var(--text-muted)' }}>
+
+--- MATCH AT LINE 803 (ALREADY CORRECT TARGET SPECS, IGNORING) ---
+Code: style={{                   background: 'var(--card)',                   boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',                   border: '1px solid rgba(0,0,0,0.06)',                   borderRadius: '12px',                   overflowX: 'auto'                 }}
+Context:
+801:               <div
+802:                 className="w-full select-none mt-2 overflow-x-auto"
+803:                 style={{
+804:                   background: 'var(--card)',
+805:                   boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
+806:                   border: '1px solid rgba(0,0,0,0.06)',
+807:                   borderRadius: '12px',
+
+--- MATCH AT LINE 942 (Has Shadow) ---
+Code: className="absolute right-4 mt-1 w-40 shadow-xl z-30 p-1"
+Context:
+940:                               <div
+941:                                 ref={dropdownRef}
+942:                                 className="absolute right-4 mt-1 w-40 shadow-xl z-30 p-1"
+943:                                 style={{
+944:                                   backgroundColor: 'var(--card)',
+945:                                   border: '0.5px solid var(--border)',
+946:                                   color: 'var(--text)',
+
+--- MATCH AT LINE 943 (Has Shadow) ---
+Code: style={{                                   backgroundColor: 'var(--card)',                                   border: '0.5px solid var(--border)',                                   color: 'var(--text)',                                   boxShadow: '0 4px 16px rgba(0,0,0,0.10)',                                   borderRadius: '10px'                                 }}
+Context:
+941:                                 ref={dropdownRef}
+942:                                 className="absolute right-4 mt-1 w-40 shadow-xl z-30 p-1"
+943:                                 style={{
+944:                                   backgroundColor: 'var(--card)',
+945:                                   border: '0.5px solid var(--border)',
+946:                                   color: 'var(--text)',
+947:                                   boxShadow: '0 4px 16px rgba(0,0,0,0.10)',
+
+--- MATCH AT LINE 1001 (Flat Candidate) ---
+Code: className="px-3 py-1 text-xs font-bold uppercase rounded-lg border disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer transition-colors inline-flex items-center gap-1"
+Context:
+999:                         disabled={currentPage === 1}
+1000:                         onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+1001:                         className="px-3 py-1 text-xs font-bold uppercase rounded-lg border disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer transition-colors inline-flex items-center gap-1"
+1002:                         style={{ borderColor: 'var(--border)', color: 'var(--text-sub)' }}
+1003:                       >
+1004:                         <ChevronLeft className="w-4 h-4" />
+1005:                         Prev
+
+--- MATCH AT LINE 1010 (Flat Candidate) ---
+Code: className="px-3 py-1 text-xs font-bold uppercase rounded-lg border disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer transition-colors inline-flex items-center gap-1"
+Context:
+1008:                         disabled={currentPage === totalPages}
+1009:                         onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+1010:                         className="px-3 py-1 text-xs font-bold uppercase rounded-lg border disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer transition-colors inline-flex items-center gap-1"
+1011:                         style={{ borderColor: 'var(--border)', color: 'var(--text-sub)' }}
+1012:                       >
+1013:                         Next
+1014:                         <ChevronRight className="w-4 h-4" />
+
+--- MATCH AT LINE 1071 (ALREADY CORRECT TARGET SPECS, IGNORING) ---
+Code: style={{                         backgroundColor: 'var(--card)',                         boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',                         border: '1px solid var(--border)',                         borderRadius: '12px',                         transition: 'box-shadow 150ms ease'                       }}
+Context:
+1069:                       onClick={() => navigate(`/strategies/${strat.id}`)}
+1070:                       className="p-5 flex flex-col cursor-pointer border"
+1071:                       style={{
+1072:                         backgroundColor: 'var(--card)',
+1073:                         boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
+1074:                         border: '1px solid var(--border)',
+1075:                         borderRadius: '12px',
+
+--- MATCH AT LINE 1114 (Has Shadow) ---
+Code: className="absolute right-0 mt-1 w-36 shadow-xl z-30 p-1"
+Context:
+1112:                             <div
+1113:                               ref={dropdownRef}
+1114:                               className="absolute right-0 mt-1 w-36 shadow-xl z-30 p-1"
+1115:                               style={{
+1116:                                 backgroundColor: 'var(--card)',
+1117:                                 border: '0.5px solid var(--border)',
+1118:                                 color: 'var(--text)',
+
+--- MATCH AT LINE 1115 (Has Shadow) ---
+Code: style={{                                 backgroundColor: 'var(--card)',                                 border: '0.5px solid var(--border)',                                 color: 'var(--text)',                                 boxShadow: '0 4px 16px rgba(0,0,0,0.10)',                                 borderRadius: '10px'                               }}
+Context:
+1113:                               ref={dropdownRef}
+1114:                               className="absolute right-0 mt-1 w-36 shadow-xl z-30 p-1"
+1115:                               style={{
+1116:                                 backgroundColor: 'var(--card)',
+1117:                                 border: '0.5px solid var(--border)',
+1118:                                 color: 'var(--text)',
+1119:                                 boxShadow: '0 4px 16px rgba(0,0,0,0.10)',
+
+--- MATCH AT LINE 1278 (Flat Candidate) ---
+Code: className="w-full text-left py-3 px-4 rounded-xl border text-sm font-semibold transition-all flex items-center justify-between cursor-pointer"
+Context:
+1276:               <button
+1277:                 onClick={() => handleStatusChange('active')}
+1278:                 className="w-full text-left py-3 px-4 rounded-xl border text-sm font-semibold transition-all flex items-center justify-between cursor-pointer"
+1279:                 style={
+1280:                   selectedStrategy.status === 'active'
+1281:                     ? { backgroundColor: 'rgba(0,143,103,0.1)', borderColor: '#008F67', color: '#008F67' }
+1282:                     : { borderColor: 'var(--border)', color: 'var(--text-sub)' }
+
+--- MATCH AT LINE 1294 (Flat Candidate) ---
+Code: className="w-full text-left py-3 px-4 rounded-xl border text-sm font-semibold transition-all flex items-center justify-between cursor-pointer"
+Context:
+1292:               <button
+1293:                 onClick={() => handleStatusChange('not_working')}
+1294:                 className="w-full text-left py-3 px-4 rounded-xl border text-sm font-semibold transition-all flex items-center justify-between cursor-pointer"
+1295:                 style={
+1296:                   selectedStrategy.status === 'not_working'
+1297:                     ? { backgroundColor: 'rgba(245,158,11,0.1)', borderColor: '#f59e0b', color: '#f59e0b' }
+1298:                     : { borderColor: 'var(--border)', color: 'var(--text-sub)' }
+
+--- MATCH AT LINE 1310 (Flat Candidate) ---
+Code: className="w-full text-left py-3 px-4 rounded-xl border text-sm font-semibold transition-all flex items-center justify-between cursor-pointer"
+Context:
+1308:               <button
+1309:                 onClick={() => handleStatusChange('retired')}
+1310:                 className="w-full text-left py-3 px-4 rounded-xl border text-sm font-semibold transition-all flex items-center justify-between cursor-pointer"
+1311:                 style={
+1312:                   selectedStrategy.status === 'retired'
+1313:                     ? { backgroundColor: 'var(--bg)', borderColor: 'var(--border)', color: 'var(--text-sub)' }
+1314:                     : { borderColor: 'var(--border)', color: 'var(--text-muted)' }
+
+--- MATCH AT LINE 1328 (Flat Candidate) ---
+Code: className="bg-transparent rounded-lg px-4 py-2 text-sm transition-all cursor-pointer font-medium border"
+Context:
+1326:               <button
+1327:                 onClick={() => setStatusModalOpen(false)}
+1328:                 className="bg-transparent rounded-lg px-4 py-2 text-sm transition-all cursor-pointer font-medium border"
+1329:                 style={{ color: 'var(--text-sub)', borderColor: 'var(--border)' }}
+1330:               >
+1331:                 Cancel
+1332:               </button>
+
+--- MATCH AT LINE 1346 (Flat Candidate) ---
+Code: className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 border"
+Context:
+1344:         >
+1345:           <div className="text-center pt-2">
+1346:             <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 border" style={{ backgroundColor: 'rgba(223,28,48,0.1)', borderColor: 'rgba(223,28,48,0.2)' }}>
+1347:               <AlertTriangle className="w-6 h-6" style={{ color: '#DF1C30' }} />
+1348:             </div>
+1349: 
+1350:             <p className="text-base font-semibold" style={{ color: 'var(--text)' }}>
+
+--- MATCH AT LINE 1363 (Flat Candidate) ---
+Code: className="flex-1 bg-transparent rounded-lg px-4 py-2 font-medium transition-all cursor-pointer border"
+Context:
+1361:               <button
+1362:                 onClick={() => setDeleteModalOpen(false)}
+1363:                 className="flex-1 bg-transparent rounded-lg px-4 py-2 font-medium transition-all cursor-pointer border"
+1364:                 style={{ color: 'var(--text-sub)', borderColor: 'var(--border)' }}
+1365:               >
+1366:                 Cancel
+1367:               </button>
+
+--- MATCH AT LINE 1370 (Has Shadow) ---
+Code: className="flex-1 text-white rounded-lg px-4 py-2 font-semibold transition-all cursor-pointer shadow-md"
+Context:
+1368:               <button
+1369:                 onClick={handleDeleteStrategy}
+1370:                 className="flex-1 text-white rounded-lg px-4 py-2 font-semibold transition-all cursor-pointer shadow-md"
+1371:                 style={{ backgroundColor: '#DF1C30' }}
+1372:               >
+1373:                 Delete Setup
+1374:               </button>
