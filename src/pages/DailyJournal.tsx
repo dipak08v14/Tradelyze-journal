@@ -564,7 +564,7 @@ export const DailyJournal: React.FC = () => {
 
               {/* MONTH/YEAR SELECTS */}
               <div className="flex items-center gap-2">
-                <CalendarIcon className="w-4 h-4 text-zinc-500" />
+                <CalendarIcon className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
                 <select
                   value={selectedMonth}
                   onChange={(e) => setSelectedMonth(e.target.value)}
@@ -597,7 +597,7 @@ export const DailyJournal: React.FC = () => {
               /* EMPTY STATE: NO TRADES EVER */
               <div className="mt-12 text-center flex flex-col items-center justify-center py-20" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}>
                 <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}>
-                  <Award className="w-8 h-8 text-zinc-500" />
+                  <Award className="w-8 h-8" style={{ color: 'var(--text-muted)' }} />
                 </div>
                 <h3 className="text-xl font-bold tracking-tight font-display" style={{ color: 'var(--text)' }}>
                   No trades recorded yet.
@@ -699,9 +699,9 @@ export const DailyJournal: React.FC = () => {
                             <div className="flex items-center gap-3">
                               {/* Expand/collapse icon */}
                               {isExpanded ? (
-                                <ChevronUp className="w-5 h-5 text-zinc-400" />
+                                <ChevronUp className="w-5 h-5" style={{ color: 'var(--text-muted)' }} />
                               ) : (
-                                <ChevronDown className="w-5 h-5 text-zinc-400" />
+                                <ChevronDown className="w-5 h-5" style={{ color: 'var(--text-muted)' }} />
                               )}
                               <span className="font-semibold text-sm md:text-base font-mono" style={{ color: 'var(--text)' }}>
                                 {formatJournalDate(dateStr)}
@@ -947,7 +947,7 @@ export const DailyJournal: React.FC = () => {
                                                 {t.direction}
                                               </span>
                                               {t.option_type && (
-                                                <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded font-bold uppercase bg-[var(--card)] text-zinc-300">
+                                                <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded font-bold uppercase bg-[var(--card)]" style={{ color: 'var(--text-sub)' }}>
                                                   {t.option_type}
                                                 </span>
                                               )}
@@ -1029,7 +1029,7 @@ export const DailyJournal: React.FC = () => {
                                                 </span>
                                               )}
                                               {t.status === 'Breakeven' && (
-                                                <span className="px-2 py-0.5 text-[10px] font-extrabold bg-[var(--card)] border border-zinc-700 text-zinc-300 rounded">
+                                                <span className="px-2 py-0.5 text-[10px] font-extrabold bg-[var(--card)] border rounded" style={{ borderColor: 'var(--border)', color: 'var(--text-sub)' }}>
                                                   BE
                                                 </span>
                                               )}
@@ -1085,7 +1085,7 @@ export const DailyJournal: React.FC = () => {
                     </div>
 
                     {/* WEEKDAYS HEADER ROW */}
-                    <div className="grid grid-cols-7 gap-1 text-center py-2 text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">
+                    <div className="grid grid-cols-7 gap-1 text-center py-2 text-[10px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
                       <span>Su</span>
                       <span>Mo</span>
                       <span>Tu</span>
