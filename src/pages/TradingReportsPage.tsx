@@ -278,7 +278,7 @@ export const TradingReportsPage: React.FC = () => {
 
               {/* MONTH/YEAR SELECTORS */}
               <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-zinc-500" />
+                <Calendar className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
                 
                 {/* MONTH SELECT */}
                 <select
@@ -350,7 +350,7 @@ export const TradingReportsPage: React.FC = () => {
                 }}
               >
                 <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}>
-                  <FileText className="w-8 h-8 text-zinc-500" />
+                  <FileText className="w-8 h-8" style={{ color: 'var(--text-muted)' }} />
                 </div>
                 <h3 className="text-xl font-bold tracking-tight font-display" style={{ color: 'var(--text)' }}>
                   No trades in {selectedMonth} {selectedYear}
@@ -486,7 +486,7 @@ export const TradingReportsPage: React.FC = () => {
                                     </span>
                                   )}
                                   {row.breakevens > 0 && (
-                                    <span className="text-zinc-500 bg-zinc-500/10 px-1.5 py-0.5 rounded border border-[var(--border-md)] font-mono">
+                                    <span className="px-1.5 py-0.5 rounded border border-[var(--border-md)] font-mono" style={{ color: 'var(--text-sub)', backgroundColor: 'var(--bar)' }}>
                                       {row.breakevens}BE
                                     </span>
                                   )}
@@ -526,7 +526,7 @@ export const TradingReportsPage: React.FC = () => {
                                     LOSS
                                   </span>
                                 ) : (
-                                  <span className="bg-zinc-500/10 text-zinc-500 border border-[var(--border-md)] rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                                  <span className="border border-[var(--border-md)] rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-sub)', backgroundColor: 'var(--bar)' }}>
                                     BE
                                   </span>
                                 )}
@@ -838,7 +838,7 @@ export const TradingReportsPage: React.FC = () => {
                       Mistakes This Month
                     </h3>
 
-                    <div className="mt-4 space-y-2.5 text-xs text-zinc-400">
+                    <div className="mt-4 space-y-2.5 text-xs" style={{ color: 'var(--text-muted)' }}>
                       <div className="flex justify-between border-b pb-1.5 font-medium" style={{ borderColor: 'var(--border)' }}>
                         <span style={{ color: 'var(--text-sub)' }}>Technical Setup</span>
                         <span className="font-mono text-[var(--accent)] font-bold">{mistakeMap.Technical}</span>
