@@ -864,7 +864,7 @@ export const StrategyBuilderPage: React.FC = () => {
                 <div className="lg:col-span-2 space-y-4">
                   
                   {/* CARD 1: STRATEGY DETAILS */}
-                  <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '20px' }} className="relative overflow-hidden">
+                  <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '20px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }} className="relative overflow-hidden">
                     <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">
                       Strategy Details
                     </h2>
@@ -1035,7 +1035,7 @@ export const StrategyBuilderPage: React.FC = () => {
                   </section>
 
                   {/* CARD 2: ENTRY RULES */}
-                  <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '20px' }} className="relative overflow-hidden font-sans">
+                  <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '20px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }} className="relative overflow-hidden font-sans">
                     <div style={{ borderColor: 'var(--border)' }} className="flex items-center justify-between">
                       <div>
                         <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">Entry Rules</h2>
@@ -1134,7 +1134,7 @@ export const StrategyBuilderPage: React.FC = () => {
                   </section>
 
                   {/* CARD 3: EXIT RULES */}
-                  <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '20px' }} className="relative overflow-hidden font-sans">
+                  <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '20px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }} className="relative overflow-hidden font-sans">
                     <div className="flex items-center justify-between">
                       <div>
                         <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">Exit Rules</h2>
@@ -1267,7 +1267,7 @@ export const StrategyBuilderPage: React.FC = () => {
                 <div className="lg:col-span-1 space-y-6">
                   
                   {/* CARD 4: REFERENCE IMAGES */}
-                  <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '20px' }} className="relative overflow-hidden font-sans">
+                  <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '20px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }} className="relative overflow-hidden font-sans">
                     <div className="flex justify-between items-center">
                       <div>
                         <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">Reference Images</h2>
@@ -1416,7 +1416,7 @@ export const StrategyBuilderPage: React.FC = () => {
 
                   {/* CARD 5: PERFORMANCE STATS */}
                   {isEditMode && (
-                    <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '20px' }} className="relative overflow-hidden font-sans">
+                    <section style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', padding: '20px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }} className="relative overflow-hidden font-sans">
                       <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600 }} className="font-display">
                         Performance Stats
                       </h2>
@@ -1589,7 +1589,7 @@ export const StrategyBuilderPage: React.FC = () => {
             <img
               src={lightboxImage}
               alt="Reference Full Size"
-              className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl border border-white/10"
+              style={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }} className="max-w-full max-h-[90vh] object-contain rounded-lg border border-white/10"
             />
           </div>
         </div>
