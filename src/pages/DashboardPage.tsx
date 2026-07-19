@@ -1059,11 +1059,11 @@ export const DashboardPage: React.FC = () => {
                     }}
                     className="flex items-center gap-2 hover:opacity-90 font-medium select-none"
                   >
-                    <Calendar className="w-4 h-4 text-zinc-500" />
+                    <Calendar className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
                     <span>{formatDisplayDate(startDate)}</span>
-                    <span className="text-zinc-400">→</span>
+                    <span style={{ color: 'var(--text-muted)' }}>→</span>
                     <span>{formatDisplayDate(endDate)}</span>
-                    <ChevronDown className="w-3.5 h-3.5 ml-1 text-zinc-400" />
+                    <ChevronDown className="w-3.5 h-3.5 ml-1" style={{ color: 'var(--text-muted)' }} />
                   </button>
 
                   {/* DROPDOWN PANEL */}
@@ -1095,7 +1095,7 @@ export const DashboardPage: React.FC = () => {
                                 setHeaderPickerLeftMonth((m) => m - 1);
                               }
                             }}
-                            className="p-1 hover:bg-[var(--bar)] rounded-full text-zinc-400 hover:text-[var(--text)] cursor-pointer"
+                            className="p-1 hover:bg-[var(--bar)] rounded-full hover:text-[var(--text)] cursor-pointer" style={{ color: 'var(--text-muted)' }}
                           >
                             <ChevronLeft className="w-4 h-4" />
                           </button>
@@ -1154,7 +1154,7 @@ export const DashboardPage: React.FC = () => {
                                 setHeaderPickerLeftMonth((m) => m + 1);
                               }
                             }}
-                            className="p-1 hover:bg-[var(--bar)] rounded-full text-zinc-400 hover:text-[var(--text)] cursor-pointer"
+                            className="p-1 hover:bg-[var(--bar)] rounded-full hover:text-[var(--text)] cursor-pointer" style={{ color: 'var(--text-muted)' }}
                           >
                             <ChevronRight className="w-4 h-4" />
                           </button>
@@ -1341,7 +1341,7 @@ export const DashboardPage: React.FC = () => {
                                 setHeaderPickerRightMonth((m) => m - 1);
                               }
                             }}
-                            className="p-1 hover:bg-[var(--bar)] rounded-full text-zinc-400 hover:text-[var(--text)] cursor-pointer"
+                            className="p-1 hover:bg-[var(--bar)] rounded-full hover:text-[var(--text)] cursor-pointer" style={{ color: 'var(--text-muted)' }}
                           >
                             <ChevronLeft className="w-4 h-4" />
                           </button>
@@ -1400,7 +1400,7 @@ export const DashboardPage: React.FC = () => {
                                 setHeaderPickerRightMonth((m) => m + 1);
                               }
                             }}
-                            className="p-1 hover:bg-[var(--bar)] rounded-full text-zinc-400 hover:text-[var(--text)] cursor-pointer"
+                            className="p-1 hover:bg-[var(--bar)] rounded-full hover:text-[var(--text)] cursor-pointer" style={{ color: 'var(--text-muted)' }}
                           >
                             <ChevronRight className="w-4 h-4" />
                           </button>
@@ -1741,7 +1741,7 @@ export const DashboardPage: React.FC = () => {
                   className="hover:opacity-80 transition-all shrink-0"
                   title="Notifications"
                 >
-                  <Bell className="w-4 h-4 text-zinc-500" style={{ width: '16px', height: '16px', color: 'var(--text-sub)' }} />
+                  <Bell className="w-4 h-4" style={{ width: '16px', height: '16px', color: 'var(--text-sub)' }} />
                   {needsReviewCount > 0 && (
                     <span 
                       style={{ 
@@ -1850,7 +1850,7 @@ export const DashboardPage: React.FC = () => {
                         <span className="font-mono">NO BROKERS</span>
                       </>
                     )}
-                    <ChevronDown className="w-3.5 h-3.5 text-zinc-500" />
+                    <ChevronDown className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />
                   </button>
 
                   {isBrokerDropdownOpen && (
@@ -1898,7 +1898,7 @@ export const DashboardPage: React.FC = () => {
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginLeft: 'auto' }} className="flex items-center ml-auto flex-wrap sm:flex-nowrap">
                 {/* ELEMENT 3 — Last synced time */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--text-sub)' }} className="text-xs">
-                  <RefreshCw className="w-3.5 h-3.5 text-zinc-500" />
+                  <RefreshCw className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />
                   <span>Last synced: <span className="font-mono font-semibold" style={{ color: 'var(--text)' }}>{lastSyncedTime}</span></span>
                 </div>
 
@@ -1960,7 +1960,7 @@ export const DashboardPage: React.FC = () => {
               /* EMPTY PERFORMANCE STATE */
               <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20 shadow-xl" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                 <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 animate-pulse" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}>
-                  <BarChart2 className="w-8 h-8 text-zinc-500" />
+                  <BarChart2 className="w-8 h-8" style={{ color: 'var(--text-muted)' }} />
                 </div>
                 <h3 className="text-xl font-bold tracking-tight font-display" style={{ color: 'var(--text)' }}>
                   No trades in selected period
