@@ -1897,7 +1897,7 @@ export default function SettingsPage() {
             </p>
 
             <div className="text-xs text-red-400 font-medium p-3 bg-red-950/10 border border-red-900/20 rounded-xl font-mono">
-              To proceed, please type your email to confirm deletion: <strong className="select-all block text-white mt-1">{user?.email}</strong>
+              To proceed, please type your email to confirm deletion: <strong className="select-all block mt-1" style={{ color: 'var(--text)' }}>{user?.email}</strong>
             </div>
 
             <input
@@ -2193,7 +2193,7 @@ export default function SettingsPage() {
                             {csvRows.slice(0, 5).map((row, idx) => {
                               const pnl = parseFloat(row.PnL || '0');
                               const status = pnl > 0 ? 'Win' : pnl < 0 ? 'Loss' : 'Breakeven';
-                              const statusColor = status === 'Win' ? 'text-green-500 font-bold' : status === 'Loss' ? 'text-red-500 font-bold' : 'text-gray-400';
+                              const statusColor = status === 'Win' ? 'text-green-500 font-bold' : status === 'Loss' ? 'text-red-500 font-bold' : 'text-[var(--text-muted)]';
                               return (
                                 <tr key={idx}>
                                   <td className="p-2 pl-3 font-mono">{row.Date}</td>
