@@ -1,0 +1,60 @@
+=== DashboardPage.tsx ===
+Approach: shadow-md | Line 1793: className="shrink-0 flex items-center gap-1.5 font-mono uppercase tracking-wider shadow-md"
+Approach: shadow-xl | Line 1961: <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20 shadow-xl" style={{ backgroundColor: 'var(--card)', borde
+Approach: shadow-lg | Line 1973: className="mt-6 hover:opacity-90 text-white font-extrabold rounded-xl px-5 py-3 text-xs uppercase tracking-wider font-mono transition-all shadow-lg cu
+Approach: shadow-inner | Line 3345: <div className="flex items-center gap-5 pt-2 md:pt-0">
+Approach: shadow-sm | Line 3399: <div className="rounded-xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', display:
+Approach: shadow-2xl | Line 3458: className="w-full max-w-[680px] p-6 relative flex flex-col gap-5 shadow-2xl"
+Approach: Inline Box-Shadow: 0 2px 6px rgba(0,0,0,0.12) | Line 158: <div style={{
+Approach: Inline Box-Shadow: none | Line 1024: style={{
+Approach: Flat Style (No Shadow) | Line 1051: style={{
+Approach: Inline Box-Shadow: 0 8px 24px rgba(0,0,0,0.15) | Line 1072: style={{
+Approach: Inline Box-Shadow: 0 4px 12px rgba(0, 0, 0, 0.15) | Line 1858: style={{
+Approach: Inline Box-Shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06) | Line 1986: style={{
+=== TradingLogsPage.tsx ===
+Approach: shadow-lg shadow-cyan-500/10 | Line 1283: className="hover:opacity-90 transition-all font-display shadow-lg shadow-cyan-500/10"
+Approach: shadow-sm | Line 1446: <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20 shadow-sm" style={{ backgroundColor: 'var(--card)', borde
+Approach: shadow-lg shadow-indigo-600/15 | Line 1456: className="mt-8 bg-[var(--accent)] hover:bg-[var(--accent)] text-white font-extrabold rounded-xl px-6 py-3.5 text-xs uppercase tracking-widest font-mo
+Approach: shadow-2xl | Line 1864: className="w-full max-w-md overflow-hidden shadow-2xl flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
+Approach: shadow-md shadow-indigo-600/10 | Line 1934: className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-[var(--accent)] hover:bg-[var(--accent)] cursor-pointer transition-all shadow-md s
+Approach: Inline Box-Shadow: none | Line 957: style={{
+Approach: Inline Box-Shadow: 0 4px 20px rgba(0,0,0,0.12) | Line 1012: style={{
+Approach: Flat Style (No Shadow) | Line 1034: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px', color: 'var(--text)', padding: '6px
+Approach: Inline Box-Shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06) | Line 1361: style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px
+Approach: Inline Box-Shadow: 0 1px 4px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.05) | Line 1485: <div id="trading-logs-datatable-container" className="overflow-hidden" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', 
+=== DailyJournal.tsx ===
+Approach: shadow | Line 611: className="mt-6 px-5 py-2.5 rounded-xl font-semibold text-xs tracking-wide shadow transition-all hover:opacity-90 inline-flex items-center gap-1.5 cur
+Approach: Inline Box-Shadow: none | Line 543: style={{
+Approach: Flat Style (No Shadow) | Line 571: style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
+Approach: Inline Box-Shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06) | Line 598: <div className="mt-12 text-center flex flex-col items-center justify-center py-20" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,
+=== TradeEntryPage.tsx ===
+Approach: shadow-lg shadow-cyan-500/10 | Line 1211: className="w-full hover:opacity-90 disabled:opacity-50 transition-all font-display shadow-lg shadow-cyan-500/10 flex items-center justify-center gap-2
+Approach: shadow-xl | Line 1323: className="absolute left-0 right-0 mt-1 border shadow-xl z-50 overflow-hidden font-mono text-[13px]"
+Approach: shadow-md | Line 2361: className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full p-1.5 shadow-md cursor-pointer transition-all"
+Approach: Inline Box-Shadow: none | Line 1148: style={{
+Approach: Inline Box-Shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06) | Line 1260: <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 
+Approach: Flat Style (No Shadow) | Line 1276: style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', color: 'var(--text)', padding: '8px
+=== SettingsPage.tsx ===
+Approach: shadow-md shadow-red-950/20 | Line 944: className="bg-red-600 hover:bg-red-500 text-white font-extrabold px-5 py-2.5 rounded-xl cursor-pointer shadow-md shadow-red-950/20"
+Approach: shadow-md | Line 991: <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
+Approach: shadow | Line 1730: className="hover:opacity-95 px-5 py-2.5 rounded-xl font-bold cursor-pointer text-sm shadow transition-all"
+Approach: shadow-2xl | Line 1890: <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+Approach: Inline Box-Shadow: none | Line 902: style={{
+Approach: Flat Style (No Shadow) | Line 1260: style={{
+=== AiTeacherPage.tsx ===
+Approach: shadow-inner | Line 71: <div key={partIdx} style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-muted, var(--card))' }} className="my-3 rounded-xl border overflo
+Approach: shadow-2xl | Line 626: className={`fixed inset-y-0 left-0 z-50 w-[85vw] max-w-[400px] overflow-y-auto shadow-2xl transition-transform duration-250 ease-in-out ${
+Approach: Inline Box-Shadow: none | Line 555: style={{
+Approach: Flat Style (No Shadow) | Line 580: style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text-sub)' }}
+Approach: Inline Box-Shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06) | Line 635: <div style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1p
+=== StrategiesPage.tsx ===
+Approach: shadow-md | Line 558: className="shadow-md hover:brightness-105 transition-all cursor-pointer font-sans"
+Approach: shadow-xl | Line 611: className="absolute left-0 sm:left-auto sm:right-0 mt-2 w-72 max-w-[calc(100vw-2rem)] shadow-xl z-40 p-4 animate-fade-in"
+Approach: Inline Box-Shadow: none | Line 525: style={{
+Approach: Flat Style (No Shadow) | Line 597: style={{ border: '1px solid var(--border)', backgroundColor: 'var(--card)', borderRadius: '8px', color: 'var(--text-sub)', height: '36px' }}
+Approach: Inline Box-Shadow: 0 4px 16px rgba(0,0,0,0.10) | Line 612: style={{
+Approach: Inline Box-Shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06) | Line 803: style={{
+=== RiskCalculatorPage.tsx ===
+Approach: Inline Box-Shadow: none | Line 130: style={{
+Approach: Inline Box-Shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06) | Line 162: style={{
+Approach: Inline Box-Shadow: 0 4px 6px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.06) | Line 431: style={{

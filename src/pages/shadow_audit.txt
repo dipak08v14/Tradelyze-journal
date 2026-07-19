@@ -1,0 +1,24 @@
+=== DashboardPage.tsx ===
+[1961] Tailwind Shadows: shadow-xl
+    <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20 shadow-xl" style={{ backgroundColor: 'var(--card)', borde
+[3346] Tailwind Shadows: shadow-inner
+    <div className="w-14 h-14 rounded-2xl bg-green-500/10 border border-green-500/20 flex items-center justify-center text-green-500 shadow-inner">
+[3399] Tailwind Shadows: shadow-sm
+    <div className="rounded-xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', display:
+=== TradingLogsPage.tsx ===
+[1446] Tailwind Shadows: shadow-sm
+    <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20 shadow-sm" style={{ backgroundColor: 'var(--card)', borde
+=== DailyJournal.tsx ===
+=== TradeEntryPage.tsx ===
+[1227] No Tailwind Shadow (Flat)
+    <div className="mt-3 bg-[var(--card)] border border-[var(--border-md)] rounded-lg px-4 py-3 w-full sm:w-80 text-left">
+=== SettingsPage.tsx ===
+[991] Tailwind Shadows: shadow-md
+    <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
+[1891] Tailwind Shadows: shadow-2xl
+    <div className="bg-[var(--card)] border border-red-500/30 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
+=== AiTeacherPage.tsx ===
+[71] Tailwind Shadows: shadow-inner
+    <div key={partIdx} style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-muted, var(--card))' }} className="my-3 rounded-xl border overflo
+=== StrategiesPage.tsx ===
+=== RiskCalculatorPage.tsx ===

@@ -1,0 +1,418 @@
+
+--- MATCH AT LINE 158 (Has Shadow) ---
+Code: style={{         background: 'var(--card)',         border: '1px solid var(--border)',         borderRadius: '6px',         padding: '4px 8px',         boxShadow: '0 2px 6px rgba(0,0,0,0.12)',         minWidth: '0px',         whiteSpace: 'nowrap'       }}
+Context:
+156:     const item = payload[0];
+157:     return (
+158:       <div style={{
+159:         background: 'var(--card)',
+160:         border: '1px solid var(--border)',
+161:         borderRadius: '6px',
+162:         padding: '4px 8px',
+
+--- MATCH AT LINE 1024 (Has Shadow) ---
+Code: style={{                 background: 'var(--card)',                 width: 'calc(100% + 32px)',                 paddingTop: '3px',                 paddingBottom: '3px',                 paddingLeft: '16px',                 paddingRight: '16px',                 marginLeft: '-16px',                 marginRight: '-16px',                 borderRadius: '0',                 boxShadow: 'none',                 border: 'none',                 borderBottom: '1px solid var(--border)'               }}
+Context:
+1022:             <div 
+1023:               className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+1024:               style={{
+1025:                 background: 'var(--card)',
+1026:                 width: 'calc(100% + 32px)',
+1027:                 paddingTop: '3px',
+1028:                 paddingBottom: '3px',
+
+--- MATCH AT LINE 1051 (Flat Candidate) ---
+Code: style={{                       border: '1px solid var(--border)',                       backgroundColor: 'var(--card)',                       borderRadius: '8px',                       padding: '6px 12px',                       fontSize: '13px',                       color: 'var(--text)',                       cursor: 'pointer'                     }}
+Context:
+1049:                   <button
+1050:                     onClick={() => setIsHeaderDatePickerOpen(!isHeaderDatePickerOpen)}
+1051:                     style={{
+1052:                       border: '1px solid var(--border)',
+1053:                       backgroundColor: 'var(--card)',
+1054:                       borderRadius: '8px',
+1055:                       padding: '6px 12px',
+
+--- MATCH AT LINE 1072 (Has Shadow) ---
+Code: style={{                         zIndex: 1000,                         backgroundColor: 'var(--card)',                         border: '1px solid var(--border)',                         borderRadius: '12px',                         boxShadow: '0 8px 24px rgba(0,0,0,0.15)',                         maxWidth: 'calc(100vw - 24px)',                         maxHeight: 'calc(100vh - 100px)',                         overflowY: 'auto'                       }}
+Context:
+1070:                   {isHeaderDatePickerOpen && (
+1071:                     <div
+1072:                       style={{
+1073:                         zIndex: 1000,
+1074:                         backgroundColor: 'var(--card)',
+1075:                         border: '1px solid var(--border)',
+1076:                         borderRadius: '12px',
+
+--- MATCH AT LINE 1728 (Flat Candidate) ---
+Code: style={{                     width: '32px',                     height: '32px',                     borderRadius: '50%',                     backgroundColor: 'var(--card)',                     border: '1px solid var(--border)',                     display: 'flex',                     alignItems: 'center',                     justifyContent: 'center',                     position: 'relative',                     cursor: 'pointer',                     padding: 0                   }}
+Context:
+1726:                 <button
+1727:                   id="dashboard-header-bell"
+1728:                   style={{
+1729:                     width: '32px',
+1730:                     height: '32px',
+1731:                     borderRadius: '50%',
+1732:                     backgroundColor: 'var(--card)',
+
+--- MATCH AT LINE 1793 (Has Shadow) ---
+Code: className="shrink-0 flex items-center gap-1.5 font-mono uppercase tracking-wider shadow-md"
+Context:
+1791:                       letterSpacing: '0.3px'
+1792:                     }}
+1793:                     className="shrink-0 flex items-center gap-1.5 font-mono uppercase tracking-wider shadow-md"
+1794:                   >
+1795:                     <Activity className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
+1796:                     <span>YOUR SCORE: {stats.avgOverallScore.toFixed(0)}%</span>
+1797:                   </div>
+
+--- MATCH AT LINE 1804 (Has Shadow) ---
+Code: style={{                  display: 'flex',                  alignItems: 'center',                  justifyContent: 'space-between',                  paddingTop: '2px',                 paddingBottom: '2px',                 paddingLeft: '0px',                 paddingRight: '0px',                  background: 'transparent',                 border: 'none',                 borderRadius: '0',                 boxShadow: 'none',                 marginTop: '10px',                 marginBottom: '10px',                 width: '100%'               }}
+Context:
+1802:             {/* NEW HORIZONTAL INFO BAR directly below page header and above KPI stat cards */}
+1803:             <div 
+1804:               style={{ 
+1805:                 display: 'flex', 
+1806:                 alignItems: 'center', 
+1807:                 justifyContent: 'space-between', 
+1808:                 paddingTop: '2px',
+
+--- MATCH AT LINE 1858 (Has Shadow) ---
+Code: style={{                         position: 'absolute',                         top: '100%',                         left: 0,                         marginTop: '6px',                         backgroundColor: 'var(--card)',                         border: '1px solid var(--border)',                         borderRadius: '8px',                         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',                         zIndex: 100,                         minWidth: '200px',                         padding: '6px 0'                       }}
+Context:
+1856:                   {isBrokerDropdownOpen && (
+1857:                     <div
+1858:                       style={{
+1859:                         position: 'absolute',
+1860:                         top: '100%',
+1861:                         left: 0,
+1862:                         marginTop: '6px',
+
+--- MATCH AT LINE 1931 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '10px' }}
+Context:
+1929:                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+1930:                   {Array.from({ length: 4 }).map((_, idx) => (
+1931:                     <div key={idx} style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '10px' }} className="p-4 h-24 relative overflow-hidden flex flex-col justify-between">
+1932:                       <div className="h-3 w-16 skeleton" style={{ borderRadius: '4px' }} />
+1933:                       <div className="h-6 w-24 skeleton" style={{ borderRadius: '4px' }} />
+1934:                       <div className="h-3 w-20 skeleton" style={{ borderRadius: '4px' }} />
+1935:                     </div>
+
+--- MATCH AT LINE 1961 (Has Shadow) ---
+Code: className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20 shadow-xl"
+Context:
+1959:             ) : trades.length === 0 ? (
+1960:               /* EMPTY PERFORMANCE STATE */
+1961:               <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20 shadow-xl" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+1962:                 <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 animate-pulse" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}>
+1963:                   <BarChart2 className="w-8 h-8" style={{ color: 'var(--text-muted)' }} />
+1964:                 </div>
+1965:                 <h3 className="text-xl font-bold tracking-tight font-display" style={{ color: 'var(--text)' }}>
+
+--- MATCH AT LINE 1961 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+Context:
+1959:             ) : trades.length === 0 ? (
+1960:               /* EMPTY PERFORMANCE STATE */
+1961:               <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20 shadow-xl" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+1962:                 <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 animate-pulse" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}>
+1963:                   <BarChart2 className="w-8 h-8" style={{ color: 'var(--text-muted)' }} />
+1964:                 </div>
+1965:                 <h3 className="text-xl font-bold tracking-tight font-display" style={{ color: 'var(--text)' }}>
+
+--- MATCH AT LINE 1973 (Has Shadow) ---
+Code: className="mt-6 hover:opacity-90 text-white font-extrabold rounded-xl px-5 py-3 text-xs uppercase tracking-wider font-mono transition-all shadow-lg cursor-pointer"
+Context:
+1971:                 <button
+1972:                   onClick={() => navigate('/trade-entry')}
+1973:                   className="mt-6 hover:opacity-90 text-white font-extrabold rounded-xl px-5 py-3 text-xs uppercase tracking-wider font-mono transition-all shadow-lg cursor-pointer"
+1974:                   style={{ backgroundColor: 'var(--accent)' }}
+1975:                 >
+1976:                   Log a Trade
+1977:                 </button>
+
+--- MATCH AT LINE 1986 (Has Shadow) ---
+Code: style={{                        height: '105px',                        display: 'flex',                        flexDirection: 'column',                        justifyContent: 'space-between',                        backgroundColor: 'var(--card)',                        border: '1px solid var(--border)',                        borderRadius: '12px',                        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',                       padding: '8px 14px'                     }}
+Context:
+1984:                   {/* Card 1 — NET P&L */}
+1985:                   <div 
+1986:                     style={{ 
+1987:                       height: '105px', 
+1988:                       display: 'flex', 
+1989:                       flexDirection: 'column', 
+1990:                       justifyContent: 'space-between', 
+
+--- MATCH AT LINE 2013 (Has Shadow) ---
+Code: style={{                        height: '105px',                        display: 'flex',                        flexDirection: 'column',                        justifyContent: 'space-between',                        backgroundColor: 'var(--card)',                        border: '1px solid var(--border)',                        borderRadius: '12px',                        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',                       padding: '8px 14px'                     }}
+Context:
+2011:                   {/* Card 2 — TRADE WIN % */}
+2012:                   <div 
+2013:                     style={{ 
+2014:                       height: '105px', 
+2015:                       display: 'flex', 
+2016:                       flexDirection: 'column', 
+2017:                       justifyContent: 'space-between', 
+
+--- MATCH AT LINE 2040 (Has Shadow) ---
+Code: style={{                        height: '105px',                        display: 'flex',                        flexDirection: 'column',                        justifyContent: 'space-between',                        backgroundColor: 'var(--card)',                        border: '1px solid var(--border)',                        borderRadius: '12px',                        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',                       padding: '8px 14px'                     }}
+Context:
+2038:                   {/* Card 3 — PROFIT FACTOR */}
+2039:                   <div 
+2040:                     style={{ 
+2041:                       height: '105px', 
+2042:                       display: 'flex', 
+2043:                       flexDirection: 'column', 
+2044:                       justifyContent: 'space-between', 
+
+--- MATCH AT LINE 2067 (Has Shadow) ---
+Code: style={{                        height: '105px',                        display: 'flex',                        flexDirection: 'column',                        justifyContent: 'space-between',                        backgroundColor: 'var(--card)',                        border: '1px solid var(--border)',                        borderRadius: '12px',                        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',                       padding: '8px 14px'                     }}
+Context:
+2065:                   {/* Card 4 — DAY WIN % */}
+2066:                   <div 
+2067:                     style={{ 
+2068:                       height: '105px', 
+2069:                       display: 'flex', 
+2070:                       flexDirection: 'column', 
+2071:                       justifyContent: 'space-between', 
+
+--- MATCH AT LINE 2094 (Has Shadow) ---
+Code: style={{                        height: '105px',                        display: 'flex',                        flexDirection: 'column',                        justifyContent: 'space-between',                        backgroundColor: 'var(--card)',                        border: '1px solid var(--border)',                        borderRadius: '12px',                        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',                       padding: '8px 14px'                     }}
+Context:
+2092:                   {/* Card 5 — AVG WIN/LOSS TRADE */}
+2093:                   <div 
+2094:                     style={{ 
+2095:                       height: '105px', 
+2096:                       display: 'flex', 
+2097:                       flexDirection: 'column', 
+2098:                       justifyContent: 'space-between', 
+
+--- MATCH AT LINE 2140 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', height: '300px', position: 'relative', overflow: 'hidden' }}
+Context:
+2138:                 <div style={{ gap: '16px', alignItems: 'stretch', marginBottom: '16px' }} className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
+2139:                   {/* Column 1: Trading Metrics */}
+2140:                   <div className="rounded-xl px-5 pb-5 pt-2.5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', height: '300px', position: 'relative', overflow: 'hidden' }}>
+2141:                     <style>{`
+2142:                       .trading-metrics-radar .recharts-polar-grid-angle line {
+2143:                         stroke-width: 1 !important;
+2144:                         stroke-opacity: 0.3 !important;
+
+--- MATCH AT LINE 2280 (Has Shadow) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', overflow: 'visible', height: '300px' }}
+Context:
+2278: 
+2279:                   {/* Column 2: Cumulative P&L */}
+2280:                   <div className="px-5 pb-5 pt-2.5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', overflow: 'visible', height: '300px' }}>
+2281:                     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2" style={{ borderBottom: '1px solid rgba(0,0,0,0.07)', paddingBottom: '4px', marginBottom: '8px', paddingTop: '0px' }}>
+2282:                       <div className="flex flex-col">
+2283:                         <h2 className="flex items-center gap-1.5" style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-muted)', marginBottom: '4px' }}>
+2284:                           <TrendingUp className="w-4 h-4" style={{ color: chartColor }} />
+
+--- MATCH AT LINE 2377 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '5px 10px', fontSize: '11px', fontFamily: 'monospace' }}
+Context:
+2375:                                   const val = payload[0]?.value as number;
+2376:                                   return (
+2377:                                     <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '5px 10px', fontSize: '11px', fontFamily: 'monospace' }}>
+2378:                                       <span style={{ color: 'var(--text)' }}>Net P&L : </span>
+2379:                                       <span style={{ color: val >= 0 ? '#008F67' : '#DF1C30', fontWeight: 600 }}>{val >= 0 ? '+' : ''}₹{Math.abs(val).toLocaleString('en-IN')}</span>
+2380:                                     </div>
+2381:                                   );
+
+--- MATCH AT LINE 2419 (Has Shadow) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', height: '300px' }}
+Context:
+2417: 
+2418:                   {/* Column 3: Daily P&L */}
+2419:                   <div className="px-5 pb-5 pt-2.5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', height: '300px' }}>
+2420:                     <div className="flex items-center justify-between gap-2" style={{ borderBottom: '1px solid rgba(0,0,0,0.07)', paddingBottom: '4px', marginBottom: '8px', paddingTop: '0px' }}>
+2421:                       <h2 style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-muted)', marginBottom: '4px' }}>
+2422:                         Daily P&L
+2423:                       </h2>
+
+--- MATCH AT LINE 2480 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '5px 10px', fontSize: '11px', fontFamily: 'monospace' }}
+Context:
+2478:                                   const val = payload[0]?.value as number;
+2479:                                   return (
+2480:                                     <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '5px 10px', fontSize: '11px', fontFamily: 'monospace' }}>
+2481:                                       <span style={{ color: 'var(--text)' }}>Net P&L : </span>
+2482:                                       <span style={{ color: val >= 0 ? '#008F67' : '#DF1C30', fontWeight: 600 }}>{val >= 0 ? '+' : ''}₹{Math.abs(val).toLocaleString('en-IN')}</span>
+2483:                                     </div>
+2484:                                   );
+
+--- MATCH AT LINE 2601 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}
+Context:
+2599:                 <div style={{ gap: '16px', alignItems: 'stretch' }} className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
+2600:                   {/* Left Column (33%): Tabbed Info Card */}
+2601:                   <div className="rounded-xl px-5 pb-5 pt-0 flex flex-col justify-between lg:col-span-1" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px' }}>
+2602:                     <div>
+2603:                       {/* Tab Bar */}
+2604:                       <div className="flex gap-4 border-b pb-2 mb-4" style={{ borderColor: 'var(--border)', paddingTop: '0px', marginTop: '0px' }}>
+2605:                         <button
+
+--- MATCH AT LINE 2764 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%', minWidth: '0px', overflow: 'hidden', boxSizing: 'border-box' }}
+Context:
+2762:                   {/* Right Column (2/3): Monthly Calendar */}
+2763:                   {/* ADDITION 4 — Monthly Calendar section */}
+2764:                   <div className="rounded-xl px-5 pb-5 pt-2.5 lg:col-span-2" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%', minWidth: '0px', overflow: 'hidden', boxSizing: 'border-box' }}>
+2765:                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4" style={{ paddingTop: '0px', paddingBottom: '4px', borderBottom: '1px solid rgba(0,0,0,0.07)', marginBottom: '8px' }}>
+2766:                       <h2 style={{ fontSize: '16px', fontWeight: 500, color: 'var(--text-muted)' }}>
+2767:                         Monthly Calendar
+2768:                       </h2>
+
+--- MATCH AT LINE 2866 (Flat Candidate) ---
+Code: style={{                                   width: '100%',                                   minWidth: '0px',                                   overflow: 'hidden',                                   boxSizing: 'border-box',                                   height: '60px',                                   backgroundColor: hasTrades                                      ? (isProfitable ? 'rgba(0, 143, 103, 0.12)' : 'rgba(223, 28, 48, 0.12)')                                     : 'var(--card)',                                   borderColor: 'var(--border)',                                   cursor: hasTrades ? 'pointer' : 'default'                                 }}
+Context:
+2864:                                   }
+2865:                                 }}
+2866:                                 style={{
+2867:                                   width: '100%',
+2868:                                   minWidth: '0px',
+2869:                                   overflow: 'hidden',
+2870:                                   boxSizing: 'border-box',
+
+--- MATCH AT LINE 2911 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', display: 'none' }}
+Context:
+2909: 
+2910:                 {/* ADDITION 5 — Account Balance Section */}
+2911:                 <div className="rounded-xl p-5 mb-4" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', display: 'none' }}>
+2912:                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+2913:                     <div>
+2914:                       <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
+2915:                         Account Balance
+
+--- MATCH AT LINE 2935 (Flat Candidate) ---
+Code: style={{                           backgroundColor: 'var(--card)',                           border: '0.5px solid var(--border)',                           borderRadius: '8px',                           color: 'var(--text)',                           padding: '6px 12px',                           width: '180px'                         }}
+Context:
+2933:                         }}
+2934:                         placeholder="Enter starting balance"
+2935:                         style={{
+2936:                           backgroundColor: 'var(--card)',
+2937:                           border: '0.5px solid var(--border)',
+2938:                           borderRadius: '8px',
+2939:                           color: 'var(--text)',
+
+--- MATCH AT LINE 3039 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', display: 'none' }}
+Context:
+3037:                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4" style={{ display: 'none' }}>
+3038:                   {/* LEFT DETAILED STATS */}
+3039:                   <div className="lg:col-span-2 rounded-xl p-5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', display: 'none' }}>
+3040:                     <div>
+3041:                       <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
+3042:                         Statistics — {startDate} to {endDate}
+3043:                       </h2>
+
+--- MATCH AT LINE 3218 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}
+Context:
+3216: 
+3217:                   {/* RIGHT METRICS RADAR */}
+3218:                   <div className="lg:col-span-3 rounded-xl p-5 flex flex-col justify-between" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+3219:                     <div>
+3220:                       <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
+3221:                         Trading Metrics
+3222:                       </h2>
+
+--- MATCH AT LINE 3338 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', display: 'none' }}
+Context:
+3336: 
+3337:                 {/* SECTION 6: CONSECUTIVE DAYS / STREAK CARD */}
+3338:                 <div className="rounded-xl p-5" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', display: 'none' }}>
+3339:                   <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5 mb-5" style={{ color: 'var(--text)' }}>
+3340:                     <Flame className="w-5 h-5 text-amber-500" />
+3341:                     Streak Analysis — {startDate} to {endDate}
+3342:                   </h2>
+
+--- MATCH AT LINE 3346 (Has Shadow) ---
+Code: className="w-14 h-14 rounded-2xl bg-green-500/10 border border-green-500/20 flex items-center justify-center text-green-500 shadow-inner"
+Context:
+3344:                     {/* WIN STREAK */}
+3345:                     <div className="flex items-center gap-5 pt-2 md:pt-0">
+3346:                       <div className="w-14 h-14 rounded-2xl bg-green-500/10 border border-green-500/20 flex items-center justify-center text-green-500 shadow-inner">
+3347:                         <Trophy className="w-7 h-7" />
+3348:                       </div>
+3349:                       <div>
+3350:                         <div className="text-2xl font-black text-green-500 font-mono">
+
+--- MATCH AT LINE 3364 (Has Shadow) ---
+Code: className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/10 flex items-center justify-center text-red-500 shadow-inner"
+Context:
+3362:                     {/* LOSS STREAK */}
+3363:                     <div className="flex items-center gap-5 pt-5 md:pt-0 md:pl-6" style={{ borderColor: 'var(--border)' }}>
+3364:                       <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/10 flex items-center justify-center text-red-500 shadow-inner">
+3365:                         <TrendingDown className="w-7 h-7" />
+3366:                       </div>
+3367:                       <div>
+3368:                         <div className="text-2xl font-black text-red-500 font-mono">
+
+--- MATCH AT LINE 3399 (Has Shadow) ---
+Code: className="rounded-xl p-5 shadow-sm"
+Context:
+3397: 
+3398:                 {/* SECTION 7: VISUAL PATTERN DATABASE / LIBRARY STATS CARD */}
+3399:                 <div className="rounded-xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', display: 'none' }}>
+3400:                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+3401:                     <div>
+3402:                       <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5 font-display" style={{ color: 'var(--text)' }}>
+3403:                         <Sparkles className="w-5 h-5 text-[var(--accent)] animate-pulse" />
+
+--- MATCH AT LINE 3399 (Flat Candidate) ---
+Code: style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', display: 'none' }}
+Context:
+3397: 
+3398:                 {/* SECTION 7: VISUAL PATTERN DATABASE / LIBRARY STATS CARD */}
+3399:                 <div className="rounded-xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', display: 'none' }}>
+3400:                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+3401:                     <div>
+3402:                       <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5 font-display" style={{ color: 'var(--text)' }}>
+3403:                         <Sparkles className="w-5 h-5 text-[var(--accent)] animate-pulse" />
+
+--- MATCH AT LINE 3451 (Flat Candidate) ---
+Code: style={{              backgroundColor: 'var(--card)',              border: '0.5px solid var(--border)',              borderRadius: '16px',             maxHeight: '90vh',             overflowY: 'auto'           }}
+Context:
+3449:       >
+3450:         <div 
+3451:           style={{ 
+3452:             backgroundColor: 'var(--card)', 
+3453:             border: '0.5px solid var(--border)', 
+3454:             borderRadius: '16px',
+3455:             maxHeight: '90vh',
+
+--- MATCH AT LINE 3458 (Has Shadow) ---
+Code: className="w-full max-w-[680px] p-6 relative flex flex-col gap-5 shadow-2xl"
+Context:
+3456:             overflowY: 'auto'
+3457:           }} 
+3458:           className="w-full max-w-[680px] p-6 relative flex flex-col gap-5 shadow-2xl"
+3459:           onClick={(e) => e.stopPropagation()}
+3460:         >
+3461:           {/* Modal Header Row */}
+3462:           <div className="flex items-start justify-between gap-4">
+
+--- MATCH AT LINE 3488 (Flat Candidate) ---
+Code: style={{                   backgroundColor: 'var(--card)',                   border: '0.5px solid var(--border)',                   borderRadius: '8px',                   color: 'var(--text-sub)',                   fontSize: '12px'                 }}
+Context:
+3486:                   setIsDayModalOpen(false);
+3487:                 }}
+3488:                 style={{
+3489:                   backgroundColor: 'var(--card)',
+3490:                   border: '0.5px solid var(--border)',
+3491:                   borderRadius: '8px',
+3492:                   color: 'var(--text-sub)',
+
+--- MATCH AT LINE 3656 (Flat Candidate) ---
+Code: style={{                 backgroundColor: 'var(--card)',                 border: '0.5px solid var(--border)',                 borderRadius: '8px',                 color: 'var(--text-sub)',                 fontSize: '13px'               }}
+Context:
+3654:             <button
+3655:               onClick={() => setIsDayModalOpen(false)}
+3656:               style={{
+3657:                 backgroundColor: 'var(--card)',
+3658:                 border: '0.5px solid var(--border)',
+3659:                 borderRadius: '8px',
+3660:                 color: 'var(--text-sub)',

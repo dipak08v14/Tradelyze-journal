@@ -1,0 +1,61 @@
+=== DashboardPage.tsx ===
+Tailwind Shadows:
+  - shadow-md
+  - shadow-xl
+  - shadow-lg
+  - shadow-inner
+  - shadow-sm
+  - shadow-2xl
+Inline Shadows:
+  - NO_SHADOW_INLINE (flat card)
+  - Inline: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)
+=== TradingLogsPage.tsx ===
+Tailwind Shadows:
+  - shadow-lg shadow-cyan-500/10
+  - shadow-sm
+  - shadow-lg shadow-indigo-600/15
+  - shadow-2xl
+  - shadow-md shadow-indigo-600/10
+Inline Shadows:
+  - NO_SHADOW_INLINE (flat card)
+  - Inline: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)
+  - Inline: 0 1px 4px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.05)
+=== DailyJournal.tsx ===
+Tailwind Shadows:
+  - shadow
+  - NO_SHADOW_CLASS (flat card)
+Inline Shadows:
+  - NO_SHADOW_INLINE (flat card)
+  - Inline: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)
+=== TradeEntryPage.tsx ===
+Tailwind Shadows:
+  - shadow-lg shadow-cyan-500/10
+  - NO_SHADOW_CLASS (flat card)
+  - shadow-xl
+  - shadow-md
+Inline Shadows:
+  - Inline: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)
+  - NO_SHADOW_INLINE (flat card)
+=== SettingsPage.tsx ===
+Tailwind Shadows:
+  - shadow-md shadow-red-950/20
+  - shadow-md
+  - shadow
+  - shadow-2xl
+Inline Shadows:
+=== AiTeacherPage.tsx ===
+Tailwind Shadows:
+  - shadow-inner
+  - shadow-2xl
+Inline Shadows:
+  - NO_SHADOW_INLINE (flat card)
+  - Inline: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)
+=== StrategiesPage.tsx ===
+Tailwind Shadows:
+  - shadow-md
+  - shadow-xl
+Inline Shadows:
+  - NO_SHADOW_INLINE (flat card)
+=== RiskCalculatorPage.tsx ===
+Tailwind Shadows:
+Inline Shadows:

@@ -1,0 +1,19 @@
+=== DashboardPage.tsx ===
+Tailwind: shadow-xl | Line 1961: <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20 shadow-xl" style={{ backgroundColor: 'var(--card)', borde
+Inline: No Inline Shadow | Line 1961: <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20 shadow-xl" style={{ backgroundColor: 'var(--card)', borde
+Tailwind: shadow-inner | Line 3346: <div className="w-14 h-14 rounded-2xl bg-green-500/10 border border-green-500/20 flex items-center justify-center text-green-500 shadow-inner">
+Tailwind: shadow-sm | Line 3399: <div className="rounded-xl p-5 shadow-sm" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '12px', display:
+=== TradingLogsPage.tsx ===
+Tailwind: shadow-sm | Line 1446: <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20 shadow-sm" style={{ backgroundColor: 'var(--card)', borde
+Inline: No Inline Shadow | Line 1446: <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20 shadow-sm" style={{ backgroundColor: 'var(--card)', borde
+=== DailyJournal.tsx ===
+=== TradeEntryPage.tsx ===
+Tailwind: No Tailwind Shadow | Line 1227: <div className="mt-3 bg-[var(--card)] border border-[var(--border-md)] rounded-lg px-4 py-3 w-full sm:w-80 text-left">
+=== SettingsPage.tsx ===
+Tailwind: shadow-md | Line 991: <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
+Tailwind: shadow-2xl | Line 1891: <div className="bg-[var(--card)] border border-red-500/30 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
+=== AiTeacherPage.tsx ===
+Tailwind: shadow-inner | Line 71: <div key={partIdx} style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-muted, var(--card))' }} className="my-3 rounded-xl border overflo
+Inline: No Inline Shadow | Line 71: <div key={partIdx} style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-muted, var(--card))' }} className="my-3 rounded-xl border overflo
+=== StrategiesPage.tsx ===
+=== RiskCalculatorPage.tsx ===
