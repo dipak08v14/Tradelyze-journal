@@ -1232,7 +1232,7 @@ const TradeTrackingPageContent: React.FC = () => {
 
   // Helpers to render stars
   const renderStars = (rating: number | null) => {
-    if (!rating || rating <= 0) return <span className="text-zinc-650">—</span>;
+    if (!rating || rating <= 0) return <span style={{ color: 'var(--text-muted)' }}>—</span>;
     return (
       <div className="flex items-center gap-0.5 text-amber-400">
         {Array.from({ length: 5 }).map((_, idx) => (
@@ -1271,7 +1271,7 @@ const TradeTrackingPageContent: React.FC = () => {
         <main className="flex-1 overflow-y-auto overflow-x-hidden px-0" style={{ overflowX: 'hidden' }}>
           <div className="w-full px-4">
             {fetchError ? (
-              <div className="min-h-[60vh] flex flex-col items-center justify-center p-6 text-zinc-100" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+              <div className="min-h-[60vh] flex flex-col items-center justify-center p-6" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
                 <div className="p-6 rounded-2xl max-w-md w-full text-center shadow-2xl" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }}>
                   <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500" style={{ backgroundColor: 'var(--row)', border: '1px solid var(--border)' }}>
                     <AlertTriangle className="w-6 h-6" />
@@ -1918,7 +1918,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                     <span style={{ color: 'var(--text-muted)', fontSize: '13px' }} className="font-mono font-medium truncate">Add Tags</span>
                                   )}
                                 </div>
-                                <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500 flex-shrink-0" />
+                                <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'var(--text-muted)' }} />
                               </button>
 
                               {isExecStatusOpen && (
@@ -2003,7 +2003,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                     </span>
                                   )}
                                 </div>
-                                <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500 flex-shrink-0" />
+                                <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'var(--text-muted)' }} />
                               </button>
 
                               {isMistakeTypeOpen && (
@@ -2090,7 +2090,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                       {trade.mistake_text || 'Add Tags'}
                                     </span>
                                   </div>
-                                  <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500 flex-shrink-0" />
+                                  <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'var(--text-muted)' }} />
                                 </button>
 
                                 {isMistakeTextOpen && (
@@ -2155,7 +2155,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                       className={`w-5 h-5 transition-colors duration-150 ${
                                         isFilled
                                           ? 'fill-amber-400 text-amber-400 hover:text-amber-300 hover:fill-amber-300'
-                                          : 'text-zinc-600 hover:text-amber-400'
+                                          : 'text-[var(--text-muted)] hover:text-amber-400'
                                       }`}
                                     />
                                   </button>
@@ -2199,7 +2199,7 @@ const TradeTrackingPageContent: React.FC = () => {
                               <span>
                                 {strategiesList.find((s) => s.id === trade?.strategy_id)?.name || 'Select a setup'}
                               </span>
-                              <ChevronDown className="w-4 h-4 text-gray-400 dark:text-zinc-500" />
+                              <ChevronDown className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
                             </button>
 
                             {isSetupDropdownOpen && (
@@ -2418,7 +2418,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                   <span className="flex-1 min-w-0 text-left truncate">
                                     {trade?.phase || <span style={{ color: 'var(--text-muted)' }}>Add Tags</span>}
                                   </span>
-                                  <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500 flex-shrink-0" />
+                                  <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'var(--text-muted)' }} />
                                 </button>
                                 {isPhaseOpen && (
                                   <div style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)' }} className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 min-w-[140px] max-h-60 overflow-y-auto animate-fadeIn">
@@ -2444,7 +2444,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                   <span className="flex-1 min-w-0 text-left truncate">
                                     {trade?.trend_position || <span style={{ color: 'var(--text-muted)' }}>Add Tags</span>}
                                   </span>
-                                  <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500 flex-shrink-0" />
+                                  <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'var(--text-muted)' }} />
                                 </button>
                                 {isTrendOpen && (
                                   <div style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)' }} className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 min-w-[140px] max-h-60 overflow-y-auto animate-fadeIn">
@@ -2470,7 +2470,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                   <span className="flex-1 min-w-0 text-left truncate">
                                     {trade?.opening_condition || <span style={{ color: 'var(--text-muted)' }}>Add Tags</span>}
                                   </span>
-                                  <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500 flex-shrink-0" />
+                                  <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'var(--text-muted)' }} />
                                 </button>
                                 {isOpeningOpen && (
                                   <div style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)' }} className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 min-w-[140px] max-h-60 overflow-y-auto animate-fadeIn">
@@ -2496,7 +2496,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                   <span className="flex-1 min-w-0 text-left truncate">
                                     {trade?.hourly_trend ? (HOURLY_DISPLAY_LABELS[trade.hourly_trend] || trade.hourly_trend) : <span style={{ color: 'var(--text-muted)' }}>Add Tags</span>}
                                   </span>
-                                  <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500 flex-shrink-0" />
+                                  <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'var(--text-muted)' }} />
                                 </button>
                                 {isHourlyOpen && (
                                   <div style={{ borderColor: 'var(--border)', backgroundColor: 'var(--card)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)' }} className="absolute right-0 z-50 mt-1 border rounded-lg overflow-hidden py-1 min-w-[140px] max-h-60 overflow-y-auto animate-fadeIn">
@@ -2546,7 +2546,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                   <div
                                     style={{ position: 'relative', cursor: 'pointer' }}
                                     onClick={() => setViewerOpen(true)}
-                                    className="group rounded-xl overflow-hidden border border-[var(--border)] bg-zinc-950"
+                                    className="group rounded-xl overflow-hidden border border-[var(--border)] bg-[var(--card)]"
                                   >
                                     <img
                                       src={trade.chart_image_url}
@@ -2605,7 +2605,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                       <span>Read Trade Plan (PDF)</span>
                                     </button>
                                   ) : (
-                                    <div style={{ borderColor: 'var(--border)' }} className="relative group rounded-xl overflow-hidden border bg-zinc-950">
+                                    <div style={{ borderColor: 'var(--border)' }} className="relative group rounded-xl overflow-hidden border bg-[var(--card)]">
                                       <img
                                         src={trade.trade_plan_url}
                                         alt="Trade plan chart/model"
@@ -2614,7 +2614,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                         referrerPolicy="no-referrer"
                                       />
                                       <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity pointer-events-none">
-                                        <span className="text-[10px] font-bold uppercase text-white font-mono flex items-center gap-1.5 bg-zinc-950 px-3 py-1.5 rounded-lg border border-zinc-800">
+                                        <span className="text-[10px] font-bold uppercase text-white font-mono flex items-center gap-1.5 bg-[var(--card)] px-3 py-1.5 rounded-lg border border-[var(--border)]">
                                           <ExternalLink className="w-3 h-3" />
                                           <span>Inspect Plan</span>
                                         </span>
@@ -2674,7 +2674,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                     return (
                                       <div key={match.trade_id} style={{ borderColor: 'var(--border)' }} className="py-3 first:pt-0 last:pb-0 flex gap-3 group">
                                         {/* Thumbnail */}
-                                        <div style={{ borderColor: 'var(--border)' }} className="w-16 h-12 rounded-lg overflow-hidden bg-zinc-950 border flex-shrink-0 relative">
+                                        <div style={{ borderColor: 'var(--border)' }} className="w-16 h-12 rounded-lg overflow-hidden bg-[var(--card)] border flex-shrink-0 relative">
                                           <img
                                             src={match.image_url}
                                             alt="Matching pattern representation"
@@ -2969,9 +2969,9 @@ const TradeTrackingPageContent: React.FC = () => {
           <div className="w-12 h-12 bg-red-950/60 border border-red-800/80 rounded-full flex items-center justify-center mx-auto text-red-400 mb-4 scale-110">
             <AlertTriangle className="w-6 h-6" />
           </div>
-          <h4 className="text-lg font-bold text-zinc-100">Permanently Delete Trade?</h4>
-          <p className="text-zinc-400 text-xs mt-3.5 leading-relaxed">
-            This action will permanently delete <span className="font-bold text-zinc-200 font-mono">{trade?.symbol}</span>'s records from <span className="font-bold text-zinc-200 font-mono">{trade?.date}</span>. All diagnostic rule metrics, psychological spectrum states, and risk statistics will be erased. This is irreversible.
+          <h4 className="text-lg font-bold" style={{ color: 'var(--text)' }}>Permanently Delete Trade?</h4>
+          <p className="text-xs mt-3.5 leading-relaxed" style={{ color: 'var(--text-sub)' }}>
+            This action will permanently delete <span className="font-bold font-mono" style={{ color: 'var(--text)' }}>{trade?.symbol}</span>'s records from <span className="font-bold font-mono" style={{ color: 'var(--text)' }}>{trade?.date}</span>. All diagnostic rule metrics, psychological spectrum states, and risk statistics will be erased. This is irreversible.
           </p>
           
           <div className="flex items-center justify-center gap-3 mt-7">
@@ -2979,7 +2979,7 @@ const TradeTrackingPageContent: React.FC = () => {
             <button
               disabled={isDeleting}
               onClick={() => setIsDeleteModalOpen(false)}
-              className="bg-zinc-950 border border-zinc-850 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900 rounded-xl px-4 py-2.5 text-xs font-semibold cursor-pointer transition-colors min-w-[90px]"
+              className="border rounded-xl px-4 py-2.5 text-xs font-semibold cursor-pointer transition-colors min-w-[90px] hover:text-[var(--text)] hover:bg-[var(--card-hover)]" style={{ backgroundColor: 'var(--bar)', borderColor: 'var(--border)', color: 'var(--text-muted)' }}
             >
               Cancel
             </button>
