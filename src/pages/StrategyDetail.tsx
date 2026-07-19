@@ -590,7 +590,7 @@ export const StrategyDetail: React.FC = () => {
           <div className="text-xl font-bold tracking-wider font-display" style={{ color: 'var(--accent)' }}>TRADELYZE</div>
           <button
             onClick={() => setMobileOpen(true)}
-            className="p-1.5 rounded-lg cursor-pointer hover:text-white"
+            className="p-1.5 rounded-lg cursor-pointer hover:text-[var(--text)]"
             style={{ color: 'var(--text-sub)' }}
           >
             <Menu className="w-6 h-6" />
@@ -794,13 +794,13 @@ export const StrategyDetail: React.FC = () => {
 
                     {/* CHARTS GRAPH COMPONENT */}
                     <div className="rounded-2xl border p-6" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
-                      <h3 className="text-sm font-bold text-white font-mono uppercase tracking-wider mb-5">
+                      <h3 className="text-sm font-bold font-mono uppercase tracking-wider mb-5" style={{ color: 'var(--text)' }}>
                         Cumulative P&L — {strategy?.name || 'Strategy'}
                       </h3>
 
                       {chartDetails.data.length <= 1 ? (
                         <div className="h-[286px] flex flex-col items-center justify-center text-center text-xs font-mono" style={{ color: 'var(--text-muted)' }}>
-                          <TrendingUp className="w-8 h-8 text-zinc-600 mb-2" />
+                          <TrendingUp className="w-8 h-8 mb-2" style={{ color: 'var(--text-muted)' }} />
                           No trades logged with this strategy to compute curve.
                         </div>
                       ) : (
@@ -893,7 +893,7 @@ export const StrategyDetail: React.FC = () => {
                     {/* ENTRY RULES SELECTION */}
                     <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                       <div className="px-5 py-4 border-b flex items-center justify-between" style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bar)' }}>
-                        <h4 className="text-xs font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2">
+                        <h4 className="text-xs font-bold uppercase tracking-wider font-mono flex items-center gap-2" style={{ color: 'var(--text)' }}>
                           <span className="w-1.5 h-3 rounded-sm" style={{ backgroundColor: 'var(--accent)' }} />
                           Entry Rules Performance
                         </h4>
@@ -1282,7 +1282,7 @@ export const StrategyDetail: React.FC = () => {
                           <form onSubmit={handleSaveMissedTrade} className="space-y-4">
                             {/* Date field */}
                             <div>
-                              <label htmlFor="mt-date" className="block text-[10px] font-mono font-bold uppercase tracking-widest text-zinc-500 mb-1.5">
+                              <label htmlFor="mt-date" className="block text-[10px] font-mono font-bold uppercase tracking-widest mb-1.5" style={{ color: 'var(--text-muted)' }}>
                                 Date <span style={{ color: 'var(--accent)' }}>*</span>
                               </label>
                               <input
@@ -1298,7 +1298,7 @@ export const StrategyDetail: React.FC = () => {
 
                             {/* Symbol field */}
                             <div className="relative" ref={mtSymbolContainerRef}>
-                              <label htmlFor="mt-symbol" className="block text-[10px] font-mono font-bold uppercase tracking-widest text-zinc-500 mb-1.5">
+                              <label htmlFor="mt-symbol" className="block text-[10px] font-mono font-bold uppercase tracking-widest mb-1.5" style={{ color: 'var(--text-muted)' }}>
                                 Symbol <span style={{ color: 'var(--accent)' }}>*</span>
                               </label>
                               <input
@@ -1343,7 +1343,7 @@ export const StrategyDetail: React.FC = () => {
 
                             {/* Direction field */}
                             <div>
-                              <label className="block text-[10px] font-mono font-bold uppercase tracking-widest text-zinc-500 mb-1.5">
+                              <label className="block text-[10px] font-mono font-bold uppercase tracking-widest mb-1.5" style={{ color: 'var(--text-muted)' }}>
                                 Direction <span style={{ color: 'var(--accent)' }}>*</span>
                               </label>
                               <div className="grid grid-cols-2 gap-2 font-sans">
@@ -1383,7 +1383,7 @@ export const StrategyDetail: React.FC = () => {
 
                             {/* Potential P&L field */}
                             <div>
-                              <label htmlFor="mt-potential-pnl" className="block text-[10px] font-mono font-bold uppercase tracking-widest text-zinc-500 mb-1.5">
+                              <label htmlFor="mt-potential-pnl" className="block text-[10px] font-mono font-bold uppercase tracking-widest mb-1.5" style={{ color: 'var(--text-muted)' }}>
                                 Potential P&L (₹, Optional)
                               </label>
                               <input
@@ -1400,7 +1400,7 @@ export const StrategyDetail: React.FC = () => {
 
                             {/* Notes field */}
                             <div>
-                              <label htmlFor="mt-notes" className="block text-[10px] font-mono font-bold uppercase tracking-widest text-zinc-500 mb-1.5">
+                              <label htmlFor="mt-notes" className="block text-[10px] font-mono font-bold uppercase tracking-widest mb-1.5" style={{ color: 'var(--text-muted)' }}>
                                 Notes (Optional)
                               </label>
                               <textarea
@@ -1531,7 +1531,7 @@ export const StrategyDetail: React.FC = () => {
                                   loading="lazy"
                                 />
                                 <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center animate-fade-in">
-                                  <span className="text-[11px] font-mono font-medium px-2 py-1 rounded text-white" style={{ backgroundColor: 'var(--card)' }}>
+                                  <span className="text-[11px] font-mono font-medium px-2 py-1 rounded" style={{ backgroundColor: 'var(--card)', color: 'var(--text)' }}>
                                     View Maximized
                                   </span>
                                 </div>
