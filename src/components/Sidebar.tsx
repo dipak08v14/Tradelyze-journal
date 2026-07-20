@@ -152,7 +152,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
               key={item.label}
               to={item.route}
               onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-3 cursor-pointer sidebar-nav-link"
+              className={`flex items-center gap-3 cursor-pointer sidebar-nav-link ${!isActive ? 'hover:bg-[var(--bar)]' : ''}`}
               style={{
                 padding: '8px 12px',
                 borderRadius: '8px',
@@ -164,16 +164,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
                 transition: 'background 120ms ease',
                 display: 'flex',
                 alignItems: 'center',
-              }}
-              onMouseEnter={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.04)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                }
               }}
             >
               <Icon className="w-4 h-4 flex-shrink-0" />
