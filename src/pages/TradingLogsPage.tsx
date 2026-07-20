@@ -670,7 +670,7 @@ export const TradingLogsPage: React.FC = () => {
       renderCell: (item) => {
         const dateTagStr = getDateDisplay(item.date);
         return (
-          <span className="font-mono text-xs font-semibold flex items-center gap-1" style={{ color: 'var(--text-sub)' }}>
+          <span className="text-sm flex items-center gap-1" style={{ color: 'var(--text)' }}>
             <span>{dateTagStr.label}</span>
           </span>
         );
@@ -680,7 +680,7 @@ export const TradingLogsPage: React.FC = () => {
       label: 'Symbol',
       sortField: 'symbol',
       renderCell: (item) => (
-        <span className="font-mono tracking-wide" style={{ color: 'var(--text)', fontWeight: 600 }}>
+        <span className="text-sm" style={{ color: 'var(--text)' }}>
           {item.symbol}
         </span>
       )
@@ -690,49 +690,24 @@ export const TradingLogsPage: React.FC = () => {
       sortField: 'direction',
       renderCell: (item) => item.direction ? (
         <span
-          style={{
-            backgroundColor: item.direction === 'LONG' ? 'rgba(0,143,103,0.12)' : 'rgba(223,28,48,0.12)',
-            color: item.direction === 'LONG' ? '#008F67' : '#DF1C30',
-            borderRadius: '6px',
-            padding: '2px 8px',
-            fontSize: '11px',
-            fontWeight: 700,
-          }}
-          className="inline-block"
+          style={{ color: item.direction === 'SHORT' ? '#DF1C30' : '#008F67', fontWeight: 600 }}
+          className="text-xs"
         >
-          {item.direction}
+          {item.direction === 'SHORT' ? 'S' : 'L'}
         </span>
       ) : (
-        <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
+        <span style={{ color: 'var(--text-muted)' }}>—</span>
       )
     },
     option_type: {
       label: 'Option Type',
       sortField: 'option_type',
       renderCell: (item) => {
-        if (!item.option_type) return <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>;
+        if (!item.option_type) return <span className="text-xs" style={{ color: 'var(--text-muted)' }}>—</span>;
         const isCallOrPut = item.option_type === 'CALL' || item.option_type === 'PUT';
         return (
-          <span
-            style={isCallOrPut ? {
-              backgroundColor: '#1e293b',
-              color: '#ffffff',
-              borderRadius: '6px',
-              padding: '2px 8px',
-              fontSize: '11px',
-              fontWeight: 700,
-            } : {
-              backgroundColor: 'var(--row)',
-              color: 'var(--text)',
-              border: '0.5px solid var(--border)',
-              borderRadius: '6px',
-              padding: '2px 8px',
-              fontSize: '10px',
-              fontWeight: 600,
-            }}
-            className="inline-block font-sans"
-          >
-            {item.option_type}
+          <span style={{ color: 'var(--text)' }} className="text-sm">
+            {isCallOrPut ? (item.option_type === 'CALL' ? 'C' : 'P') : item.option_type}
           </span>
         );
       }
@@ -741,12 +716,12 @@ export const TradingLogsPage: React.FC = () => {
       label: 'Setup',
       sortField: 'strategies.name',
       renderCell: (item) => item.strategies?.name ? (
-        <span className="font-semibold font-mono text-xs" style={{ color: 'var(--text-sub)' }}>
+        <span className="text-sm" style={{ color: 'var(--text)' }}>
           {item.strategies.name}
         </span>
       ) : (
-        <span className="italic font-mono text-xs" style={{ color: 'var(--text-muted)' }}>
-          No Setup
+        <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>
+          —
         </span>
       )
     },
@@ -759,10 +734,9 @@ export const TradingLogsPage: React.FC = () => {
         return (
           <span
             style={{
-              color: hasProfit ? '#008F67' : hasLoss ? '#DF1C30' : 'var(--text-muted)',
-              fontWeight: 600
+              color: hasProfit ? '#008F67' : hasLoss ? '#DF1C30' : 'var(--text-muted)'
             }}
-            className="font-mono text-sm"
+            className="text-sm"
           >
             {item.pnl !== null ? formatINR(item.pnl) : '—'}
           </span>
@@ -774,14 +748,14 @@ export const TradingLogsPage: React.FC = () => {
       sortField: 'r_multiple',
       renderCell: (item) => item.r_multiple !== null ? (
         <span
-          className="font-mono font-bold text-xs"
+          className="text-sm"
           style={{ color: item.r_multiple > 0 ? '#008F67' : '#DF1C30' }}
         >
           {item.r_multiple > 0 ? '+' : ''}
-          {item.r_multiple.toFixed(2)}R
+          {item.r_multiple.toFixed(1)}R
         </span>
       ) : (
-        <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
+        <span style={{ color: 'var(--text-muted)' }}>—</span>
       )
     },
     status: {
@@ -790,23 +764,21 @@ export const TradingLogsPage: React.FC = () => {
       renderCell: (item) => (
         <>
           {item.status === 'Win' && (
-            <span style={{ backgroundColor: 'rgba(0,143,103,0.12)', color: '#008F67', border: '1px solid rgba(0,143,103,0.2)', borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px' }} className="inline-block">
-              WIN
+            <span style={{ color: '#008F67', fontWeight: 600 }} className="text-xs">
+              W
             </span>
           )}
           {item.status === 'Loss' && (
-            <span style={{ backgroundColor: 'rgba(223,28,48,0.12)', color: '#DF1C30', border: '1px solid rgba(223,28,48,0.2)', borderRadius: '6px', fontSize: '11px', fontWeight: 700, padding: '2px 8px' }} className="inline-block">
-              LOSS
+            <span style={{ color: '#DF1C30', fontWeight: 600 }} className="text-xs">
+              L
             </span>
           )}
           {item.status === 'Breakeven' && (
-            <span className="px-2.5 py-0.5 text-[10px] font-extrabold border border-[var(--border)] rounded-lg" style={{ color: 'var(--text-sub)', backgroundColor: 'var(--bar)' }}>
+            <span className="px-2 py-0.5 text-[10px] font-extrabold bg-[var(--card)] border rounded" style={{ borderColor: 'var(--border)', color: 'var(--text-sub)' }}>
               BE
             </span>
           )}
-          {item.status === null && (
-            <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
-          )}
+          {item.status === null && <span style={{ color: 'var(--text-muted)' }}>—</span>}
         </>
       )
     },
@@ -816,16 +788,6 @@ export const TradingLogsPage: React.FC = () => {
       renderCell: (item) => item.execution_status ? (
         <span
           style={{
-            backgroundColor:
-              item.execution_status === 'BEST TRADE'
-                ? 'rgba(34,197,94,0.12)'
-                : item.execution_status === 'GOOD TRADE'
-                ? 'rgba(20,184,166,0.12)'
-                : item.execution_status === 'AVERAGE TRADE'
-                ? 'rgba(234,179,8,0.12)'
-                : item.execution_status === 'POOR TRADE'
-                ? 'rgba(249,115,22,0.12)'
-                : 'rgba(239,68,68,0.12)',
             color:
               item.execution_status === 'BEST TRADE'
                 ? '#22c55e'
@@ -835,21 +797,21 @@ export const TradingLogsPage: React.FC = () => {
                 ? '#ca8a04'
                 : item.execution_status === 'POOR TRADE'
                 ? '#f97316'
-                : '#ef4444',
+                : '#ef4444'
           }}
-          className="px-1.5 py-0.5 text-[10px] uppercase font-mono tracking-wide font-extrabold rounded-md"
+          className="text-sm"
         >
           {item.execution_status}
         </span>
       ) : (
-        <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
+        <span style={{ color: 'var(--text-muted)' }}>—</span>
       )
     },
     holding_time_mins: {
       label: 'Hold Time',
       sortField: 'holding_time_mins',
       renderCell: (item) => item.holding_time_mins !== null && item.holding_time_mins !== undefined ? (
-        <span className="font-mono text-xs" style={{ color: 'var(--text-sub)' }}>{item.holding_time_mins} mins</span>
+        <span className="text-sm" style={{ color: 'var(--text)' }}>{item.holding_time_mins} mins</span>
       ) : (
         <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
       )
@@ -858,12 +820,12 @@ export const TradingLogsPage: React.FC = () => {
       label: 'Mistake',
       sortField: 'mistake_type',
       renderCell: (item) => item.mistake_type && item.mistake_type !== 'No Mistake' ? (
-        <span className="text-xs" style={{ color: 'var(--text-sub)' }}>
+        <span className="text-sm" style={{ color: 'var(--text)' }}>
           {item.mistake_type}
         </span>
       ) : (
-        <span className="font-mono text-xs italic" style={{ color: 'var(--text-muted)' }}>
-          None
+        <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>
+          —
         </span>
       )
     },
@@ -872,22 +834,21 @@ export const TradingLogsPage: React.FC = () => {
       sortField: 'roi',
       renderCell: (item) => item.roi !== null ? (
         <span
-          className={`font-mono font-bold text-xs ${
-            item.roi > 0 ? 'text-green-500' : 'text-red-500'
-          }`}
+          className="text-sm"
+          style={{ color: item.roi > 0 ? '#008F67' : '#DF1C30' }}
         >
           {item.roi > 0 ? '+' : ''}
           {item.roi.toFixed(1)}%
         </span>
       ) : (
-        <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
+        <span style={{ color: 'var(--text-muted)' }}>—</span>
       )
     },
     notes: {
       label: 'Notes',
       sortField: 'notes',
       renderCell: (item) => item.notes ? (
-        <span className="text-xs" style={{ color: 'var(--text-sub)' }}>{item.notes}</span>
+        <span className="text-sm" style={{ color: 'var(--text)' }}>{item.notes}</span>
       ) : (
         <span className="font-mono text-xs italic" style={{ color: 'var(--text-muted)' }}>—</span>
       )
@@ -896,7 +857,7 @@ export const TradingLogsPage: React.FC = () => {
       label: 'Month',
       sortField: 'month',
       renderCell: (item) => item.month ? (
-        <span className="font-mono text-xs" style={{ color: 'var(--text-sub)' }}>{item.month}</span>
+        <span className="text-sm" style={{ color: 'var(--text)' }}>{item.month}</span>
       ) : (
         <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
       )
@@ -909,16 +870,16 @@ export const TradingLogsPage: React.FC = () => {
           Yes
         </span>
       ) : (
-        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>No</span>
+        <span className="text-xs" style={{ color: 'var(--text)' }}>No</span>
       )
     },
     sync_source: {
       label: 'Sync Source',
       sortField: 'sync_source',
       renderCell: (item) => item.sync_source ? (
-        <span className="font-mono text-xs" style={{ color: 'var(--text-sub)' }}>{item.sync_source}</span>
+        <span className="text-sm" style={{ color: 'var(--text)' }}>{item.sync_source}</span>
       ) : (
-        <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>Manual</span>
+        <span className="font-mono text-xs" style={{ color: 'var(--text)' }}>Manual</span>
       )
     }
   };
@@ -1569,9 +1530,9 @@ export const TradingLogsPage: React.FC = () => {
                       className="w-full text-left border-collapse"
                     >
                     <thead>
-                      <tr className="border-b select-none font-sans" style={{ backgroundColor: 'var(--row)', borderBottom: '1px solid var(--border)', color: 'var(--text-muted)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      <tr className="border-b select-none font-sans" style={{ backgroundColor: 'var(--bar)', borderBottom: '1px solid var(--border)', color: 'var(--text-muted)', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                         {/* SELECT ALL CHECKBOX */}
-                        <th className="px-4 py-4 w-12 text-center">
+                        <th className="px-4 py-2 w-12 text-center">
                           <div 
                             className={`transition-all duration-200 flex items-center justify-center ${
                               (isTableHovered || selectedTradeIds.length > 0) ? 'opacity-100 scale-100' : 'opacity-100 md:opacity-0 md:scale-95 md:pointer-events-none'
@@ -1636,7 +1597,7 @@ export const TradingLogsPage: React.FC = () => {
                           </div>
                         </th>
                         
-                        <th className="px-4 py-4 w-10 text-center">#</th>
+                        <th className="px-4 py-2 w-10 text-center">#</th>
                         
                         {/* Dynamic selectable columns */}
                         {ALL_COLUMNS_INFO.map((col) => {
@@ -1647,7 +1608,7 @@ export const TradingLogsPage: React.FC = () => {
                             <th
                               key={col.id}
                               onClick={isSortable ? () => toggleSort(colDef.sortField) : undefined}
-                              className={`px-4 py-4 ${isSortable ? 'cursor-pointer hover:text-[var(--accent)] transition-colors' : ''} whitespace-nowrap`}
+                              className={`px-4 py-2 ${isSortable ? 'cursor-pointer hover:text-[var(--accent)] transition-colors' : ''} whitespace-nowrap`}
                             >
                               <div className="flex items-center gap-1">
                                 <span>{col.label}</span>
@@ -1658,29 +1619,25 @@ export const TradingLogsPage: React.FC = () => {
                             </th>
                           );
                         })}
-                        <th className="px-4 py-4 w-12 text-center">AI</th>
+                        <th className="px-4 py-2 w-12 text-center">AI</th>
                       </tr>
                     </thead>
                     <tbody>
                       {sortedTrades.map((item, index) => {
-                        const isEven = index % 2 === 1;
                         return (
                           <tr
                             key={item.id}
                             onClick={() => navigate(`/trading-logs/${item.id}`)}
-                            className="cursor-pointer transition-colors text-sm"
+                            className="cursor-pointer transition-colors hover:bg-[rgba(0,0,0,0.025)] text-sm"
                             style={{ 
-                              borderBottom: '1px solid rgba(0, 0, 0, 0.05)', 
+                              borderBottom: '1px solid var(--border)', 
                               color: 'var(--text)',
-                              backgroundColor: isEven ? 'var(--bar)' : 'transparent',
                               position: 'relative'
                             }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.025)';
+                            onMouseEnter={() => {
                               if (item.id) setHoveredRowId(item.id);
                             }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.backgroundColor = isEven ? 'var(--bar)' : 'transparent';
+                            onMouseLeave={() => {
                               setHoveredRowId(null);
                             }}
                           >
@@ -1733,7 +1690,7 @@ export const TradingLogsPage: React.FC = () => {
                             </td>
 
                             {/* Counter Index */}
-                            <td style={{ padding: '6px 16px', color: 'var(--text-muted)', fontSize: '13px' }} className="text-center font-bold w-10">
+                            <td style={{ color: 'var(--text-muted)' }} className="text-center text-sm px-4 py-2 w-10">
                               {(currentPage - 1) * tradesPerPage + index + 1}
                             </td>
 
@@ -1741,7 +1698,7 @@ export const TradingLogsPage: React.FC = () => {
                             {ALL_COLUMNS_INFO.map((col) => {
                               if (!selectedColumns[col.id]) return null;
                               return (
-                                <td key={col.id} style={{ padding: '6px 16px', fontSize: '13px', color: 'var(--text)' }} className="whitespace-nowrap font-sans">
+                                <td key={col.id} style={{ color: 'var(--text)' }} className="px-4 py-2 whitespace-nowrap font-sans">
                                   {colDefinitions[col.id].renderCell(item)}
                                 </td>
                               );
