@@ -214,7 +214,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
       {/* Desktop sidebar */}
       <aside 
         className="hidden lg:flex flex-col w-[220px] h-dvh sticky top-0 overflow-y-hidden flex-shrink-0"
-        style={{ backgroundColor: 'var(--topbar)', borderRight: '1px solid rgba(0, 0, 0, 0.08)', boxShadow: '1px 0 3px rgba(0, 0, 0, 0.04)' }}
+        style={{ backgroundColor: 'var(--topbar)', borderRight: '1px solid var(--border)', boxShadow: '1px 0 3px rgba(0, 0, 0, 0.04)' }}
       >
         {sidebarContent}
       </aside>
@@ -233,7 +233,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
         className={`fixed inset-y-0 left-0 w-[220px] z-50 lg:hidden shadow-2xl transition-transform duration-250 ease-in-out ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
-        style={{ backgroundColor: 'var(--topbar)', borderRight: '1px solid rgba(0, 0, 0, 0.08)', boxShadow: '1px 0 3px rgba(0, 0, 0, 0.04)' }}
+        style={{ backgroundColor: 'var(--topbar)', borderRight: '1px solid var(--border)', boxShadow: '1px 0 3px rgba(0, 0, 0, 0.04)' }}
       >
         {sidebarContent}
       </div>
