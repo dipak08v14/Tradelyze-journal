@@ -70,8 +70,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userEmail, mobileOpen, setMobi
         backgroundColor: 'var(--topbar)', 
         borderRight: '1px solid var(--border)', 
         boxShadow: '1px 0 3px var(--border)',
-        color: 'var(--text)',
-        fontFamily: 'Inter, system-ui, sans-serif'
+        color: 'var(--text)'
       }}
     >
       {/* Top logo section */}

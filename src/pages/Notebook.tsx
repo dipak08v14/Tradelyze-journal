@@ -1897,8 +1897,7 @@ export function Notebook() {
                     }}
                     className="w-full h-full min-h-[400px] bg-transparent text-sm focus:outline-none focus:ring-0 leading-relaxed outline-none select-text"
                     style={{
-                      color: 'var(--text)',
-                      fontFamily: 'system-ui, -apple-system, sans-serif'
+                      color: 'var(--text)'
                     }}
                   />
                 </div>
