@@ -952,17 +952,17 @@ export default function SettingsPage() {
             className="flex overflow-x-auto gap-2 px-1 pt-1 pb-1 rounded-lg mb-3 mt-3 font-mono no-scrollbar"
           >
             {[
-              { id: 'account', label: 'Account Profile', icon: <User className="w-4 h-4 flex-shrink-0" /> },
-              { id: 'appearance', label: 'Appearance', icon: <Palette className="w-4 h-4 flex-shrink-0" /> },
-              { id: 'subscription', label: 'Subscription', icon: <CreditCard className="w-4 h-4 flex-shrink-0" /> },
-              { id: 'notifications', label: 'Notifications', icon: <Bell className="w-4 h-4 flex-shrink-0" /> }
+              { id: 'account', label: 'ACCOUNT PROFILE', icon: <User className="w-4 h-4 flex-shrink-0" /> },
+              { id: 'appearance', label: 'APPEARANCE', icon: <Palette className="w-4 h-4 flex-shrink-0" /> },
+              { id: 'subscription', label: 'SUBSCRIPTION', icon: <CreditCard className="w-4 h-4 flex-shrink-0" /> },
+              { id: 'notifications', label: 'NOTIFICATIONS', icon: <Bell className="w-4 h-4 flex-shrink-0" /> }
             ].map((tab) => {
               const isActive = activeTab === tab.id;
               return (
                 <button
                   key={tab.id}
                   onClick={() => handleTabChange(tab.id as any)}
-                  className={`px-4 py-2 text-[13px] font-bold ${isActive ? 'rounded' : 'rounded-xl'} transition-all cursor-pointer whitespace-nowrap flex items-center gap-2`}
+                  className={`px-4 py-2 text-xs font-bold ${isActive ? 'rounded' : 'rounded-xl'} transition-all cursor-pointer whitespace-nowrap flex items-center gap-2`}
                   style={{
                     backgroundColor: isActive ? 'var(--card)' : 'transparent',
                     color: isActive ? 'var(--accent)' : 'var(--text-sub)',

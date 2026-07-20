@@ -672,7 +672,7 @@ export const StrategyDetail: React.FC = () => {
             )}
 
             {/* TAB SELECTORS ACTIONS */}
-            <div className="flex items-center overflow-x-auto gap-1 sticky top-0 z-10 scrollbar-none mt-3 mb-3 px-1 py-1 rounded-lg" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
+            <div className="flex items-center overflow-x-auto gap-1 sticky top-0 z-10 font-mono no-scrollbar mt-3 mb-3 px-1 py-1 rounded-lg" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
               {(['OVERVIEW', 'RULES PERFORMANCE', 'EXECUTED TRADES', 'MISSED TRADES', 'NOTES', 'REFERENCE'] as TabType[]).map((tab) => {
                 const active = activeTab === tab;
                 return (
@@ -681,8 +681,8 @@ export const StrategyDetail: React.FC = () => {
                     onClick={() => setActiveTab(tab)}
                     className={
                       active
-                        ? "px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap rounded"
-                        : "px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap rounded-xl"
+                        ? "px-4 py-2 text-xs font-bold transition-all cursor-pointer whitespace-nowrap rounded"
+                        : "px-4 py-2 text-xs font-bold transition-all cursor-pointer whitespace-nowrap rounded-xl"
                     }
                     style={
                       active

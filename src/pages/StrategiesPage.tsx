@@ -60,9 +60,9 @@ export const StrategiesPage: React.FC = () => {
 
   const getTabStyle = (isActive: boolean) => {
     if (isActive) {
-      return { backgroundColor: 'var(--card)', color: 'var(--accent)', border: '0.5px solid var(--border)', borderRadius: '6px', height: '36px', display: 'flex', alignItems: 'center' };
+      return { backgroundColor: 'var(--card)', color: 'var(--accent)', border: '0.5px solid var(--border)', borderRadius: '6px' };
     }
-    return { backgroundColor: 'transparent', color: 'var(--text-sub)', border: '0.5px solid transparent', height: '36px', display: 'flex', alignItems: 'center' };
+    return { backgroundColor: 'transparent', color: 'var(--text-sub)', border: '0.5px solid transparent' };
   };
 
   // Filters State
@@ -566,25 +566,25 @@ export const StrategiesPage: React.FC = () => {
             {/* NEW PAGE HEADER ROW */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-2 py-1 rounded-lg mt-3 mb-4 no-scrollbar" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
               {/* LEFT SIDE TABS */}
-              <div className="flex items-center border-b sm:border-0 w-fit" style={{ borderColor: 'var(--border)' }}>
+              <div className="flex overflow-x-auto gap-2 font-mono no-scrollbar w-fit">
                 <button
                   onClick={() => {
                     setActiveSubTab('my');
                     setCurrentPage(1);
                   }}
                   style={getTabStyle(activeSubTab === 'my')}
-                  className={`px-4 py-2 text-sm font-bold transition-all cursor-pointer whitespace-nowrap ${activeSubTab === 'my' ? 'rounded' : 'rounded-xl'}`}
+                  className={`px-4 py-2 text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${activeSubTab === 'my' ? 'rounded' : 'rounded-xl'}`}
                 >
-                  My Strategies
+                  MY STRATEGIES
                 </button>
                 <button
                   onClick={() => {
                     showSuccess('Coming soon — Shared setup Playbook will be added in a future update.');
                   }}
                   style={getTabStyle(activeSubTab === 'shared')}
-                  className={`px-4 py-2 text-sm font-bold transition-all cursor-pointer whitespace-nowrap ${activeSubTab === 'shared' ? 'rounded' : 'rounded-xl'}`}
+                  className={`px-4 py-2 text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${activeSubTab === 'shared' ? 'rounded' : 'rounded-xl'}`}
                 >
-                  Shared Strategies
+                  SHARED STRATEGIES
                 </button>
               </div>
 
@@ -594,7 +594,7 @@ export const StrategiesPage: React.FC = () => {
                 <div className="relative" ref={filterRef}>
                   <button
                     onClick={() => setFilterDropdownOpen(!filterDropdownOpen)}
-                    style={{ border: '1px solid var(--border)', backgroundColor: 'var(--card)', borderRadius: '8px', color: 'var(--text-sub)', height: '36px' }}
+                    style={{ border: '1px solid var(--border)', backgroundColor: 'var(--card)', borderRadius: '8px', color: 'var(--text-sub)', height: '34px' }}
                     className="px-3 text-sm font-semibold transition-all cursor-pointer inline-flex items-center gap-1.5"
                   >
                     <SlidersHorizontal className="w-3.5 h-3.5" />
@@ -740,7 +740,7 @@ export const StrategiesPage: React.FC = () => {
                       color: viewType === 'table' ? 'var(--accent)' : 'var(--text-sub)',
                       borderRadius: '6px',
                       padding: '0 8px',
-                      height: '36px',
+                      height: '34px',
                       cursor: 'pointer'
                     }}
                     className={`transition-colors flex items-center justify-center ${
@@ -758,7 +758,7 @@ export const StrategiesPage: React.FC = () => {
                       color: viewType === 'grid' ? 'var(--accent)' : 'var(--text-sub)',
                       borderRadius: '6px',
                       padding: '0 8px',
-                      height: '36px',
+                      height: '34px',
                       cursor: 'pointer'
                     }}
                     className={`transition-colors flex items-center justify-center ${
