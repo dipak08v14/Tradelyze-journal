@@ -923,7 +923,7 @@ export default function SettingsPage() {
         </div>
 
         {/* CONTAINER WITH SPACING */}
-        <div className="w-full pt-2 pb-6 md:pt-3 md:pb-8">
+        <div className="w-full pb-6 md:pb-8">
           
           {/* SECURE BLOCK FOR EXPIRED SUBSCRIPTION */}
           {trialExpired && (
@@ -949,7 +949,7 @@ export default function SettingsPage() {
           {/* HORIZONTAL TAB STRIP */}
           <div 
             style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }} 
-            className="flex overflow-x-auto gap-2 px-1 pt-1 pb-1 rounded-lg mb-3 font-mono no-scrollbar"
+            className="flex overflow-x-auto gap-2 px-1 pt-1 pb-1 rounded-lg mb-3 mt-3 font-mono no-scrollbar"
           >
             {[
               { id: 'account', label: 'Account Profile', icon: <User className="w-4 h-4 flex-shrink-0" /> },

@@ -648,7 +648,7 @@ export const StrategyDetail: React.FC = () => {
             </div>
 
             {strategy && (
-              <div className="flex items-center gap-2.5 mb-3">
+              <div className="flex items-center gap-2.5">
                 <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider border shrink-0" style={{ backgroundColor: 'var(--accent-muted)', color: 'var(--accent)', borderColor: 'var(--accent)' }}>
                   {strategy.type_of_strategy}
                 </span>
@@ -672,7 +672,7 @@ export const StrategyDetail: React.FC = () => {
             )}
 
             {/* TAB SELECTORS ACTIONS */}
-            <div className="flex items-center overflow-x-auto gap-1 sticky top-0 z-10 scrollbar-none mb-3 px-1 py-1 rounded-lg" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
+            <div className="flex items-center overflow-x-auto gap-1 sticky top-0 z-10 scrollbar-none mt-3 mb-3 px-1 py-1 rounded-lg" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
               {(['OVERVIEW', 'RULES PERFORMANCE', 'EXECUTED TRADES', 'MISSED TRADES', 'NOTES', 'REFERENCE'] as TabType[]).map((tab) => {
                 const active = activeTab === tab;
                 return (

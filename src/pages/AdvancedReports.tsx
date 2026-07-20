@@ -2016,10 +2016,8 @@ export const AdvancedReports: React.FC = () => {
               </div>
             </div>
 
-            <div className="mt-3" />
-
             {/* TAB SELECTOR BAR */}
-            <div className="flex overflow-x-auto gap-2 px-1 pt-1 pb-1 rounded-lg mb-3 font-mono no-scrollbar" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
+            <div className="flex overflow-x-auto gap-2 px-1 pt-1 pb-1 rounded-lg mt-3 mb-3 font-mono no-scrollbar" style={{ backgroundColor: 'var(--bar)', border: '0.5px solid var(--border)' }}>
               {[
                 { id: 'OVERVIEW', label: 'OVERVIEW' },
                 { id: 'DETAILED', label: 'DETAILED' },
