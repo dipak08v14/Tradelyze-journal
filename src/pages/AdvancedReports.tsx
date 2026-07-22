@@ -2535,7 +2535,7 @@ export const AdvancedReports: React.FC = () => {
                     <div className="overflow-x-auto rounded-xl">
                       <table className="w-full text-left border-collapse">
                         <thead>
-                          <tr style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-muted)' }} className="text-[11px] font-mono uppercase tracking-wider">
+                          <tr style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-muted)', backgroundColor: 'var(--bar)' }} className="text-[11px] font-mono uppercase tracking-wider">
                             <th className="py-2.5 px-3">Symbol</th>
                             <th className="py-2.5 px-3">Direction</th>
                             <th className="py-2.5 px-3">Setup</th>
@@ -2558,16 +2558,20 @@ export const AdvancedReports: React.FC = () => {
                               >
                                 <td className="py-3 px-3 font-semibold" style={{ color: 'var(--text)' }}>{trade.symbol}</td>
                                 <td className="py-3 px-3">
-                                  <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono" style={{ backgroundColor: trade.direction === 'LONG' ? 'rgba(0,143,103,0.12)' : 'rgba(223,28,48,0.12)', color: trade.direction === 'LONG' ? '#008F67' : '#DF1C30' }}>
-                                    {trade.direction || '—'}
-                                  </span>
+                                  {trade.direction ? (
+                                    <span className="text-xs font-bold font-mono" style={{ color: trade.direction === 'LONG' ? '#008F67' : '#DF1C30' }}>
+                                      {trade.direction}
+                                    </span>
+                                  ) : (
+                                    <span className="text-xs font-mono" style={{ color: 'var(--text-muted)' }}>—</span>
+                                  )}
                                 </td>
                                 <td className="py-3 px-3" style={{ color: 'var(--text-sub)' }}>{trade.strategies?.name || '—'}</td>
                                 <td className="py-3 px-3 text-right font-mono font-bold" style={{ color: pnlVal > 0 ? '#008F67' : pnlVal < 0 ? '#DF1C30' : 'var(--text-muted)' }}>
                                   {formatINR(pnlVal)}
                                 </td>
                                 <td className="py-3 px-3 text-center">
-                                  <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono" style={{ backgroundColor: isWin ? 'rgba(0,143,103,0.12)' : isLoss ? 'rgba(223,28,48,0.12)' : 'rgba(113,113,122,0.12)', color: isWin ? '#008F67' : isLoss ? '#DF1C30' : 'var(--text-muted)' }}>
+                                  <span className="text-xs font-bold font-mono" style={{ color: isWin ? '#008F67' : isLoss ? '#DF1C30' : 'var(--text-muted)' }}>
                                     {trade.status || '—'}
                                   </span>
                                 </td>
@@ -2771,7 +2775,7 @@ export const AdvancedReports: React.FC = () => {
                       <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                           <thead>
-                            <tr style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-muted)' }} className="text-[11px] font-mono uppercase tracking-wider bg-zinc-800/10 dark:bg-zinc-100/5">
+                            <tr style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-muted)', backgroundColor: 'var(--bar)' }} className="text-[11px] font-mono uppercase tracking-wider">
                               <th className="py-2 px-4 font-bold">Category</th>
                               <th className="py-2 px-4 font-bold text-right">Net Profits</th>
                               <th className="py-2 px-4 font-bold text-center">Win %</th>
@@ -2785,9 +2789,7 @@ export const AdvancedReports: React.FC = () => {
                               return (
                                 <tr
                                   key={index}
-                                  className={`${
-                                    index % 2 === 1 ? 'bg-zinc-800/5 dark:bg-zinc-100/5' : 'bg-transparent'
-                                  } hover:bg-zinc-800/10 dark:hover:bg-zinc-100/10 transition-colors text-xs font-sans`}
+                                  className="hover:bg-zinc-800/10 dark:hover:bg-zinc-100/10 transition-colors text-xs font-sans"
                                 >
                                   {/* Category */}
                                   <td className="py-2 px-4 font-semibold" style={{ color: 'var(--text)' }}>
@@ -2957,7 +2959,7 @@ export const AdvancedReports: React.FC = () => {
                       <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                           <thead>
-                            <tr style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-muted)' }} className="text-[11px] font-mono uppercase tracking-wider bg-zinc-800/10 dark:bg-zinc-100/5">
+                            <tr style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-muted)', backgroundColor: 'var(--bar)' }} className="text-[11px] font-mono uppercase tracking-wider">
                               <th className="py-3 px-4 font-bold">
                                 {riskSubFilter === 'R-MULTIPLE' ? 'R-Multiple' : 'Position Size'}
                               </th>
@@ -2973,9 +2975,7 @@ export const AdvancedReports: React.FC = () => {
                               return (
                                 <tr
                                   key={index}
-                                  className={`${
-                                    index % 2 === 1 ? 'bg-zinc-800/5 dark:bg-zinc-100/5' : 'bg-transparent'
-                                  } hover:bg-zinc-800/10 dark:hover:bg-zinc-100/10 transition-colors text-xs font-sans`}
+                                  className="hover:bg-zinc-800/10 dark:hover:bg-zinc-100/10 transition-colors text-xs font-sans"
                                 >
                                   {/* Category */}
                                   <td className="py-2 px-4 font-semibold" style={{ color: 'var(--text)' }}>
@@ -3034,48 +3034,48 @@ export const AdvancedReports: React.FC = () => {
                 <div className="rounded-2xl px-4 py-2 border border-[var(--border)]" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)' }}>
                   <div className="grid grid-cols-[2fr_3fr_2fr] py-2 border-b items-center text-sm" style={{ borderColor: 'var(--border)' }}>
                     <div className="font-mono text-left" style={{ color: '#008F67' }}>WINS</div>
-                    <div className="text-center font-mono" style={{ color: 'var(--text-muted)' }}>HEAD TO HEAD</div>
+                    <div className="text-center font-mono" style={{ color: 'var(--text)' }}>HEAD TO HEAD</div>
                     <div className="font-mono text-right" style={{ color: '#DF1C30' }}>LOSSES</div>
                   </div>
                   <div className="text-sm">
                     <div className="grid grid-cols-[2fr_3fr_2fr] py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
                       <div className="font-sans whitespace-nowrap" style={{ color: '#008F67' }}>{winsLossesStats.totalCountWins}</div>
-                      <div className="text-center font-mono text-[11px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Total Count</div>
+                      <div className="text-center font-mono" style={{ color: 'var(--text)' }}>Total Count</div>
                       <div className="font-sans text-right whitespace-nowrap" style={{ color: '#DF1C30' }}>{winsLossesStats.totalCountLosses}</div>
                     </div>
                     <div className="grid grid-cols-[2fr_3fr_2fr] py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
                       <div className="font-sans whitespace-nowrap" style={{ color: '#008F67' }}>{formatINR(winsLossesStats.totalPnlWins)}</div>
-                      <div className="text-center font-mono text-[11px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Total P&L</div>
+                      <div className="text-center font-mono" style={{ color: 'var(--text)' }}>Total P&L</div>
                       <div className="font-sans text-right whitespace-nowrap" style={{ color: '#DF1C30' }}>{formatINR(winsLossesStats.totalPnlLosses)}</div>
                     </div>
                     <div className="grid grid-cols-[2fr_3fr_2fr] py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
                       <div className="font-sans whitespace-nowrap" style={{ color: '#008F67' }}>{formatINR(winsLossesStats.avgPnlWins)}</div>
-                      <div className="text-center font-mono text-[11px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Average Per Trade</div>
+                      <div className="text-center font-mono" style={{ color: 'var(--text)' }}>Average Per Trade</div>
                       <div className="font-sans text-right whitespace-nowrap" style={{ color: '#DF1C30' }}>{formatINR(winsLossesStats.avgPnlLosses)}</div>
                     </div>
                     <div className="grid grid-cols-[2fr_3fr_2fr] py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
-                      <div className="font-sans whitespace-nowrap" style={{ color: '#008F67' }}>{winsLossesStats.avgRMultipleWins !== null ? `+${winsLossesStats.avgRMultipleWins.toFixed(2)}R` : '—'}</div>
-                      <div className="text-center font-mono text-[11px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Average R-Multiple</div>
-                      <div className="font-sans text-right whitespace-nowrap" style={{ color: '#DF1C30' }}>{winsLossesStats.avgRMultipleLosses !== null ? `${winsLossesStats.avgRMultipleLosses.toFixed(2)}R` : '—'}</div>
+                      <div className="font-sans whitespace-nowrap" style={{ color: winsLossesStats.avgRMultipleWins !== null ? '#008F67' : 'var(--text-muted)' }}>{winsLossesStats.avgRMultipleWins !== null ? `+${winsLossesStats.avgRMultipleWins.toFixed(2)}R` : '—'}</div>
+                      <div className="text-center font-mono" style={{ color: 'var(--text)' }}>Average R-Multiple</div>
+                      <div className="font-sans text-right whitespace-nowrap" style={{ color: winsLossesStats.avgRMultipleLosses !== null ? '#DF1C30' : 'var(--text-muted)' }}>{winsLossesStats.avgRMultipleLosses !== null ? `${winsLossesStats.avgRMultipleLosses.toFixed(2)}R` : '—'}</div>
                     </div>
                     <div className="grid grid-cols-[2fr_3fr_2fr] py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
                       <div className="font-sans whitespace-nowrap" style={{ color: '#008F67' }}>{formatMins(winsLossesStats.avgHoldWins)}</div>
-                      <div className="text-center font-mono text-[11px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Average Hold Time</div>
+                      <div className="text-center font-mono" style={{ color: 'var(--text)' }}>Average Hold Time</div>
                       <div className="font-sans text-right whitespace-nowrap" style={{ color: '#DF1C30' }}>{formatMins(winsLossesStats.avgHoldLosses)}</div>
                     </div>
                     <div className="grid grid-cols-[2fr_3fr_2fr] py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
                       <div className="font-sans whitespace-nowrap" style={{ color: '#008F67' }}>{formatINR(winsLossesStats.largestWin)}</div>
-                      <div className="text-center font-mono text-[11px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Largest</div>
+                      <div className="text-center font-mono" style={{ color: 'var(--text)' }}>Largest</div>
                       <div className="font-sans text-right whitespace-nowrap" style={{ color: '#DF1C30' }}>{formatINR(winsLossesStats.largestLoss)}</div>
                     </div>
                     <div className="grid grid-cols-[2fr_3fr_2fr] py-2 items-center" style={{ borderBottom: '1px solid var(--border)' }}>
                       <div className="font-sans truncate pr-2" style={{ color: 'var(--text)' }} title={winsLossesStats.topWinSetup}>{winsLossesStats.topWinSetup}</div>
-                      <div className="text-center font-mono text-[11px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Most Common Setup</div>
+                      <div className="text-center font-mono" style={{ color: 'var(--text)' }}>Most Common Setup</div>
                       <div className="font-sans text-right truncate pl-2" style={{ color: 'var(--text)' }} title={winsLossesStats.topLossSetup}>{winsLossesStats.topLossSetup}</div>
                     </div>
                     <div className="grid grid-cols-[2fr_3fr_2fr] py-2 items-center">
                       <div className="font-sans truncate pr-2" style={{ color: 'var(--text)' }} title={winsLossesStats.topWinMistake}>{winsLossesStats.topWinMistake}</div>
-                      <div className="text-center font-mono text-[11px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Most Common Mistake</div>
+                      <div className="text-center font-mono" style={{ color: 'var(--text)' }}>Most Common Mistake</div>
                       <div className="font-sans text-right truncate pl-2" style={{ color: 'var(--text)' }} title={winsLossesStats.topLossMistake}>{winsLossesStats.topLossMistake}</div>
                     </div>
                   </div>
@@ -3226,7 +3226,7 @@ export const AdvancedReports: React.FC = () => {
                   <div className="overflow-x-auto border-0">
                     <table className="w-full text-left border-collapse">
                       <thead>
-                        <tr style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-muted)' }} className="text-[11px] font-mono uppercase tracking-wider bg-zinc-800/10 dark:bg-zinc-100/5">
+                        <tr style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-muted)', backgroundColor: 'var(--bar)' }} className="text-[11px] font-mono uppercase tracking-wider">
                           <th className="py-3 px-4 font-bold">Setup</th>
                           <th className="py-3 px-4 font-bold text-center font-mono">Trades</th>
                           <th className="py-3 px-4 font-bold text-center font-mono">Wins</th>
@@ -3249,9 +3249,7 @@ export const AdvancedReports: React.FC = () => {
                             return (
                               <tr
                                 key={index}
-                                className={`${
-                                  index % 2 === 1 ? 'bg-zinc-800/5 dark:bg-zinc-100/5' : 'bg-transparent'
-                                } hover:bg-zinc-800/10 dark:hover:bg-zinc-100/10 transition-colors text-xs font-sans`}
+                                className="hover:bg-zinc-800/10 dark:hover:bg-zinc-100/10 transition-colors text-xs font-sans"
                               >
                                 <td className="py-2 px-4 font-semibold" style={{ color: 'var(--text)' }}>
                                   {row.name}
@@ -3475,7 +3473,7 @@ export const AdvancedReports: React.FC = () => {
                       <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                           <thead>
-                            <tr style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-muted)' }} className="text-[11px] font-mono uppercase tracking-wider bg-zinc-800/10 dark:bg-zinc-100/5">
+                            <tr style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-muted)', backgroundColor: 'var(--bar)' }} className="text-[11px] font-mono uppercase tracking-wider">
                               <th className="py-3 px-4 font-bold">Category</th>
                               <th className="py-3 px-4 font-bold text-right font-mono">Net Profits</th>
                               <th className="py-3 px-4 font-bold text-center font-mono">Win %</th>
@@ -3489,9 +3487,7 @@ export const AdvancedReports: React.FC = () => {
                               return (
                                 <tr
                                   key={index}
-                                  className={`${
-                                    index % 2 === 1 ? 'bg-zinc-800/5 dark:bg-zinc-100/5' : 'bg-transparent'
-                                  } hover:bg-zinc-800/10 dark:hover:bg-zinc-100/10 transition-colors text-xs font-sans`}
+                                  className="hover:bg-zinc-800/10 dark:hover:bg-zinc-100/10 transition-colors text-xs font-sans"
                                 >
                                   {/* Category */}
                                   <td className="py-2 px-4 font-semibold" style={{ color: 'var(--text)' }}>

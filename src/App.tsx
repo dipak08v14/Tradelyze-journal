@@ -23,6 +23,7 @@ import { AnnualReportsPage } from './pages/AnnualReportsPage';
 import { AdvancedReports } from './pages/AdvancedReports';
 import { AiTeacherPage } from './pages/AiTeacherPage';
 import { Notebook } from './pages/Notebook';
+import { ComingSoonPage } from './pages/ComingSoonPage';
 import { useTheme } from './hooks/useTheme';
 import { useAuth, AuthProvider } from './hooks/useAuth';
 
@@ -109,6 +110,24 @@ export default function App() {
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/login" element={<LoginPage />} />
+
+            {/* Public placeholder routes */}
+            <Route path="/products/journal" element={<ComingSoonPage title="Trading Journal" />} />
+            <Route path="/products/analytics" element={<ComingSoonPage title="Reports & Analytics" />} />
+            <Route path="/products/playbooks" element={<ComingSoonPage title="Strategy Playbooks" />} />
+            <Route path="/products/pattern-match" element={<ComingSoonPage title="Visual Pattern Match" />} />
+            <Route path="/products/ai-teacher" element={<ComingSoonPage title="AI Teacher" />} />
+            
+            <Route path="/solutions/beginners" element={<ComingSoonPage title="For Beginner Traders" />} />
+            <Route path="/solutions/developing" element={<ComingSoonPage title="For Developing Traders" />} />
+            <Route path="/solutions/profitable" element={<ComingSoonPage title="For Profitable Traders" />} />
+            <Route path="/solutions/ict-communities" element={<ComingSoonPage title="For ICT Communities" />} />
+            
+            <Route path="/supported-brokers" element={<ComingSoonPage title="Supported Brokers" />} />
+            
+            <Route path="/resources/blog" element={<ComingSoonPage title="Blog" />} />
+            <Route path="/resources/changelog" element={<ComingSoonPage title="Changelog" />} />
+            <Route path="/resources/community" element={<ComingSoonPage title="Community" />} />
 
             {/* Authenticated routes wrapper */}
             <Route element={<AuthenticatedLayout />}>
