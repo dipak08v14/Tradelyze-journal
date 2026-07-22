@@ -2703,49 +2703,41 @@ export const DashboardPage: React.FC = () => {
                             <p className="text-xs" style={{ color: 'var(--text-muted)' }}>No logged trades found for this period.</p>
                           ) : (
                             <div className="overflow-x-auto">
-                              <table className="w-full text-left border-collapse text-xs">
+                              <table className="w-full text-left border-collapse text-[13px]">
                                 <thead>
-                                  <tr style={{ background: 'rgba(0, 0, 0, 0.04)', borderBottom: '1px solid rgba(0, 0, 0, 0.08)' }}>
-                                    <th className="p-3 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Date</th>
-                                    <th className="p-3 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Symbol</th>
-                                    <th className="p-3 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Type</th>
-                                    <th className="p-3 text-right" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>P&L</th>
+                                  <tr style={{ background: 'var(--bar)', borderBottom: '1px solid rgba(0, 0, 0, 0.08)' }}>
+                                    <th className="px-4 py-2 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Date</th>
+                                    <th className="px-4 py-2 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Symbol</th>
+                                    <th className="px-4 py-2 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Type</th>
+                                    <th className="px-4 py-2 text-right" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>P&L</th>
                                   </tr>
                                 </thead>
                                 <tbody style={{ borderColor: 'var(--border)' }}>
-                                  {trades.slice().reverse().slice(0, 5).map((trade: any, index: number) => {
-                                    const isEven = index % 2 === 1;
+                                  {trades.slice().reverse().slice(0, 5).map((trade: any) => {
                                     const isLong = trade.direction === 'LONG' || trade.direction === 'BUY';
                                     return (
                                       <tr
                                         key={trade.id}
-                                        className="transition-colors duration-120"
+                                        className="hover:bg-[rgba(0,0,0,0.025)] transition-colors duration-120"
                                         style={{
                                           cursor: 'pointer',
-                                          borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
-                                          backgroundColor: isEven ? 'rgba(0, 0, 0, 0.018)' : 'transparent'
+                                          borderBottom: '1px solid rgba(0, 0, 0, 0.05)'
                                         }}
-                                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.025)')}
-                                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = isEven ? 'rgba(0, 0, 0, 0.018)' : 'transparent')}
                                       >
-                                        <td className="p-3 font-mono" style={{ color: 'var(--text)' }}>
+                                        <td className="px-4 py-2 font-mono" style={{ color: 'var(--text)' }}>
                                           {trade.trade_date ? new Date(trade.trade_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
                                         </td>
-                                        <td className="p-3 font-bold" style={{ fontWeight: 600, color: 'var(--text)' }}>
+                                        <td className="px-4 py-2" style={{ color: 'var(--text)' }}>
                                           {trade.symbol}
                                         </td>
-                                        <td className="p-3 font-sans">
+                                        <td className="px-4 py-2 font-sans">
                                           <span 
-                                            className="px-2 py-0.5 rounded text-[10px] font-bold uppercase"
-                                            style={{
-                                              backgroundColor: isLong ? 'rgba(0, 143, 103, 0.1)' : 'rgba(223, 28, 48, 0.1)',
-                                              color: isLong ? '#008F67' : '#DF1C30'
-                                            }}
+                                            style={{ color: isLong ? '#008F67' : '#DF1C30' }}
                                           >
                                             {trade.direction}
                                           </span>
                                         </td>
-                                        <td className={`p-3 font-mono font-bold text-right ${trade.pnl > 0 ? 'text-[#008F67]' : trade.pnl < 0 ? 'text-[#DF1C30]' : ''}`} style={{ color: trade.pnl === 0 ? 'var(--text-sub)' : undefined }}>
+                                        <td className={`px-4 py-2 font-mono text-right ${trade.pnl > 0 ? 'text-[#008F67]' : trade.pnl < 0 ? 'text-[#DF1C30]' : ''}`} style={{ color: trade.pnl === 0 ? 'var(--text-sub)' : undefined }}>
                                           {formatINR(trade.pnl)}
                                         </td>
                                       </tr>
