@@ -600,16 +600,16 @@ export const AnnualReportsPage: React.FC = () => {
                   >
                     <table className="w-full text-left border-collapse text-sm">
                       <thead>
-                        <tr style={{ background: 'rgba(0, 0, 0, 0.04)', borderBottom: '1px solid rgba(0, 0, 0, 0.08)' }}>
-                          <th className="px-4 py-3" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Month</th>
-                          <th className="px-4 py-3 text-center" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Trades</th>
-                          <th className="px-4 py-3 text-center" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Win</th>
-                          <th className="px-4 py-3 text-center" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Loss</th>
-                          <th className="px-4 py-3 text-center" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Win Rate</th>
-                          <th className="px-4 py-3 text-right" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>P&L</th>
-                          <th className="px-4 py-3 text-right" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Avg R</th>
-                          <th className="px-4 py-3 text-center" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>PF</th>
-                          <th className="px-4 py-3 text-center" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Score</th>
+                        <tr style={{ background: 'var(--bar)', borderBottom: '1px solid rgba(0, 0, 0, 0.08)' }}>
+                          <th className="px-4 py-2" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Month</th>
+                          <th className="px-4 py-2 text-center" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Trades</th>
+                          <th className="px-4 py-2 text-center" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Win</th>
+                          <th className="px-4 py-2 text-center" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Loss</th>
+                          <th className="px-4 py-2 text-center" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Win Rate</th>
+                          <th className="px-4 py-2 text-right" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>P&L</th>
+                          <th className="px-4 py-2 text-right" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Avg R</th>
+                          <th className="px-4 py-2 text-center" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>PF</th>
+                          <th className="px-4 py-2 text-center" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Score</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -619,7 +619,6 @@ export const AnnualReportsPage: React.FC = () => {
 
                           const customStyle: React.CSSProperties = {
                             borderColor: 'var(--border)',
-                            background: idx % 2 === 1 ? 'rgba(0, 0, 0, 0.018)' : 'transparent',
                             borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
                             borderTop: idx === 0 ? '1px solid rgba(0, 0, 0, 0.06)' : undefined,
                           };
@@ -638,22 +637,21 @@ export const AnnualReportsPage: React.FC = () => {
                                 key={month}
                                 style={{ 
                                   borderColor: 'var(--border)',
-                                  background: idx % 2 === 1 ? 'rgba(0, 0, 0, 0.018)' : 'transparent',
                                   borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
                                   borderTop: idx === 0 ? '1px solid rgba(0, 0, 0, 0.06)' : undefined,
                                     color: 'var(--text-muted)'
                                   }}
                                   className="border-b transition-colors hover:bg-[rgba(0, 0, 0, 0.03)] cursor-pointer"
                               >
-                                <td style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="px-4 py-3">{month}</td>
-                                <td className="px-4 py-3 text-center font-mono">—</td>
-                                <td className="px-4 py-3 text-center font-mono">—</td>
-                                <td className="px-4 py-3 text-center font-mono">—</td>
-                                <td className="px-4 py-3 text-center font-mono">—</td>
-                                <td className="px-4 py-3 text-right font-mono">—</td>
-                                <td className="px-4 py-3 text-right font-mono">—</td>
-                                <td className="px-4 py-3 text-center font-mono">—</td>
-                                <td className="px-4 py-3 text-center font-mono">—</td>
+                                <td style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="px-4 py-2">{month}</td>
+                                <td className="px-4 py-2 text-center font-mono">—</td>
+                                <td className="px-4 py-2 text-center font-mono">—</td>
+                                <td className="px-4 py-2 text-center font-mono">—</td>
+                                <td className="px-4 py-2 text-center font-mono">—</td>
+                                <td className="px-4 py-2 text-right font-mono">—</td>
+                                <td className="px-4 py-2 text-right font-mono">—</td>
+                                <td className="px-4 py-2 text-center font-mono">—</td>
+                                <td className="px-4 py-2 text-center font-mono">—</td>
                               </tr>
                             );
                           }
@@ -665,7 +663,7 @@ export const AnnualReportsPage: React.FC = () => {
                               className="border-b transition-colors hover:bg-[rgba(0, 0, 0, 0.03)] cursor-pointer"
                             >
                               {/* Month Name */}
-                              <td style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="px-4 py-3 flex items-center gap-1">
+                              <td style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="px-4 py-2 flex items-center gap-1">
                                 <span>{month}</span>
                                 {isBest && (
                                   <span className="bg-green-500/10 text-green-600 text-[9px] font-bold rounded-lg px-2 py-0.5 border border-green-500/20 whitespace-nowrap">
@@ -680,24 +678,24 @@ export const AnnualReportsPage: React.FC = () => {
                               </td>
 
                               {/* Trades Count */}
-                              <td style={{ color: 'var(--text)' }} className="px-4 py-3 text-center font-mono text-xs">
+                              <td style={{ color: 'var(--text)' }} className="px-4 py-2 text-center font-mono">
                                 {mStats.totalTrades}
                               </td>
 
                               {/* Win count */}
-                              <td className="px-4 py-3 text-center font-mono font-semibold text-xs" style={{ color: '#008F67' }}>
+                              <td className="px-4 py-2 text-center font-mono" style={{ color: '#008F67' }}>
                                 {mStats.wins}
                               </td>
 
                               {/* Loss Count */}
-                              <td className="px-4 py-3 text-center font-mono font-semibold text-xs" style={{ color: '#DF1C30' }}>
+                              <td className="px-4 py-2 text-center font-mono" style={{ color: '#DF1C30' }}>
                                 {mStats.losses}
                               </td>
 
                               {/* Win Rate */}
                               <td
-                                style={{ color: 'var(--accent)', fontWeight: 600 }}
-                                className="px-4 py-3 text-center font-mono text-xs"
+                                style={{ color: 'var(--accent)' }}
+                                className="px-4 py-2 text-center font-mono"
                               >
                                 {mStats.winRate.toFixed(0)}%
                               </td>
@@ -705,26 +703,25 @@ export const AnnualReportsPage: React.FC = () => {
                               {/* Month overall P&L */}
                               <td
                                 style={{ 
-                                  color: mStats.totalPnl >= 0 ? '#008F67' : '#DF1C30', 
-                                  fontWeight: 600 
+                                  color: mStats.totalPnl >= 0 ? '#008F67' : '#DF1C30'
                                 }}
-                                className="px-4 py-3 text-right font-mono text-xs"
+                                className="px-4 py-2 text-right font-mono"
                               >
                                 {formatINR(mStats.totalPnl)}
                               </td>
 
                               {/* Average R Multiple */}
-                              <td className="px-4 py-3 text-right font-mono text-xs font-semibold" style={{ color: mStats.avgR > 0 ? '#008F67' : mStats.avgR < 0 ? '#DF1C30' : '#a1a1aa' }}>
+                              <td className="px-4 py-2 text-right font-mono" style={{ color: mStats.avgR > 0 ? '#008F67' : mStats.avgR < 0 ? '#DF1C30' : '#a1a1aa' }}>
                                 {mStats.avgR >= 0 ? '+' : ''}{mStats.avgR.toFixed(2)}R
                               </td>
 
                               {/* Profit Factor */}
-                              <td className="px-4 py-3 text-center font-mono text-xs font-semibold" style={{ color: mStats.profitFactor >= 1.0 ? '#008F67' : '#DF1C30' }}>
+                              <td className="px-4 py-2 text-center font-mono" style={{ color: mStats.profitFactor >= 1.0 ? '#008F67' : '#DF1C30' }}>
                                 {mStats.profitFactor === 999 ? '∞' : mStats.profitFactor.toFixed(1)}
                               </td>
 
                               {/* Score Metric */}
-                              <td className="px-4 py-3 text-center text-xs whitespace-nowrap">
+                              <td className="px-4 py-2 text-center whitespace-nowrap">
                                 {mScores ? (
                                   <span className="font-black font-mono" style={{ color: mScores.avgOverall >= 70 ? '#008F67' : mScores.avgOverall >= 50 ? '#fbbf24' : '#DF1C30' }}>
                                     {mScores.avgOverall.toFixed(0)}%
@@ -742,31 +739,31 @@ export const AnnualReportsPage: React.FC = () => {
                       {annualStats && (
                         <tfoot>
                           <tr style={{ background: 'rgba(0, 0, 0, 0.04)', borderTop: '2px solid rgba(0, 0, 0, 0.10)', fontWeight: 700 }} className="font-bold">
-                            <td style={{ color: 'var(--text)', fontWeight: 700 }} className="px-4 py-3.5 text-xs uppercase tracking-wider">
+                            <td style={{ color: 'var(--text)', fontWeight: 700 }} className="px-4 py-2 uppercase tracking-wider">
                               YEAR {selectedYear}
                             </td>
-                            <td style={{ color: 'var(--text)', fontWeight: 700 }} className="px-4 py-3.5 text-center font-mono text-xs">
+                            <td style={{ color: 'var(--text)', fontWeight: 700 }} className="px-4 py-2 text-center font-mono">
                               {annualStats.totalTrades}
                             </td>
-                            <td className="px-4 py-3.5 text-center font-mono text-xs" style={{ color: '#008F67', fontWeight: 700 }}>
+                            <td className="px-4 py-2 text-center font-mono" style={{ color: '#008F67', fontWeight: 700 }}>
                               {annualStats.wins}
                             </td>
-                            <td className="px-4 py-3.5 text-center font-mono text-xs" style={{ color: '#DF1C30', fontWeight: 700 }}>
+                            <td className="px-4 py-2 text-center font-mono" style={{ color: '#DF1C30', fontWeight: 700 }}>
                               {annualStats.losses}
                             </td>
-                            <td className="px-4 py-3.5 text-center font-mono text-xs" style={{ color: 'var(--accent)', fontWeight: 700 }}>
+                            <td className="px-4 py-2 text-center font-mono" style={{ color: 'var(--accent)', fontWeight: 700 }}>
                               {annualStats.winRate.toFixed(1)}%
                             </td>
-                            <td className="px-4 py-3.5 text-right font-mono text-sm" style={{ color: annualStats.totalPnl >= 0 ? '#008F67' : '#DF1C30', fontWeight: 700 }}>
+                            <td className="px-4 py-2 text-right font-mono" style={{ color: annualStats.totalPnl >= 0 ? '#008F67' : '#DF1C30', fontWeight: 700 }}>
                               {formatINR(annualStats.totalPnl)}
                             </td>
-                            <td className="px-4 py-3.5 text-right font-mono text-xs" style={{ color: annualStats.avgR >= 0 ? '#008F67' : '#DF1C30', fontWeight: 700 }}>
+                            <td className="px-4 py-2 text-right font-mono" style={{ color: annualStats.avgR >= 0 ? '#008F67' : '#DF1C30', fontWeight: 700 }}>
                               {annualStats.avgR >= 0 ? '+' : ''}{annualStats.avgR.toFixed(2)}R
                             </td>
-                            <td className="px-4 py-3.5 text-center font-mono text-xs" style={{ color: annualStats.profitFactor >= 1.0 ? '#008F67' : '#DF1C30', fontWeight: 700 }}>
+                            <td className="px-4 py-2 text-center font-mono" style={{ color: annualStats.profitFactor >= 1.0 ? '#008F67' : '#DF1C30', fontWeight: 700 }}>
                               {annualStats.profitFactor === 999 ? '∞' : annualStats.profitFactor.toFixed(2)}
                             </td>
-                            <td className="px-4 py-3.5 text-center font-mono text-xs" style={{ color: annualScores.avgOverall >= 70 ? '#008F67' : annualScores.avgOverall >= 50 ? 'var(--accent)' : '#DF1C30', fontWeight: 700 }}>
+                            <td className="px-4 py-2 text-center font-mono" style={{ color: annualScores.avgOverall >= 70 ? '#008F67' : annualScores.avgOverall >= 50 ? 'var(--accent)' : '#DF1C30', fontWeight: 700 }}>
                               {annualScores.avgOverall.toFixed(0)}%
                             </td>
                           </tr>
@@ -996,11 +993,11 @@ export const AnnualReportsPage: React.FC = () => {
                       >
                         <table className="w-full text-left">
                           <thead>
-                            <tr style={{ background: 'rgba(0, 0, 0, 0.04)', borderBottom: '1px solid rgba(0, 0, 0, 0.08)' }}>
-                              <th className="px-4 py-2.5 font-sans" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Setup Name</th>
-                              <th className="px-3 py-2.5 text-center font-sans" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Trades</th>
-                              <th className="px-3 py-2.5 text-center font-sans" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Win Rate</th>
-                              <th className="px-4 py-2.5 text-right font-sans" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>P&L</th>
+                            <tr style={{ background: 'var(--bar)', borderBottom: '1px solid rgba(0, 0, 0, 0.08)' }}>
+                              <th className="px-4 py-2 font-sans" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Setup Name</th>
+                              <th className="px-3 py-2 text-center font-sans" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Trades</th>
+                              <th className="px-3 py-2 text-center font-sans" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Win Rate</th>
+                              <th className="px-4 py-2 text-right font-sans" style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>P&L</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -1008,30 +1005,28 @@ export const AnnualReportsPage: React.FC = () => {
                               <tr
                                 key={setupItem.name}
                                 style={{
-                                  background: sIdx % 2 === 1 ? 'rgba(0, 0, 0, 0.018)' : 'transparent',
                                   borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
                                   borderTop: sIdx === 0 ? '1px solid rgba(0, 0, 0, 0.06)' : undefined,
                                 }}
                                 className="border-b transition-colors hover:bg-[rgba(0, 0, 0, 0.03)] cursor-pointer"
                               >
-                                <td style={{ color: 'var(--text)', fontSize: '12px', fontWeight: 500 }} className="px-4 py-2.5">
+                                <td style={{ color: 'var(--text)', fontSize: '14px', fontWeight: 500 }} className="px-4 py-2">
                                   {setupItem.name}
                                 </td>
-                                <td style={{ color: 'var(--text-sub)' }} className="px-3 py-2.5 text-center font-mono text-xs">
+                                <td style={{ color: 'var(--text)' }} className="px-3 py-2 text-center font-mono">
                                   {setupItem.tradeCount}
                                 </td>
                                 <td
-                                  style={{ color: 'var(--accent)', fontWeight: 600 }}
-                                  className="px-3 py-2.5 text-center font-mono text-xs"
+                                  style={{ color: 'var(--accent)' }}
+                                  className="px-3 py-2 text-center font-mono"
                                 >
                                   {setupItem.winRate.toFixed(0)}%
                                 </td>
                                 <td
                                   style={{ 
-                                    color: setupItem.pnl >= 0 ? '#008F67' : '#DF1C30', 
-                                    fontWeight: 600 
+                                    color: setupItem.pnl >= 0 ? '#008F67' : '#DF1C30'
                                   }}
-                                  className="px-4 py-2.5 text-right font-mono text-xs"
+                                  className="px-4 py-2 text-right font-mono"
                                 >
                                   {formatINR(setupItem.pnl)}
                                 </td>
