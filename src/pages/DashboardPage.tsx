@@ -2645,46 +2645,47 @@ export const DashboardPage: React.FC = () => {
                             </div>
                           ) : (
                             <div className="overflow-x-auto">
-                              <table className="w-full text-left border-collapse text-xs">
+                              <table className="w-full text-left border-collapse text-[13px]">
                                 <thead>
-                                  <tr className="border-b" style={{ borderColor: 'var(--border)' }}>
-                                    <th className="pb-3 font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Symbol</th>
-                                    <th className="pb-3 font-semibold uppercase tracking-wider text-center" style={{ color: 'var(--text-muted)' }}>Direction</th>
-                                    <th className="pb-3 font-semibold uppercase tracking-wider text-center" style={{ color: 'var(--text-muted)' }}>Product</th>
-                                    <th className="pb-3 font-semibold uppercase tracking-wider text-right" style={{ color: 'var(--text-muted)' }}>Qty</th>
-                                    <th className="pb-3 font-semibold uppercase tracking-wider text-right" style={{ color: 'var(--text-muted)' }}>Avg. Price</th>
-                                    <th className="pb-3 font-semibold uppercase tracking-wider text-right" style={{ color: 'var(--text-muted)' }}>Total Cost</th>
+                                  <tr style={{ background: 'var(--bar)', borderBottom: '1px solid var(--border)' }}>
+                                    <th className="px-4 py-2 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Symbol</th>
+                                    <th className="px-4 py-2 text-center" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Direction</th>
+                                    <th className="px-4 py-2 text-center" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Product</th>
+                                    <th className="px-4 py-2 text-right" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Qty</th>
+                                    <th className="px-4 py-2 text-right" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Avg. Price</th>
+                                    <th className="px-4 py-2 text-right" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Total Cost</th>
                                   </tr>
                                 </thead>
-                                <tbody className="divide-y" style={{ borderColor: 'var(--border)' }}>
+                                <tbody style={{ borderColor: 'var(--border)' }}>
                                   {dhanPositions.map((pos: any) => (
                                     <tr
                                       key={pos.id}
                                       className="transition-colors hover:bg-[var(--row)]"
+                                      style={{ borderBottom: '0.5px solid var(--border)', backgroundColor: 'transparent' }}
                                     >
-                                      <td className="py-3 font-bold" style={{ color: 'var(--text)' }}>
+                                      <td className="px-4 py-2" style={{ color: 'var(--text)' }}>
                                         <div className="flex flex-col">
                                           <span>{pos.symbol}</span>
-                                          <span style={{ color: 'var(--text-muted)' }} className="text-[10px] font-mono font-medium">
+                                          <span style={{ color: 'var(--text-muted)' }} className="text-[11px] mt-0.5">
                                             {pos.exchange || 'NSE'} • {pos.instrument_type || 'EQUITY'}
                                           </span>
                                         </div>
                                       </td>
-                                      <td className="py-3 text-center">
-                                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${pos.opening_direction === 'LONG' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
+                                      <td className="px-4 py-2 text-center font-sans">
+                                        <span style={{ color: pos.opening_direction === 'LONG' ? '#008F67' : '#DF1C30' }} className="uppercase">
                                           {pos.opening_direction}
                                         </span>
                                       </td>
-                                      <td className="py-3 text-center font-semibold text-[var(--text-sub)] uppercase text-[10px]">
+                                      <td className="px-4 py-2 text-center font-sans text-[11px] uppercase" style={{ color: 'var(--text)' }}>
                                         {pos.product_type}
                                       </td>
-                                      <td className="py-3 text-right font-mono font-bold text-[var(--text)]">
+                                      <td className="px-4 py-2 text-right font-mono" style={{ color: 'var(--text)' }}>
                                         {pos.total_quantity}
                                       </td>
-                                      <td className="py-3 text-right font-mono text-[var(--text)]">
+                                      <td className="px-4 py-2 text-right font-mono" style={{ color: 'var(--text)' }}>
                                         {formatINR(pos.avg_entry_price)}
                                       </td>
-                                      <td className="py-3 text-right font-mono font-bold text-[var(--text)]">
+                                      <td className="px-4 py-2 text-right font-mono" style={{ color: 'var(--text)' }}>
                                         {formatINR(pos.total_investment)}
                                       </td>
                                     </tr>
