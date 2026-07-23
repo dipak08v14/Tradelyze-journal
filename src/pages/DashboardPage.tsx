@@ -3551,16 +3551,16 @@ export const DashboardPage: React.FC = () => {
           </div>
 
           {/* Trade list table below stats */}
-          <div className="overflow-x-auto mt-2 rounded bg-[var(--bg)] border" style={{ borderColor: 'var(--border)' }}>
+          <div className="overflow-x-auto mt-2 rounded bg-transparent border" style={{ borderColor: 'var(--border)' }}>
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr style={{ backgroundColor: 'var(--bar)' }}>
-                  <th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="p-2.5 px-3 uppercase">TIME</th>
-                  <th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="p-2.5 px-3 uppercase">SYMBOL</th>
-                  <th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="p-2.5 px-3 uppercase">DIRECTION</th>
-                  <th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="p-2.5 px-3 uppercase">SETUP</th>
-                  <th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="p-2.5 px-3 uppercase text-right">P&L</th>
-                  <th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="p-2.5 px-3 uppercase text-center">R-MULTIPLE</th>
+                  <th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="py-1.5 px-3 uppercase">TIME</th>
+                  <th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="py-1.5 px-3 uppercase">SYMBOL</th>
+                  <th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="py-1.5 px-3 uppercase">DIRECTION</th>
+                  <th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="py-1.5 px-3 uppercase">SETUP</th>
+                  <th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="py-1.5 px-3 uppercase text-right">P&L</th>
+                  <th style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="py-1.5 px-3 uppercase text-center">R-MULTIPLE</th>
                   <th className="w-5"></th>
                 </tr>
               </thead>
@@ -3583,7 +3583,7 @@ export const DashboardPage: React.FC = () => {
                   return (
                     <tr 
                       key={trade.id} 
-                      style={{ borderBottom: '0.5px solid var(--border)', cursor: 'pointer' }}
+                      style={{ borderBottom: '0.5px solid var(--border)', cursor: 'pointer', backgroundColor: 'transparent' }}
                       className="transition-colors hover:bg-[var(--row)]"
                       onClick={() => {
                         console.log("Navigating to trade:" + trade.id);
@@ -3591,49 +3591,43 @@ export const DashboardPage: React.FC = () => {
                         setIsDayModalOpen(false);
                       }}
                     >
-                      <td style={{ color: 'var(--text-sub)', fontSize: '12px' }} className="p-2.5 px-3 font-mono">
+                      <td style={{ color: 'var(--text)', fontSize: '13px' }} className="py-1.5 px-3 font-mono">
                         {formatTime(trade.entry_time)}
                       </td>
-                      <td style={{ color: 'var(--text)', fontSize: '13px', fontWeight: 600 }} className="p-2.5 px-3">
+                      <td style={{ color: 'var(--text)', fontSize: '13px' }} className="py-1.5 px-3">
                         {trade.symbol}
                       </td>
-                      <td className="p-2.5 px-3">
+                      <td className="py-1.5 px-3">
                         <span 
                           style={{ 
-                            fontSize: '10px', 
-                            fontWeight: 700,
-                            backgroundColor: isDirLong ? 'rgba(0, 143, 103, 0.12)' : 'rgba(223, 28, 48, 0.12)',
+                            fontSize: '13px',
                             color: isDirLong ? '#008F67' : '#DF1C30'
                           }} 
-                          className="px-2 py-0.5 rounded-full inline-block uppercase"
                         >
                           {displayDir || 'N/A'}
                         </span>
                       </td>
-                      <td className="p-2.5 px-3">
+                      <td className="py-1.5 px-3">
                         {strategyName ? (
-                          <span style={{ color: 'var(--text-sub)', fontSize: '12px' }}>{strategyName}</span>
+                          <span style={{ color: 'var(--text)', fontSize: '13px' }}>{strategyName}</span>
                         ) : (
-                          <span style={{ color: 'var(--text-muted)', fontSize: '12px' }} className="italic">No Setup</span>
+                          <span style={{ color: 'var(--text-muted)', fontSize: '13px' }} className="italic">No Setup</span>
                         )}
                       </td>
-                      <td style={{ color: trade.pnl > 0 ? '#008F67' : trade.pnl < 0 ? '#DF1C30' : 'var(--text)', fontSize: '13px', fontWeight: 700 }} className="p-2.5 px-3 font-mono text-right">
+                      <td style={{ color: trade.pnl > 0 ? '#008F67' : trade.pnl < 0 ? '#DF1C30' : 'var(--text-muted)', fontSize: '13px' }} className="py-1.5 px-3 font-mono text-right">
                         {formatINR(trade.pnl)}
                       </td>
-                      <td className="p-2.5 px-3 text-center font-mono">
+                      <td className="py-1.5 px-3 text-center font-mono">
                         <span 
                           style={{ 
-                            fontSize: '10px', 
-                            fontWeight: 700,
-                            backgroundColor: rMult !== null ? (rMult >= 0 ? 'rgba(0, 143, 103, 0.12)' : 'rgba(223, 28, 48, 0.12)') : 'transparent',
+                            fontSize: '13px',
                             color: rMult !== null ? (rMult >= 0 ? '#008F67' : '#DF1C30') : 'var(--text-muted)'
                           }} 
-                          className="px-2 py-0.5 rounded-full inline-block"
                         >
                           {formattedR}
                         </span>
                       </td>
-                      <td style={{ color: 'var(--text-muted)', fontSize: '12px' }} className="p-2.5 pr-4 text-right">
+                      <td style={{ color: 'var(--text-muted)', fontSize: '12px' }} className="py-1.5 pr-4 text-right">
                         →
                       </td>
                     </tr>
