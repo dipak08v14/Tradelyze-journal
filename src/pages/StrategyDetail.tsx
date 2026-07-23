@@ -899,13 +899,13 @@ export const StrategyDetail: React.FC = () => {
                         <div className="overflow-x-auto">
                           <table className="w-full text-left border-collapse min-w-[700px]">
                             <thead>
-                              <tr className="border-b text-[10px] font-mono font-bold uppercase tracking-wider" style={{ borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
-                                <th className="py-2.5 px-4">Rule Text</th>
-                                <th className="py-2.5 px-4 text-center">Follow Rate</th>
-                                <th className="py-2.5 px-4 text-right">P&L Followed</th>
-                                <th className="py-2.5 px-4 text-right">P&L Not Followed</th>
-                                <th className="py-2.5 px-4 text-center">Win Rate Followed</th>
-                                <th className="py-2.5 px-4 text-center">Evaluated Trades</th>
+                              <tr style={{ background: 'var(--bar)', borderBottom: '1px solid var(--border)' }}>
+                                <th className="px-4 py-1.5 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Rule Text</th>
+                                <th className="px-4 py-1.5 text-center" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Follow Rate</th>
+                                <th className="px-4 py-1.5 text-right" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>P&L Followed</th>
+                                <th className="px-4 py-1.5 text-right" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>P&L Not Followed</th>
+                                <th className="px-4 py-1.5 text-center" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Win Rate Followed</th>
+                                <th className="px-4 py-1.5 text-center" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Evaluated Trades</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -920,26 +920,26 @@ export const StrategyDetail: React.FC = () => {
                                   } else {
                                     followStyle = { color: '#DF1C30' };
                                   }
-                                } else {
-                                  followStyle = { color: '#DF1C30' };
                                 }
 
                                 return (
-                                  <tr key={r.id} className="border-b transition-colors" style={{ borderColor: 'var(--border)' }}>
-                                    <td className="py-3 px-4 text-sm font-semibold" style={{ color: 'var(--text)' }}>{r.rule_text}</td>
-                                    <td className={`py-3 px-4 text-center text-xs font-mono font-bold ${followClass}`} style={followStyle}>
-                                      {r.followRate !== null ? `${r.followRate.toFixed(1)}%` : '--'}
+                                  <tr key={r.id} className="transition-colors hover:bg-[var(--row)] text-[14px]" style={{ borderBottom: '1px solid var(--border)', backgroundColor: 'transparent' }}>
+                                    <td className="px-4 py-1.5" style={{ color: 'var(--text)' }}>{r.rule_text}</td>
+                                    <td className={`px-4 py-1.5 text-center font-mono ${r.followRate !== null ? followClass : ''}`} style={r.followRate !== null ? followStyle : { color: 'var(--text-muted)' }}>
+                                      {r.followRate !== null ? `${r.followRate.toFixed(1)}%` : '-'}
                                     </td>
-                                    <td className="py-3 px-4 text-right text-xs font-mono font-bold" style={{ color: r.pnlFollowed !== null && r.pnlFollowed >= 0 ? '#008F67' : '#DF1C30' }}>
-                                      {r.pnlFollowed !== null ? formatCurrency(r.pnlFollowed) : '--'}
+                                    <td className="px-4 py-1.5 text-right font-mono" style={{ color: r.pnlFollowed !== null ? (r.pnlFollowed >= 0 ? '#008F67' : '#DF1C30') : 'var(--text-muted)' }}>
+                                      {r.pnlFollowed !== null ? formatCurrency(r.pnlFollowed) : '-'}
                                     </td>
-                                    <td className="py-3 px-4 text-right text-xs font-mono font-bold" style={{ color: r.pnlNotFollowed !== null && r.pnlNotFollowed >= 0 ? '#008F67' : '#DF1C30' }}>
-                                      {r.pnlNotFollowed !== null ? formatCurrency(r.pnlNotFollowed) : '--'}
+                                    <td className="px-4 py-1.5 text-right font-mono" style={{ color: r.pnlNotFollowed !== null ? (r.pnlNotFollowed >= 0 ? '#008F67' : '#DF1C30') : 'var(--text-muted)' }}>
+                                      {r.pnlNotFollowed !== null ? formatCurrency(r.pnlNotFollowed) : '-'}
                                     </td>
-                                    <td className="py-3 px-4 text-center text-xs font-mono font-bold" style={{ color: 'var(--accent)' }}>
-                                      {r.winRateFollowed !== null ? `${r.winRateFollowed.toFixed(1)}%` : '--'}
+                                    <td className="px-4 py-1.5 text-center font-mono" style={{ color: r.winRateFollowed !== null ? 'var(--text)' : 'var(--text-muted)' }}>
+                                      {r.winRateFollowed !== null ? `${r.winRateFollowed.toFixed(1)}%` : '-'}
                                     </td>
-                                    <td className="py-3 px-4 text-center text-xs font-mono" style={{ color: 'var(--text-sub)' }}>{r.evaluationCount}</td>
+                                    <td className="px-4 py-1.5 text-center font-mono" style={{ color: r.evaluationCount > 0 ? 'var(--text)' : 'var(--text-muted)' }}>
+                                      {r.evaluationCount > 0 ? r.evaluationCount : '-'}
+                                    </td>
                                   </tr>
                                 );
                               })}
@@ -967,13 +967,13 @@ export const StrategyDetail: React.FC = () => {
                         <div className="overflow-x-auto">
                           <table className="w-full text-left border-collapse min-w-[700px]">
                             <thead>
-                              <tr className="border-b text-[10px] font-mono font-bold uppercase tracking-wider" style={{ borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
-                                <th className="py-2.5 px-4">Rule Text</th>
-                                <th className="py-2.5 px-4 text-center">Follow Rate</th>
-                                <th className="py-2.5 px-4 text-right">P&L Followed</th>
-                                <th className="py-2.5 px-4 text-right">P&L Not Followed</th>
-                                <th className="py-2.5 px-4 text-center">Win Rate Followed</th>
-                                <th className="py-2.5 px-4 text-center">Evaluated Trades</th>
+                              <tr style={{ background: 'var(--bar)', borderBottom: '1px solid var(--border)' }}>
+                                <th className="px-4 py-1.5 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Rule Text</th>
+                                <th className="px-4 py-1.5 text-center" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Follow Rate</th>
+                                <th className="px-4 py-1.5 text-right" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>P&L Followed</th>
+                                <th className="px-4 py-1.5 text-right" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>P&L Not Followed</th>
+                                <th className="px-4 py-1.5 text-center" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Win Rate Followed</th>
+                                <th className="px-4 py-1.5 text-center" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Evaluated Trades</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -988,26 +988,26 @@ export const StrategyDetail: React.FC = () => {
                                   } else {
                                     followStyle = { color: '#DF1C30' };
                                   }
-                                } else {
-                                  followStyle = { color: '#DF1C30' };
                                 }
 
                                 return (
-                                  <tr key={r.id} className="border-b transition-colors" style={{ borderColor: 'var(--border)' }}>
-                                    <td className="py-3 px-4 text-sm font-semibold" style={{ color: 'var(--text)' }}>{r.rule_text}</td>
-                                    <td className={`py-3 px-4 text-center text-xs font-mono font-bold ${followClass}`} style={followStyle}>
-                                      {r.followRate !== null ? `${r.followRate.toFixed(1)}%` : '--'}
+                                  <tr key={r.id} className="transition-colors hover:bg-[var(--row)] text-[14px]" style={{ borderBottom: '1px solid var(--border)', backgroundColor: 'transparent' }}>
+                                    <td className="px-4 py-1.5" style={{ color: 'var(--text)' }}>{r.rule_text}</td>
+                                    <td className={`px-4 py-1.5 text-center font-mono ${r.followRate !== null ? followClass : ''}`} style={r.followRate !== null ? followStyle : { color: 'var(--text-muted)' }}>
+                                      {r.followRate !== null ? `${r.followRate.toFixed(1)}%` : '-'}
                                     </td>
-                                    <td className="py-3 px-4 text-right text-xs font-mono font-bold" style={{ color: r.pnlFollowed !== null && r.pnlFollowed >= 0 ? '#008F67' : '#DF1C30' }}>
-                                      {r.pnlFollowed !== null ? formatCurrency(r.pnlFollowed) : '--'}
+                                    <td className="px-4 py-1.5 text-right font-mono" style={{ color: r.pnlFollowed !== null ? (r.pnlFollowed >= 0 ? '#008F67' : '#DF1C30') : 'var(--text-muted)' }}>
+                                      {r.pnlFollowed !== null ? formatCurrency(r.pnlFollowed) : '-'}
                                     </td>
-                                    <td className="py-3 px-4 text-right text-xs font-mono font-bold" style={{ color: r.pnlNotFollowed !== null && r.pnlNotFollowed >= 0 ? '#008F67' : '#DF1C30' }}>
-                                      {r.pnlNotFollowed !== null ? formatCurrency(r.pnlNotFollowed) : '--'}
+                                    <td className="px-4 py-1.5 text-right font-mono" style={{ color: r.pnlNotFollowed !== null ? (r.pnlNotFollowed >= 0 ? '#008F67' : '#DF1C30') : 'var(--text-muted)' }}>
+                                      {r.pnlNotFollowed !== null ? formatCurrency(r.pnlNotFollowed) : '-'}
                                     </td>
-                                    <td className="py-3 px-4 text-center text-xs font-mono font-bold" style={{ color: 'var(--accent)' }}>
-                                      {r.winRateFollowed !== null ? `${r.winRateFollowed.toFixed(1)}%` : '--'}
+                                    <td className="px-4 py-1.5 text-center font-mono" style={{ color: r.winRateFollowed !== null ? 'var(--text)' : 'var(--text-muted)' }}>
+                                      {r.winRateFollowed !== null ? `${r.winRateFollowed.toFixed(1)}%` : '-'}
                                     </td>
-                                    <td className="py-3 px-4 text-center text-xs font-mono" style={{ color: 'var(--text-sub)' }}>{r.evaluationCount}</td>
+                                    <td className="px-4 py-1.5 text-center font-mono" style={{ color: r.evaluationCount > 0 ? 'var(--text)' : 'var(--text-muted)' }}>
+                                      {r.evaluationCount > 0 ? r.evaluationCount : '-'}
+                                    </td>
                                   </tr>
                                 );
                               })}
@@ -1031,15 +1031,15 @@ export const StrategyDetail: React.FC = () => {
                         <div className="overflow-x-auto animate-fade-in_short">
                           <table className="w-full text-left border-collapse min-w-[750px]">
                             <thead>
-                              <tr className="border-b text-[10px] font-mono font-bold uppercase tracking-wider" style={{ borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
-                                <th className="py-3 px-4">Date</th>
-                                <th className="py-3 px-4">Symbol</th>
-                                <th className="py-3 px-4">Direction</th>
-                                <th className="py-3 px-4 text-right">Net P&L</th>
-                                <th className="py-3 px-4 text-center">R-Multiple</th>
-                                <th className="py-3 px-4 text-center">Status</th>
-                                <th className="py-3 px-4">Execution</th>
-                                <th className="py-3 px-4">Hold Time</th>
+                              <tr style={{ background: 'var(--bar)', borderBottom: '1px solid var(--border)' }}>
+                                <th className="px-4 py-1.5 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Date</th>
+                                <th className="px-4 py-1.5 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Symbol</th>
+                                <th className="px-4 py-1.5 text-center" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Direction</th>
+                                <th className="px-4 py-1.5 text-right" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Net P&L</th>
+                                <th className="px-4 py-1.5 text-center" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>R-Multiple</th>
+                                <th className="px-4 py-1.5 text-center" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Status</th>
+                                <th className="px-4 py-1.5 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Execution</th>
+                                <th className="px-4 py-1.5 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Hold Time</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -1048,44 +1048,36 @@ export const StrategyDetail: React.FC = () => {
                                 return (
                                   <tr
                                     key={t.id}
-                                    className="border-b hover:bg-zinc-800/10 cursor-pointer transition-colors"
-                                    style={{ borderColor: 'var(--border)' }}
+                                    className="hover:bg-[var(--row)] cursor-pointer transition-colors text-[14px]"
+                                    style={{ borderBottom: '1px solid var(--border)', backgroundColor: 'transparent' }}
                                     onClick={() => navigate(`/trade/${t.id}`)}
                                   >
-                                    <td className="py-1.5 px-4 text-xs font-mono" style={{ color: 'var(--text-sub)' }}>{t.date}</td>
-                                    <td className="py-1.5 px-4 font-bold text-sm tracking-tight" style={{ color: 'var(--text)' }}>{t.symbol}</td>
-                                    <td className="py-1.5 px-4">
+                                    <td className="px-4 py-1.5 font-mono" style={{ color: 'var(--text-muted)' }}>{t.date}</td>
+                                    <td className="px-4 py-1.5 tracking-tight" style={{ color: 'var(--text)' }}>{t.symbol}</td>
+                                    <td className="px-4 py-1.5 text-center">
                                       <span 
-                                        className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider"
-                                        style={
-                                          t.direction.toUpperCase() === 'LONG' || t.direction.toUpperCase() === 'BUY'
-                                            ? { backgroundColor: 'rgba(0,143,103,0.1)', color: '#008F67' }
-                                            : { backgroundColor: 'rgba(223,28,48,0.1)', color: '#DF1C30' }
-                                        }
+                                        className="uppercase"
+                                        style={{ color: (t.direction.toUpperCase() === 'LONG' || t.direction.toUpperCase() === 'BUY') ? '#008F67' : '#DF1C30' }}
                                       >
                                         {dirOpt}
                                       </span>
                                     </td>
-                                    <td className="py-1.5 px-4 text-right text-xs font-mono font-bold" style={{ color: t.pnl && t.pnl >= 0 ? '#008F67' : '#DF1C30' }}>
-                                      {t.pnl !== null ? formatCurrency(t.pnl) : '₹0'}
+                                    <td className="px-4 py-1.5 text-right font-mono" style={{ color: t.pnl !== null ? (t.pnl >= 0 ? '#008F67' : '#DF1C30') : 'var(--text-muted)' }}>
+                                      {t.pnl !== null ? formatCurrency(t.pnl) : '-'}
                                     </td>
-                                    <td className="py-1.5 px-4 text-center text-xs font-mono font-bold" style={{ color: t.r_multiple && t.r_multiple >= 0 ? '#008F67' : '#DF1C30' }}>
-                                      {t.r_multiple !== null ? `${t.r_multiple >= 0 ? '+' : ''}${t.r_multiple.toFixed(2)}R` : '--'}
+                                    <td className="px-4 py-1.5 text-center font-mono" style={{ color: t.r_multiple !== null ? (t.r_multiple >= 0 ? '#008F67' : '#DF1C30') : 'var(--text-muted)' }}>
+                                      {t.r_multiple !== null ? `${t.r_multiple >= 0 ? '+' : ''}${t.r_multiple.toFixed(2)}R` : '-'}
                                     </td>
-                                    <td className="py-1.5 px-4 text-center text-xs">
+                                    <td className="px-4 py-1.5 text-center">
                                       <span 
-                                        className="px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider border"
-                                        style={
-                                          t.status === 'Win' ? { backgroundColor: 'rgba(0,143,103,0.1)', color: '#008F67', borderColor: 'rgba(0,143,103,0.2)' } :
-                                          t.status === 'Loss' ? { backgroundColor: 'rgba(223,28,48,0.1)', color: '#DF1C30', borderColor: 'rgba(223,28,48,0.2)' } :
-                                          { backgroundColor: 'var(--bar)', color: 'var(--text-sub)', borderColor: 'var(--border)' }
-                                        }
+                                        className="uppercase"
+                                        style={{ color: t.status === 'Win' ? '#008F67' : t.status === 'Loss' ? '#DF1C30' : 'var(--text-sub)' }}
                                       >
                                         {t.status}
                                       </span>
                                     </td>
-                                    <td className="py-1.5 px-4 text-xs font-semibold capitalize" style={{ color: 'var(--text-sub)' }}>{t.execution_status || '--'}</td>
-                                    <td className="py-1.5 px-4 text-xs font-mono" style={{ color: 'var(--text-sub)' }}>{t.holding_time_mins ? `${t.holding_time_mins} mins` : '--'}</td>
+                                    <td className="px-4 py-1.5 capitalize" style={{ color: t.execution_status ? 'var(--text)' : 'var(--text-muted)' }}>{t.execution_status || '-'}</td>
+                                    <td className="px-4 py-1.5 font-mono" style={{ color: t.holding_time_mins ? 'var(--text)' : 'var(--text-muted)' }}>{t.holding_time_mins ? `${t.holding_time_mins} mins` : '-'}</td>
                                   </tr>
                                 );
                               })}
@@ -1180,55 +1172,52 @@ export const StrategyDetail: React.FC = () => {
                         <div className="overflow-x-auto">
                           <table className="w-full text-left border-collapse">
                             <thead>
-                              <tr className="border-b font-mono text-[10px] uppercase tracking-wider" style={{ borderColor: 'var(--border)', backgroundColor: 'rgba(255,255,255,0.01)', color: 'var(--text-muted)' }}>
-                                <th className="py-3.5 px-4 font-bold">Date</th>
-                                <th className="py-3.5 px-4 font-bold">Symbol</th>
-                                <th className="py-3.5 px-4 font-bold">Direction</th>
-                                <th className="py-3.5 px-4 font-bold text-right">Potential P&L</th>
-                                <th className="py-3.5 px-4 font-bold">Notes</th>
-                                <th className="py-3.5 px-4 font-bold text-center w-20">Actions</th>
+                              <tr style={{ background: 'var(--bar)', borderBottom: '1px solid var(--border)' }}>
+                                <th className="px-4 py-1.5 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Date</th>
+                                <th className="px-4 py-1.5 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Symbol</th>
+                                <th className="px-4 py-1.5 text-center" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Direction</th>
+                                <th className="px-4 py-1.5 text-right" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Potential P&L</th>
+                                <th className="px-4 py-1.5 text-left" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Notes</th>
+                                <th className="px-4 py-1.5 text-center w-20" style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>Actions</th>
                               </tr>
                             </thead>
-                            <tbody className="divide-y" style={{ borderColor: 'var(--border)' }}>
+                            <tbody style={{ borderColor: 'var(--border)' }}>
                               {missedTrades.map((mt) => {
                                 const isLong = mt.direction === 'LONG';
                                 return (
                                   <tr
                                     key={mt.id}
-                                    className="hover:bg-zinc-800/10 transition-colors"
+                                    className="transition-colors hover:bg-[var(--row)] text-[14px]"
+                                    style={{ borderBottom: '1px solid var(--border)', backgroundColor: 'transparent' }}
                                   >
-                                    <td className="py-1.5 px-4 text-xs font-mono" style={{ color: 'var(--text-muted)' }}>
+                                    <td className="px-4 py-1.5 font-mono" style={{ color: 'var(--text-muted)' }}>
                                       {formatDateCustom(mt.date)}
                                     </td>
-                                    <td className="py-1.5 px-4 font-bold text-sm tracking-tight uppercase" style={{ color: 'var(--text)' }}>
+                                    <td className="px-4 py-1.5 tracking-tight uppercase" style={{ color: 'var(--text)' }}>
                                       {mt.symbol}
                                     </td>
-                                    <td className="py-1.5 px-4">
+                                    <td className="px-4 py-1.5 text-center">
                                       <span 
-                                        className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border"
-                                        style={
-                                          isLong
-                                            ? { backgroundColor: 'rgba(0,143,103,0.1)', color: '#008F67', borderColor: 'rgba(0,143,103,0.2)' }
-                                            : { backgroundColor: 'rgba(223,28,48,0.1)', color: '#DF1C30', borderColor: 'rgba(223,28,48,0.2)' }
-                                        }
+                                        className="uppercase"
+                                        style={{ color: isLong ? '#008F67' : '#DF1C30' }}
                                       >
                                         {mt.direction}
                                       </span>
                                     </td>
-                                    <td className="py-1.5 px-4 text-right text-xs font-mono font-bold" style={{ color: mt.potential_pnl !== null && mt.potential_pnl !== undefined ? (mt.potential_pnl >= 0 ? '#008F67' : '#DF1C30') : 'var(--text-muted)' }}>
-                                      {mt.potential_pnl !== null && mt.potential_pnl !== undefined ? formatCurrency(mt.potential_pnl) : '--'}
+                                    <td className="px-4 py-1.5 text-right font-mono" style={{ color: mt.potential_pnl !== null && mt.potential_pnl !== undefined ? (mt.potential_pnl >= 0 ? '#008F67' : '#DF1C30') : 'var(--text-muted)' }}>
+                                      {mt.potential_pnl !== null && mt.potential_pnl !== undefined ? formatCurrency(mt.potential_pnl) : '-'}
                                     </td>
-                                    <td className="py-1.5 px-4 text-xs max-w-xs truncate" style={{ color: 'var(--text-sub)' }} title={mt.notes || ''}>
-                                      {mt.notes || '--'}
+                                    <td className="px-4 py-1.5 max-w-xs truncate" style={{ color: mt.notes ? 'var(--text)' : 'var(--text-muted)' }} title={mt.notes || ''}>
+                                      {mt.notes || '-'}
                                     </td>
-                                    <td className="py-1.5 px-4 text-center">
+                                    <td className="px-4 py-1.5 text-center">
                                       <button
                                         onClick={(e) => {
                                           if (confirm("Are you sure you want to delete this missed trade?")) {
                                             handleDeleteMissedTrade(mt.id, e);
                                           }
                                         }}
-                                        className="p-1.5 rounded-lg transition-colors cursor-pointer inline-flex items-center"
+                                        className="p-1.5 rounded-lg transition-colors cursor-pointer inline-flex items-center hover:bg-[var(--row)]"
                                         style={{ color: 'var(--text-muted)' }}
                                         title="Delete missed trade"
                                       >
