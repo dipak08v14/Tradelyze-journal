@@ -632,7 +632,7 @@ export const AiTeacherPage: React.FC = () => {
               <aside style={{ backgroundColor: 'var(--bg-sub, var(--card))', borderColor: 'var(--border)', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }} className="w-full lg:w-[350px] lg:border-r p-5 overflow-y-auto shrink-0 space-y-5">
                 
                 {/* SPECIFIC TRADE SELECT BOX */}
-                <div style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }} className="p-4 space-y-2.5">
+                <div style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }} className="p-4 space-y-2.5">
                   <div style={{ color: 'var(--text)', fontSize: '14px', fontWeight: 600 }} className="flex items-center gap-1.5">
                     <Compass style={{ color: 'var(--accent)' }} className="w-4 h-4" />
                     <span>Trade Focus</span>
@@ -731,7 +731,7 @@ export const AiTeacherPage: React.FC = () => {
 
               {/* QUICK STATS PANEL BOX */}
               {!loading && stats && (
-                <div style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }} className="p-4 space-y-3">
+                <div style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }} className="p-4 space-y-3">
                   <div style={{ color: 'var(--text)', fontSize: '14px', fontWeight: 600 }} className="flex items-center gap-1.5 font-bold">
                     <Activity style={{ color: 'var(--accent)' }} className="w-3.5 h-3.5" />
                     <span>Scanned Context Variables</span>
