@@ -2105,7 +2105,7 @@ export const AdvancedReports: React.FC = () => {
                 </div>
 
                 {/* Avg Trade Scores Card */}
-                <div className="rounded-2xl p-5 " style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                <div className="rounded-xl p-5 " style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                   <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', borderBottom: '1px solid var(--border)' }} className="pb-2 text-transform-none">
                     Avg Trade Scores
                   </h3>
@@ -2172,7 +2172,7 @@ export const AdvancedReports: React.FC = () => {
                 {/* SECTION B: Stats table side-by-side */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   {/* Left Column — Trade Stats */}
-                  <div className="rounded-2xl p-4 " style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                  <div className="rounded-xl p-4 " style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                     <div className="flex items-center gap-2 pb-3 mb-3 border-b" style={{ borderColor: 'var(--border)' }}>
                       <TrendingUp className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
                       <h2 className="text-sm font-bold font-mono tracking-wider" style={{ color: 'var(--text-muted)' }}>TRADE STATS</h2>
@@ -2274,7 +2274,7 @@ export const AdvancedReports: React.FC = () => {
                   </div>
 
                   {/* Right Column — Day Stats */}
-                  <div className="rounded-2xl p-4 " style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                  <div className="rounded-xl p-4 " style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                     <div className="flex items-center gap-2 pb-3 mb-3 border-b" style={{ borderColor: 'var(--border)' }}>
                       <CalendarIcon className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
                       <h2 className="text-sm font-bold font-mono tracking-wider" style={{ color: 'var(--text-muted)' }}>DAY & GAMEPLAY STATS</h2>
@@ -2678,7 +2678,7 @@ export const AdvancedReports: React.FC = () => {
 
                 {/* CARDS AND TABLES CONTENT OR EMPTY STATE */}
                 {!(detailedData.length > 0 && detailedData.some(item => item.count > 0)) ? (
-                  <div className="p-12 rounded-2xl text-center " style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                  <div className="p-12 rounded-xl text-center " style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                     <p className="text-sm font-mono" style={{ color: 'var(--text-muted)' }}>No trades found for this category in the selected date range.</p>
                   </div>
                 ) : (
@@ -2780,7 +2780,7 @@ export const AdvancedReports: React.FC = () => {
                     )}
 
                     {/* SUMMARY TABLE */}
-                    <div className="rounded-2xl overflow-hidden border border-[var(--border)]" style={{ backgroundColor: 'var(--card)' }}>
+                    <div className="rounded-xl overflow-hidden border border-[var(--border)]" style={{ backgroundColor: 'var(--card)' }}>
                       <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                           <thead>
@@ -2880,7 +2880,7 @@ export const AdvancedReports: React.FC = () => {
 
                 {/* CARDS AND TABLES CONTENT OR EMPTY STATE */}
                 {!(riskData.length > 0) ? (
-                  <div className="p-12 rounded-2xl text-center " style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                  <div className="p-12 rounded-xl text-center " style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                     <p className="text-sm font-mono" style={{ color: 'var(--text-muted)' }}>No trades found with required values for this sub-filter in the selected date range.</p>
                   </div>
                 ) : (

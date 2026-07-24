@@ -595,7 +595,7 @@ export const DailyJournal: React.FC = () => {
 
             {hasNoTradesEver ? (
               /* EMPTY STATE: NO TRADES EVER */
-              <div className="mt-12 text-center flex flex-col items-center justify-center py-20" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}>
+              <div className="mt-12 text-center flex flex-col items-center justify-center py-20" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}>
                 <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}>
                   <Award className="w-8 h-8" style={{ color: 'var(--text-muted)' }} />
                 </div>
@@ -644,7 +644,7 @@ export const DailyJournal: React.FC = () => {
                     </div>
                   ) : sortedDates.length === 0 ? (
                     /* EMPTY STATE: NO TRADES IN SELECTED PERIOD */
-                    <div className="text-center flex flex-col items-center justify-center py-20" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}>
+                    <div className="text-center flex flex-col items-center justify-center py-20" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }}>
                       <p className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
                         No trades found for {selectedMonth} {selectedYear}.
                       </p>

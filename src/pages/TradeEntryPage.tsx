@@ -1258,7 +1258,7 @@ export const TradeEntryPage: React.FC = () => {
               {/* LEFT COLUMN (COL SPAN 2): Form Fields Cards 1-6 */}
               <div className="lg:col-span-2 space-y-3">
                 {/* CARD 1: TRADE DETAILS */}
-                <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
+                <section style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
                   <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight mb-4">
                     Trade Details
                   </h2>
@@ -1569,7 +1569,7 @@ export const TradeEntryPage: React.FC = () => {
                 </section>
 
                 {/* CARD 2: FINANCIAL DATA */}
-                <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
+                <section style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
                   <div className="flex items-center justify-between mb-4">
                     <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight">
                       Financial Data
@@ -1792,7 +1792,7 @@ export const TradeEntryPage: React.FC = () => {
                 </section>
 
                 {/* CARD 3: AUTO-CALCULATED RESULTS */}
-                <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
+                <section style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
                   <div className="flex items-center justify-between mb-4">
                     <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight">
                       Auto-Calculated
@@ -1936,7 +1936,7 @@ export const TradeEntryPage: React.FC = () => {
                 </section>
 
                 {/* CARD 4: ENTRY RULES CHECKLIST */}
-                <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
+                <section style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
                   <div className="flex justify-between items-start mb-2">
                     <div>
                       <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight">
@@ -1980,7 +1980,7 @@ export const TradeEntryPage: React.FC = () => {
                 </section>
 
                 {/* CARD 5: EXIT RULES CHECKLIST */}
-                <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
+                <section style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
                   <div className="mb-2">
                     <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight">
                       Exit Rules
@@ -1999,7 +1999,7 @@ export const TradeEntryPage: React.FC = () => {
                 </section>
 
                 {/* CARD 6: EXECUTION QUALITY */}
-                <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
+                <section style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
                   <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight mb-4">
                     Execution Quality
                   </h2>
@@ -2120,7 +2120,7 @@ export const TradeEntryPage: React.FC = () => {
               {/* RIGHT COLUMN (COL SPAN 1): sticky widgets Cards 7-10 */}
               <div className="space-y-4">
                 {/* CARD 7: LIVE TRADE SCORE CONTAINER */}
-                <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '20px', position: 'sticky', top: '24px' }} className="z-10 transition-all">
+                <section style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '20px', position: 'sticky', top: '24px' }} className="z-10 transition-all">
                   <div className="flex justify-between items-center mb-4">
                     <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight">
                       Trade Score
@@ -2178,7 +2178,7 @@ export const TradeEntryPage: React.FC = () => {
                 </section>
 
                 {/* CARD 8: PSYCHOLOGY INDEX */}
-                <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
+                <section style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
                   <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight">
                     Psychology Index
                   </h2>
@@ -2268,7 +2268,7 @@ export const TradeEntryPage: React.FC = () => {
                 </section>
 
                 {/* CARD 9: RISK MANAGEMENT */}
-                <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
+                <section style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
                   <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight mb-4">
                     Risk Management
                   </h2>
@@ -2326,7 +2326,7 @@ export const TradeEntryPage: React.FC = () => {
                 </section>
 
                 {/* CARD 10: TRADE MEDIA SECTION */}
-                <section style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
+                <section style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)', padding: '16px 20px' }} className="relative overflow-hidden">
                   <h2 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: '600', textTransform: 'none' }} className="font-display tracking-tight mb-4">
                     Trade Media
                   </h2>
