@@ -210,6 +210,7 @@ export const AdvancedReports: React.FC = () => {
   const maxR = "";
 
   const [loading, setLoading] = useState<boolean>(true);
+  const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'DETAILED' | 'RISK' | 'WINS_LOSSES' | 'MARKET_BEHAVIOR' | 'CALENDAR'>('OVERVIEW');
 
@@ -393,6 +394,7 @@ export const AdvancedReports: React.FC = () => {
         showError(err.message || 'Failed to sync your advanced report trades.');
       } finally {
         setLoading(false);
+        setIsInitialLoad(false);
       }
     };
 
@@ -2046,12 +2048,19 @@ export const AdvancedReports: React.FC = () => {
             </div>
 
             {/* TAB CONTENTS */}
-            {loading && activeTab === 'OVERVIEW' ? (
+            {loading && isInitialLoad ? (
               <div className="h-64 flex flex-col items-center justify-center">
                 <div className="w-8 h-8 border-4 border-[var(--border)] border-t-[var(--accent)] rounded-full animate-spin" />
                 <p className="text-xs mt-3 font-mono" style={{ color: 'var(--text-muted)' }}>Querying portfolio statistics...</p>
               </div>
-            ) : activeTab === 'OVERVIEW' ? (
+            ) : (
+              <div className={`relative transition-all duration-200 ${loading && !isInitialLoad ? 'opacity-60 pointer-events-none' : ''}`}>
+                {loading && !isInitialLoad && (
+                  <div className="absolute inset-0 flex items-center justify-center z-10" style={{ minHeight: '300px' }}>
+                    <div className="w-8 h-8 border-4 border-[var(--border)] border-t-[var(--accent)] rounded-full animate-spin" />
+                  </div>
+                )}
+                {activeTab === 'OVERVIEW' ? (
               <div className="space-y-4">
                 {/* SECTION A: Three Summary cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -3548,6 +3557,8 @@ export const AdvancedReports: React.FC = () => {
                 <p className="text-xs mt-1 max-w-sm mx-auto" style={{ color: 'var(--text-muted)' }}>
                   Detailed analytics, stress tests, win/loss breakdowns, and trade categorization is currently being built. Stay tuned!
                 </p>
+              </div>
+            )}
               </div>
             )}
           </div>
