@@ -2065,7 +2065,7 @@ export const AdvancedReports: React.FC = () => {
                 {/* SECTION A: Three Summary cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   {/* Card 1: BEST MONTH */}
-                  <div className="px-5 py-2 rounded-2xl " style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                  <div className="px-5 py-2 rounded-xl " style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                     <div className="text-[11px] font-medium uppercase tracking-wider font-sans" style={{ color: 'var(--text-muted)' }}>
                       BEST MONTH
                     </div>
@@ -2078,7 +2078,7 @@ export const AdvancedReports: React.FC = () => {
                   </div>
 
                   {/* Card 2: WORST MONTH */}
-                  <div className="px-5 py-2 rounded-2xl " style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                  <div className="px-5 py-2 rounded-xl " style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                     <div className="text-[11px] font-medium uppercase tracking-wider font-sans" style={{ color: 'var(--text-muted)' }}>
                       WORST MONTH
                     </div>
@@ -2091,7 +2091,7 @@ export const AdvancedReports: React.FC = () => {
                   </div>
 
                   {/* Card 3: MONTHLY AVERAGE */}
-                  <div className="px-5 py-2 rounded-2xl " style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
+                  <div className="px-5 py-2 rounded-xl " style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', border: '0.5px solid var(--border)' }}>
                     <div className="text-[11px] font-medium uppercase tracking-wider font-sans" style={{ color: 'var(--text-muted)' }}>
                       AVG PER MONTH
                     </div>
