@@ -784,7 +784,7 @@ export const StrategyDetail: React.FC = () => {
                     </div>
 
                     {/* CHARTS GRAPH COMPONENT */}
-                    <div className="rounded-2xl border p-6" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
+                    <div className="rounded-xl border p-6" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                       <h3 className="text-sm font-bold font-mono uppercase tracking-wider mb-5" style={{ color: 'var(--text)' }}>
                         Cumulative P&L — {strategy?.name || 'Strategy'}
                       </h3>
@@ -882,7 +882,7 @@ export const StrategyDetail: React.FC = () => {
                 {activeTab === 'RULES PERFORMANCE' && (
                   <div className="space-y-4 animate-fade-in">
                     {/* ENTRY RULES SELECTION */}
-                    <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
+                    <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                       <div className="px-5 py-4 border-b flex items-center justify-between" style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bar)' }}>
                         <h4 className="text-xs font-bold uppercase tracking-wider font-mono flex items-center gap-2" style={{ color: 'var(--text)' }}>
                           <span className="w-1.5 h-3 rounded-sm" style={{ backgroundColor: 'var(--accent)' }} />
@@ -950,7 +950,7 @@ export const StrategyDetail: React.FC = () => {
                     </div>
 
                     {/* EXIT RULES SELECTION */}
-                    <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
+                    <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                       <div className="px-5 py-4 border-b flex items-center justify-between" style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bar)' }}>
                         <h4 className="text-xs font-bold uppercase tracking-wider font-mono flex items-center gap-2" style={{ color: 'var(--text)' }}>
                           <span className="w-1.5 h-3 rounded-sm" style={{ backgroundColor: 'var(--accent)' }} />
@@ -1022,7 +1022,7 @@ export const StrategyDetail: React.FC = () => {
                 {/* TAB 3: EXECUTED TRADES */}
                 {activeTab === 'EXECUTED TRADES' && (
                   <div className="space-y-4 animate-fade-in">
-                    <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
+                    <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                       {trades.length === 0 ? (
                         <div className="p-12 text-center text-xs font-mono" style={{ color: 'var(--text-muted)' }}>
                           No trades logged with this setup yet.
@@ -1160,7 +1160,7 @@ export const StrategyDetail: React.FC = () => {
                     </div>
 
                     {/* Missed Trades Table or Empty State */}
-                    <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
+                    <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                       {missedTrades.length === 0 ? (
                         <div className="py-16 text-center px-4">
                           <p className="text-sm font-semibold" style={{ color: 'var(--text-sub)' }}>No missed trades logged for this strategy.</p>
@@ -1244,7 +1244,7 @@ export const StrategyDetail: React.FC = () => {
                         
                         {/* Modal Box */}
                         <div 
-                          className="relative w-full max-w-[480px] rounded-2xl border p-6 z-10 animate-scale-in"
+                          className="relative w-full max-w-[480px] rounded-xl border p-6 z-10 animate-scale-in"
                           style={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
                         >
                           {/* Header */}
@@ -1422,7 +1422,7 @@ export const StrategyDetail: React.FC = () => {
                 {/* TAB 5: NOTES */}
                 {activeTab === 'NOTES' && (
                   <div className="space-y-4 animate-fade-in">
-                    <div className="rounded-2xl border p-5" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
+                    <div className="rounded-xl border p-5" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
                       <div className="flex items-center justify-between mb-3.5">
                         <label htmlFor="strategy-notes-area" className="text-xs font-mono uppercase tracking-wider font-bold flex items-center gap-1.5" style={{ color: 'var(--text-muted)' }}>
                           <FileText className="w-4 h-4" />
@@ -1468,7 +1468,7 @@ export const StrategyDetail: React.FC = () => {
                       if (referenceImages.length === 0) {
                         return (
                           <div
-                            className="flex flex-col items-center justify-center p-12 py-20 text-center rounded-2xl border"
+                            className="flex flex-col items-center justify-center p-12 py-20 text-center rounded-xl border"
                             style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
                           >
                             <div className="p-4 rounded-full mb-4" style={{ backgroundColor: 'var(--bar)', color: 'var(--text-muted)' }}>
