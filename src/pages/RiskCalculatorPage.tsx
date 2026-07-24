@@ -162,7 +162,7 @@ export default function RiskCalculatorPage() {
                 style={{ 
                   backgroundColor: 'var(--card)', 
                   boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
-                  border: '1px solid rgba(0,0,0,0.06)',
+                  border: '1px solid var(--border)',
                   borderRadius: '12px'
                 }} 
                 className="p-5 md:p-6 space-y-4"
@@ -271,7 +271,7 @@ export default function RiskCalculatorPage() {
                 style={{ 
                   backgroundColor: 'var(--card)', 
                   boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
-                  border: '1px solid rgba(0,0,0,0.06)',
+                  border: '1px solid var(--border)',
                   borderRadius: '12px'
                 }} 
                 className="p-5 md:p-6 space-y-4"
@@ -431,8 +431,8 @@ export default function RiskCalculatorPage() {
                 style={{ 
                   backgroundColor: 'var(--card)',
                   boxShadow: '0 4px 6px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.06)',
-                  border: '1px solid rgba(0,0,0,0.08)',
-                  borderRadius: '16px',
+                  border: '1px solid var(--border)',
+                  borderRadius: '12px',
                   overflow: 'hidden'
                 }}
               >
