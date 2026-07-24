@@ -927,7 +927,7 @@ export default function SettingsPage() {
           
           {/* SECURE BLOCK FOR EXPIRED SUBSCRIPTION */}
           {trialExpired && (
-            <div className="bg-red-950/40 border-2 border-red-800 text-red-200 p-4 rounded-2xl mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="bg-red-950/40 border-2 border-red-800 text-red-200 p-4 rounded-xl mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="space-y-1">
                 <h4 className="font-bold flex items-center gap-2">
                   <AlertOctagon className="w-5 h-5 text-red-400" />
@@ -988,7 +988,7 @@ export default function SettingsPage() {
                   <div className="space-y-2 md:space-y-3 order-1 lg:order-1">
                   
                   {/* PROFILE CARD */}
-                  <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
+                  <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-6" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
                     <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-4 flex items-center gap-2">
                       <User className="w-4 h-4 text-[var(--accent)]" /> Profile Details
                     </h3>
@@ -1073,7 +1073,7 @@ export default function SettingsPage() {
                   </div>
 
                   {/* SECURITY CARD */}
-                  <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
+                  <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-6" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
                     <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-4 flex items-center gap-2">
                       <Lock className="w-4 h-4 text-[var(--accent)]" /> Security / Change Password
                     </h3>
@@ -1123,7 +1123,7 @@ export default function SettingsPage() {
                   </div>
 
                   {/* ACCOUNT EXPORT / DESTRUCTION */}
-                  <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
+                  <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-6" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
                     <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-1.5 flex items-center gap-2">
                        Account Management
                     </h3>
@@ -1163,7 +1163,7 @@ export default function SettingsPage() {
                   <div className="space-y-6 order-2 lg:order-2">
 
                   {/* BROKER CONNECTIONS SECTION */}
-                  <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
+                  <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-6" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
                     <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-1 flex items-center gap-2 font-display">
                        Broker Connections
                     </h3>
@@ -1549,7 +1549,7 @@ export default function SettingsPage() {
                                       disabled={syncingDhan}
                                       onClick={handleSyncDhan}
                                       style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
-                                      className="hover:opacity-90 font-bold px-3 py-1.5 rounded-lg cursor-pointer text-xs h-8 flex items-center justify-center gap-1.5"
+                                      className="hover:opacity-90 font-bold px-3 py-1.5 rounded-xl cursor-pointer text-xs h-8 flex items-center justify-center gap-1.5"
                                     >
                                       {syncingDhan ? (
                                         <>
@@ -1586,7 +1586,7 @@ export default function SettingsPage() {
                                     disabled={repairingDhanOptions}
                                     onClick={handleRepairDhanOptions}
                                     style={{ border: '1px solid var(--border-md)', background: 'transparent', color: 'var(--accent)' }}
-                                    className="hover:bg-[var(--row)] font-bold px-3 py-1.5 rounded-lg cursor-pointer text-xs h-8 flex items-center justify-center gap-1.5"
+                                    className="hover:bg-[var(--row)] font-bold px-3 py-1.5 rounded-xl cursor-pointer text-xs h-8 flex items-center justify-center gap-1.5"
                                   >
                                     {repairingDhanOptions ? (
                                       <>
@@ -1607,7 +1607,7 @@ export default function SettingsPage() {
                                     <button
                                       disabled={importingDhanHistory}
                                       onClick={handleImportHistoryDhan}
-                                      className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs cursor-pointer"
+                                      className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-xl text-xs cursor-pointer"
                                     >
                                       Yes, Import
                                     </button>
@@ -1628,7 +1628,7 @@ export default function SettingsPage() {
                                     <button
                                       disabled={disconnectingDhan}
                                       onClick={handleDisconnectDhan}
-                                      className="bg-[#ef4444] hover:bg-red-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs cursor-pointer"
+                                      className="bg-[#ef4444] hover:bg-red-700 text-white font-bold px-3 py-1.5 rounded-xl text-xs cursor-pointer"
                                     >
                                       Yes, Disconnect
                                     </button>
@@ -1654,7 +1654,7 @@ export default function SettingsPage() {
 
               {/* TAB 2: APPEARANCE */}
               {activeTab === 'appearance' && (
-                <div className="space-y-6 animate-fade-in bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
+                <div className="space-y-6 animate-fade-in bg-[var(--card)] border border-[var(--border)] rounded-xl p-6" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
                   <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-2 flex items-center gap-2">
                     <Palette className="w-4 h-4 text-[var(--accent)]" /> Visual Themes Customization
                   </h3>
@@ -1737,7 +1737,7 @@ export default function SettingsPage() {
 
               {/* TAB 3: SUBSCRIPTION */}
               {activeTab === 'subscription' && (
-                <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 space-y-6 animate-fade-in animate-none" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
+                <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-6 space-y-6 animate-fade-in animate-none" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
                   <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-1 flex items-center gap-2">
                     <CreditCard className="w-4 h-4 text-[var(--accent)]" /> Plan Workspace Billing
                   </h3>
@@ -1745,7 +1745,7 @@ export default function SettingsPage() {
 
                   {/* FREE PLAN */}
                   {userData?.subscription_plan === 'free' && (
-                    <div className="border border-amber-800 bg-amber-950/20 p-6 rounded-2xl space-y-6">
+                    <div className="border border-amber-800 bg-amber-950/20 p-6 rounded-xl space-y-6">
                       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
                         <div>
                           <span className="bg-amber-600 text-slate-950 text-[10px] uppercase font-black tracking-widest px-2.5 py-0.5 rounded-full">
@@ -1789,7 +1789,7 @@ export default function SettingsPage() {
 
                   {/* PRO PLAN */}
                   {userData?.subscription_plan === 'pro' && (
-                    <div className="border border-emerald-800 bg-emerald-950/20 p-6 rounded-2xl space-y-6">
+                    <div className="border border-emerald-800 bg-emerald-950/20 p-6 rounded-xl space-y-6">
                       <div className="flex justify-between items-start">
                         <div>
                           <span className="bg-emerald-600 text-slate-900 text-[10px] uppercase font-black tracking-widest px-2.5 py-0.5 rounded-full font-sans">
@@ -1832,7 +1832,7 @@ export default function SettingsPage() {
 
               {/* TAB 4: NOTIFICATIONS */}
               {activeTab === 'notifications' && (
-                <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 space-y-6 animate-fade-in animate-none" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
+                <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-6 space-y-6 animate-fade-in animate-none" style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
                   <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text)', textTransform: 'none' }} className="mb-1 flex items-center gap-2">
                     <Bell className="w-4 h-4 text-[var(--accent)]" /> Extension Signals Threshold
                   </h3>
@@ -1888,7 +1888,7 @@ export default function SettingsPage() {
       {/* ACCOUNT PURGE DESTROY MODAL */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-[var(--card)] border border-red-500/30 rounded-2xl max-w-md w-full p-6 space-y-4 relative" style={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }}>
+          <div className="bg-[var(--card)] border border-red-500/30 rounded-xl max-w-md w-full p-6 space-y-4 relative" style={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }}>
             <h4 className="text-lg font-extrabold text-red-500 flex items-center gap-2">
               <AlertOctagon className="w-5 h-5 flex-shrink-0" /> Irreversible Account Purgation
             </h4>
@@ -1934,7 +1934,7 @@ export default function SettingsPage() {
       {/* CSV IMPORT MODAL */}
       {isCsvModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl max-w-2xl w-full p-6 space-y-4 relative animate-fade-in max-h-[90vh] overflow-y-auto" style={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }}>
+          <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl max-w-2xl w-full p-6 space-y-4 relative animate-fade-in max-h-[90vh] overflow-y-auto" style={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }}>
             {/* Modal close */}
             <button
               onClick={() => {
@@ -1983,7 +1983,7 @@ export default function SettingsPage() {
                       backgroundColor: 'var(--accent-muted)',
                       borderColor: 'var(--accent)',
                     }}
-                    className="w-full text-[13px] font-semibold text-[var(--accent)] border rounded-lg py-3 px-5 hover:opacity-95 transition-all text-center flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full text-[13px] font-semibold text-[var(--accent)] border rounded-xl py-3 px-5 hover:opacity-95 transition-all text-center flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <Download className="w-4 h-4" />
                     <span>↓ Download Tradelyze CSV Template</span>
@@ -1994,7 +1994,7 @@ export default function SettingsPage() {
                 <div className="space-y-3">
                   <h4 className="text-[13px] font-semibold text-[var(--text)]">Required format for each column</h4>
                   
-                  <div className="overflow-x-auto border border-[var(--border)] rounded-lg">
+                  <div className="overflow-x-auto border border-[var(--border)] rounded-xl">
                     <table className="w-full text-left text-xs border-collapse">
                       <thead>
                         <tr style={{ backgroundColor: 'var(--bg)', borderBottom: '1px solid var(--border)' }} className="text-[10px] uppercase font-mono text-[var(--text-muted)] font-bold">
@@ -2178,7 +2178,7 @@ export default function SettingsPage() {
                         Ready to import — Preview (first 5 rows)
                       </h4>
                       
-                      <div className="overflow-x-auto border border-[var(--border)] rounded-lg">
+                      <div className="overflow-x-auto border border-[var(--border)] rounded-xl">
                         <table className="w-full text-left text-xs border-collapse">
                           <thead>
                             <tr style={{ backgroundColor: 'var(--bg)', borderBottom: '1px solid var(--border)' }} className="text-[10px] uppercase font-mono text-[var(--text-muted)] font-bold">
@@ -2225,7 +2225,7 @@ export default function SettingsPage() {
                       onClick={handleImportCsvTrades}
                       disabled={importingCsv}
                       style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
-                      className="w-full text-xs font-semibold rounded-lg py-3 hover:opacity-90 disabled:opacity-50 transition-all text-center flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full text-xs font-semibold rounded-xl py-3 hover:opacity-90 disabled:opacity-50 transition-all text-center flex items-center justify-center gap-2 cursor-pointer"
                     >
                       {importingCsv ? (
                         <>
@@ -2307,7 +2307,7 @@ export default function SettingsPage() {
       {/* CONNECT MT5 BROKER SETUP MODAL */}
       {isConnectModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm">
-          <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl max-w-lg w-full p-6 space-y-5 relative animate-fade-in" style={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }}>
+          <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl max-w-lg w-full p-6 space-y-5 relative animate-fade-in" style={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }}>
             {/* Modal close */}
             <button
               onClick={() => {
