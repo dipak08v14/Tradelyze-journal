@@ -684,7 +684,7 @@ export const DailyJournal: React.FC = () => {
                           id={`day-card-${dateStr}`}
                           style={{
                             backgroundColor: 'var(--card)',
-                            border: isHighlighted ? '2px solid var(--accent)' : '1px solid rgba(0,0,0,0.06)',
+                            border: isHighlighted ? '2px solid var(--accent)' : '1px solid var(--border)',
                             borderRadius: '12px',
                             boxShadow: isHighlighted ? '0 0 15px rgba(99, 102, 241, 0.35)' : '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
                             transition: 'all 400ms ease-in-out',
@@ -756,7 +756,7 @@ export const DailyJournal: React.FC = () => {
                                 <h4 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, textTransform: 'none' }} className="font-display mb-2">
                                   Running Net P&L Trajectory
                                 </h4>
-                                <div className="h-[120px] w-full rounded-lg" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}>
+                                <div className="h-[120px] w-full rounded-xl" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}>
                                   <ResponsiveContainer width="100%" height="100%">
                                     <AreaChart data={dayData} margin={{ top: 10, right: 10, left: 10, bottom: 5 }}>
                                       <defs>
@@ -900,7 +900,7 @@ export const DailyJournal: React.FC = () => {
                                 <h4 style={{ color: 'var(--text)', fontSize: '16px', fontWeight: 600, textTransform: 'none' }} className="font-display mb-2">
                                   Trade List
                                 </h4>
-                                <div className="overflow-x-auto" style={{ border: '1px solid var(--border)', borderRadius: '10px' }}>
+                                <div className="overflow-x-auto" style={{ border: '1px solid var(--border)', borderRadius: '12px' }}>
                                   <table className="w-full text-left border-collapse text-xs">
                                     <thead>
                                       <tr style={{ backgroundColor: 'var(--bar)', borderBottom: '1px solid var(--border)' }}>
@@ -1055,7 +1055,7 @@ export const DailyJournal: React.FC = () => {
                   <div
                     style={{
                       backgroundColor: 'var(--card)',
-                      border: '1px solid rgba(0,0,0,0.06)',
+                      border: '1px solid var(--border)',
                       borderRadius: '12px',
                       boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
                     }}
