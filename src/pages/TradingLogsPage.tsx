@@ -17,6 +17,47 @@ import {
   Settings2
 } from 'lucide-react';
 import { Trade } from '../types';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  horizontalListSortingStrategy,
+  useSortable
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
+function SortableHeaderCell({ id, children, isSortable, sortField, sortColumn, sortDirection, toggleSort, className }: any) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    cursor: isDragging ? 'grabbing' : 'grab',
+    position: 'relative' as const,
+    zIndex: isDragging ? 10 : 1,
+    touchAction: 'none'
+  };
+  return (
+    <th
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      onClick={isSortable ? () => toggleSort(sortField) : undefined}
+      className={className}
+    >
+      {children}
+    </th>
+  );
+}
 
 export const TradingLogsPage: React.FC = () => {
   const { user, userId, loading: authLoading } = useAuth();
@@ -136,6 +177,7 @@ export const TradingLogsPage: React.FC = () => {
   // General App & Navigation
   const [allTrades, setAllTrades] = useState<Trade[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
 
   // Floating filters panel and pin status bar states
@@ -282,6 +324,40 @@ export const TradingLogsPage: React.FC = () => {
     { id: 'month', label: 'Month' },
     { id: 'sync_source', label: 'Sync Source' },
   ];
+
+  const [columnOrder, setColumnOrder] = useState<string[]>(() => {
+    const saved = localStorage.getItem('tl-log-column-order');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        const missing = ALL_COLUMNS_INFO.map(c => c.id).filter(id => !parsed.includes(id));
+        return [...parsed, ...missing];
+      } catch (e) {}
+    }
+    return ALL_COLUMNS_INFO.map(c => c.id);
+  });
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    }),
+    useSensor(KeyboardSensor)
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      setColumnOrder((items) => {
+        const oldIndex = items.indexOf(active.id as string);
+        const newIndex = items.indexOf(over.id as string);
+        const newOrder = arrayMove(items, oldIndex, newIndex);
+        localStorage.setItem('tl-log-column-order', JSON.stringify(newOrder));
+        return newOrder;
+      });
+    }
+  };
 
   // Load Session Safety
   useEffect(() => {
@@ -462,6 +538,7 @@ export const TradingLogsPage: React.FC = () => {
       showError(err.message || 'Failed to sync your trades list.');
     } finally {
       setLoading(false);
+      setIsInitialLoad(false);
     }
   };
 
@@ -1329,7 +1406,7 @@ export const TradingLogsPage: React.FC = () => {
                   <div className="font-mono" style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text)', marginTop: '4px' }}>
                     {calculatedStats.totalCount}
                   </div>
-                  <div className="font-mono" style={{ position: 'absolute', top: '8px', right: '12px', display: 'flex', flexDirection: 'column', gap: '1px', fontSize: '11px', textAlign: 'right' }}>
+                  <div className="font-mono" style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', right: '12px', display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '11px', textAlign: 'right' }}>
                     <span style={{ color: '#008F67', fontWeight: 700 }}>W: {calculatedStats.winCount}</span>
                     <span style={{ color: '#DF1C30', fontWeight: 700 }}>L: {calculatedStats.lossCount}</span>
                     <span style={{ color: 'var(--text-muted)', fontWeight: 700 }}>BE: {calculatedStats.breakEvenCount}</span>
@@ -1402,7 +1479,7 @@ export const TradingLogsPage: React.FC = () => {
 
 
             {/* ERROR SKELETON OR DYNAMIC TABLES LAYOUT */}
-            {loading ? null : allTrades.length === 0 ? (
+            {loading && isInitialLoad ? null : allTrades.length === 0 ? (
               /* EMPTY JOURNAL NO TRADES YET */
               <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
                 <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 animate-pulse" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}>
@@ -1442,7 +1519,21 @@ export const TradingLogsPage: React.FC = () => {
               </div>
             ) : (
               /* MAIN INTERACTIVE SORTABLE DATATABLE */
-              <div className="flex flex-col animate-in fade-in duration-200">
+              <div 
+                className="flex flex-col animate-in fade-in duration-200 relative"
+                style={{
+                  opacity: loading && !isInitialLoad ? 0.6 : 1,
+                  pointerEvents: loading && !isInitialLoad ? 'none' : 'auto',
+                  transition: 'opacity 0.2s ease-in-out'
+                }}
+              >
+                {loading && !isInitialLoad && (
+                  <div className="absolute inset-0 z-50 flex items-center justify-center">
+                    <div className="bg-[var(--card)] p-3 rounded-xl shadow-lg border border-[var(--border)]">
+                      <span className="animate-spin inline-block w-5 h-5 border-2 border-[var(--accent)] border-t-transparent rounded-full"></span>
+                    </div>
+                  </div>
+                )}
                 <div id="trading-logs-datatable-container" className="overflow-hidden" style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderBottom: 'none', borderTopLeftRadius: '12px', borderTopRightRadius: '12px' }}>
                   {/* BULK ACTION BAR */}
                   {selectedTradeIds.length > 0 && (
@@ -1523,15 +1614,16 @@ export const TradingLogsPage: React.FC = () => {
                     </div>
                   )}
                   
-                  <div className="overflow-x-auto">
-                    <table 
-                      onMouseEnter={() => setIsTableHovered(true)}
-                      onMouseLeave={() => setIsTableHovered(false)}
-                      className="w-full text-left border-collapse"
-                    >
-                    <thead>
-                      <tr className="border-b select-none font-sans" style={{ backgroundColor: 'var(--bar)', borderBottom: '1px solid var(--border)', color: 'var(--text-muted)', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                        {/* SELECT ALL CHECKBOX */}
+                  <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                    <div className="overflow-x-auto">
+                      <table 
+                        onMouseEnter={() => setIsTableHovered(true)}
+                        onMouseLeave={() => setIsTableHovered(false)}
+                        className="w-full text-left border-collapse"
+                      >
+                      <thead>
+                        <tr className="border-b select-none font-sans" style={{ backgroundColor: 'var(--bar)', borderBottom: '1px solid var(--border)', color: 'var(--text-muted)', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                          {/* SELECT ALL CHECKBOX */}
                         <th className="px-4 py-2 w-12 text-center">
                           <div 
                             className={`transition-all duration-200 flex items-center justify-center ${
@@ -1600,25 +1692,33 @@ export const TradingLogsPage: React.FC = () => {
                         <th className="px-4 py-2 w-10 text-center">#</th>
                         
                         {/* Dynamic selectable columns */}
-                        {ALL_COLUMNS_INFO.map((col) => {
-                          if (!selectedColumns[col.id]) return null;
-                          const colDef = colDefinitions[col.id];
-                          const isSortable = ['date', 'symbol', 'pnl', 'r_multiple', 'roi', 'holding_time_mins'].includes(col.id);
-                          return (
-                            <th
-                              key={col.id}
-                              onClick={isSortable ? () => toggleSort(colDef.sortField) : undefined}
-                              className={`px-4 py-2 ${isSortable ? 'cursor-pointer hover:text-[var(--accent)] transition-colors' : ''} whitespace-nowrap`}
-                            >
-                              <div className="flex items-center gap-1">
-                                <span>{col.label}</span>
-                                {isSortable && sortColumn === colDef.sortField && (
-                                  sortDirection === 'asc' ? <ChevronUp className="w-3 h-3 text-[var(--accent)]" /> : <ChevronDown className="w-3 h-3 text-[var(--accent)]" />
-                                )}
-                              </div>
-                            </th>
-                          );
-                        })}
+                        <SortableContext items={columnOrder} strategy={horizontalListSortingStrategy}>
+                          {columnOrder.map((colId) => {
+                            const col = ALL_COLUMNS_INFO.find(c => c.id === colId);
+                            if (!col || !selectedColumns[col.id]) return null;
+                            const colDef = colDefinitions[col.id];
+                            const isSortable = ['date', 'symbol', 'pnl', 'r_multiple', 'roi', 'holding_time_mins', 'needs_review', 'direction', 'option_type', 'strategies', 'status', 'execution_status', 'mistake_type', 'sync_source'].includes(col.id);
+                            return (
+                              <SortableHeaderCell
+                                key={col.id}
+                                id={col.id}
+                                isSortable={isSortable}
+                                sortField={colDef.sortField}
+                                sortColumn={sortColumn}
+                                sortDirection={sortDirection}
+                                toggleSort={toggleSort}
+                                className={`px-4 py-2 ${isSortable ? 'cursor-pointer hover:text-[var(--accent)] transition-colors' : ''} whitespace-nowrap`}
+                              >
+                                <div className="flex items-center gap-1">
+                                  <span>{col.label}</span>
+                                  {isSortable && sortColumn === colDef.sortField && (
+                                    sortDirection === 'asc' ? <ChevronUp className="w-3 h-3 text-[var(--accent)]" /> : <ChevronDown className="w-3 h-3 text-[var(--accent)]" />
+                                  )}
+                                </div>
+                              </SortableHeaderCell>
+                            );
+                          })}
+                        </SortableContext>
                         <th className="px-4 py-2 w-12 text-center">AI</th>
                       </tr>
                     </thead>
@@ -1695,8 +1795,9 @@ export const TradingLogsPage: React.FC = () => {
                             </td>
 
                             {/* Dynamic selectable trade detail columns cells */}
-                            {ALL_COLUMNS_INFO.map((col) => {
-                              if (!selectedColumns[col.id]) return null;
+                            {columnOrder.map((colId) => {
+                              const col = ALL_COLUMNS_INFO.find(c => c.id === colId);
+                              if (!col || !selectedColumns[col.id]) return null;
                               return (
                                 <td key={col.id} style={{ color: 'var(--text)' }} className="px-4 py-2 whitespace-nowrap font-sans">
                                   {colDefinitions[col.id].renderCell(item)}
@@ -1733,6 +1834,7 @@ export const TradingLogsPage: React.FC = () => {
                     </tbody>
                   </table>
                 </div>
+              </DndContext>
               </div>
 
               {/* ADDITION 2 — PAGINATION CONTROLS */}
@@ -1840,7 +1942,9 @@ export const TradingLogsPage: React.FC = () => {
                   Select which column fields to display in your active trading logs table.
                 </p>
                 <div className="grid grid-cols-2 gap-3 text-xs">
-                  {ALL_COLUMNS_INFO.map((col) => {
+                  {columnOrder.map((colId) => {
+                    const col = ALL_COLUMNS_INFO.find(c => c.id === colId);
+                    if (!col) return null;
                     const isChecked = !!pendingColumns[col.id];
                     return (
                       <label
