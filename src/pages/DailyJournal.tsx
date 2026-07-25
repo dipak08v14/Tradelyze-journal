@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import { Sidebar } from '../components/Sidebar';
+import { MiniCalendarWidget } from '../components/MiniCalendarWidget';
 import { formatINR, MONTH_NAMES } from '../lib/calculations';
 import {
   Menu,
@@ -65,6 +66,29 @@ export const DailyJournal: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState<number>(() => {
     return new Date().getFullYear();
   });
+  const [isHeaderCalendarOpen, setIsHeaderCalendarOpen] = useState<boolean>(false);
+  const headerCalendarRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (headerCalendarRef.current && !headerCalendarRef.current.contains(event.target as Node)) {
+        setIsHeaderCalendarOpen(false);
+      }
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsHeaderCalendarOpen(false);
+      }
+    };
+    if (isHeaderCalendarOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isHeaderCalendarOpen]);
 
   // Trades fetched for this selected month
   const [trades, setTrades] = useState<Trade[]>([]);
@@ -363,6 +387,15 @@ export const DailyJournal: React.FC = () => {
     setSelectedYear(yr);
   };
 
+  // Calendar Year-navigation arrows
+  const handlePrevYear = () => {
+    setSelectedYear((prev) => prev - 1);
+  };
+
+  const handleNextYear = () => {
+    setSelectedYear((prev) => prev + 1);
+  };
+
   // Scroll to day card and briefly highlight
   const scrollToDayCard = (dateStr: string) => {
     setTimeout(() => {
@@ -384,6 +417,11 @@ export const DailyJournal: React.FC = () => {
       setSelectedYear(dayObj.year);
     }
     scrollToDayCard(dayObj.dateStr);
+  };
+
+  const handlePopupDayClick = (dayObj: { day: number; month: string; year: number; isCurrentMonth: boolean; dateStr: string }) => {
+    handleCalendarDayClick(dayObj);
+    setIsHeaderCalendarOpen(false);
   };
 
   // Helpers for stats and dates
@@ -495,15 +533,6 @@ export const DailyJournal: React.FC = () => {
     return remainingMins > 0 ? `${hrs}h ${remainingMins}m` : `${hrs}h`;
   };
 
-  // Generate Year Array for filters
-  const yearsList = useMemo(() => {
-    const arr = [];
-    for (let yr = 2020; yr <= 2030; yr++) {
-      arr.push(yr);
-    }
-    return arr;
-  }, []);
-
   // Today check for Calendar border/ring
   const todayStr = useMemo(() => {
     const now = new Date();
@@ -564,34 +593,46 @@ export const DailyJournal: React.FC = () => {
                 Daily Journal
               </h1>
 
-              {/* MONTH/YEAR SELECTS */}
-              <div className="flex items-center gap-2">
-                <CalendarIcon className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
-                <select
-                  value={selectedMonth}
-                  onChange={(e) => setSelectedMonth(e.target.value)}
-                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
-                  className="rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--accent)] cursor-pointer transition-all font-medium"
+              {/* MONTH/YEAR POPUP BUTTON */}
+              <div className="relative" ref={headerCalendarRef}>
+                <button
+                  type="button"
+                  onClick={() => setIsHeaderCalendarOpen(prev => !prev)}
+                  style={{
+                    border: '1px solid var(--border)',
+                    backgroundColor: 'var(--card)',
+                    borderRadius: '8px',
+                    padding: '6px 12px',
+                    fontSize: '13px',
+                    color: 'var(--text)',
+                    cursor: 'pointer'
+                  }}
+                  className="flex items-center gap-2 hover:opacity-90 font-medium select-none"
                 >
-                  {MONTH_NAMES.map((name) => (
-                    <option key={name} value={name}>
-                      {name}
-                    </option>
-                  ))}
-                </select>
+                  <CalendarIcon className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+                  <span>{selectedMonth} {selectedYear}</span>
+                  <ChevronDown className="w-3.5 h-3.5 ml-1" style={{ color: 'var(--text-muted)' }} />
+                </button>
 
-                <select
-                  value={selectedYear}
-                  onChange={(e) => setSelectedYear(parseInt(e.target.value, 10))}
-                  style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', color: 'var(--text)' }}
-                  className="rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--accent)] cursor-pointer transition-all font-medium"
-                >
-                  {yearsList.map((yr) => (
-                    <option key={yr} value={yr}>
-                      {yr}
-                    </option>
-                  ))}
-                </select>
+                {isHeaderCalendarOpen && (
+                  <MiniCalendarWidget
+                    selectedMonth={selectedMonth}
+                    selectedYear={selectedYear}
+                    onPrevMonth={handlePrevMonth}
+                    onNextMonth={handleNextMonth}
+                    onPrevYear={handlePrevYear}
+                    onNextYear={handleNextYear}
+                    calendarDays={calendarDays}
+                    groupedTrades={groupedTrades}
+                    todayStr={todayStr}
+                    highlightedDay={highlightedDay}
+                    onDayClick={handlePopupDayClick}
+                    className="absolute top-[calc(100%+8px)] right-0 z-[1000] w-[290px]"
+                    style={{
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06)'
+                    }}
+                  />
+                )}
               </div>
             </div>
 
@@ -617,10 +658,10 @@ export const DailyJournal: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-4 gap-y-6 gap-x-4 mt-4">
-                {/* LEFT MAIN AREA (~75%): COLLAPSIBLE CARDS LIST */}
+              <div className="mt-4">
+                {/* MAIN AREA: FULL-WIDTH COLLAPSIBLE CARDS LIST */}
                 <div 
-                  className="lg:col-span-3 space-y-4"
+                  className="space-y-4"
                   style={{
                     opacity: !initialLoad && loading ? 0.5 : 1,
                     pointerEvents: !initialLoad && loading ? 'none' : 'auto',
@@ -1057,130 +1098,6 @@ export const DailyJournal: React.FC = () => {
                       );
                     })
                   )}
-                </div>
-
-                {/* RIGHT SIDEBAR (~25%): CALENDAR WIDGET */}
-                <div className="lg:col-span-1">
-                  <div
-                    style={{
-                      backgroundColor: 'var(--card)',
-                      border: '1px solid var(--border)',
-                      borderRadius: '12px',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)'
-                    }}
-                    className="p-4 sticky top-6 select-none"
-                  >
-                    {/* CALENDAR HEADER */}
-                    <div className="flex items-center justify-between pb-3 border-b" style={{ borderColor: 'var(--border)' }}>
-                      <span className="text-sm font-bold font-display" style={{ color: 'var(--text)' }}>
-                        {selectedMonth} {selectedYear}
-                      </span>
-                      <div className="flex gap-1">
-                        <button
-                          onClick={handlePrevMonth}
-                          className="p-1 rounded hover:bg-zinc-800 transition-colors cursor-pointer"
-                          style={{ color: 'var(--text-sub)' }}
-                        >
-                          <ChevronLeft className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={handleNextMonth}
-                          className="p-1 rounded hover:bg-zinc-800 transition-colors cursor-pointer"
-                          style={{ color: 'var(--text-sub)' }}
-                        >
-                          <ChevronRight className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* WEEKDAYS HEADER ROW */}
-                    <div className="grid grid-cols-7 gap-1 text-center py-2 text-[10px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
-                      <span>Su</span>
-                      <span>Mo</span>
-                      <span>Tu</span>
-                      <span>We</span>
-                      <span>Th</span>
-                      <span>Fr</span>
-                      <span>Sa</span>
-                    </div>
-
-                    {/* CALENDAR CELLS GRID */}
-                    <div className="grid grid-cols-7 gap-1 mt-1 text-center text-xs">
-                      {calendarDays.map((dayObj, index) => {
-                        const tradesOnDay = groupedTrades[dayObj.dateStr] || [];
-                        const hasTrades = tradesOnDay.length > 0;
-                        const isToday = dayObj.dateStr === todayStr;
-                        const isSelected = dayObj.dateStr === highlightedDay;
-
-                        // Calculate Net P&L for highlighting
-                        const daySumPnl = tradesOnDay.reduce((sum, t) => sum + (t.pnl || 0), 0);
-                        const daySumFees = tradesOnDay.reduce((sum, t) => sum + (t.fees || 0), 0);
-                        const dailyNet = daySumPnl - daySumFees;
-
-                        const isProfitable = dailyNet > 0;
-                        const isLoss = dailyNet < 0;
-
-                        // Conditional styles
-                        let cellStyle: React.CSSProperties = {
-                          aspectRatio: '1',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          borderRadius: '0px',
-                          cursor: 'pointer',
-                          position: 'relative',
-                          border: isSelected
-                            ? '2px solid var(--accent)'
-                            : isToday
-                            ? '1.5px dashed var(--accent)'
-                            : '1px solid transparent',
-                          boxShadow: isSelected ? '0 0 10px rgba(99, 102, 241, 0.25)' : 'none',
-                        };
-
-                        if (hasTrades) {
-                          cellStyle.backgroundColor = isProfitable
-                            ? 'rgba(0, 143, 103, 0.15)'
-                            : isLoss
-                            ? 'rgba(223, 28, 48, 0.15)'
-                            : 'rgba(255, 255, 255, 0.08)';
-                          cellStyle.color = isProfitable
-                            ? '#008F67'
-                            : isLoss
-                            ? '#DF1C30'
-                            : 'var(--text)';
-                          cellStyle.fontWeight = 'normal';
-                        } else {
-                          cellStyle.color = dayObj.isCurrentMonth ? 'var(--text)' : 'var(--text-muted)';
-                          cellStyle.opacity = dayObj.isCurrentMonth ? '1' : '0.4';
-                        }
-
-                        return (
-                          <div
-                            key={`${dayObj.dateStr}-${index}`}
-                            onClick={() => handleCalendarDayClick(dayObj)}
-                            style={cellStyle}
-                            className={`transition-all hover:brightness-110`}
-                            title={hasTrades ? `${tradesOnDay.length} trades | Net P&L: ${formatINR(dailyNet)}` : ''}
-                          >
-                            <span style={{ fontSize: '12px' }}>{dayObj.day}</span>
-                            {/* Tiny dot to signify trades if style doesn't fully highlight */}
-                            {hasTrades && (
-                              <span
-                                style={{
-                                  position: 'absolute',
-                                  bottom: '3px',
-                                  width: '3.5px',
-                                  height: '3.5px',
-                                  borderRadius: '999px',
-                                  backgroundColor: isProfitable ? '#008F67' : isLoss ? '#DF1C30' : '#a1a1aa',
-                                }}
-                              />
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
                 </div>
               </div>
             )}
