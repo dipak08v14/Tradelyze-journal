@@ -53,6 +53,7 @@ export const DailyJournal: React.FC = () => {
 
   // State
   const [loading, setLoading] = useState<boolean>(true);
+  const [initialLoad, setInitialLoad] = useState<boolean>(true);
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
   const [hasNoTradesEver, setHasNoTradesEver] = useState<boolean>(false);
   
@@ -132,6 +133,7 @@ export const DailyJournal: React.FC = () => {
       showError(err.message || 'Failed to load journal records.');
     } finally {
       setLoading(false);
+      setInitialLoad(false);
     }
   };
 
@@ -617,7 +619,14 @@ export const DailyJournal: React.FC = () => {
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-4 gap-y-6 gap-x-4 mt-4">
                 {/* LEFT MAIN AREA (~75%): COLLAPSIBLE CARDS LIST */}
-                <div className="lg:col-span-3 space-y-4">
+                <div 
+                  className="lg:col-span-3 space-y-4"
+                  style={{
+                    opacity: !initialLoad && loading ? 0.5 : 1,
+                    pointerEvents: !initialLoad && loading ? 'none' : 'auto',
+                    transition: 'opacity 0.2s ease-in-out'
+                  }}
+                >
                   {/* EXPAND / COLLAPSE ALL ACTIONS */}
                   {sortedDates.length > 0 && (
                     <div className="flex gap-2 justify-start pb-2" style={{ marginBottom: '10px' }}>
@@ -638,7 +647,7 @@ export const DailyJournal: React.FC = () => {
                     </div>
                   )}
 
-                  {loading ? (
+                  {initialLoad && loading ? (
                     <div className="py-12 flex justify-center items-center">
                       <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: 'var(--border-md)', borderTopColor: 'var(--accent)' }} />
                     </div>

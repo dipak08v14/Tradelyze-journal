@@ -341,6 +341,7 @@ export const DashboardPage: React.FC = () => {
   };
 
   const [loading, setLoading] = useState<boolean>(true);
+  const [initialLoad, setInitialLoad] = useState<boolean>(true);
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
   const [bottomTab, setBottomTab] = useState<'positions' | 'trades'>('positions');
 
@@ -636,6 +637,7 @@ export const DashboardPage: React.FC = () => {
           setRiskData([]);
           setRulesData([]);
           setLoading(false);
+          setInitialLoad(false);
           return;
         }
 
@@ -673,6 +675,7 @@ export const DashboardPage: React.FC = () => {
         showError(err.message || 'Error occurred loading performance variables.');
       } finally {
         setLoading(false);
+        setInitialLoad(false);
       }
     };
 
@@ -1924,7 +1927,7 @@ export const DashboardPage: React.FC = () => {
             </div>
 
             {/* SKELETON LOADER STATE */}
-            {loading ? (
+            {initialLoad && loading ? (
               <div className="space-y-6">
                 {/* Loader 1: Key Stats Strip as 4 Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -1959,7 +1962,7 @@ export const DashboardPage: React.FC = () => {
               </div>
             ) : trades.length === 0 ? (
               /* EMPTY PERFORMANCE STATE */
-              <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)' }}>
+              <div className="rounded-2xl p-12 text-center flex flex-col items-center justify-center py-20" style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)', opacity: !initialLoad && loading ? 0.5 : 1, pointerEvents: !initialLoad && loading ? 'none' : 'auto', transition: 'opacity 0.2s ease-in-out' }}>
                 <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 animate-pulse" style={{ backgroundColor: 'var(--row)', border: '0.5px solid var(--border)' }}>
                   <BarChart2 className="w-8 h-8" style={{ color: 'var(--text-muted)' }} />
                 </div>
@@ -1979,7 +1982,7 @@ export const DashboardPage: React.FC = () => {
               </div>
             ) : (
               /* ACTIVE DASHBOARD RENDER OUT */
-              <div className="space-y-5">
+              <div className="space-y-5" style={{ opacity: !initialLoad && loading ? 0.5 : 1, pointerEvents: !initialLoad && loading ? 'none' : 'auto', transition: 'opacity 0.2s ease-in-out' }}>
                 {/* SECTION 2: KEY STATS ROW */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3" style={{ marginBottom: '16px' }}>
                   {/* Card 1 — NET P&L */}
