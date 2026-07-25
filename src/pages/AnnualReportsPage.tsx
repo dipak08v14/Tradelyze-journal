@@ -44,6 +44,7 @@ export const AnnualReportsPage: React.FC = () => {
 
   const [selectedYear, setSelectedYear] = useState<number>(() => new Date().getFullYear());
   const [loading, setLoading] = useState<boolean>(true);
+  const [initialLoad, setInitialLoad] = useState<boolean>(true);
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
 
   const [trades, setTrades] = useState<any[]>([]);
@@ -145,6 +146,7 @@ export const AnnualReportsPage: React.FC = () => {
         showError(err.message || 'Failed to fetch annual reports.');
       } finally {
         setLoading(false);
+        setInitialLoad(false);
       }
     };
 
@@ -410,13 +412,15 @@ export const AnnualReportsPage: React.FC = () => {
             <div className="mt-3" />
 
             {/* SKELETON DISPLAY STATE */}
-            {loading ? (
+            {initialLoad ? (
               <div className="space-y-6">
                 <div className="h-16 rounded-xl skeleton" />
                 <div className="h-72 rounded-xl skeleton" />
                 <div className="h-[400px] rounded-xl skeleton" />
               </div>
-            ) : trades.length === 0 ? (
+            ) : (
+              <div style={{ opacity: loading ? 0.5 : 1, transition: 'opacity 0.2s ease-in-out', pointerEvents: loading ? 'none' : 'auto' }}>
+                {trades.length === 0 ? (
               /* EMPTY YEAR STATE */
               <div
                 style={{
@@ -1040,6 +1044,8 @@ export const AnnualReportsPage: React.FC = () => {
                   </div>
                 </div>
 
+              </div>
+                )}
               </div>
             )}
           </div>
