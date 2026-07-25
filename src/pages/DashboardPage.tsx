@@ -617,12 +617,14 @@ export const DashboardPage: React.FC = () => {
             .eq('user_id', userId)
             .gte('date', startDate)
             .lte('date', endDate)
-            .order('date', { ascending: true }),
+            .order('date', { ascending: true })
+            .order('entry_time', { ascending: true }),
           supabase
             .from('trades')
             .select('id, *, strategies(name)')
             .eq('user_id', userId)
             .order('date', { ascending: true })
+            .order('entry_time', { ascending: true })
         ]);
 
         if (tradesRes.error) throw tradesRes.error;
@@ -2373,14 +2375,14 @@ export const DashboardPage: React.FC = () => {
                               />
                               <ReferenceLine y={0} stroke="var(--border)" strokeDasharray="3 3" />
                               <RechartsTooltip
-                                cursor={{ stroke: 'rgba(0,0,0,0.06)', strokeWidth: 1 }}
+                                cursor={false}
                                 content={({ active, payload }: any) => {
                                   if (!active || !payload?.length) return null;
                                   const val = payload[0]?.value as number;
                                   return (
                                     <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)', padding: '5px 10px', fontSize: '11px', fontFamily: 'monospace' }}>
                                       <span style={{ color: 'var(--text)' }}>Net P&L : </span>
-                                      <span style={{ color: val >= 0 ? '#008F67' : '#DF1C30', fontWeight: 600 }}>{val >= 0 ? '+' : ''}₹{Math.abs(val).toLocaleString('en-IN')}</span>
+                                      <span style={{ color: val >= 0 ? '#008F67' : '#DF1C30', fontWeight: 600 }}>{val >= 0 ? '+' : '-'}₹{Math.abs(val).toLocaleString('en-IN')}</span>
                                     </div>
                                   );
                                 }}
@@ -2483,7 +2485,7 @@ export const DashboardPage: React.FC = () => {
                                   return (
                                     <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)', padding: '5px 10px', fontSize: '11px', fontFamily: 'monospace' }}>
                                       <span style={{ color: 'var(--text)' }}>Net P&L : </span>
-                                      <span style={{ color: val >= 0 ? '#008F67' : '#DF1C30', fontWeight: 600 }}>{val >= 0 ? '+' : ''}₹{Math.abs(val).toLocaleString('en-IN')}</span>
+                                      <span style={{ color: val >= 0 ? '#008F67' : '#DF1C30', fontWeight: 600 }}>{val >= 0 ? '+' : '-'}₹{Math.abs(val).toLocaleString('en-IN')}</span>
                                     </div>
                                   );
                                 }}
@@ -2717,7 +2719,7 @@ export const DashboardPage: React.FC = () => {
                                   </tr>
                                 </thead>
                                 <tbody style={{ borderColor: 'var(--border)' }}>
-                                  {trades.slice().reverse().slice(0, 5).map((trade: any) => {
+                                  {trades.slice().reverse().slice(0, 9).map((trade: any) => {
                                     const isLong = trade.direction === 'LONG' || trade.direction === 'BUY';
                                     return (
                                       <tr
@@ -2728,20 +2730,20 @@ export const DashboardPage: React.FC = () => {
                                           borderBottom: '1px solid rgba(0, 0, 0, 0.05)'
                                         }}
                                       >
-                                        <td className="px-4 py-2 font-mono" style={{ color: 'var(--text)' }}>
-                                          {trade.trade_date ? new Date(trade.trade_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
+                                        <td className="px-4 py-[7px] font-mono" style={{ color: 'var(--text)' }}>
+                                          {trade.date ? new Date(trade.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
                                         </td>
-                                        <td className="px-4 py-2" style={{ color: 'var(--text)' }}>
+                                        <td className="px-4 py-[7px]" style={{ color: 'var(--text)' }}>
                                           {trade.symbol}
                                         </td>
-                                        <td className="px-4 py-2 font-sans">
+                                        <td className="px-4 py-[7px] font-sans">
                                           <span 
                                             style={{ color: isLong ? '#008F67' : '#DF1C30' }}
                                           >
                                             {trade.direction}
                                           </span>
                                         </td>
-                                        <td className={`px-4 py-2 font-mono text-right ${trade.pnl > 0 ? 'text-[#008F67]' : trade.pnl < 0 ? 'text-[#DF1C30]' : ''}`} style={{ color: trade.pnl === 0 ? 'var(--text-sub)' : undefined }}>
+                                        <td className={`px-4 py-[7px] font-mono text-right ${trade.pnl > 0 ? 'text-[#008F67]' : trade.pnl < 0 ? 'text-[#DF1C30]' : ''}`} style={{ color: trade.pnl === 0 ? 'var(--text-sub)' : undefined }}>
                                           {formatINR(trade.pnl)}
                                         </td>
                                       </tr>

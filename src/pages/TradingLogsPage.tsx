@@ -523,6 +523,9 @@ export const TradingLogsPage: React.FC = () => {
       if (sortColumn === 'strategies.name') {
         dataQuery = dataQuery.order('name', { foreignTable: 'strategies', ascending: sortDirection === 'asc' });
         dataQuery = dataQuery.order('date', { ascending: false });
+      } else if (sortColumn === 'date') {
+        dataQuery = dataQuery.order('date', { ascending: sortDirection === 'asc' });
+        dataQuery = dataQuery.order('entry_time', { ascending: sortDirection === 'asc' });
       } else {
         dataQuery = dataQuery.order(sortColumn, { ascending: sortDirection === 'asc' });
       }
