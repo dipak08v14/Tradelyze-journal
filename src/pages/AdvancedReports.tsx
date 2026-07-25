@@ -1571,10 +1571,10 @@ export const AdvancedReports: React.FC = () => {
             if (hasTrades) {
               if (netPnl > 0) {
                 bgStyle = { backgroundColor: 'rgba(0, 143, 103, 0.15)' };
-                textStyle = { color: '#008F67', fontWeight: 'bold' };
+                textStyle = { color: '#008F67' };
               } else if (netPnl < 0) {
                 bgStyle = { backgroundColor: 'rgba(223, 28, 48, 0.15)' };
-                textStyle = { color: '#DF1C30', fontWeight: 'bold' };
+                textStyle = { color: '#DF1C30' };
               } else {
                 bgStyle = { backgroundColor: 'rgba(113, 113, 122, 0.15)' };
                 textStyle = { color: 'var(--text-sub)' };
@@ -1592,8 +1592,8 @@ export const AdvancedReports: React.FC = () => {
                 onClick={() => hasTrades && setSelectedDate(dateStr)}
                 disabled={!hasTrades}
                 style={{ ...bgStyle, ...textStyle, ...borderStyle }}
-                className={`text-center p-1 text-[11px] rounded transition-all font-mono ${
-                  hasTrades ? 'cursor-pointer hover:scale-110 active:scale-95' : 'cursor-default opacity-50'
+                className={`text-center p-1 text-[12px] transition-all font-mono ${
+                  hasTrades ? 'cursor-pointer hover:scale-110 active:scale-95' : 'cursor-default'
                 }`}
                 title={hasTrades ? `${dateStr}: ${netPnl >= 0 ? '+' : ''}${formatINR(netPnl)}` : undefined}
               >

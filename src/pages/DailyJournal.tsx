@@ -1126,7 +1126,7 @@ export const DailyJournal: React.FC = () => {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          borderRadius: '6px',
+                          borderRadius: '0px',
                           cursor: 'pointer',
                           position: 'relative',
                           border: isSelected
@@ -1148,9 +1148,9 @@ export const DailyJournal: React.FC = () => {
                             : isLoss
                             ? '#DF1C30'
                             : 'var(--text)';
-                          cellStyle.fontWeight = 'bold';
+                          cellStyle.fontWeight = 'normal';
                         } else {
-                          cellStyle.color = dayObj.isCurrentMonth ? 'var(--text-sub)' : 'var(--text-muted)';
+                          cellStyle.color = dayObj.isCurrentMonth ? 'var(--text)' : 'var(--text-muted)';
                           cellStyle.opacity = dayObj.isCurrentMonth ? '1' : '0.4';
                         }
 
@@ -1162,7 +1162,7 @@ export const DailyJournal: React.FC = () => {
                             className={`transition-all hover:brightness-110`}
                             title={hasTrades ? `${tradesOnDay.length} trades | Net P&L: ${formatINR(dailyNet)}` : ''}
                           >
-                            <span>{dayObj.day}</span>
+                            <span style={{ fontSize: '12px' }}>{dayObj.day}</span>
                             {/* Tiny dot to signify trades if style doesn't fully highlight */}
                             {hasTrades && (
                               <span
