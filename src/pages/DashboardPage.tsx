@@ -228,7 +228,7 @@ const getAccountNumber = (broker: any) => {
 };
 
 export const DashboardPage: React.FC = () => {
-  const { user, userId, loading: authLoading } = useAuth();
+  const { user, userId, loading: authLoading, userData, daysRemaining, trialExpired } = useAuth();
   const { showError, showSuccess } = useToast();
   const navigate = useNavigate();
 
@@ -243,8 +243,30 @@ export const DashboardPage: React.FC = () => {
   });
 
   // Header compact date range picker state
+  // Header compact date range picker state
   const [isHeaderDatePickerOpen, setIsHeaderDatePickerOpen] = useState(false);
   const headerDatePickerRef = useRef<HTMLDivElement>(null);
+
+  // Notifications Dropdown State
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const notificationsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (notificationsRef.current && !notificationsRef.current.contains(event.target as Node)) {
+        setIsNotificationsOpen(false);
+      }
+    };
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsNotificationsOpen(false);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, []);
 
   const [headerPickerLeftMonth, setHeaderPickerLeftMonth] = useState<number>(() => parseLocalDate(startDate).getMonth());
   const [headerPickerLeftYear, setHeaderPickerLeftYear] = useState<number>(() => parseLocalDate(startDate).getFullYear());
@@ -997,6 +1019,10 @@ export const DashboardPage: React.FC = () => {
   const range = maxVal - minVal;
   const zeroPercent = range > 0 ? (maxVal / range) * 100 : 0;
 
+  const hasBrokerSyncIssue = brokerConnections.some(c => c.sync_status === 'token_expired' || c.sync_status === 'error');
+  const showTrialNotification = userData?.subscription_plan === 'free' && !trialExpired;
+  const hasAnyNotification = needsReviewCount > 0 || hasBrokerSyncIssue || showTrialNotification;
+
   return (
     <div className="min-h-dvh w-full flex flex-col lg:flex-row lg:items-start font-sans selection:bg-[var(--accent-muted)]" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       {/* SIDEBAR NAVIGATION */}
@@ -1728,39 +1754,121 @@ export const DashboardPage: React.FC = () => {
                 </div>
 
                 {/* NOTIFICATION BELL */}
-                <button
-                  id="dashboard-header-bell"
-                  style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '50%',
-                    backgroundColor: 'var(--card)',
-                    border: '1px solid var(--border)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    position: 'relative',
-                    cursor: 'pointer',
-                    padding: 0
-                  }}
-                  className="hover:opacity-80 transition-all shrink-0"
-                  title="Notifications"
-                >
-                  <Bell className="w-4 h-4" style={{ width: '16px', height: '16px', color: 'var(--text-sub)' }} />
-                  {needsReviewCount > 0 && (
-                    <span 
-                      style={{ 
-                        position: 'absolute',
-                        top: '4px',
-                        right: '4px',
-                        width: '6px',
-                        height: '6px',
-                        backgroundColor: '#DF1C30',
-                        borderRadius: '50%'
-                      }}
-                    />
+                <div className="relative" ref={notificationsRef}>
+                  <button
+                    id="dashboard-header-bell"
+                    onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+                    style={{
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '50%',
+                      backgroundColor: 'var(--card)',
+                      border: '1px solid var(--border)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      position: 'relative',
+                      cursor: 'pointer',
+                      padding: 0
+                    }}
+                    className="hover:opacity-80 transition-all shrink-0"
+                    title="Notifications"
+                  >
+                    <Bell className="w-4 h-4" style={{ width: '16px', height: '16px', color: 'var(--text-sub)' }} />
+                    {hasAnyNotification && (
+                      <span 
+                        style={{ 
+                          position: 'absolute',
+                          top: '4px',
+                          right: '4px',
+                          width: '6px',
+                          height: '6px',
+                          backgroundColor: '#DF1C30',
+                          borderRadius: '50%'
+                        }}
+                      />
+                    )}
+                  </button>
+
+                  {/* NOTIFICATION DROPDOWN */}
+                  {isNotificationsOpen && (
+                    <div 
+                      className="fixed top-[72px] left-4 right-4 sm:absolute sm:top-[calc(100%+8px)] sm:left-auto sm:right-0 sm:w-72 mt-0 sm:mt-2 bg-[var(--card)] border border-[var(--border)] rounded-xl shadow-lg z-50 flex flex-col max-h-96 overflow-y-auto"
+                      style={{ padding: '8px' }}
+                    >
+                      <div className="px-3 py-2 border-b border-[var(--border)] mb-2 flex items-center justify-between">
+                        <h4 className="text-sm font-bold text-[var(--text)]">Notifications</h4>
+                        <button onClick={() => setIsNotificationsOpen(false)} className="text-[var(--text-sub)] hover:text-[var(--text)] transition-colors">
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                      
+                      <div className="flex flex-col gap-1">
+                        {!hasAnyNotification ? (
+                          <div className="px-3 py-4 text-center text-xs text-[var(--text-sub)] font-medium">
+                            You're all caught up
+                          </div>
+                        ) : (
+                          <>
+                            {needsReviewCount > 0 && (
+                              <div 
+                                onClick={() => {
+                                  setIsNotificationsOpen(false);
+                                  navigate('/trading-logs?filter=needs_review');
+                                }}
+                                className="flex items-start gap-3 p-2 rounded-lg hover:bg-[var(--bar)] cursor-pointer transition-colors"
+                              >
+                                <div className="p-1.5 rounded-full bg-[#f59e0b]/10 text-[#f59e0b] shrink-0 mt-0.5">
+                                  <AlertTriangle className="w-4 h-4" />
+                                </div>
+                                <div>
+                                  <p className="text-xs font-semibold text-[var(--text)]">{needsReviewCount} trades need review</p>
+                                  <p className="text-[10px] text-[var(--text-sub)] mt-0.5 leading-tight">Click to view and add missing data.</p>
+                                </div>
+                              </div>
+                            )}
+
+                            {hasBrokerSyncIssue && (
+                              <div 
+                                onClick={() => {
+                                  setIsNotificationsOpen(false);
+                                  navigate('/settings?tab=account');
+                                }}
+                                className="flex items-start gap-3 p-2 rounded-lg hover:bg-[var(--bar)] cursor-pointer transition-colors"
+                              >
+                                <div className="p-1.5 rounded-full bg-[#ef4444]/10 text-[#ef4444] shrink-0 mt-0.5">
+                                  <RefreshCw className="w-4 h-4" />
+                                </div>
+                                <div>
+                                  <p className="text-xs font-semibold text-[var(--text)]">Broker connection needs attention</p>
+                                  <p className="text-[10px] text-[var(--text-sub)] mt-0.5 leading-tight">Update your sync key to resume auto-sync.</p>
+                                </div>
+                              </div>
+                            )}
+
+                            {showTrialNotification && (
+                              <div 
+                                onClick={() => {
+                                  setIsNotificationsOpen(false);
+                                  navigate('/settings?tab=subscription');
+                                }}
+                                className="flex items-start gap-3 p-2 rounded-lg hover:bg-[var(--bar)] cursor-pointer transition-colors"
+                              >
+                                <div className="p-1.5 rounded-full bg-[#3b82f6]/10 text-[#3b82f6] shrink-0 mt-0.5">
+                                  <Sparkles className="w-4 h-4" />
+                                </div>
+                                <div>
+                                  <p className="text-xs font-semibold text-[var(--text)]">{daysRemaining} days left in your trial</p>
+                                  <p className="text-[10px] text-[var(--text-sub)] mt-0.5 leading-tight">Upgrade to keep your automated journaling.</p>
+                                </div>
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </div>
                   )}
-                </button>
+                </div>
 
                 {/* ASK AI BUTTON */}
                 <button

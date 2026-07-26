@@ -66,7 +66,7 @@ export const TradingLogsPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Filter Needs Review State
-  const [filterNeedsReview, setFilterNeedsReview] = useState<boolean>(false);
+  const [filterNeedsReview, setFilterNeedsReview] = useState<boolean>(() => searchParams.get('filter') === 'needs_review');
 
   // Bulk Trade Review States
   const [selectedTradeIds, setSelectedTradeIds] = useState<string[]>([]);
@@ -167,12 +167,7 @@ export const TradingLogsPage: React.FC = () => {
     };
   }, [selectedTradeIds]);
 
-  useEffect(() => {
-    const filterParam = searchParams.get('filter');
-    if (filterParam === 'needs_review') {
-      setFilterNeedsReview(true);
-    }
-  }, [searchParams]);
+
 
   // General App & Navigation
   const [allTrades, setAllTrades] = useState<Trade[]>([]);
