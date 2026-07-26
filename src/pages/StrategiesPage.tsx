@@ -3,6 +3,7 @@ import { useNavigate, Link, Navigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
+import { useActiveAccount, applyAccountFilter } from '../hooks/useActiveAccount';
 import { Sidebar } from '../components/Sidebar';
 import { Modal } from '../components/Modal';
 import {
@@ -40,6 +41,7 @@ export interface Strategy {
 export const StrategiesPage: React.FC = () => {
   const { user, userId, loading: authLoading } = useAuth();
   const { showSuccess, showError } = useToast();
+  const { activeAccount } = useActiveAccount();
   const navigate = useNavigate();
 
   // Primary strategies data
@@ -118,10 +120,13 @@ export const StrategiesPage: React.FC = () => {
           .select('*')
           .eq('user_id', userId)
           .order('sr_no', { ascending: true }),
-        supabase
-          .from('trades')
-          .select('id, strategy_id, pnl, r_multiple, status')
-          .eq('user_id', userId),
+        applyAccountFilter(
+          supabase
+            .from('trades')
+            .select('id, strategy_id, pnl, r_multiple, status')
+            .eq('user_id', userId),
+          activeAccount
+        ),
         supabase
           .from('strategy_rules')
           .select('id, strategy_id, rule_type')
@@ -151,7 +156,7 @@ export const StrategiesPage: React.FC = () => {
 
   useEffect(() => {
     fetchAllData();
-  }, [userId]);
+  }, [userId, activeAccount]);
 
   // Sync view selection to storage
   useEffect(() => {

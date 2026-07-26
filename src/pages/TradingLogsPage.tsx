@@ -3,6 +3,7 @@ import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
+import { useActiveAccount, applyAccountFilter } from '../hooks/useActiveAccount';
 import { Sidebar } from '../components/Sidebar';
 import {
   Menu,
@@ -62,6 +63,7 @@ function SortableHeaderCell({ id, children, isSortable, sortField, sortColumn, s
 export const TradingLogsPage: React.FC = () => {
   const { user, userId, loading: authLoading } = useAuth();
   const { showError, showSuccess } = useToast();
+  const { activeAccount } = useActiveAccount();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -375,10 +377,14 @@ export const TradingLogsPage: React.FC = () => {
         if (s.name) setupsSet.add(s.name);
       });
 
-      const { data: tradesData } = await supabase
+      let tradesQuery = supabase
         .from('trades')
         .select('year')
         .eq('user_id', userId);
+
+      tradesQuery = applyAccountFilter(tradesQuery, activeAccount);
+
+      const { data: tradesData } = await tradesQuery;
 
       const yearsSet = new Set<number>();
       tradesData?.forEach(t => {
@@ -398,10 +404,11 @@ export const TradingLogsPage: React.FC = () => {
     if (userId) {
       fetchFilterOptions();
     }
-  }, [userId]);
+  }, [userId, activeAccount]);
 
   // Apply filters helper to standard query
   const applyFiltersToQuery = (query: any) => {
+    query = applyAccountFilter(query, activeAccount);
     if (filterMonth !== 'All') {
       query = query.eq('month', filterMonth);
     }
@@ -555,7 +562,8 @@ export const TradingLogsPage: React.FC = () => {
     currentPage,
     tradesPerPage,
     sortColumn,
-    sortDirection
+    sortDirection,
+    activeAccount
   ]);
 
   // Reset to page 1 on filter or limit adjustments
@@ -570,7 +578,8 @@ export const TradingLogsPage: React.FC = () => {
     filterExecution,
     filterMistakeType,
     filterNeedsReview,
-    tradesPerPage
+    tradesPerPage,
+    activeAccount
   ]);
 
   // Map to local variables for filter and layout compatibility

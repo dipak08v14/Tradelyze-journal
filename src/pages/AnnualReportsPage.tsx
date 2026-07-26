@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
+import { useActiveAccount, applyAccountFilter } from '../hooks/useActiveAccount';
 import { Sidebar } from '../components/Sidebar';
 import {
   Menu,
@@ -40,6 +41,7 @@ import {
 export const AnnualReportsPage: React.FC = () => {
   const { user, userId, loading: authLoading } = useAuth();
   const { showError } = useToast();
+  const { activeAccount } = useActiveAccount();
   const navigate = useNavigate();
 
   const [selectedYear, setSelectedYear] = useState<number>(() => new Date().getFullYear());
@@ -65,10 +67,14 @@ export const AnnualReportsPage: React.FC = () => {
     if (!userId) return;
     const fetchYears = async () => {
       try {
-        const { data, error } = await supabase
+        let yearsQuery = supabase
           .from('trades')
           .select('year')
           .eq('user_id', userId);
+          
+        yearsQuery = applyAccountFilter(yearsQuery, activeAccount);
+
+        const { data, error } = await yearsQuery;
         if (error) throw error;
 
         const currentYear = new Date().getFullYear();
@@ -87,7 +93,7 @@ export const AnnualReportsPage: React.FC = () => {
       }
     };
     fetchYears();
-  }, [userId]);
+  }, [userId, activeAccount]);
 
   // Fetch Trades & Compliances
   useEffect(() => {
@@ -97,12 +103,16 @@ export const AnnualReportsPage: React.FC = () => {
       try {
         setLoading(true);
 
-        const { data: tradesData, error: tradesError } = await supabase
+        let tradesQuery = supabase
           .from('trades')
           .select('*, strategies(name, type_of_strategy)')
           .eq('user_id', userId)
           .eq('year', selectedYear)
           .order('date', { ascending: true });
+          
+        tradesQuery = applyAccountFilter(tradesQuery, activeAccount);
+
+        const { data: tradesData, error: tradesError } = await tradesQuery;
 
         if (tradesError) throw tradesError;
 
@@ -151,7 +161,7 @@ export const AnnualReportsPage: React.FC = () => {
     };
 
     fetchAnnualData();
-  }, [userId, selectedYear, showError]);
+  }, [userId, selectedYear, showError, activeAccount]);
 
   // Calculations
   const calculatedContext = useMemo(() => {

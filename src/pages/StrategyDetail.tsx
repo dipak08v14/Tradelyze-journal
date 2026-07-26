@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link, Navigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
+import { useActiveAccount, applyAccountFilter } from '../hooks/useActiveAccount';
 import { Sidebar } from '../components/Sidebar';
 import {
   Menu,
@@ -101,6 +102,7 @@ export const StrategyDetail: React.FC = () => {
   const { id: strategyId } = useParams<{ id: string }>();
   const { user, userId, loading: authLoading } = useAuth();
   const { showError, showSuccess } = useToast();
+  const { activeAccount } = useActiveAccount();
   const navigate = useNavigate();
 
   // Navigation and active view states
@@ -186,12 +188,15 @@ export const StrategyDetail: React.FC = () => {
           .eq('id', strategyId)
           .eq('user_id', userId)
           .maybeSingle(),
-        supabase
-          .from('trades')
-          .select('id, date, symbol, direction, option_type, pnl, r_multiple, status, execution_status, holding_time_mins')
-          .eq('strategy_id', strategyId)
-          .eq('user_id', userId)
-          .order('date', { ascending: false }),
+        applyAccountFilter(
+          supabase
+            .from('trades')
+            .select('id, date, symbol, direction, option_type, pnl, r_multiple, status, execution_status, holding_time_mins')
+            .eq('strategy_id', strategyId)
+            .eq('user_id', userId)
+            .order('date', { ascending: false }),
+          activeAccount
+        ),
         supabase
           .from('strategy_rules')
           .select('id, rule_type, rule_text, rule_order')
@@ -235,7 +240,11 @@ export const StrategyDetail: React.FC = () => {
           .eq('user_id', userId);
 
         if (adherError) throw adherError;
-        setAdherences((adherData as AdherenceItem[]) || []);
+        
+        // Client-side filter rule adherences to match only the fetched trades (which are account-filtered)
+        const validTradeIds = new Set(tradesRes.data?.map((t: any) => t.id) || []);
+        const filteredAdherences = (adherData as AdherenceItem[] || []).filter((a: any) => validTradeIds.has(a.trade_id));
+        setAdherences(filteredAdherences);
       } else {
         setAdherences([]);
       }
@@ -250,7 +259,7 @@ export const StrategyDetail: React.FC = () => {
 
   useEffect(() => {
     fetchStrategyContext();
-  }, [strategyId, userId]);
+  }, [strategyId, userId, activeAccount]);
 
   // Handle Debounced notes autosaving
   useEffect(() => {

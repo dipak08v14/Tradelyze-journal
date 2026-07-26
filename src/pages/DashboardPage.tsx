@@ -378,10 +378,27 @@ export const DashboardPage: React.FC = () => {
   const [hasDhanConnection, setHasDhanConnection] = useState<boolean>(false);
   const [fetchingPositions, setFetchingPositions] = useState<boolean>(false);
   const [brokerConnections, setBrokerConnections] = useState<any[]>([]);
-  const [selectedBroker, setSelectedBroker] = useState<any>(null);
+  const [selectedBroker, setSelectedBroker] = useState<any | 'all'>(() => {
+    const saved = localStorage.getItem('tl-active-account');
+    return saved || 'all';
+  });
   const [isBrokerDropdownOpen, setIsBrokerDropdownOpen] = useState<boolean>(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  // Create a stable primitive for dependency arrays to avoid infinite loops
+  const activeAccountLogin = selectedBroker === 'all' ? 'all' : (selectedBroker ? getAccountNumber(selectedBroker) : null);
+
+  const handleBrokerSelect = (broker: any | 'all') => {
+    setSelectedBroker(broker);
+    if (broker === 'all') {
+      localStorage.setItem('tl-active-account', 'all');
+    } else {
+      localStorage.setItem('tl-active-account', getAccountNumber(broker));
+    }
+    setIsBrokerDropdownOpen(false);
+  };
+
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -400,12 +417,15 @@ export const DashboardPage: React.FC = () => {
     if (!userId) return;
     try {
       // 1. Fetch connected brokers
-      const { data: connections, error: connError } = await supabase
+      const { data: rawConnections, error: connError } = await supabase
         .from('broker_connections')
         .select('*')
         .eq('user_id', userId);
 
       if (connError) throw connError;
+
+      // Filter out incomplete/abandoned setups that have no real account number
+      const connections = (rawConnections || []).filter((c: any) => getAccountNumber(c) !== 'N/A');
 
       let status: 'idle' | 'active' | 'inactive' = 'idle';
       let totalSynced = 0;
@@ -422,10 +442,15 @@ export const DashboardPage: React.FC = () => {
       setBrokerConnections(connections || []);
       if (connections && connections.length > 0) {
         setSelectedBroker((prev: any) => {
+          if (prev === 'all') return 'all';
+          if (typeof prev === 'string') {
+            const match = connections.find((c: any) => getAccountNumber(c) === prev);
+            return match || 'all';
+          }
           if (prev && connections.some((c: any) => c.id === prev.id)) {
             return connections.find((c: any) => c.id === prev.id);
           }
-          return connections[0];
+          return 'all';
         });
       } else {
         setSelectedBroker(null);
@@ -458,11 +483,17 @@ export const DashboardPage: React.FC = () => {
       }
 
       // 2. Fetch needs review count from trades table
-      const { count: needsReview, error: countError } = await supabase
+      let reviewQuery = supabase
         .from('trades')
         .select('*', { count: 'exact', head: true })
         .eq('user_id', userId)
         .eq('needs_review', true);
+      
+      if (selectedBroker && selectedBroker !== 'all') {
+        reviewQuery = reviewQuery.eq('account_login', getAccountNumber(selectedBroker));
+      }
+      
+      const { count: needsReview, error: countError } = await reviewQuery;
 
       if (countError) throw countError;
 
@@ -486,7 +517,7 @@ export const DashboardPage: React.FC = () => {
     }, 30000);
 
     return () => clearInterval(interval);
-  }, [userId]);
+  }, [userId, activeAccountLogin]);
 
   // Database States
   const [trades, setTrades] = useState<any[]>([]);
@@ -599,10 +630,16 @@ export const DashboardPage: React.FC = () => {
     if (!userId) return;
     const fetchYears = async () => {
       try {
-        const { data, error } = await supabase
+        let yearQuery = supabase
           .from('trades')
           .select('year')
           .eq('user_id', userId);
+          
+        if (selectedBroker && selectedBroker !== 'all') {
+          yearQuery = yearQuery.eq('account_login', getAccountNumber(selectedBroker));
+        }
+
+        const { data, error } = await yearQuery;
         if (error) throw error;
 
         const currentYear = new Date().getFullYear();
@@ -621,7 +658,7 @@ export const DashboardPage: React.FC = () => {
       }
     };
     fetchYears();
-  }, [userId]);
+  }, [userId, activeAccountLogin]);
 
   // Fetch Dashboard Specific Contexts
   useEffect(() => {
@@ -632,21 +669,31 @@ export const DashboardPage: React.FC = () => {
         setLoading(true);
 
         // STEP 1 — Fetch filtered and all history trades in parallel:
+        let tradesQuery = supabase
+          .from('trades')
+          .select('id, *, strategies(name)')
+          .eq('user_id', userId)
+          .gte('date', startDate)
+          .lte('date', endDate)
+          .order('date', { ascending: true })
+          .order('entry_time', { ascending: true });
+          
+        let allHistoryQuery = supabase
+          .from('trades')
+          .select('id, *, strategies(name)')
+          .eq('user_id', userId)
+          .order('date', { ascending: true })
+          .order('entry_time', { ascending: true });
+
+        if (selectedBroker && selectedBroker !== 'all') {
+          const acc = getAccountNumber(selectedBroker);
+          tradesQuery = tradesQuery.eq('account_login', acc);
+          allHistoryQuery = allHistoryQuery.eq('account_login', acc);
+        }
+
         const [tradesRes, allHistoryRes] = await Promise.all([
-          supabase
-            .from('trades')
-            .select('id, *, strategies(name)')
-            .eq('user_id', userId)
-            .gte('date', startDate)
-            .lte('date', endDate)
-            .order('date', { ascending: true })
-            .order('entry_time', { ascending: true }),
-          supabase
-            .from('trades')
-            .select('id, *, strategies(name)')
-            .eq('user_id', userId)
-            .order('date', { ascending: true })
-            .order('entry_time', { ascending: true })
+          tradesQuery,
+          allHistoryQuery
         ]);
 
         if (tradesRes.error) throw tradesRes.error;
@@ -704,7 +751,7 @@ export const DashboardPage: React.FC = () => {
     };
 
     fetchDashboardContext();
-  }, [userId, startDate, endDate, showError]);
+  }, [userId, startDate, endDate, showError, activeAccountLogin]);
 
   // Indian Rupee Locale Formatting Helper
   const formatINR = (value: number) => {
@@ -1953,7 +2000,9 @@ export const DashboardPage: React.FC = () => {
                     }}
                     className="hover:opacity-90 transition-all font-medium flex items-center"
                   >
-                    {selectedBroker ? (
+                    {selectedBroker === 'all' ? (
+                      <span className="font-mono">All Accounts</span>
+                    ) : selectedBroker ? (
                       <>
                         <span className={`w-2 h-2 rounded-full inline-block ${selectedBroker.is_active ? 'bg-emerald-500' : 'bg-red-500'}`}></span>
                         <span className="font-mono">{getBrokerCode(selectedBroker)} {getAccountNumber(selectedBroker)}</span>
@@ -1988,20 +2037,27 @@ export const DashboardPage: React.FC = () => {
                           No connected brokers
                         </div>
                       ) : (
-                        brokerConnections.map((broker) => (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => handleBrokerSelect('all')}
+                            className="w-full text-left px-4 py-2 text-xs hover:bg-[rgba(0,0,0,0.03)] flex items-center gap-2 transition-all border-none border-b border-[var(--border)]"
+                            style={{ color: 'var(--text)', cursor: 'pointer', backgroundColor: 'transparent', padding: '8px 16px' }}
+                          >
+                            <span className="font-mono">All Accounts</span>
+                          </button>
+                          {brokerConnections.map((broker) => (
                           <button
                             key={broker.id}
-                            onClick={() => {
-                              setSelectedBroker(broker);
-                              setIsBrokerDropdownOpen(false);
-                            }}
+                            onClick={() => handleBrokerSelect(broker)}
                             className="w-full text-left px-4 py-2 text-xs hover:bg-[rgba(0,0,0,0.03)] flex items-center gap-2 transition-all border-none"
                             style={{ color: 'var(--text)', cursor: 'pointer', backgroundColor: 'transparent', padding: '8px 16px' }}
                           >
                             <span className={`w-2 h-2 rounded-full inline-block ${broker.is_active ? 'bg-emerald-500' : 'bg-red-500'}`}></span>
                             <span className="font-mono">{getBrokerCode(broker)} {getAccountNumber(broker)}</span>
                           </button>
-                        ))
+                          ))}
+                        </>
                       )}
                     </div>
                   )}

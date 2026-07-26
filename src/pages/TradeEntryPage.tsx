@@ -13,6 +13,22 @@ import { Menu, Save, ImagePlus, Target, X, CheckSquare, CheckCircle2 } from 'luc
 import { Strategy, StagedRuleState } from '../types';
 import { generateEmbeddingFromUrl } from '../lib/clipEmbedder';
 
+const getBrokerCode = (broker: any) => {
+  const name = (broker.broker_name || broker.broker_type || '').toLowerCase();
+  if (name.includes('dhan')) return 'DH';
+  if (name.includes('xm') || name.includes('global')) return 'XM';
+  if (name.includes('metatrader') || name.includes('mt')) return 'MT';
+  if (name.includes('zerodha')) return 'ZE';
+  if (name.includes('upstox')) return 'UP';
+  if (name.includes('angel') || name.includes('an')) return 'AN';
+  const clean = name.replace(/[^a-z]/g, '');
+  return clean.slice(0, 2).toUpperCase() || 'BR';
+};
+
+const getAccountNumber = (broker: any) => {
+  return broker.account_login || broker.account_id || broker.account_number || 'N/A';
+};
+
 const PREDEFINED_SYMBOLS = [
   // Forex
   'EURUSD', 'GBPUSD', 'USDJPY', 'AUDUSD', 'USDCAD', 'USDCHF', 'NZDUSD', 'EURGBP', 'EURJPY', 'GBPJPY', 'USDINR', 'EURINR',
@@ -42,6 +58,12 @@ export const TradeEntryPage: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [strategies, setStrategies] = useState<Strategy[]>([]);
+
+  // Broker Connections State
+  const [brokerConnections, setBrokerConnections] = useState<any[]>([]);
+  const [selectedBroker, setSelectedBroker] = useState<any>(null);
+  const [isBrokerDropdownOpen, setIsBrokerDropdownOpen] = useState<boolean>(false);
+  const [initialAccountLogin, setInitialAccountLogin] = useState<string | null>(null);
 
   // Edit Mode Stored Assets
   const [existingChartImageUrl, setExistingChartImageUrl] = useState<string | null>(null);
@@ -199,11 +221,44 @@ export const TradeEntryPage: React.FC = () => {
         }
       } catch (err: any) {
         console.error('Error fetching active strategies:', err);
-        showError('Could not load setups list');
       }
     };
     fetchActiveStrategies();
   }, [userId]);
+
+  // Load broker connections
+  useEffect(() => {
+    if (!userId) return;
+    const fetchBrokerConnections = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('broker_connections')
+          .select('*')
+          .eq('user_id', userId)
+          .eq('is_active', true)
+          .order('last_sync_at', { ascending: false });
+
+        if (!error && data) {
+          setBrokerConnections(data);
+        }
+      } catch (err: any) {
+        console.error('Error fetching broker connections:', err);
+      }
+    };
+    fetchBrokerConnections();
+  }, [userId]);
+
+  // Default Selection Logic
+  useEffect(() => {
+    if (brokerConnections.length > 0) {
+      if (isEditMode && initialAccountLogin) {
+        const match = brokerConnections.find(b => getAccountNumber(b) === initialAccountLogin);
+        setSelectedBroker(match || brokerConnections[0]);
+      } else if (!isEditMode && !selectedBroker) {
+        setSelectedBroker(brokerConnections[0]);
+      }
+    }
+  }, [brokerConnections, isEditMode, initialAccountLogin]);
 
   // Load existing trade configuration when in edit mode
   useEffect(() => {
@@ -276,6 +331,7 @@ export const TradeEntryPage: React.FC = () => {
         }
 
         if (tradeData) {
+          setInitialAccountLogin(tradeData.account_login || null);
           setDate(tradeData.date || '');
           setEntryTime(tradeData.entry_time || '');
           setSymbol(tradeData.symbol || '');
@@ -1264,6 +1320,57 @@ export const TradeEntryPage: React.FC = () => {
                   </h2>
 
                   <div className="space-y-3">
+                    
+                    {/* Account Selector row */}
+                    <div className="mb-4">
+                      <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
+                        Trading Account
+                      </label>
+                      <div className="relative">
+                        <button
+                          type="button"
+                          onClick={() => setIsBrokerDropdownOpen(!isBrokerDropdownOpen)}
+                          style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px' }}
+                          className="w-full flex items-center justify-between px-3 py-2 text-sm text-[var(--text)] focus:outline-none focus:border-[var(--accent)]"
+                        >
+                          {selectedBroker ? (
+                            <div className="flex items-center space-x-2">
+                              <span className={`w-2 h-2 rounded-full inline-block ${selectedBroker.is_active ? 'bg-emerald-500' : 'bg-red-500'}`}></span>
+                              <span className="font-mono">{getBrokerCode(selectedBroker)} {getAccountNumber(selectedBroker)}</span>
+                            </div>
+                          ) : (
+                            <span className="font-mono text-[var(--text-muted)]">Manual / No Account</span>
+                          )}
+                          <span className="ml-2 text-[var(--text-muted)] opacity-70">▼</span>
+                        </button>
+
+                        {isBrokerDropdownOpen && (
+                          <div className="absolute top-full mt-1 left-0 w-full bg-[var(--card)] border border-[var(--border)] rounded-lg shadow-xl overflow-hidden z-[100]">
+                            {brokerConnections.length === 0 ? (
+                              <div className="p-3 text-sm text-[var(--text-muted)] text-center">No connected brokers</div>
+                            ) : (
+                              <div className="max-h-48 overflow-y-auto">
+                                {brokerConnections.map((broker) => (
+                                  <button
+                                    key={broker.id}
+                                    type="button"
+                                    onClick={() => {
+                                      setSelectedBroker(broker);
+                                      setIsBrokerDropdownOpen(false);
+                                    }}
+                                    className="w-full flex items-center space-x-2 px-3 py-2 text-sm text-[var(--text)] hover:bg-[var(--border)] transition-colors text-left"
+                                  >
+                                    <span className={`w-2 h-2 rounded-full inline-block ${broker.is_active ? 'bg-emerald-500' : 'bg-red-500'}`}></span>
+                                    <span className="font-mono">{getBrokerCode(broker)} {getAccountNumber(broker)}</span>
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
                     {/* Date and Entry Time row */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
+import { useActiveAccount, applyAccountFilter } from '../hooks/useActiveAccount';
 import { Sidebar } from '../components/Sidebar';
 import {
   Menu,
@@ -198,6 +199,7 @@ const formatDisplayDate = (dateStr: string) => {
 export const AdvancedReports: React.FC = () => {
   const { user, userId, loading: authLoading } = useAuth();
   const { showError } = useToast();
+  const { activeAccount } = useActiveAccount();
   const navigate = useNavigate();
 
   const selectedAsset = "";
@@ -347,14 +349,18 @@ export const AdvancedReports: React.FC = () => {
       try {
         setLoading(true);
 
+        let tradesQuery = supabase
+          .from('trades')
+          .select('*, strategies(name, type_of_strategy)')
+          .eq('user_id', userId)
+          .gte('date', fromDate)
+          .lte('date', toDate)
+          .order('date', { ascending: true });
+          
+        tradesQuery = applyAccountFilter(tradesQuery, activeAccount);
+
         const [tradesRes, psychRes, riskRes, rulesRes] = await Promise.all([
-          supabase
-            .from('trades')
-            .select('*, strategies(name, type_of_strategy)')
-            .eq('user_id', userId)
-            .gte('date', fromDate)
-            .lte('date', toDate)
-            .order('date', { ascending: true }),
+          tradesQuery,
           supabase
             .from('trade_psychology')
             .select('trade_id, psychological_condition_pct')
@@ -385,9 +391,12 @@ export const AdvancedReports: React.FC = () => {
           setRulesData([]);
         } else {
           setTrades(fetchedTrades);
-          setPsychologyData(psychRes.data || []);
-          setComplianceRiskData(riskRes.data || []);
-          setRulesData(rulesRes.data || []);
+          
+          // Client-side filtering to align with selected account's trades
+          const validTradeIds = new Set(fetchedTrades.map((t: any) => t.id));
+          setPsychologyData((psychRes.data || []).filter((p: any) => validTradeIds.has(p.trade_id)));
+          setComplianceRiskData((riskRes.data || []).filter((r: any) => validTradeIds.has(r.trade_id)));
+          setRulesData((rulesRes.data || []).filter((r: any) => validTradeIds.has(r.trade_id)));
         }
       } catch (err: any) {
         console.error('Error fetching advanced report trades:', err);
@@ -410,7 +419,8 @@ export const AdvancedReports: React.FC = () => {
     selectedSession,
     selectedAccount,
     minR,
-    maxR
+    maxR,
+    activeAccount
   ]);
 
   // Fetch Year Trades for Calendar
@@ -419,11 +429,15 @@ export const AdvancedReports: React.FC = () => {
 
     const fetchCalendarData = async () => {
       try {
-        const { data, error } = await supabase
+        let calendarQuery = supabase
           .from('trades')
           .select('*, strategies(name, type_of_strategy)')
           .eq('user_id', userId)
           .eq('year', calendarYear);
+
+        calendarQuery = applyAccountFilter(calendarQuery, activeAccount);
+
+        const { data, error } = await calendarQuery;
 
         if (error) throw error;
         setCalendarTrades(data || []);
@@ -433,7 +447,7 @@ export const AdvancedReports: React.FC = () => {
     };
 
     fetchCalendarData();
-  }, [userId, calendarYear]);
+  }, [userId, calendarYear, activeAccount]);
 
   // Scores calculation
   const scores = useMemo(() => {
