@@ -239,7 +239,8 @@ export const TradeEntryPage: React.FC = () => {
           .order('last_sync_at', { ascending: false });
 
         if (!error && data) {
-          setBrokerConnections(data);
+          const validBrokers = data.filter((b: any) => getAccountNumber(b) !== 'N/A');
+          setBrokerConnections(validBrokers);
         }
       } catch (err: any) {
         console.error('Error fetching broker connections:', err);
@@ -752,6 +753,7 @@ export const TradeEntryPage: React.FC = () => {
         const { error: tradeError } = await supabase
           .from('trades')
           .update({
+            account_login: selectedBroker ? getAccountNumber(selectedBroker) : null,
             strategy_id: strategyId || null,
             date: date,
             symbol: symbol.toUpperCase().trim(),
@@ -833,6 +835,7 @@ export const TradeEntryPage: React.FC = () => {
         const { data: newTrade, error: tradeError } = await supabase
           .from('trades')
           .insert({
+            account_login: selectedBroker ? getAccountNumber(selectedBroker) : null,
             user_id: userId,
             strategy_id: strategyId || null,
             date: date,
