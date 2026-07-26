@@ -27,7 +27,7 @@ import Papa from 'papaparse';
 
 export default function SettingsPage() {
   const navigate = useNavigate();
-  const { user, userId, userData, daysRemaining, trialExpired, loading: authLoading } = useAuth();
+  const { user, userId, userData, refreshUserData, daysRemaining, trialExpired, loading: authLoading } = useAuth();
   const { showSuccess, showError } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -748,6 +748,12 @@ export default function SettingsPage() {
         .eq('id', currentUserId);
 
       if (error) throw error;
+      
+      localStorage.setItem('tl-preferred-currency', preferredCurrency);
+      window.dispatchEvent(new Event('tl-currency-changed'));
+      
+      await refreshUserData();
+      
       showSuccess('Profile updated successfully! ✓');
     } catch (err: any) {
       console.error(err);

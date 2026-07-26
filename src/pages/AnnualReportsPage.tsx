@@ -5,6 +5,8 @@ import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import { useActiveAccount, applyAccountFilter } from '../hooks/useActiveAccount';
 import { Sidebar } from '../components/Sidebar';
+import { usePreferredCurrency } from '../hooks/usePreferredCurrency';
+import { convertTradeAmounts } from '../lib/currencyConversion';
 import {
   Menu,
   Calendar,
@@ -43,6 +45,7 @@ export const AnnualReportsPage: React.FC = () => {
   const { showError } = useToast();
   const { activeAccount } = useActiveAccount();
   const navigate = useNavigate();
+  const { preferredCurrency } = usePreferredCurrency(userId);
 
   const [selectedYear, setSelectedYear] = useState<number>(() => new Date().getFullYear());
   const [loading, setLoading] = useState<boolean>(true);
@@ -112,11 +115,11 @@ export const AnnualReportsPage: React.FC = () => {
           
         tradesQuery = applyAccountFilter(tradesQuery, activeAccount);
 
-        const { data: tradesData, error: tradesError } = await tradesQuery;
+        const { data: rawTradesData, error: tradesError } = await tradesQuery;
 
         if (tradesError) throw tradesError;
 
-        const fetchedTrades = tradesData || [];
+        const fetchedTrades = await convertTradeAmounts(rawTradesData || [], preferredCurrency);
         setTrades(fetchedTrades);
 
         if (fetchedTrades.length === 0) {

@@ -2,9 +2,12 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
+import { formatINR, formatINRShort } from '../lib/calculations';
 import { useToast } from '../hooks/useToast';
 import { useActiveAccount, applyAccountFilter } from '../hooks/useActiveAccount';
 import { Sidebar } from '../components/Sidebar';
+import { usePreferredCurrency } from '../hooks/usePreferredCurrency';
+import { convertTradeAmounts } from '../lib/currencyConversion';
 import {
   Menu,
   Plus,
@@ -65,6 +68,7 @@ export const TradingLogsPage: React.FC = () => {
   const { showError, showSuccess } = useToast();
   const { activeAccount } = useActiveAccount();
   const navigate = useNavigate();
+  const { preferredCurrency } = usePreferredCurrency(userId);
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Filter Needs Review State
@@ -445,15 +449,16 @@ export const TradingLogsPage: React.FC = () => {
       // --- 1. COUNT & STATS AGGREGATION QUERY ---
       let statsQuery = supabase.from('trades').select(
         filterSetup !== 'All' 
-          ? 'pnl, status, r_multiple, strategies!inner(name)' 
-          : 'pnl, status, r_multiple'
+          ? 'pnl, status, r_multiple, date, currency, strategies!inner(name)' 
+          : 'pnl, status, r_multiple, date, currency'
       ).eq('user_id', userId);
 
       statsQuery = applyFiltersToQuery(statsQuery);
 
-      const { data: statsData, error: statsError } = await statsQuery as any;
+      const { data: statsDataRaw, error: statsError } = await statsQuery as any;
       if (statsError) throw statsError;
 
+      const statsData = await convertTradeAmounts(statsDataRaw || [], preferredCurrency);
       const totalCount = statsData ? statsData.length : 0;
 
       let totalPnl = 0;
@@ -534,10 +539,11 @@ export const TradingLogsPage: React.FC = () => {
 
       dataQuery = dataQuery.range(fromIndex, toIndex);
 
-      const { data: pageData, error: dataError } = await dataQuery;
+      const { data: pageDataRaw, error: dataError } = await dataQuery;
       if (dataError) throw dataError;
 
-      setAllTrades(pageData as Trade[]);
+      const convertedPageData = await convertTradeAmounts(pageDataRaw || [], preferredCurrency);
+      setAllTrades(convertedPageData as Trade[]);
     } catch (err: any) {
       console.error('Error loading trades history:', err);
       showError(err.message || 'Failed to sync your trades list.');
@@ -563,7 +569,8 @@ export const TradingLogsPage: React.FC = () => {
     tradesPerPage,
     sortColumn,
     sortDirection,
-    activeAccount
+    activeAccount,
+    preferredCurrency
   ]);
 
   // Reset to page 1 on filter or limit adjustments
@@ -690,24 +697,6 @@ export const TradingLogsPage: React.FC = () => {
       setSortColumn(colName);
       setSortDirection('asc');
     }
-  };
-
-  // Indian Rupees Currency Formatter style
-  const formatINR = (val: number) => {
-    const prefix = val < 0 ? '-₹' : '₹';
-    return `${prefix}${Math.abs(val).toLocaleString('en-IN', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`;
-  };
-
-  // Indian Rupees Currency Formatter style for summary stats (no decimals: ₹X,XXX)
-  const formatINRStat = (val: number) => {
-    const prefix = val < 0 ? '-₹' : '₹';
-    return `${prefix}${Math.round(Math.abs(val)).toLocaleString('en-IN', {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    })}`;
   };
 
   // Date Tag Helper (Today, Yesterday)
@@ -1433,7 +1422,7 @@ export const TradingLogsPage: React.FC = () => {
                   className="mt-1 font-mono"
                   style={{ fontSize: '20px', fontWeight: 700, color: calculatedStats.totalPnl > 0 ? '#008F67' : calculatedStats.totalPnl < 0 ? '#DF1C30' : 'var(--text)' }}
                 >
-                  {formatINRStat(calculatedStats.totalPnl)}
+                  {formatINRShort(calculatedStats.totalPnl)}
                 </div>
               </div>
 

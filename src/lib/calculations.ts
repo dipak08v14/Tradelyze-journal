@@ -160,16 +160,25 @@ export const MONTH_INDEX = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul
 
 export const scoreColor = (v: number) => v >= 70 ? 'text-green-400' : v >= 50 ? 'text-amber-400' : 'text-red-400';
 export const pnlColor = (v: number) => v > 0 ? 'text-green-400' : v < 0 ? 'text-red-400' : 'text-zinc-400';
+const getCurrencySymbol = () => {
+  if (typeof window === 'undefined') return '₹';
+  const pref = localStorage.getItem('tl-preferred-currency') || 'INR';
+  return pref.toUpperCase() === 'USD' ? '$' : '₹';
+};
+
 export const formatINR = (v: number) => {
   const isNegative = v < 0;
   const absVal = Math.abs(v || 0);
   const formatted = absVal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  return `${isNegative ? '-' : ''}₹${formatted}`;
+  const sym = getCurrencySymbol();
+  return `${isNegative ? '-' : ''}${sym}${formatted}`;
 };
 export const formatINRShort = (v: number) => {
   const formatted = Math.abs(v || 0).toLocaleString('en-IN', { maximumFractionDigits: 0 });
-  return `${v < 0 ? '-' : ''}₹${formatted}`;
+  const sym = getCurrencySymbol();
+  return `${v < 0 ? '-' : ''}${sym}${formatted}`;
 };
 export const formatPositiveINR = (v: number) => {
-  return '₹' + Math.abs(v || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const sym = getCurrencySymbol();
+  return sym + Math.abs(v || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 };

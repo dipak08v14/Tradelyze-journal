@@ -5,6 +5,8 @@ import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import { useActiveAccount, applyAccountFilter } from '../hooks/useActiveAccount';
 import { Sidebar } from '../components/Sidebar';
+import { usePreferredCurrency } from '../hooks/usePreferredCurrency';
+import { convertTradeAmounts } from '../lib/currencyConversion';
 import {
   Menu,
   Calendar as CalendarIcon,
@@ -201,6 +203,7 @@ export const AdvancedReports: React.FC = () => {
   const { showError } = useToast();
   const { activeAccount } = useActiveAccount();
   const navigate = useNavigate();
+  const { preferredCurrency } = usePreferredCurrency(userId);
 
   const selectedAsset = "";
   const selectedStatus = "";

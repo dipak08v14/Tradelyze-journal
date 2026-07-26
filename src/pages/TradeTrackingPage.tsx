@@ -4,6 +4,8 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import { Sidebar } from '../components/Sidebar';
+import { usePreferredCurrency } from '../hooks/usePreferredCurrency';
+import { convertTradeAmounts } from '../lib/currencyConversion';
 import { Modal } from '../components/Modal';
 import { RadarScoreChart } from '../components/RadarScoreChart';
 import { RuleChecklistDisplay } from '../components/RuleChecklistDisplay';
@@ -115,6 +117,7 @@ const TradeTrackingPageContent: React.FC = () => {
   const { user, userId, loading: authLoading } = useAuth();
   const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
+  const { preferredCurrency } = usePreferredCurrency(userId);
   const userTheme = localStorage.getItem('tl-theme') || 'warm';
 
   // Primary Data States
@@ -1077,7 +1080,13 @@ const TradeTrackingPageContent: React.FC = () => {
         throw new Error(tradeRes.error.message || 'Trade records could not be fetched.');
       }
 
-      setTrade(tradeRes.data);
+      const rawTrade = tradeRes.data;
+      if (rawTrade) {
+        const converted = await convertTradeAmounts([rawTrade], preferredCurrency);
+        setTrade(converted[0]);
+      } else {
+        setTrade(null);
+      }
 
       const rules = rulesRes.data || [];
       setEntryRules(rules.filter((r) => r.rule_type === 'entry'));
@@ -1116,7 +1125,7 @@ const TradeTrackingPageContent: React.FC = () => {
 
   useEffect(() => {
     fetchCompleteTradeContextData();
-  }, [userId, tradeId]);
+  }, [userId, tradeId, preferredCurrency]);
 
   // Calculations for Scores (Technical %, Psychology %, Risk %, Overall %)
   const technicalScore = React.useMemo(() => {
@@ -1176,6 +1185,7 @@ const TradeTrackingPageContent: React.FC = () => {
     if (!dateStr) return '—';
     try {
       const d = new Date(dateStr);
+
       return d.toLocaleDateString('en-US', {
         day: 'numeric',
         month: 'long',

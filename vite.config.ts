@@ -26,7 +26,8 @@ export default defineConfig(() => {
                 'dhan-open-positions',
                 'dhan-sync',
                 'generate-sync-key',
-                'sync-trades'
+                'sync-trades',
+                'get-exchange-rate'
               ];
 
               if (allowedEndpoints.includes(endpoint)) {

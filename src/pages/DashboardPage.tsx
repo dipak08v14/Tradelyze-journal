@@ -5,6 +5,9 @@ import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import { Sidebar } from '../components/Sidebar';
 import { DonutChart } from '../components/DonutChart';
+import { usePreferredCurrency } from '../hooks/usePreferredCurrency';
+import { convertTradeAmounts } from '../lib/currencyConversion';
+import { formatINR, formatPositiveINR } from '../lib/calculations';
 import {
   Menu,
   BarChart2,
@@ -231,6 +234,8 @@ export const DashboardPage: React.FC = () => {
   const { user, userId, loading: authLoading, userData, daysRemaining, trialExpired } = useAuth();
   const { showError, showSuccess } = useToast();
   const navigate = useNavigate();
+  const { preferredCurrency } = usePreferredCurrency(userId);
+  const currencySym = preferredCurrency?.toUpperCase() === 'USD' ? '$' : '₹';
 
   // Date range picker state
   const [startDate, setStartDate] = useState<string>(() => {
@@ -699,9 +704,15 @@ export const DashboardPage: React.FC = () => {
         if (tradesRes.error) throw tradesRes.error;
         if (allHistoryRes.error) throw allHistoryRes.error;
 
-        const activeTrades = tradesRes.data || [];
+        let activeTradesRaw = tradesRes.data || [];
+        let historyTradesRaw = allHistoryRes.data || [];
+
+        // Apply currency conversion before updating state
+        const activeTrades = await convertTradeAmounts(activeTradesRaw, preferredCurrency);
+        const historyTrades = await convertTradeAmounts(historyTradesRaw, preferredCurrency);
+
         setTrades(activeTrades);
-        setAllHistoryTrades(allHistoryRes.data || []);
+        setAllHistoryTrades(historyTrades);
 
         if (activeTrades.length === 0) {
           setPsychologyData([]);
@@ -751,23 +762,7 @@ export const DashboardPage: React.FC = () => {
     };
 
     fetchDashboardContext();
-  }, [userId, startDate, endDate, showError, activeAccountLogin]);
-
-  // Indian Rupee Locale Formatting Helper
-  const formatINR = (value: number) => {
-    const formatted = Math.abs(value).toLocaleString('en-IN', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-    return `${value < 0 ? '-' : ''}₹${formatted}`;
-  };
-
-  const formatPositiveINR = (value: number) => {
-    return '₹' + Math.abs(value).toLocaleString('en-IN', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-  };
+  }, [userId, startDate, endDate, showError, activeAccountLogin, preferredCurrency]);
 
   // Score colors rule helper (green >= 70, amber >= 50, red < 50)
   const getScoreColorClass = (score: number) => {
@@ -793,7 +788,7 @@ export const DashboardPage: React.FC = () => {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     });
-    return `${value < 0 ? '-' : ''}₹${formatted}`;
+    return `${value < 0 ? '-' : ''}${currencySym}${formatted}`;
   };
 
   // Memoized Metric Variables
@@ -2293,8 +2288,8 @@ export const DashboardPage: React.FC = () => {
                                 <div style={{ width: `${100 - winPctForBar}%`, backgroundColor: '#DF1C30' }} />
                               </div>
                               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', fontWeight: 500 }} className="font-mono">
-                                <span style={{ color: '#008F67' }}>₹{Math.round(avgWinForBar).toLocaleString('en-IN')}</span>
-                                <span style={{ color: '#DF1C30' }}>₹{Math.round(avgLossForBar).toLocaleString('en-IN')}</span>
+                                <span style={{ color: '#008F67' }}>{currencySym}{Math.round(avgWinForBar).toLocaleString('en-IN')}</span>
+                                <span style={{ color: '#DF1C30' }}>{currencySym}{Math.round(avgLossForBar).toLocaleString('en-IN')}</span>
                               </div>
                             </>
                           );
@@ -2528,9 +2523,9 @@ export const DashboardPage: React.FC = () => {
                                 tickLine={false}
                                 axisLine={false}
                                 tickFormatter={(v) => {
-                                  if (v === 0) return '₹0';
-                                  if (Math.abs(v) >= 1000) return `₹${(v/1000).toFixed(1)}K`;
-                                  return `₹${v}`;
+                                  if (v === 0) return currencySym + '0';
+                                  if (Math.abs(v) >= 1000) return `${currencySym}${(v/1000).toFixed(1)}K`;
+                                  return `${currencySym}${v}`;
                                 }}
                                 tickCount={8}
                                 domain={['auto', 'auto']}
@@ -2546,7 +2541,7 @@ export const DashboardPage: React.FC = () => {
                                   return (
                                     <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)', padding: '5px 10px', fontSize: '11px', fontFamily: 'monospace' }}>
                                       <span style={{ color: 'var(--text)' }}>Net P&L : </span>
-                                      <span style={{ color: val >= 0 ? '#008F67' : '#DF1C30', fontWeight: 600 }}>{val >= 0 ? '+' : '-'}₹{Math.abs(val).toLocaleString('en-IN')}</span>
+                                      <span style={{ color: val >= 0 ? '#008F67' : '#DF1C30', fontWeight: 600 }}>{val >= 0 ? '+' : '-'}{currencySym}{Math.abs(val).toLocaleString('en-IN')}</span>
                                     </div>
                                   );
                                 }}
@@ -2632,9 +2627,9 @@ export const DashboardPage: React.FC = () => {
                                 tickLine={false}
                                 axisLine={false}
                                 tickFormatter={(v) => {
-                                  if (v === 0) return '₹0';
-                                  if (Math.abs(v) >= 1000) return `₹${(v/1000).toFixed(1)}K`;
-                                  return `₹${v}`;
+                                  if (v === 0) return currencySym + '0';
+                                  if (Math.abs(v) >= 1000) return `${currencySym}${(v/1000).toFixed(1)}K`;
+                                  return `${currencySym}${v}`;
                                 }}
                                 tickCount={8}
                                 domain={['auto', 'auto']}
@@ -2649,7 +2644,7 @@ export const DashboardPage: React.FC = () => {
                                   return (
                                     <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)', padding: '5px 10px', fontSize: '11px', fontFamily: 'monospace' }}>
                                       <span style={{ color: 'var(--text)' }}>Net P&L : </span>
-                                      <span style={{ color: val >= 0 ? '#008F67' : '#DF1C30', fontWeight: 600 }}>{val >= 0 ? '+' : '-'}₹{Math.abs(val).toLocaleString('en-IN')}</span>
+                                      <span style={{ color: val >= 0 ? '#008F67' : '#DF1C30', fontWeight: 600 }}>{val >= 0 ? '+' : '-'}{currencySym}{Math.abs(val).toLocaleString('en-IN')}</span>
                                     </div>
                                   );
                                 }}
@@ -3014,8 +3009,8 @@ export const DashboardPage: React.FC = () => {
                             const tradeCount = tradesOnDay.length;
                             const isProfitable = hasTrades && dayPnl > 0;
                             const formattedDayPnl = dayPnl >= 0 
-                              ? `₹${Math.round(dayPnl).toLocaleString('en-IN')}` 
-                              : `-₹${Math.round(Math.abs(dayPnl)).toLocaleString('en-IN')}`;
+                              ? `${currencySym}${Math.round(dayPnl).toLocaleString('en-IN')}` 
+                              : `-${currencySym}${Math.round(Math.abs(dayPnl)).toLocaleString('en-IN')}`;
 
                             return (
                               <div
@@ -3085,7 +3080,7 @@ export const DashboardPage: React.FC = () => {
                     {/* Starting Balance Input Field at top right */}
                     <div className="flex flex-col">
                       <span style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500 }} className="mb-1">
-                        Starting Balance (₹)
+                        Starting Balance ({currencySym})
                       </span>
                       <input
                         type="number"
@@ -3135,7 +3130,7 @@ export const DashboardPage: React.FC = () => {
                           }}
                           formatter={(value: any) => [
                             <span key="val" style={{ fontWeight: 'bold', color: 'var(--text)' }}>
-                              {'₹' + Number(value).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                              {currencySym + Number(value).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                             </span>,
                             'Balance'
                           ]}
@@ -3169,7 +3164,7 @@ export const DashboardPage: React.FC = () => {
                         }} 
                         className="mt-1 font-mono"
                       >
-                        ₹{balanceChartData.currentBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                        {currencySym}{balanceChartData.currentBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                       </div>
                     </div>
 
@@ -3177,7 +3172,7 @@ export const DashboardPage: React.FC = () => {
                     <div style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px' }} className="p-3">
                       <div style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase tracking-wider">TOTAL PROFIT</div>
                       <div style={{ fontSize: '18px', fontWeight: 700, color: '#22c55e' }} className="mt-1 font-mono">
-                        ₹{balanceChartData.totalWinnerPnl.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                        {currencySym}{balanceChartData.totalWinnerPnl.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                       </div>
                     </div>
 
@@ -3185,7 +3180,7 @@ export const DashboardPage: React.FC = () => {
                     <div style={{ backgroundColor: 'var(--bg)', border: '0.5px solid var(--border)', borderRadius: '8px' }} className="p-3">
                       <div style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 600 }} className="uppercase tracking-wider">TOTAL LOSS</div>
                       <div style={{ fontSize: '18px', fontWeight: 700, color: '#ef4444' }} className="mt-1 font-mono">
-                        ₹{balanceChartData.totalLoserPnl.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                        {currencySym}{balanceChartData.totalLoserPnl.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                       </div>
                     </div>
                   </div>

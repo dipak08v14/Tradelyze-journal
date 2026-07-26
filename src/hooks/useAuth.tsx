@@ -10,6 +10,7 @@ export interface AuthState {
   trialExpired: boolean;
   daysRemaining: number;
   loading: boolean;
+  refreshUserData: () => Promise<void>;
 }
 
 const defaultState: AuthState = {
@@ -19,6 +20,7 @@ const defaultState: AuthState = {
   trialExpired: false,
   daysRemaining: 14,
   loading: true,
+  refreshUserData: async () => {},
 };
 
 const AuthContext = createContext<AuthState>(defaultState);
@@ -92,6 +94,18 @@ async function fetchUserData(currentUser: User) {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>(defaultState);
 
+  const refreshUserData = async () => {
+    if (state.user) {
+      const extra = await fetchUserData(state.user);
+      setState(prev => ({
+        ...prev,
+        userData: extra.userData,
+        trialExpired: extra.trialExpired,
+        daysRemaining: extra.daysRemaining,
+      }));
+    }
+  };
+
   useEffect(() => {
     let mounted = true;
 
@@ -155,7 +169,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={state}>
+    <AuthContext.Provider value={{ ...state, refreshUserData }}>
       {children}
     </AuthContext.Provider>
   );
