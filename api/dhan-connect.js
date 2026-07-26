@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { encrypt } from './_encryption.js';
+import { encrypt } from '../src/lib/encryption.js';
 
 export default async function handler(req, res) {
   // CORS headers

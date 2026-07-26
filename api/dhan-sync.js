@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { decrypt, encrypt } from './_encryption.js';
+import { decrypt, encrypt } from '../src/lib/encryption.js';
 
 function getOptionType(leg) {
   if (!leg) return null;
