@@ -5,6 +5,8 @@ import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import { Sidebar } from '../components/Sidebar';
 import { Modal } from '../components/Modal';
+import { usePreferredCurrency } from '../hooks/usePreferredCurrency';
+import { convertTradeAmounts } from '../lib/currencyConversion';
 import {
   ArrowLeft,
   ChevronUp,
@@ -38,6 +40,8 @@ export const StrategyBuilderPage: React.FC = () => {
 
   const navigate = useNavigate();
   const { showSuccess, showError } = useToast();
+  const { preferredCurrency } = usePreferredCurrency(userId);
+  const currencySym = preferredCurrency?.toUpperCase() === 'USD' ? '$' : '₹';
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [loading, setLoading] = useState(isEditMode);
@@ -152,20 +156,23 @@ export const StrategyBuilderPage: React.FC = () => {
         // 3. Fetch past trades for strategy metrics
         const { data: tradesData, error: tradesErr } = await supabase
           .from('trades')
-          .select('status, pnl, r_multiple, date')
+          .select('status, pnl, r_multiple, date, currency')
           .eq('strategy_id', strategyId)
           .eq('user_id', userId);
 
         if (tradesErr) throw tradesErr;
 
         if (tradesData && mounted) {
-          setTrades(tradesData);
+          const rawTrades = tradesData || [];
+          const convertedTrades = await convertTradeAmounts(rawTrades, preferredCurrency);
+          setTrades(convertedTrades);
         }
       } catch (err: any) {
         console.error('Error fetching strategy builder assets:', err);
         showError(err.message || 'Strategy not found or unauthorized.');
         navigate('/strategies');
       } finally {
+
         if (mounted) {
           setLoading(false);
           setLoadingStats(false);
@@ -177,7 +184,7 @@ export const StrategyBuilderPage: React.FC = () => {
     return () => {
       mounted = false;
     };
-  }, [isEditMode, strategyId, userId, navigate]);
+  }, [isEditMode, strategyId, userId, navigate, preferredCurrency]);
 
   useEffect(() => {
     if (!isEditMode) {
@@ -774,7 +781,7 @@ export const StrategyBuilderPage: React.FC = () => {
     const formatted = new Intl.NumberFormat('en-IN', {
       maximumFractionDigits: 0
     }).format(absVal);
-    return `${isNegative ? '-' : ''}₹ ${formatted}`;
+    return `${isNegative ? '-' : ''}${currencySym} ${formatted}`;
   };
 
   const visibleImages = existingImages.filter((url) => !markedForDeletion.includes(url));

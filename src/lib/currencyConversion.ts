@@ -35,7 +35,7 @@ export async function convertTradeAmounts(trades: any[], targetCurrency: string)
   trades.forEach(trade => {
     // If trade doesn't have a currency, assume it's already in the target currency (or base INR)
     const fromCurrency = (trade.currency || 'INR').toUpperCase().trim();
-    const tradeDate = trade.date;
+    const tradeDate = trade.date ? trade.date.split('T')[0] : null;
     
     if (fromCurrency !== target && tradeDate) {
       const key = `${fromCurrency}_${tradeDate}`;
@@ -73,7 +73,7 @@ export async function convertTradeAmounts(trades: any[], targetCurrency: string)
       return { ...trade, _converted: false };
     }
     
-    const tradeDate = trade.date;
+    const tradeDate = trade.date ? trade.date.split('T')[0] : null;
     const rate = rateMap.get(`${fromCurrency}_${tradeDate}`);
     
     // If rate fetch failed or missing date, keep original values but mark as failed conversion

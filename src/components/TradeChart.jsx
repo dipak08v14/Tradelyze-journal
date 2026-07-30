@@ -44,10 +44,10 @@ function formatTradeTime(timeStr) {
   return timeStr.substring(0, 5) + ' IST';
 }
 
-function formatPnl(pnl) {
-  if (pnl > 0) return '+₹' + Math.abs(pnl).toLocaleString('en-IN');
-  if (pnl < 0) return '-₹' + Math.abs(pnl).toLocaleString('en-IN');
-  return '₹0';
+function formatPnl(pnl, sym = '₹', loc = 'en-IN') {
+  if (pnl > 0) return '+' + sym + Math.abs(pnl).toLocaleString(loc, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  if (pnl < 0) return '-' + sym + Math.abs(pnl).toLocaleString(loc, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  return sym + '0.00';
 }
 
 function getPnlColor(pnl) {
@@ -56,7 +56,7 @@ function getPnlColor(pnl) {
   return 'var(--text)';
 }
 
-export default function TradeChart({ trade, userTheme }) {
+export default function TradeChart({ trade, userTheme, currencySym = '₹', locale = 'en-IN' }) {
   const [interval, setActiveInterval] = useState('5');
   const [isMaximized, setIsMaximized] = useState(false);
   const [showTimeframeDropdown, setShowTimeframeDropdown] = useState(false);
@@ -1464,8 +1464,8 @@ export default function TradeChart({ trade, userTheme }) {
               <span style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
                 P&L
               </span>
-              <div style={{ fontSize: '13px', fontWeight: 700, color: getPnlColor(trade?.pnl ?? 0) }}>
-                {formatPnl(trade?.pnl ?? 0)}
+              <div style={{ color: getPnlColor(trade?.pnl), fontSize: '13px', fontWeight: 600, marginTop: '2px', fontFamily: 'Inter, sans-serif' }}>
+              {formatPnl(trade?.pnl ?? 0, currencySym, locale)}
               </div>
             </div>
 

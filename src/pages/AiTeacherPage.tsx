@@ -24,6 +24,8 @@ import {
   scoreColor
 } from '../lib/calculations';
 import { buildContextString, buildSystemPrompt } from '../lib/aiContext';
+import { usePreferredCurrency } from '../hooks/usePreferredCurrency';
+import { convertTradeAmounts } from '../lib/currencyConversion';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -142,6 +144,8 @@ export const AiTeacherPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const tradeQueryId = searchParams.get('tradeId') || '';
+  const { preferredCurrency } = usePreferredCurrency(userId);
+  const currencySym = preferredCurrency?.toUpperCase() === 'USD' ? '$' : '\u20B9';
 
   // Selected Specific Trade Focus
   const [selectedTradeId, setSelectedTradeId] = useState<string>(tradeQueryId);
@@ -244,7 +248,8 @@ export const AiTeacherPage: React.FC = () => {
           .order('date', { ascending: false });
 
         if (tradesErr) throw tradesErr;
-        const tData = allTradesData || [];
+        const rawTData = allTradesData || [];
+        const tData = await convertTradeAmounts(rawTData, preferredCurrency);
         setTrades(tData);
 
         // Fetch strategies
@@ -300,7 +305,7 @@ export const AiTeacherPage: React.FC = () => {
     };
 
     loadPerformanceContext();
-  }, [userId, showError]);
+  }, [userId, showError, preferredCurrency]);
 
   // Load Selected Specific Trade context details
   useEffect(() => {
@@ -344,7 +349,8 @@ export const AiTeacherPage: React.FC = () => {
 
         if (tradeResult.error) throw tradeResult.error;
 
-        setSpecificTrade(tradeResult.data);
+        const convertedSpecificTrade = await convertTradeAmounts([tradeResult.data], preferredCurrency);
+        setSpecificTrade(convertedSpecificTrade[0]);
         setSpecificTradeRules(rulesResult.data || []);
         setSpecificTradePsych(psychResult.data || null);
         setSpecificTradeRisk(riskResult.data || null);
@@ -356,7 +362,7 @@ export const AiTeacherPage: React.FC = () => {
     };
 
     fetchSpecificContext();
-  }, [selectedTradeId, userId, showError]);
+  }, [selectedTradeId, userId, showError, preferredCurrency]);
 
   // Local calculations
   const stats = useMemo(() => {
@@ -459,12 +465,14 @@ export const AiTeacherPage: React.FC = () => {
           specificTrade,
           specificTradeRules,
           specificTradePsych,
-          specificTradeRisk
+          specificTradeRisk,
+          baseCurrency: preferredCurrency || 'INR',
+          currencySym
         });
       }
 
       // 2. Wrap context into system prompt instruction bundle
-      const finalSystemPrompt = buildSystemPrompt(constructedPromptContext);
+      const finalSystemPrompt = buildSystemPrompt(constructedPromptContext, preferredCurrency || 'INR', currencySym);
 
       // 3. Sent to serverless proxy route `/api/ask-ai` safely
       const response = await fetch('/api/ask-ai', {
@@ -632,7 +640,7 @@ export const AiTeacherPage: React.FC = () => {
               <aside style={{ backgroundColor: 'var(--bg-sub, var(--card))', borderColor: 'var(--border)', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06)' }} className="w-full lg:w-[350px] lg:border-r p-5 overflow-y-auto shrink-0 space-y-5">
                 
                 {/* SPECIFIC TRADE SELECT BOX */}
-                <div style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }} className="p-4 space-y-2.5">
+                <div style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }} className="p-4 space-y-2.5">
                   <div style={{ color: 'var(--text)', fontSize: '14px', fontWeight: 600 }} className="flex items-center gap-1.5">
                     <Compass style={{ color: 'var(--accent)' }} className="w-4 h-4" />
                     <span>Trade Focus</span>
@@ -649,12 +657,12 @@ export const AiTeacherPage: React.FC = () => {
                   <option value="">No specific trade — Overall metrics</option>
                   {trades.slice(0, 30).map((t) => (
                     <option key={t.id} value={t.id}>
-                      {t.date} | {t.symbol} ({t.status}) — ₹{(t.pnl || 0).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                      {t.date} | {t.symbol} ({t.status}) — {currencySym}{(t.pnl || 0).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                     </option>
                   ))}
                   {selectedTradeId && specificTrade && !trades.slice(0, 30).some(t => t.id === selectedTradeId) && (
                     <option key={specificTrade.id} value={specificTrade.id}>
-                      {specificTrade.date} | {specificTrade.symbol} ({specificTrade.status}) — ₹{(specificTrade.pnl || 0).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                      {specificTrade.date} | {specificTrade.symbol} ({specificTrade.status}) — {currencySym}{(specificTrade.pnl || 0).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                     </option>
                   )}
                 </select>
@@ -731,7 +739,7 @@ export const AiTeacherPage: React.FC = () => {
 
               {/* QUICK STATS PANEL BOX */}
               {!loading && stats && (
-                <div style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }} className="p-4 space-y-3">
+                <div style={{ backgroundColor: 'var(--card)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)' }} className="p-4 space-y-3">
                   <div style={{ color: 'var(--text)', fontSize: '14px', fontWeight: 600 }} className="flex items-center gap-1.5 font-bold">
                     <Activity style={{ color: 'var(--accent)' }} className="w-3.5 h-3.5" />
                     <span>Scanned Context Variables</span>

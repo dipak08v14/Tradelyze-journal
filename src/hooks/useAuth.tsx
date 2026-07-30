@@ -119,24 +119,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const user = session.user;
           fetchUserData(user).then((extra) => {
             if (mounted) {
-              setState({
+              setState(prev => ({
+                ...prev,
                 user,
                 userId: user.id,
                 userData: extra.userData,
                 trialExpired: extra.trialExpired,
                 daysRemaining: extra.daysRemaining,
                 loading: false,
-              });
+              }));
             }
           });
         } else {
-          setState({ user: null, userId: null, userData: null, trialExpired: false, daysRemaining: 14, loading: false });
+          setState(prev => ({ ...prev, user: null, userId: null, userData: null, trialExpired: false, daysRemaining: 14, loading: false }));
         }
       }
     }).catch((err) => {
       console.error('Error in getSession:', err);
       if (mounted) {
-        setState({ user: null, userId: null, userData: null, trialExpired: false, daysRemaining: 14, loading: false });
+        setState(prev => ({ ...prev, user: null, userId: null, userData: null, trialExpired: false, daysRemaining: 14, loading: false }));
       }
     });
 
@@ -146,18 +147,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const user = session.user;
           fetchUserData(user).then((extra) => {
             if (mounted) {
-              setState({
-                user,
-                userId: user.id,
-                userData: extra.userData,
-                trialExpired: extra.trialExpired,
-                daysRemaining: extra.daysRemaining,
-                loading: false,
-              });
+              setState(prev => ({ ...prev, user, userId: user.id, userData: extra.userData, trialExpired: extra.trialExpired, daysRemaining: extra.daysRemaining, loading: false }));
             }
           });
         } else {
-          setState({ user: null, userId: null, userData: null, trialExpired: false, daysRemaining: 14, loading: false });
+          setState(prev => ({ ...prev, user: null, userId: null, userData: null, trialExpired: false, daysRemaining: 14, loading: false }));
         }
       }
     });

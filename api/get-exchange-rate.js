@@ -30,6 +30,11 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing required parameters: date, from, to' });
   }
 
+  // Defensive slice to ensure date is YYYY-MM-DD even if a raw timestamp is passed
+  if (typeof date === 'string' && date.includes('T')) {
+    date = date.split('T')[0];
+  }
+
   from = from.toUpperCase().trim();
   to = to.toUpperCase().trim();
 

@@ -1,0 +1,60 @@
+TRADELYZE
++ Add Trade
+Dashboard
+Daily Journal
+Trading Logs
+Reports
+Annual Reports
+Strategies
+Notebook
+Risk Calculator
+AI Teacher
+Settings
+D
+dipak08v14@gmail.com
+Logout
+Morning Top Reversal
+Edit Setup
+REVERSAL
+
+STATUS: ACTIVE
+
+OVERVIEW
+RULES PERFORMANCE
+EXECUTED TRADES
+MISSED TRADES
+NOTES
+REFERENCE
+NET P&L
+$ 2,265
+TOTAL TRADES
+6
+WIN RATE
+83.3%
+PROFIT FACTOR
+2.26
+AVG R-MULTIPLE
++1.11R
+EXPECTANCY
+$ 377
+AVG WINNER
+$ 813
+AVG LOSER
+-$ 1,800
+CUMULATIVE P&L — MORNING TOP REVERSAL
+Start
+2026-05-11
+2026-06-01
+2026-06-12
+2026-06-14
+2026-06-17
+2026-06-29
+$-1,000
+$-500
+$0
+$500
+$1,000
+$1,500
+$2,000
+$2,500
+$-1,000

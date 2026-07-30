@@ -1,0 +1,129 @@
+TRADELYZE
++ Add Trade
+Dashboard
+Daily Journal
+Trading Logs
+Reports
+Annual Reports
+Strategies
+Notebook
+Risk Calculator
+AI Teacher
+Settings
+D
+dipak08v14@gmail.com
+Logout
+Trade Tracking
+Ask AI ✨
+Edit Trade
+Delete
+XAUUSD
+July 24, 2026
+← Previous Trade
+Next Trade →
+Stats
+Playbooks
+Market
+NET P&L
+$1,500.00
+R-Multiple Earned
++1.25R
+Return on Investment
++60.0%
+Decided Risk
+$1,200.00
+Actual Risk Taken
+$1,200.00
+Total Allocation
+$2,500.00
+Brokerage Fees
+$0.00
+Direction
+LONG
+Option Type
+NONE
+Quantity / Lots
+1
+Capture Points
+15
+Holding Duration
+32 mins
+Max Drawdown (DD)
+$300.00
+Drawdown %
+12.00%
+Risk of Ruin (ROR)
+48.00%
+PROFIT TARGET
+STOP LOSS PRICE
+PLANNED R-MULTIPLE
+—
+MAE (Max Adverse Excursion)
+MFE (Max Favorable Excursion)
+GROSS P&L
+$1,500.00
+Execution Status
+BEST TRADE
+Type of Mistake
+Psychological
+Actual Mistake
+Without setup entry (emotional override)
+Trade Rating
+3/5
+TRADE CHART
+⛶ Expand
+📅 24 Jul 2026
+1M
+3M
+5M
+15M
+30M
+1H
+4H
+D
+📋 Paste a screenshot (Ctrl+V) or drag and drop a file here
+Drag and drop a file here also works
+Or browse files
+📅 Open 24 Jul 2026 chart on TradingView ↗
+📍 Navigate to your trade
+DATE
+24 Jul 2026
+ENTRY TIME
+12:01 IST
+DIRECTION
+LONG
+P&L
++$1,500.00
+HOLDING TIME
+32 mins
+POINTS / PIPS
+15.00 pts
+
+The chart above tries to load at 24 Jul 2026 · 12:01 IST
+If not at the right date, use the button above to open the full chart ↑
+
+Trade Attachments
+CHART SCREENSHOT
+No chart image snapshot archived.
+Visual Pattern Match
+
+MACHINE VISION RESEMBLANCE
+
+Upload a chart screenshot to activate automated pattern-matching intelligence!
+Performance Score
+Technical
+Psychology
+Risk Mgmt
+Your Score: 76%
+Running P&L Chart
+$0
+$300
+$600
+$900
+$1.2K
+$1.5K
+$1.8K
+Execution & Notes
+POST-TRADE REFLECTIONS
+Ask AI Assistant
+$-300

@@ -1,0 +1,101 @@
+TRADELYZE
++ Add Trade
+Dashboard
+Daily Journal
+Trading Logs
+Reports
+Annual Reports
+Strategies
+Notebook
+Risk Calculator
+AI Teacher
+Settings
+D
+dipak08v14@gmail.com
+Logout
+Morning Top Reversal
+Delete Strategy
+Cancel
+Save Strategy
+Strategy Details
+STRATEGY NAME *
+SR. NO.
+TYPE OF STRATEGY *
+BREAKOUT
+REVERSAL
+NEUTRAL
+SUB TYPE
+STATUS
+Active
+Not Working Well
+Retired
+NOTES
+Entry Rules
+
+Criteria required BEFORE entering trades. These auto-populate as checklist items.
+
+10 / 10
+#1
+#2
+#3
+#4
+#5
+#6
+#7
+#8
+#9
+#10
+
+Maximum 10 entry rules reached.
+
+Exit Rules
+
+Criteria suggesting when to secure the trade. These auto-populate in checklists.
+
+10 / 10
+#1
+#2
+#3
+#4
+#5
+#6
+#7
+#8
+#9
+#10
+
+Maximum 10 exit rules reached.
+
+Save Strategy
+Reference Images
+
+Screenshots showing ideal examples.
+
+0 / 10
+
+Drag & drop screenshots
+
+or click to browse
+
+JPG · PNG · WEBP · Max 5MB each
+
+Performance Stats
+
+Auto-calculated from your trade history logs.
+
+6
+TRADES
++5
+WINS
+-1
+LOSSES
+Win Rate
+83%
+Breakevens
+0
+Avg R-Multiple
++1.1R
+Total P&L
+$ 2,265
+MONTHLY PATTERN
+— Not enough data for bi-weekly split (needs 5+ per half)

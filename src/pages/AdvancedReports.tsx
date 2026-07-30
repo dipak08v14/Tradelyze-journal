@@ -386,7 +386,8 @@ export const AdvancedReports: React.FC = () => {
 
         if (tradesRes.error) throw tradesRes.error;
         
-        const fetchedTrades = tradesRes.data || [];
+        const rawFetchedTrades = tradesRes.data || [];
+        const fetchedTrades = await convertTradeAmounts(rawFetchedTrades, preferredCurrency);
         if (fetchedTrades.length === 0) {
           setTrades([]);
           setPsychologyData([]);

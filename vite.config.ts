@@ -3,6 +3,9 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import {defineConfig} from 'vite';
 import {pathToFileURL} from 'url';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export default defineConfig(() => {
   return {
@@ -49,6 +52,8 @@ export default defineConfig(() => {
                     // Enrich request with parsed body
                     const anyReq = req as any;
                     anyReq.body = parsedBody;
+                    const qs = await import('querystring');
+                    anyReq.query = qs.parse((req.url || '').split('?')[1] || '');
 
                     // Enrich response with Vercel/Express helper functions
                     const anyRes = res as any;

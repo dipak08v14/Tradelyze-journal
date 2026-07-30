@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
+import { usePreferredCurrency } from '../hooks/usePreferredCurrency';
 import { useToast } from '../hooks/useToast';
 import { Sidebar } from '../components/Sidebar';
 import { Menu, Calculator, Copy, HelpCircle, Check, DollarSign } from 'lucide-react';
@@ -26,6 +27,9 @@ const INSTRUMENTS: InstrumentConfig[] = [
 export default function RiskCalculatorPage() {
   const { user, loading: authLoading } = useAuth();
   const { showSuccess, showError } = useToast();
+  const { preferredCurrency } = usePreferredCurrency(user?.id || '');
+  const currencySym = preferredCurrency?.toUpperCase() === 'USD' ? '$' : '\u20B9';
+  const locale = preferredCurrency?.toUpperCase() === 'USD' ? 'en-US' : 'en-IN';
 
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -177,7 +181,7 @@ export default function RiskCalculatorPage() {
                       className="block mb-1.5"
                       style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}
                     >
-                      Account Size (₹)
+                      Account Size ({currencySym})
                     </label>
                     <input
                       type="number"
@@ -457,9 +461,9 @@ export default function RiskCalculatorPage() {
                     className="p-3 flex flex-col justify-between relative select-all group"
                   >
                     <span style={{ fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)' }}>Risk Amount</span>
-                    <span className="font-mono mt-1" style={{ fontSize: '15px', fontWeight: 700, lineHeight: 1.2, wordBreak: 'break-word', color: '#ef4444' }}>₹{riskAmount.toLocaleString('en-IN')}</span>
+                    <span className="font-mono mt-1" style={{ fontSize: '15px', fontWeight: 700, lineHeight: 1.2, wordBreak: 'break-word', color: '#ef4444' }}>{currencySym}{riskAmount.toLocaleString(locale)}</span>
                     <button
-                      onClick={() => handleCopyValue(`₹${riskAmount}`, 'risk')}
+                      onClick={() => handleCopyValue(`${currencySym}${riskAmount}`, 'risk')}
                       className="absolute top-2 right-2 text-[var(--text-muted)] hover:text-[var(--text)]"
                     >
                       <Copy className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -531,9 +535,9 @@ export default function RiskCalculatorPage() {
                     className="p-3 flex flex-col justify-between relative select-all group"
                   >
                     <span style={{ fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)' }}>Potential Profit</span>
-                    <span className="font-mono mt-1" style={{ fontSize: '15px', fontWeight: 700, lineHeight: 1.2, wordBreak: 'break-word', color: '#22c55e' }}>₹{potentialProfit.toLocaleString('en-IN')}</span>
+                    <span className="font-mono mt-1" style={{ fontSize: '15px', fontWeight: 700, lineHeight: 1.2, wordBreak: 'break-word', color: '#22c55e' }}>{currencySym}{potentialProfit.toLocaleString(locale)}</span>
                     <button
-                      onClick={() => handleCopyValue(`₹${potentialProfit}`, 'profit')}
+                      onClick={() => handleCopyValue(`${currencySym}${potentialProfit}`, 'profit')}
                       className="absolute top-2 right-2 text-[var(--text-muted)] hover:text-[var(--text)]"
                     >
                       <Copy className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -549,10 +553,10 @@ export default function RiskCalculatorPage() {
                     For <strong className="text-[var(--text)]">{activeInst.name}</strong>: With Entry at <strong className="text-[var(--text)]">{entryPrice}</strong> and Stop Loss at <strong className="text-[var(--text)]">{stopLoss}</strong>:
                   </p>
                   <p>
-                    ✓ Maximum loss if Stop Loss is hit: <strong className="text-red-400 font-mono">₹{riskAmount.toLocaleString('en-IN')}</strong>.
+                    ✓ Maximum loss if Stop Loss is hit: <strong className="text-red-400 font-mono">{currencySym}{riskAmount.toLocaleString(locale)}</strong>.
                   </p>
-                  <p>
-                    ✓ This represents exactly <strong className="text-[var(--text)] font-mono">{riskPercent}%</strong> of your <strong className="text-[var(--text)] font-mono">₹{accountSize.toLocaleString('en-IN')}</strong> base account size.
+                  <p className="mb-2">
+                    ✓ This represents exactly <strong className="text-[var(--text)] font-mono">{riskPercent}%</strong> of your <strong className="text-[var(--text)] font-mono">{currencySym}{accountSize.toLocaleString(locale)}</strong> base account size.
                   </p>
                 </div>
 

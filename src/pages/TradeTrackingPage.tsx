@@ -118,6 +118,7 @@ const TradeTrackingPageContent: React.FC = () => {
   const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
   const { preferredCurrency } = usePreferredCurrency(userId);
+  const currencySym = preferredCurrency?.toUpperCase() === 'USD' ? '$' : '\u20B9';
   const userTheme = localStorage.getItem('tl-theme') || 'warm';
 
   // Primary Data States
@@ -1083,20 +1084,32 @@ const TradeTrackingPageContent: React.FC = () => {
       const rawTrade = tradeRes.data;
       if (rawTrade) {
         const converted = await convertTradeAmounts([rawTrade], preferredCurrency);
-        setTrade(converted[0]);
+        const finalTrade = converted[0];
+        setTrade(finalTrade);
+
+        const psych = psychRes.data?.[0] || null;
+        let risk = riskRes.data?.[0] || null;
+
+        if (risk && finalTrade._converted && finalTrade._conversion_rate) {
+          risk = { ...risk };
+          const rate = finalTrade._conversion_rate;
+          if (typeof risk.decided_risk === 'number') risk.decided_risk *= rate;
+          if (typeof risk.actual_risk === 'number') risk.actual_risk *= rate;
+          if (typeof risk.total_allocation === 'number') risk.total_allocation *= rate;
+          if (typeof risk.brokerage_fees === 'number') risk.brokerage_fees *= rate;
+        }
+
+        setPsychology(psych);
+        setRiskMgmt(risk);
       } else {
         setTrade(null);
+        setPsychology(null);
+        setRiskMgmt(null);
       }
 
       const rules = rulesRes.data || [];
       setEntryRules(rules.filter((r) => r.rule_type === 'entry'));
       setExitRules(rules.filter((r) => r.rule_type === 'exit'));
-
-      const psych = psychRes.data?.[0] || null;
-      const risk = riskRes.data?.[0] || null;
-
-      setPsychology(psych);
-      setRiskMgmt(risk);
 
       // On page load, query Supabase for existing embedding
       const { data: embedCheck } = await supabase
@@ -1171,10 +1184,11 @@ const TradeTrackingPageContent: React.FC = () => {
   };
 
   // Indian Rupees Local Currency format
-  const formatINR = (val: number | null | undefined) => {
+  const formatCurrency = (val: number | null | undefined) => {
     if (val === null || val === undefined) return '—';
-    const prefix = val < 0 ? '-₹' : '₹';
-    return `${prefix}${Math.abs(val).toLocaleString('en-IN', {
+    const prefix = val < 0 ? `-${currencySym}` : currencySym;
+    const loc = preferredCurrency === 'INR' ? 'en-IN' : 'en-US';
+    return `${prefix}${Math.abs(val).toLocaleString(loc, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     })}`;
@@ -1591,7 +1605,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                 color: trade.pnl > 0 ? '#008F67' : trade.pnl < 0 ? '#DF1C30' : 'var(--text-sub)' 
                               }}
                             >
-                              {formatINR(trade.pnl)}
+                              {formatCurrency(trade.pnl)}
                             </span>
                           </div>
 
@@ -1628,7 +1642,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Decided Risk</span>
                             <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="font-sans">
-                              {riskMgmt ? formatINR(riskMgmt.decided_risk) : '—'}
+                              {riskMgmt ? formatCurrency(riskMgmt.decided_risk) : '—'}
                             </span>
                           </div>
 
@@ -1636,7 +1650,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Actual Risk Taken</span>
                             <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="font-sans">
-                              {formatINR(trade.risk)}
+                              {formatCurrency(trade.risk)}
                             </span>
                           </div>
 
@@ -1644,7 +1658,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Total Allocation</span>
                             <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="font-sans">
-                              {formatINR(trade.investment)}
+                              {formatCurrency(trade.investment)}
                             </span>
                           </div>
 
@@ -1652,7 +1666,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Brokerage Fees</span>
                             <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }} className="font-sans">
-                              {formatINR(trade.fees)}
+                              {formatCurrency(trade.fees)}
                             </span>
                           </div>
 
@@ -1728,7 +1742,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           <div className="flex items-center justify-between py-1.5">
                             <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)' }} className="font-mono">Max Drawdown (DD)</span>
                             <span className="font-sans" style={{ fontSize: '14px', fontWeight: 700, color: '#DF1C30' }}>
-                              {formatINR(trade.max_drawdown)}
+                              {formatCurrency(trade.max_drawdown)}
                             </span>
                           </div>
 
@@ -1873,7 +1887,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                     color: grossVal > 0 ? '#008F67' : grossVal < 0 ? '#DF1C30' : 'var(--text-sub)' 
                                   }}
                                 >
-                                  {formatINR(grossVal)}
+                                  {formatCurrency(grossVal)}
                                 </span>
                               );
                             })()}
@@ -2523,7 +2537,7 @@ const TradeTrackingPageContent: React.FC = () => {
                           padding: '16px 20px'
                         }}
                       >
-                        <TradeChart trade={trade} userTheme={userTheme} />
+                        <TradeChart trade={trade} userTheme={userTheme} currencySym={currencySym} locale={preferredCurrency === 'INR' ? 'en-IN' : 'en-US'} />
                       </div>
 
                       <div className="flex flex-col md:flex-row gap-6">
@@ -2806,9 +2820,9 @@ const TradeTrackingPageContent: React.FC = () => {
                                 tickLine={false}
                                 axisLine={false}
                                 tickFormatter={(v) => {
-                                  if (v === 0) return '₹0';
-                                  if (Math.abs(v) >= 1000) return `₹${(v/1000).toFixed(1)}K`;
-                                  return `₹${v}`;
+                                  if (v === 0) return `${currencySym}0`;
+                                  if (Math.abs(v) >= 1000) return `${currencySym}${(v/1000).toFixed(1)}K`;
+                                  return `${currencySym}${v}`;
                                 }}
                                 tickCount={8}
                                 domain={['auto', 'auto']}
@@ -2879,7 +2893,7 @@ const TradeTrackingPageContent: React.FC = () => {
                                   return (
                                     <div style={{ backgroundColor: 'var(--card)', border: '0.5px solid var(--border)', borderRadius: '6px', padding: '5px 10px', fontSize: '11px', fontFamily: 'monospace' }}>
                                       <span style={{ color: 'var(--text)' }}>Net P&L : </span>
-                                      <span style={{ color: val >= 0 ? '#008F67' : '#DF1C30', fontWeight: 600 }}>{val >= 0 ? '+' : '-'}₹{Math.abs(val).toLocaleString('en-IN')}</span>
+                                      <span style={{ color: val >= 0 ? '#008F67' : '#DF1C30', fontWeight: 600 }}>{val >= 0 ? '+' : '-'}${Math.abs(val).toLocaleString('en-IN')}</span>
                                     </div>
                                   );
                                 }}

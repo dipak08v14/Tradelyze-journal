@@ -29,6 +29,8 @@ import {
   X,
   Calendar
 } from 'lucide-react';
+import { usePreferredCurrency } from '../hooks/usePreferredCurrency';
+import { convertTradeAmounts } from '../lib/currencyConversion';
 
 interface FolderItem {
   id: string;
@@ -59,6 +61,8 @@ const SWATCHES = [
 export function Notebook() {
   const { user } = useAuth();
   const { showSuccess, showError, showWarning } = useToast();
+  const { preferredCurrency } = usePreferredCurrency(user?.id || '');
+  const currencySym = preferredCurrency?.toUpperCase() === 'USD' ? '$' : '\u20B9';
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchParams] = useSearchParams();
   const [dateFromDashboard, setDateFromDashboard] = useState<string | null>(null);
@@ -819,10 +823,10 @@ export function Notebook() {
 
   // Local helper for formatting INR standard currency output
   const formatPnl = (val: number | null) => {
-    if (val === null || val === undefined) return '₹0';
+    if (val === null || val === undefined) return `${currencySym}0`;
     const isNeg = val < 0;
     const formatted = Math.round(Math.abs(val)).toLocaleString('en-IN');
-    return isNeg ? `-₹${formatted}` : `₹${formatted}`;
+    return isNeg ? `-${currencySym}${formatted}` : `${currencySym}${formatted}`;
   };
 
   // Handler to fetch trade details and create pre-filled Log Day entry
@@ -850,7 +854,8 @@ export function Notebook() {
 
       if (tradesError) throw tradesError;
 
-      const tradesList: any[] = tradesData || [];
+      const rawTradesList: any[] = tradesData || [];
+      const tradesList = await convertTradeAmounts(rawTradesList, preferredCurrency);
 
       let netPnl = 0;
       let totalTrades = tradesList.length;

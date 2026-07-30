@@ -1,4 +1,4 @@
-export function buildSystemPrompt(contextData: string): string {
+export function buildSystemPrompt(contextData: string, baseCurrency: string, currencySym: string): string {
   return `You are an expert ICT (Inner Circle Trader) trading coach and performance analyst embedded in TRADELYZE, a professional trading journal.
 
 YOUR ROLE:
@@ -11,7 +11,9 @@ YOUR ROLE:
 - Be direct and concise — professional trading tool, not a casual chatbot
 - If the trader asks about a specific trade, analyze every dimension of it
 
-CRITICAL: Never say you cannot see their data. All data is provided below. Always respond in the trader's context.
+CRITICAL INSTRUCTIONS:
+- Never say you cannot see their data. All data is provided below. Always respond in the trader's context.
+- All monetary values are in ${baseCurrency}. Use the symbol ${currencySym} when referencing money in your responses.
 
 ═══ TRADER DATA ═══
 ${contextData}`;
@@ -49,6 +51,8 @@ interface ContextStringParams {
   specificTradeRules?: any[] | null;
   specificTradePsych?: any;
   specificTradeRisk?: any;
+  baseCurrency: string;
+  currencySym: string;
 }
 
 export function buildContextString({
@@ -67,7 +71,9 @@ export function buildContextString({
   specificTrade = null,
   specificTradeRules = null,
   specificTradePsych = null,
-  specificTradeRisk = null
+  specificTradeRisk = null,
+  baseCurrency,
+  currencySym
 }: ContextStringParams): string {
   let ctx = '';
 
@@ -76,19 +82,19 @@ export function buildContextString({
   ctx += `Win Rate: ${winRate?.toFixed(1)}%\n`;
   ctx += `Profit Factor: ${profitFactor === 999 ? '∞' : profitFactor?.toFixed(2)}\n`;
   ctx += `Avg R-Multiple: ${avgR?.toFixed(2)}R\n`;
-  ctx += `Total P&L: ₹${totalPnl?.toLocaleString('en-IN')}\n`;
+  ctx += `Total P&L: ${currencySym}${(totalPnl || 0).toLocaleString('en-IN')}\n`;
   ctx += `Avg Technical Score: ${avgTechScore?.toFixed(0)}%\n`;
   ctx += `Avg Psychology Score: ${avgPsychScore?.toFixed(0)}%\n`;
   ctx += `Avg Risk Management Score: ${avgRiskScore?.toFixed(0)}%\n`;
   ctx += `Avg Overall Score: ${avgOverallScore?.toFixed(0)}%\n`;
 
   ctx += `\n=== THIS MONTH (${monthName} ${year}) ===\n`;
-  ctx += `Trades: ${monthTrades} | Win Rate: ${monthWinRate?.toFixed(1)}% | P&L: ₹${monthPnl?.toLocaleString('en-IN')}\n`;
+  ctx += `Trades: ${monthTrades} | Win Rate: ${monthWinRate?.toFixed(1)}% | P&L: ${currencySym}${(monthPnl || 0).toLocaleString('en-IN')}\n`;
 
   if (strategies && strategies.length > 0) {
     ctx += `\n=== MY STRATEGIES ===\n`;
     strategies.forEach(s => {
-      ctx += `• ${s.name} (${s.type_of_strategy}) — ${s.tradeCount || 0} trades, ${s.winRate?.toFixed(0) || 0}% WR, ₹${(s.totalPnl || 0).toLocaleString('en-IN')} P&L\n`;
+      ctx += `• ${s.name} (${s.type_of_strategy}) — ${s.tradeCount || 0} trades, ${s.winRate?.toFixed(0) || 0}% WR, ${currencySym}${(s.totalPnl || 0).toLocaleString('en-IN')} P&L\n`;
       if (s.entryRules && s.entryRules.length > 0) {
         ctx += `  Entry Rules: ${s.entryRules.map((r, i) => `${i+1}. ${r.rule_text}`).join(' | ')}\n`;
       }
@@ -100,7 +106,7 @@ export function buildContextString({
     ctx += `Date | Symbol | Dir | Setup | P&L | R | Status | Execution | Mistake\n`;
     recentTrades.forEach(t => {
       const dirStr = `${t.direction || ''}${t.option_type ? ` (${t.option_type})` : ''}` || '—';
-      ctx += `${t.date} | ${t.symbol} | ${dirStr} | ${t.strategies?.name || 'No Setup'} | ₹${(t.pnl || 0).toLocaleString('en-IN')} | ${t.r_multiple?.toFixed(1) || '—'}R | ${t.status || '—'} | ${t.execution_status || '—'} | ${t.mistake_text || 'None'}\n`;
+      ctx += `${t.date} | ${t.symbol} | ${dirStr} | ${t.strategies?.name || 'No Setup'} | ${currencySym}${(t.pnl || 0).toLocaleString('en-IN')} | ${t.r_multiple?.toFixed(1) || '—'}R | ${t.status || '—'} | ${t.execution_status || '—'} | ${t.mistake_text || 'None'}\n`;
     });
   }
 
@@ -118,8 +124,8 @@ export function buildContextString({
     ctx += `\n=== SPECIFIC TRADE BEING ANALYZED ===\n`;
     ctx += `Trade: ${specificTrade.symbol} ${specDirStr} — ${specificTrade.date}\n`;
     ctx += `Setup: ${specificTrade.strategies?.name || 'No Setup'}\n`;
-    ctx += `P&L: ₹${(specificTrade.pnl || 0).toLocaleString('en-IN')} (${specificTrade.r_multiple?.toFixed(2) || '—'}R) — ${specificTrade.status}\n`;
-    ctx += `Investment: ₹${(specificTrade.investment || 0).toLocaleString('en-IN')} | Risk: ₹${(specificTrade.risk || 0).toLocaleString('en-IN')}\n`;
+    ctx += `P&L: ${currencySym}${(specificTrade.pnl || 0).toLocaleString('en-IN')} (${specificTrade.r_multiple?.toFixed(2) || '—'}R) — ${specificTrade.status}\n`;
+    ctx += `Investment: ${currencySym}${(specificTrade.investment || 0).toLocaleString('en-IN')} | Risk: ${currencySym}${(specificTrade.risk || 0).toLocaleString('en-IN')}\n`;
     ctx += `ROI: ${specificTrade.roi?.toFixed(2) || '—'}% | ROR: ${specificTrade.ror?.toFixed(2) || '—'}%\n`;
     ctx += `Execution: ${specificTrade.execution_status || '—'} | Rating: ${specificTrade.trade_rating || '—'}/5\n`;
     ctx += `Mistake Type: ${specificTrade.mistake_type || 'None'} — ${specificTrade.mistake_text || 'None'}\n`;
@@ -146,7 +152,7 @@ export function buildContextString({
     }
 
     if (specificTradeRisk) {
-      ctx += `Risk Management — Planned Risk: ₹${(specificTradeRisk.decided_risk || 0).toLocaleString('en-IN')} | Rules Followed: ${specificTradeRisk.followed_risk_rules_pct}%\n`;
+      ctx += `Risk Management — Planned Risk: ${currencySym}${(specificTradeRisk.decided_risk || 0).toLocaleString('en-IN')} | Rules Followed: ${specificTradeRisk.followed_risk_rules_pct}%\n`;
     }
   }
 

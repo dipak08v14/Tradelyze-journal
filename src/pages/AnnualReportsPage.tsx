@@ -40,12 +40,14 @@ import {
   formatINRShort
 } from '../lib/calculations';
 
+
 export const AnnualReportsPage: React.FC = () => {
   const { user, userId, loading: authLoading } = useAuth();
   const { showError } = useToast();
   const { activeAccount } = useActiveAccount();
   const navigate = useNavigate();
   const { preferredCurrency } = usePreferredCurrency(userId);
+  const currencySym = preferredCurrency?.toUpperCase() === 'USD' ? '$' : '₹';
 
   const [selectedYear, setSelectedYear] = useState<number>(() => new Date().getFullYear());
   const [loading, setLoading] = useState<boolean>(true);
@@ -572,7 +574,7 @@ export const AnnualReportsPage: React.FC = () => {
                           <CartesianGrid strokeDasharray="3 3" stroke="var(--bar)" vertical={false} />
                           <XAxis dataKey="month" tick={{ fill: 'var(--text-sub)', fontSize: 11 }} axisLine={false} tickLine={false} />
                           <YAxis yAxisId="left" tickCount={7} tick={{ fill: 'var(--text-sub)', fontSize: 11 }} axisLine={false} tickLine={false}
-                                 tickFormatter={v => { const absV = Math.abs(v); return absV >= 1000 ? '₹' + (v/1000).toFixed(1) + 'k' : '₹' + v.toFixed(0); }} width={55} />
+                                 tickFormatter={v => { const absV = Math.abs(v); return absV >= 1000 ? currencySym + (v/1000).toFixed(1) + 'k' : currencySym + v.toFixed(0); }} width={55} />
                           <ReferenceLine yAxisId="left" y={0} stroke="var(--border)" strokeDasharray="4 4" />
                           <Tooltip cursor={false} content={renderAnnualPnlTooltip} />
                           <Legend content={renderAnnualPnlLegend} />
@@ -1066,4 +1068,4 @@ export const AnnualReportsPage: React.FC = () => {
       </div>
     </div>
   );
-};
+};

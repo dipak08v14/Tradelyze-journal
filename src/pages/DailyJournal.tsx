@@ -5,6 +5,8 @@ import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import { Sidebar } from '../components/Sidebar';
 import { MiniCalendarWidget } from '../components/MiniCalendarWidget';
+import { usePreferredCurrency } from '../hooks/usePreferredCurrency';
+import { convertTradeAmounts } from '../lib/currencyConversion';
 import { formatINR, MONTH_NAMES } from '../lib/calculations';
 import {
   Menu,
@@ -51,6 +53,8 @@ export const DailyJournal: React.FC = () => {
   const { showError } = useToast();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { preferredCurrency } = usePreferredCurrency(userId);
+  const currencySym = preferredCurrency?.toUpperCase() === 'USD' ? '$' : '₹';
 
   // State
   const [loading, setLoading] = useState<boolean>(true);
@@ -150,7 +154,10 @@ export const DailyJournal: React.FC = () => {
       if (tradesRes.error) throw tradesRes.error;
       if (notesRes.error) throw notesRes.error;
 
-      setTrades((tradesRes.data as any) || []);
+      const rawTrades = tradesRes.data || [];
+      const convertedTrades = await convertTradeAmounts(rawTrades, preferredCurrency);
+      setTrades(convertedTrades as any);
+      
       setLinkedNotes((notesRes.data as any) || []);
     } catch (err: any) {
       console.error('Error fetching trades for Daily Journal:', err);
@@ -195,7 +202,7 @@ export const DailyJournal: React.FC = () => {
     if (userId) {
       fetchTradesForPeriod();
     }
-  }, [userId, selectedMonth, selectedYear]);
+  }, [userId, selectedMonth, selectedYear, preferredCurrency]);
 
   // Handle navigation from Dashboard's View Details
   useEffect(() => {
@@ -834,7 +841,7 @@ export const DailyJournal: React.FC = () => {
                                               <div style={{ color: 'var(--text-sub)', marginBottom: '2px' }}>Trade #{label}</div>
                                               <span style={{ color: 'var(--text)' }}>Cumulative Net P&L : </span>
                                               <span style={{ color: val >= 0 ? '#008F67' : '#DF1C30', fontWeight: 'bold' }}>
-                                                ₹{val.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                                {currencySym}{val.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                               </span>
                                             </div>
                                           );
