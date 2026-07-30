@@ -4,6 +4,8 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import { useActiveAccount, applyAccountFilter } from '../hooks/useActiveAccount';
+import { usePreferredCurrency } from '../hooks/usePreferredCurrency';
+import { convertTradeAmounts } from '../lib/currencyConversion';
 import { Sidebar } from '../components/Sidebar';
 import { Modal } from '../components/Modal';
 import {
@@ -42,6 +44,8 @@ export const StrategiesPage: React.FC = () => {
   const { user, userId, loading: authLoading } = useAuth();
   const { showSuccess, showError } = useToast();
   const { activeAccount } = useActiveAccount();
+  const { preferredCurrency } = usePreferredCurrency(userId);
+  const currencySym = preferredCurrency?.toUpperCase() === 'USD' ? '$' : '₹';
   const navigate = useNavigate();
 
   // Primary strategies data
@@ -123,7 +127,7 @@ export const StrategiesPage: React.FC = () => {
         applyAccountFilter(
           supabase
             .from('trades')
-            .select('id, strategy_id, pnl, r_multiple, status')
+            .select('id, strategy_id, pnl, r_multiple, status, currency')
             .eq('user_id', userId),
           activeAccount
         ),
@@ -143,7 +147,11 @@ export const StrategiesPage: React.FC = () => {
       if (missedTradesRes.error) throw missedTradesRes.error;
 
       setStrategies((stratRes.data as Strategy[]) || []);
-      setTrades(tradesRes.data || []);
+      
+      const rawTrades = tradesRes.data || [];
+      const convertedTrades = await convertTradeAmounts(rawTrades, preferredCurrency);
+      setTrades(convertedTrades);
+      
       setRules(rulesRes.data || []);
       setMissedTrades(missedTradesRes.data || []);
     } catch (err: any) {
@@ -156,7 +164,7 @@ export const StrategiesPage: React.FC = () => {
 
   useEffect(() => {
     fetchAllData();
-  }, [userId, activeAccount]);
+  }, [userId, activeAccount, preferredCurrency]);
 
   // Sync view selection to storage
   useEffect(() => {
@@ -415,7 +423,7 @@ export const StrategiesPage: React.FC = () => {
     const formatted = new Intl.NumberFormat('en-IN', {
       maximumFractionDigits: 0
     }).format(absVal);
-    return `${isNegative ? '-' : ''}₹${formatted}`;
+    return `${isNegative ? '-' : ''}${currencySym}${formatted}`;
   };
 
   const getStatusBadgeMinimal = (statusStr: string) => {

@@ -4,6 +4,8 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import { useActiveAccount, applyAccountFilter } from '../hooks/useActiveAccount';
+import { usePreferredCurrency } from '../hooks/usePreferredCurrency';
+import { convertTradeAmounts } from '../lib/currencyConversion';
 import { Sidebar } from '../components/Sidebar';
 import {
   Menu,
@@ -51,6 +53,7 @@ interface TradeItem {
   status: string;
   execution_status: string | null;
   holding_time_mins: number | null;
+  currency?: string;
 }
 
 interface RuleItem {
@@ -103,6 +106,8 @@ export const StrategyDetail: React.FC = () => {
   const { user, userId, loading: authLoading } = useAuth();
   const { showError, showSuccess } = useToast();
   const { activeAccount } = useActiveAccount();
+  const { preferredCurrency } = usePreferredCurrency(userId);
+  const currencySym = preferredCurrency?.toUpperCase() === 'USD' ? '$' : '₹';
   const navigate = useNavigate();
 
   // Navigation and active view states
@@ -191,7 +196,7 @@ export const StrategyDetail: React.FC = () => {
         applyAccountFilter(
           supabase
             .from('trades')
-            .select('id, date, symbol, direction, option_type, pnl, r_multiple, status, execution_status, holding_time_mins')
+            .select('id, date, symbol, direction, option_type, pnl, r_multiple, status, execution_status, holding_time_mins, currency')
             .eq('strategy_id', strategyId)
             .eq('user_id', userId)
             .order('date', { ascending: false }),
@@ -224,7 +229,11 @@ export const StrategyDetail: React.FC = () => {
 
       setStrategy(strategyRes.data as StrategyDetailItem);
       setNotesText(strategyRes.data.notes || '');
-      setTrades((tradesRes.data as TradeItem[]) || []);
+      
+      const activeTradesRaw = tradesRes.data || [];
+      const convertedTrades = await convertTradeAmounts(activeTradesRaw, preferredCurrency);
+      setTrades((convertedTrades as TradeItem[]) || []);
+      
       setMissedTrades((missedTradesRes.data as MissedTradeItem[]) || []);
       
       const loadedRules = (rulesRes.data as RuleItem[]) || [];
@@ -259,7 +268,7 @@ export const StrategyDetail: React.FC = () => {
 
   useEffect(() => {
     fetchStrategyContext();
-  }, [strategyId, userId, activeAccount]);
+  }, [strategyId, userId, activeAccount, preferredCurrency]);
 
   // Handle Debounced notes autosaving
   useEffect(() => {
@@ -307,7 +316,7 @@ export const StrategyDetail: React.FC = () => {
     const formatted = new Intl.NumberFormat('en-IN', {
       maximumFractionDigits: 0
     }).format(absVal);
-    return `${isNegative ? '-' : ''}₹ ${formatted}`;
+    return `${isNegative ? '-' : ''}${currencySym} ${formatted}`;
   };
 
   // Pre-calculate overview statistics
@@ -836,7 +845,7 @@ export const StrategyDetail: React.FC = () => {
                                 tick={{ fontSize: 11, fill: 'var(--text-sub)' }}
                                 tickLine={false}
                                 axisLine={false}
-                                tickFormatter={(v) => `₹${v.toLocaleString('en-IN')}`}
+                                tickFormatter={(v) => `${currencySym}${v.toLocaleString('en-IN')}`}
                                 width={85}
                                 tickCount={8}
                               />
@@ -1373,7 +1382,7 @@ export const StrategyDetail: React.FC = () => {
                             {/* Potential P&L field */}
                             <div>
                               <label htmlFor="mt-potential-pnl" className="block text-[10px] font-mono font-bold uppercase tracking-widest mb-1.5" style={{ color: 'var(--text-muted)' }}>
-                                Potential P&L (₹, Optional)
+                                Potential P&L ({currencySym}, Optional)
                               </label>
                               <input
                                 id="mt-potential-pnl"
