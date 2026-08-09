@@ -1608,7 +1608,7 @@ export default function SettingsPage() {
 
                               {showImportConfirm && (
                                 <div className="bg-[var(--bg)] border border-[var(--border)] p-4 rounded-xl space-y-3 mt-2">
-                                  <p className="text-xs text-[var(--text)]">Import up to 1 year of trade history from Dhan? Existing trades will not be duplicated.</p>
+                                  <p className="text-xs text-[var(--text)]">Import up to 5 years of trade history from Dhan? Existing trades will not be duplicated.</p>
                                   <div className="flex items-center gap-2">
                                     <button
                                       disabled={importingDhanHistory}
