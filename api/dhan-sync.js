@@ -207,12 +207,20 @@ export default async function handler(req, res) {
               return d.toISOString().split('T')[0];
             };
 
-            dateRanges = [
-              { from_date: getSubtractedDateStr(365), to_date: getSubtractedDateStr(275) },
-              { from_date: getSubtractedDateStr(274), to_date: getSubtractedDateStr(184) },
-              { from_date: getSubtractedDateStr(183), to_date: getSubtractedDateStr(91) },
-              { from_date: getSubtractedDateStr(90), to_date: today }
-            ];
+            dateRanges = [];
+            const maxDays = 1825;
+            const chunkSize = 90;
+            
+            for (let i = maxDays; i > 0; i -= chunkSize) {
+              const fromDays = i;
+              let toDays = i - chunkSize;
+              if (toDays < 0) toDays = 0;
+              
+              dateRanges.push({
+                from_date: getSubtractedDateStr(fromDays),
+                to_date: toDays === 0 ? today : getSubtractedDateStr(toDays + 1)
+              });
+            }
           } else {
             let lastSyncDate = today;
             if (connRow.last_sync_at) {
