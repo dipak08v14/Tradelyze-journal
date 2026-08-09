@@ -103,6 +103,7 @@ export default async function handler(req, res) {
           const { error: insertError } = await supabase.from('trades').insert({
             user_id,
             account_login: account_login ? String(account_login) : null,
+            currency: 'USD',
             broker_ticket: String(trade.ticket),
             symbol: trade.symbol,
             direction: trade.direction === 'Buy' ? 'LONG' : 'SHORT',
