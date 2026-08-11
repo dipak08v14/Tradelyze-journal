@@ -326,7 +326,10 @@ export default async function handler(req, res) {
             throw new Error('Failed to retrieve unmatched legs: ' + unmatchedLegsErr.message);
           }
 
+          let phantomPositionsCreated = 0;
+
           const open_position = async (leg, direction, optionType) => {
+            phantomPositionsCreated++;
             const { data: sameDirPos } = await supabaseUser
               .from('dhan_open_positions')
               .select('*')
@@ -551,6 +554,16 @@ export default async function handler(req, res) {
             .eq('id', connectionId);
 
           // STEP F — INSERT SYNC LOG
+          let warningMessage = null;
+          if (phantomPositionsCreated > 0) {
+            warningMessage = `Warning: ${phantomPositionsCreated} unmatched legs fell back to creating new open positions. If you recently cleared your history, these may be 'phantom' positions resulting from missing opening legs.`;
+          }
+          
+          let finalErrorMessage = null;
+          if (warningMessage && hadApiErrors) finalErrorMessage = warningMessage + ' | API Errors occurred.';
+          else if (warningMessage) finalErrorMessage = warningMessage;
+          else if (hadApiErrors) finalErrorMessage = 'API Errors occurred.';
+
           await supabaseUser
             .from('sync_logs')
             .insert({
@@ -561,6 +574,7 @@ export default async function handler(req, res) {
               trades_imported: tradesCreated,
               trades_skipped: totalLegsSkipped,
               status: hadApiErrors && tradesCreated === 0 ? 'failed' : (hadApiErrors && tradesCreated > 0 ? 'partial' : 'success'),
+              error_message: finalErrorMessage,
               synced_at: new Date().toISOString()
             });
 
