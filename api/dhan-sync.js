@@ -233,6 +233,42 @@ export default async function handler(req, res) {
             dateRanges = [{ from_date: lastSyncDate, to_date: today }];
           }
 
+          // BATCH PREPARATION
+          const { data: allExistingLegs } = await supabaseUser
+            .from('dhan_raw_legs')
+            .select('dhan_order_id')
+            .eq('user_id', task.userId)
+            .eq('connection_id', connectionId);
+          const existingDhanIds = new Set((allExistingLegs || []).map(l => l.dhan_order_id));
+
+          const { data: existingOpenPositions } = await supabaseUser
+            .from('dhan_open_positions')
+            .select('*')
+            .eq('user_id', task.userId)
+            .eq('connection_id', connectionId);
+          let inMemoryOpenPositions = [...(existingOpenPositions || [])];
+
+          const { data: unmatchedLegsData, error: unmatchedLegsErr } = await supabaseUser
+            .from('dhan_raw_legs')
+            .select('*')
+            .eq('user_id', task.userId)
+            .eq('connection_id', connectionId)
+            .eq('is_matched', false)
+            .order('trade_time', { ascending: true });
+
+          if (unmatchedLegsErr) {
+            throw new Error('Failed to retrieve unmatched legs: ' + unmatchedLegsErr.message);
+          }
+          let inMemoryUnmatchedLegs = [...(unmatchedLegsData || [])];
+
+          let rawLegsToInsert = [];
+          let tradesToInsert = [];
+          let openPositionsToInsert = [];
+          let openPositionsToUpdate = new Map();
+          let openPositionsToDelete = new Set();
+          let matchedLegIds = [];
+          let phantomPositionsCreated = 0;
+
           // STEP C — FETCH LEGS FROM DHAN
           for (const dateRange of dateRanges) {
             try {
@@ -262,17 +298,11 @@ export default async function handler(req, res) {
                     totalLegsReceived++;
                     const dhanOrderId = String(leg.orderId);
 
-                    const { data: existingLegs } = await supabaseUser
-                      .from('dhan_raw_legs')
-                      .select('id')
-                      .eq('dhan_order_id', dhanOrderId)
-                      .eq('user_id', task.userId)
-                      .limit(1);
-
-                    if (existingLegs && existingLegs.length > 0) {
+                    if (existingDhanIds.has(dhanOrderId)) {
                       totalLegsSkipped++;
                       continue;
                     }
+                    existingDhanIds.add(dhanOrderId);
 
                     let tradeTime;
                     if (!leg.exchangeTime || leg.exchangeTime === 'NA') {
@@ -283,25 +313,27 @@ export default async function handler(req, res) {
                     }
 
                     const symbolFallback = leg.tradingSymbol || leg.customSymbol || leg.securityId || '';
-
-                    await supabaseUser
-                      .from('dhan_raw_legs')
-                      .insert({
-                        user_id: task.userId,
-                        connection_id: connectionId,
-                        dhan_order_id: dhanOrderId,
-                        symbol: symbolFallback,
-                        exchange: leg.exchange || '',
-                        segment: leg.exchangeSegment || '',
-                        transaction_type: (leg.transactionType || '').toUpperCase(),
-                        quantity: parseInt(String(leg.tradedQuantity || 0), 10),
-                        price: parseFloat(String(leg.tradedPrice || 0)),
-                        trade_time: tradeTime,
-                        product_type: leg.productType || '',
-                        order_type: leg.orderType || '',
-                        is_matched: false,
-                        raw_response: leg
-                      });
+                    
+                    const newRawLeg = {
+                      _local_id: Math.random().toString(36).substring(7),
+                      user_id: task.userId,
+                      connection_id: connectionId,
+                      dhan_order_id: dhanOrderId,
+                      symbol: symbolFallback,
+                      exchange: leg.exchange || '',
+                      segment: leg.exchangeSegment || '',
+                      transaction_type: (leg.transactionType || '').toUpperCase(),
+                      quantity: parseInt(String(leg.tradedQuantity || 0), 10),
+                      price: parseFloat(String(leg.tradedPrice || 0)),
+                      trade_time: tradeTime,
+                      product_type: leg.productType || '',
+                      order_type: leg.orderType || '',
+                      is_matched: false,
+                      raw_response: leg
+                    };
+                    
+                    rawLegsToInsert.push(newRawLeg);
+                    inMemoryUnmatchedLegs.push(newRawLeg);
                   }
                   page++;
                 } else {
@@ -313,80 +345,65 @@ export default async function handler(req, res) {
             }
           }
 
-          // STEP D — RUN MATCHING ALGORITHM
-          const { data: unmatchedLegs, error: unmatchedLegsErr } = await supabaseUser
-            .from('dhan_raw_legs')
-            .select('*')
-            .eq('user_id', task.userId)
-            .eq('connection_id', connectionId)
-            .eq('is_matched', false)
-            .order('trade_time', { ascending: true });
+          // Sort unmatched legs chronologically
+          inMemoryUnmatchedLegs.sort((a, b) => new Date(a.trade_time) - new Date(b.trade_time));
 
-          if (unmatchedLegsErr) {
-            throw new Error('Failed to retrieve unmatched legs: ' + unmatchedLegsErr.message);
-          }
+          // STEP D — RUN MATCHING ALGORITHM (IN MEMORY)
+          const open_position = (leg, direction, optionType, isPhantom = false) => {
+            if (isPhantom) phantomPositionsCreated++;
+            
+            const sameDirPosIndex = inMemoryOpenPositions.findIndex(p => 
+              p.symbol === leg.symbol && 
+              p.opening_direction === direction && 
+              p.product_type === leg.product_type
+            );
 
-          let phantomPositionsCreated = 0;
-
-          const open_position = async (leg, direction, optionType) => {
-            phantomPositionsCreated++;
-            const { data: sameDirPos } = await supabaseUser
-              .from('dhan_open_positions')
-              .select('*')
-              .eq('user_id', task.userId)
-              .eq('connection_id', connectionId)
-              .eq('symbol', leg.symbol)
-              .eq('opening_direction', direction)
-              .eq('product_type', leg.product_type);
-
-            if (sameDirPos && sameDirPos.length > 0) {
-              const existingPosition = sameDirPos[0];
+            if (sameDirPosIndex !== -1) {
+              const existingPosition = inMemoryOpenPositions[sameDirPosIndex];
               const newTotalQty = existingPosition.total_quantity + leg.quantity;
               const newAvgPrice = ((existingPosition.avg_entry_price * existingPosition.total_quantity) + (leg.price * leg.quantity)) / newTotalQty;
               
               let currentLegsArray = Array.isArray(existingPosition.opening_leg_ids) ? existingPosition.opening_leg_ids : [];
               const newLegsArray = [...currentLegsArray, leg.dhan_order_id];
 
-              await supabaseUser
-                .from('dhan_open_positions')
-                .update({
-                  total_quantity: newTotalQty,
-                  avg_entry_price: parseFloat(newAvgPrice.toFixed(4)),
-                  total_investment: parseFloat((newAvgPrice * newTotalQty).toFixed(2)),
-                  opening_leg_ids: newLegsArray,
-                  updated_at: new Date().toISOString()
-                })
-                .eq('id', existingPosition.id);
+              existingPosition.total_quantity = newTotalQty;
+              existingPosition.avg_entry_price = parseFloat(newAvgPrice.toFixed(4));
+              existingPosition.total_investment = parseFloat((newAvgPrice * newTotalQty).toFixed(2));
+              existingPosition.opening_leg_ids = newLegsArray;
+
+              if (existingPosition.id) {
+                openPositionsToUpdate.set(existingPosition.id, existingPosition);
+              }
             } else {
-              await supabaseUser
-                .from('dhan_open_positions')
-                .insert({
-                  user_id: task.userId,
-                  connection_id: connectionId,
-                  symbol: leg.symbol,
-                  exchange: leg.exchange || '',
-                  segment: leg.segment || '',
-                  opening_direction: direction,
-                  option_type: optionType,
-                  total_quantity: leg.quantity,
-                  avg_entry_price: leg.price,
-                  total_investment: parseFloat((leg.price * leg.quantity).toFixed(2)),
-                  opening_time: leg.trade_time,
-                  opening_leg_ids: [leg.dhan_order_id],
-                  product_type: leg.product_type
-                });
+              const newPos = {
+                _local_id: Math.random().toString(36).substring(7),
+                user_id: task.userId,
+                connection_id: connectionId,
+                symbol: leg.symbol,
+                exchange: leg.exchange || '',
+                segment: leg.segment || '',
+                opening_direction: direction,
+                option_type: optionType,
+                total_quantity: leg.quantity,
+                avg_entry_price: leg.price,
+                total_investment: parseFloat((leg.price * leg.quantity).toFixed(2)),
+                opening_time: leg.trade_time,
+                opening_leg_ids: [leg.dhan_order_id],
+                product_type: leg.product_type
+              };
+              inMemoryOpenPositions.push(newPos);
+              openPositionsToInsert.push(newPos);
             }
 
-            await supabaseUser
-              .from('dhan_raw_legs')
-              .update({
-                is_matched: true,
-                matched_at: new Date().toISOString()
-              })
-              .eq('id', leg.id);
+            if (leg.id) {
+              matchedLegIds.push(leg.id);
+            } else if (leg._local_id) {
+              const insertRef = rawLegsToInsert.find(r => r._local_id === leg._local_id);
+              if (insertRef) insertRef.is_matched = true;
+            }
           };
 
-          const close_trade = async (closingLeg, openPosition) => {
+          const close_trade = (closingLeg, openPosition) => {
             const qty = Math.min(closingLeg.quantity, openPosition.total_quantity);
             
             let pnl = 0;
@@ -418,120 +435,157 @@ export default async function handler(req, res) {
 
             const marketDirection = getMarketDirection(openPosition.opening_direction, openPosition.option_type);
 
-            const { data: newTrade, error: insertTradeErr } = await supabaseUser
-              .from('trades')
-              .insert({
-                user_id: task.userId,
-                account_login: connRow.account_login || null,
-                date: openingDate,
-                symbol: closingLeg.symbol.toUpperCase().trim(),
-                direction: marketDirection,
-                option_type: openPosition.option_type || null,
-                pnl: pnl,
-                quantity: qty,
-                investment: parseFloat((openPosition.avg_entry_price * qty).toFixed(2)),
-                status: status,
-                holding_time_mins: holdingMins,
-                entry_time: openingTimeStr,
-                month: tradeMonth,
-                year: tradeYear,
-                sync_source: 'dhan',
-                broker_ticket: 'DHAN_' + openingLegId,
-                needs_review: true
-              })
-              .select('id')
-              .single();
-
-            if (insertTradeErr) {
-              throw new Error('Trade insertion failed: ' + insertTradeErr.message);
-            }
-
-            const newTradeId = newTrade.id;
+            const newTrade = {
+              _local_id: Math.random().toString(36).substring(7),
+              user_id: task.userId,
+              account_login: connRow.account_login || null,
+              date: openingDate,
+              symbol: closingLeg.symbol.toUpperCase().trim(),
+              direction: marketDirection,
+              option_type: openPosition.option_type || null,
+              pnl: pnl,
+              quantity: qty,
+              investment: parseFloat((openPosition.avg_entry_price * qty).toFixed(2)),
+              status: status,
+              holding_time_mins: holdingMins,
+              entry_time: openingTimeStr,
+              month: tradeMonth,
+              year: tradeYear,
+              sync_source: 'dhan',
+              broker_ticket: 'DHAN_' + openingLegId,
+              needs_review: true,
+              currency: 'INR'
+            };
+            tradesToInsert.push(newTrade);
             tradesCreated++;
 
             if (closingLeg.quantity < openPosition.total_quantity) {
               const remaining = openPosition.total_quantity - closingLeg.quantity;
-              await supabaseUser
-                .from('dhan_open_positions')
-                .update({
-                  total_quantity: remaining,
-                  total_investment: parseFloat((openPosition.avg_entry_price * remaining).toFixed(2)),
-                  updated_at: new Date().toISOString()
-                })
-                .eq('id', openPosition.id);
+              openPosition.total_quantity = remaining;
+              openPosition.total_investment = parseFloat((openPosition.avg_entry_price * remaining).toFixed(2));
+              
+              if (openPosition.id) {
+                openPositionsToUpdate.set(openPosition.id, openPosition);
+              }
             } else {
-              await supabaseUser
-                .from('dhan_open_positions')
-                .delete()
-                .eq('id', openPosition.id);
+              inMemoryOpenPositions = inMemoryOpenPositions.filter(p => p !== openPosition);
+              if (openPosition.id) {
+                openPositionsToDelete.add(openPosition.id);
+                openPositionsToUpdate.delete(openPosition.id);
+              } else if (openPosition._local_id) {
+                openPositionsToInsert = openPositionsToInsert.filter(p => p._local_id !== openPosition._local_id);
+              }
             }
 
-            await supabaseUser
-              .from('dhan_raw_legs')
-              .update({
-                is_matched: true,
-                matched_trade_id: newTradeId,
-                matched_at: new Date().toISOString()
-              })
-              .eq('id', closingLeg.id);
+            if (closingLeg.id) {
+              matchedLegIds.push(closingLeg.id);
+            } else if (closingLeg._local_id) {
+              const insertRef = rawLegsToInsert.find(r => r._local_id === closingLeg._local_id);
+              if (insertRef) insertRef.is_matched = true;
+            }
           };
 
-          for (const leg of unmatchedLegs || []) {
+          for (const leg of inMemoryUnmatchedLegs) {
             const optionType = getOptionType(leg);
             const transactionType = String(leg.transaction_type || '').toUpperCase();
 
             if (transactionType === 'BUY') {
-              const { data: shortPositions } = await supabaseUser
-                .from('dhan_open_positions')
-                .select('*')
-                .eq('user_id', task.userId)
-                .eq('connection_id', connectionId)
-                .eq('symbol', leg.symbol)
-                .eq('opening_direction', 'SHORT')
-                .eq('product_type', leg.product_type);
+              const shortPositions = inMemoryOpenPositions.filter(p => 
+                p.symbol === leg.symbol && p.opening_direction === 'SHORT' && p.product_type === leg.product_type
+              );
 
-              if (shortPositions && shortPositions.length > 0) {
+              if (shortPositions.length > 0) {
                 let remainingQty = leg.quantity;
                 for (const pos of shortPositions) {
                   if (remainingQty <= 0) break;
                   const qtyToClose = Math.min(remainingQty, pos.total_quantity);
-                  const legCopy = { ...leg, quantity: qtyToClose, id: leg.id };
-                  await close_trade(legCopy, pos);
+                  const legCopy = { ...leg, quantity: qtyToClose, id: leg.id, _local_id: leg._local_id };
+                  close_trade(legCopy, pos);
                   remainingQty -= qtyToClose;
                 }
                 if (remainingQty > 0) {
                   const legRemaining = { ...leg, quantity: remainingQty };
-                  await open_position(legRemaining, 'LONG', optionType);
+                  open_position(legRemaining, 'LONG', optionType, false);
                 }
               } else {
-                await open_position(leg, 'LONG', optionType);
+                open_position(leg, 'LONG', optionType, false);
               }
             } else if (transactionType === 'SELL') {
-              const { data: longPositions } = await supabaseUser
-                .from('dhan_open_positions')
-                .select('*')
-                .eq('user_id', task.userId)
-                .eq('connection_id', connectionId)
-                .eq('symbol', leg.symbol)
-                .eq('opening_direction', 'LONG')
-                .eq('product_type', leg.product_type);
+              const longPositions = inMemoryOpenPositions.filter(p => 
+                p.symbol === leg.symbol && p.opening_direction === 'LONG' && p.product_type === leg.product_type
+              );
 
-              if (longPositions && longPositions.length > 0) {
+              if (longPositions.length > 0) {
                 let remainingQty = leg.quantity;
                 for (const pos of longPositions) {
                   if (remainingQty <= 0) break;
                   const qtyToClose = Math.min(remainingQty, pos.total_quantity);
-                  const legCopy = { ...leg, quantity: qtyToClose, id: leg.id };
-                  await close_trade(legCopy, pos);
+                  const legCopy = { ...leg, quantity: qtyToClose, id: leg.id, _local_id: leg._local_id };
+                  close_trade(legCopy, pos);
                   remainingQty -= qtyToClose;
                 }
                 if (remainingQty > 0) {
                   const legRemaining = { ...leg, quantity: remainingQty };
-                  await open_position(legRemaining, 'SHORT', optionType);
+                  open_position(legRemaining, 'SHORT', optionType, true);
                 }
               } else {
-                await open_position(leg, 'SHORT', optionType);
+                open_position(leg, 'SHORT', optionType, true);
               }
+            }
+          }
+
+          // BATCH WRITES TO DB
+          
+          const cleanLocalId = (obj) => { const copy = {...obj}; delete copy._local_id; return copy; };
+          
+          if (rawLegsToInsert.length > 0) {
+            const batchSize = 500;
+            for (let i = 0; i < rawLegsToInsert.length; i += batchSize) {
+               await supabaseUser.from('dhan_raw_legs').insert(rawLegsToInsert.slice(i, i + batchSize).map(cleanLocalId));
+            }
+          }
+
+          if (openPositionsToDelete.size > 0) {
+             const toDeleteArr = Array.from(openPositionsToDelete);
+             const batchSize = 500;
+             for (let i = 0; i < toDeleteArr.length; i += batchSize) {
+                 await supabaseUser.from('dhan_open_positions').delete().in('id', toDeleteArr.slice(i, i + batchSize));
+             }
+          }
+
+          if (openPositionsToUpdate.size > 0) {
+            for (const [id, pos] of openPositionsToUpdate.entries()) {
+              await supabaseUser.from('dhan_open_positions').update({
+                  total_quantity: pos.total_quantity,
+                  avg_entry_price: pos.avg_entry_price,
+                  total_investment: pos.total_investment,
+                  opening_leg_ids: pos.opening_leg_ids,
+                  updated_at: new Date().toISOString()
+              }).eq('id', id);
+            }
+          }
+
+          if (openPositionsToInsert.length > 0) {
+            const batchSize = 500;
+            for (let i = 0; i < openPositionsToInsert.length; i += batchSize) {
+               await supabaseUser.from('dhan_open_positions').insert(openPositionsToInsert.slice(i, i + batchSize).map(cleanLocalId));
+            }
+          }
+
+          if (tradesToInsert.length > 0) {
+            const batchSize = 500;
+            for (let i = 0; i < tradesToInsert.length; i += batchSize) {
+               await supabaseUser.from('trades').insert(tradesToInsert.slice(i, i + batchSize).map(cleanLocalId));
+            }
+          }
+
+          if (matchedLegIds.length > 0) {
+            const batchSize = 500;
+            for (let i = 0; i < matchedLegIds.length; i += batchSize) {
+               await supabaseUser.from('dhan_raw_legs').update({
+                  is_matched: true,
+                  matched_at: new Date().toISOString()
+               }).in('id', matchedLegIds.slice(i, i + batchSize));
             }
           }
 
@@ -578,14 +632,8 @@ export default async function handler(req, res) {
               synced_at: new Date().toISOString()
             });
 
-          const { count: remainingOpenCount } = await supabaseUser
-            .from('dhan_open_positions')
-            .select('*', { count: 'exact', head: true })
-            .eq('user_id', task.userId)
-            .eq('connection_id', connectionId);
-
           userTradesCreated += tradesCreated;
-          userPositionsStillOpen += remainingOpenCount || 0;
+          userPositionsStillOpen += inMemoryOpenPositions.length;
           userLegsSkipped += totalLegsSkipped;
         }
 
