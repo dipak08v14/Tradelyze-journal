@@ -160,8 +160,33 @@ export default async function handler(req, res) {
       }
     }
 
+    let pendingReviewQuery = supabase
+      .from('trades')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', user_id)
+      .eq('needs_review', true)
+      .eq('sync_source', connection_type);
+
+    let totalSyncedQuery = supabase
+      .from('trades')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', user_id)
+      .eq('sync_source', connection_type);
+
+    if (account_login) {
+      pendingReviewQuery = pendingReviewQuery.eq('account_login', String(account_login));
+      totalSyncedQuery = totalSyncedQuery.eq('account_login', String(account_login));
+    }
+
+    const { count: pendingReviewCount } = await pendingReviewQuery;
+    const { count: totalSyncedCount } = await totalSyncedQuery;
+
     await supabase.from('broker_connections')
-      .update({ last_sync_at: new Date().toISOString(), total_synced: (connection.total_synced || 0) + imported })
+      .update({ 
+        last_sync_at: new Date().toISOString(), 
+        total_synced: totalSyncedCount || 0,
+        trades_pending_review: pendingReviewCount || 0
+      })
       .eq('id', connection_id)
 
     await supabase.from('sync_logs').insert({
