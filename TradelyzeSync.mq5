@@ -38,6 +38,7 @@ datetime last_sync_time      = 0;
 bool     history_imported    = false;
 bool     api_key_invalid     = false;
 bool     url_not_whitelisted = false;
+bool     account_mismatch    = false;
 string   broker_name         = "";
 string   account_login_str   = "";
 
@@ -138,6 +139,13 @@ bool SendTrades(const ulong &tickets[], string sync_type) {
          }
          return false;
       }
+      if(code == 403) {
+         if(!account_mismatch) {
+            Print("TradelyzeSync: Account mismatch — sync stopped. Please update the sync key in Service properties to match the currently logged-in account.");
+            account_mismatch = true;
+         }
+         return false;
+      }
       if(code == -1) {
          int err = GetLastError();
          if(err == 4014) {
@@ -226,7 +234,7 @@ void OnStart() {
    ImportHistory();
 
    while(!IsStopped()) {
-      if(!api_key_invalid && !url_not_whitelisted) {
+      if(!api_key_invalid && !url_not_whitelisted && !account_mismatch) {
          ulong new_tickets[];
          GetNewDeals(new_tickets);
          if(ArraySize(new_tickets) > 0)
