@@ -73,12 +73,21 @@ export default async function handler(req, res) {
 
     const { data: connection, error: connError } = await supabase
       .from('broker_connections')
-      .select('id, user_id, connection_type, total_synced')
+      .select('id, user_id, connection_type, total_synced, account_login')
       .eq('api_key', api_key)
       .eq('is_active', true)
       .single()
 
     if (connError || !connection) return res.status(401).json({ error: 'Invalid API key' })
+
+    // SAFETY CHECK: Prevent mixing MT5 accounts
+    // If connection.account_login is already registered, the incoming payload must strictly match.
+    // If it is NOT registered (first-ever sync), we bypass the check and register it at the end.
+    if (connection.account_login && account_login && String(connection.account_login) !== String(account_login)) {
+      return res.status(403).json({ 
+        error: `API Key mismatch — this key is registered to account ${connection.account_login}, but the terminal is logged into account ${account_login}. Please update the sync key in the MT5 Service properties to match.` 
+      });
+    }
 
     const { user_id, id: connection_id, connection_type } = connection
     let imported = 0, skipped = 0, errors = 0
@@ -181,12 +190,18 @@ export default async function handler(req, res) {
     const { count: pendingReviewCount } = await pendingReviewQuery;
     const { count: totalSyncedCount } = await totalSyncedQuery;
 
+    let updateData = { 
+      last_sync_at: new Date().toISOString(), 
+      total_synced: totalSyncedCount || 0,
+      trades_pending_review: pendingReviewCount || 0
+    };
+
+    if (!connection.account_login && account_login) {
+      updateData.account_login = String(account_login);
+    }
+
     await supabase.from('broker_connections')
-      .update({ 
-        last_sync_at: new Date().toISOString(), 
-        total_synced: totalSyncedCount || 0,
-        trades_pending_review: pendingReviewCount || 0
-      })
+      .update(updateData)
       .eq('id', connection_id)
 
     await supabase.from('sync_logs').insert({
