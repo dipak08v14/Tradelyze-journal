@@ -590,18 +590,32 @@ export default async function handler(req, res) {
           }
 
           // STEP E — UPDATE BROKER CONNECTION
-          const { count: pendingReviewCount } = await supabaseUser
+          let pendingReviewQuery = supabaseUser
             .from('trades')
             .select('*', { count: 'exact', head: true })
             .eq('user_id', task.userId)
             .eq('needs_review', true)
             .eq('sync_source', 'dhan');
 
+          let totalSyncedQuery = supabaseUser
+            .from('trades')
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', task.userId)
+            .eq('sync_source', 'dhan');
+
+          if (connRow.account_login) {
+            pendingReviewQuery = pendingReviewQuery.eq('account_login', connRow.account_login);
+            totalSyncedQuery = totalSyncedQuery.eq('account_login', connRow.account_login);
+          }
+
+          const { count: pendingReviewCount } = await pendingReviewQuery;
+          const { count: totalSyncedCount } = await totalSyncedQuery;
+
           await supabaseUser
             .from('broker_connections')
             .update({
               last_sync_at: new Date().toISOString(),
-              total_synced: (connRow.total_synced || 0) + tradesCreated,
+              total_synced: totalSyncedCount || 0,
               trades_pending_review: pendingReviewCount || 0,
               sync_status: hadApiErrors ? 'error' : 'connected'
             })
