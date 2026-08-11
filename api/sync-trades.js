@@ -84,50 +84,79 @@ export default async function handler(req, res) {
     let imported = 0, skipped = 0, errors = 0
 
     if (trades && trades.length > 0) {
-      for (const trade of trades) {
-        try {
-          const { data: existing } = await supabase
-            .from('trades')
-            .select('id')
-            .eq('broker_ticket', String(trade.ticket))
-            .eq('user_id', user_id)
-            .maybeSingle()
+      try {
+        const incomingTickets = trades.map(t => String(t.ticket));
+        
+        const { data: existingTrades, error: existingError } = await supabase
+          .from('trades')
+          .select('broker_ticket')
+          .eq('user_id', user_id)
+          .in('broker_ticket', incomingTickets);
+          
+        if (existingError) {
+          throw new Error('Failed to fetch existing trades: ' + existingError.message);
+        }
+        
+        const existingTicketSet = new Set(existingTrades.map(t => t.broker_ticket));
+        const tradesToInsert = [];
 
-          if (existing) { skipped++; continue }
+        for (const trade of trades) {
+          if (existingTicketSet.has(String(trade.ticket))) {
+            skipped++;
+            continue;
+          }
+          
+          existingTicketSet.add(String(trade.ticket));
 
-          const entryDate = new Date(trade.entry_time)
-          const exitDate = new Date(trade.exit_time)
-          const holdingMins = Math.round((exitDate - entryDate) / 60000)
-          const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+          try {
+            const entryDate = new Date(trade.entry_time);
+            const exitDate = new Date(trade.exit_time);
+            const holdingMins = Math.round((exitDate - entryDate) / 60000);
+            const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-          const { error: insertError } = await supabase.from('trades').insert({
-            user_id,
-            account_login: account_login ? String(account_login) : null,
-            currency: 'USD',
-            broker_ticket: String(trade.ticket),
-            symbol: trade.symbol,
-            direction: trade.direction === 'Buy' ? 'LONG' : 'SHORT',
-            option_type: null,
-            raw_direction: trade.direction,
-            pnl: trade.pnl,
-            fees: Math.abs(trade.commission || 0) + Math.abs(trade.swap || 0),
-            swap: trade.swap || 0,
-            quantity: trade.lots,
-            entry_time: (trade.entry_time.split(' ')[1] || '00:00:00'),
-            date: trade.entry_time.split(' ')[0],
-            month: months[entryDate.getMonth()],
-            year: entryDate.getFullYear(),
-            status: trade.pnl > 0 ? 'Win' : trade.pnl < 0 ? 'Loss' : 'Breakeven',
-            holding_time_mins: holdingMins,
-            sync_source: connection_type,
-            needs_review: true,
-            broker_name: broker_name || '',
-            magic_number: trade.magic_number || 0,
-            trade_comment: trade.comment || ''
-          })
+            tradesToInsert.push({
+              user_id,
+              account_login: account_login ? String(account_login) : null,
+              currency: 'USD',
+              broker_ticket: String(trade.ticket),
+              symbol: trade.symbol,
+              direction: trade.direction === 'Buy' ? 'LONG' : 'SHORT',
+              option_type: null,
+              raw_direction: trade.direction,
+              pnl: trade.pnl,
+              fees: Math.abs(trade.commission || 0) + Math.abs(trade.swap || 0),
+              swap: trade.swap || 0,
+              quantity: trade.lots,
+              entry_time: (trade.entry_time.split(' ')[1] || '00:00:00'),
+              date: trade.entry_time.split(' ')[0],
+              month: months[entryDate.getMonth()],
+              year: entryDate.getFullYear(),
+              status: trade.pnl > 0 ? 'Win' : trade.pnl < 0 ? 'Loss' : 'Breakeven',
+              holding_time_mins: holdingMins,
+              sync_source: connection_type,
+              needs_review: true,
+              broker_name: broker_name || '',
+              magic_number: trade.magic_number || 0,
+              trade_comment: trade.comment || ''
+            });
+          } catch (e) {
+            errors++;
+            skipped++;
+          }
+        }
 
-          if (insertError) { errors++; skipped++ } else { imported++ }
-        } catch (e) { errors++; skipped++ }
+        if (tradesToInsert.length > 0) {
+          const { error: insertError } = await supabase.from('trades').insert(tradesToInsert);
+          if (insertError) {
+            console.error('Batch insert error:', insertError);
+            errors += tradesToInsert.length;
+          } else {
+            imported += tradesToInsert.length;
+          }
+        }
+      } catch (err) {
+        console.error('Processing batch error:', err);
+        errors += trades.length;
       }
     }
 
