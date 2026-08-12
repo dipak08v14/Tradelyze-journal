@@ -3,6 +3,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
+import { usePreferredCurrency } from '../hooks/usePreferredCurrency';
 import { Sidebar } from '../components/Sidebar';
 import { ScoreBar } from '../components/ScoreBar';
 import { StarRating } from '../components/StarRating';
@@ -50,6 +51,7 @@ export const TradeEntryPage: React.FC = () => {
   const { user, userId, loading: authLoading } = useAuth();
   const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
+  const { preferredCurrency } = usePreferredCurrency(userId);
 
   // Navigation & Page State
   const { id } = useParams<{ id: string }>();
@@ -837,6 +839,7 @@ export const TradeEntryPage: React.FC = () => {
           .insert({
             account_login: selectedBroker ? getAccountNumber(selectedBroker) : null,
             user_id: userId,
+            currency: preferredCurrency || 'INR',
             strategy_id: strategyId || null,
             date: date,
             symbol: symbol.toUpperCase().trim(),
