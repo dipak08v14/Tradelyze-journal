@@ -52,10 +52,14 @@ export const TradeEntryPage: React.FC = () => {
   const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
   const { preferredCurrency } = usePreferredCurrency(userId);
+  const [tradeCurrency, setTradeCurrency] = useState<string | null>(null);
 
   // Navigation & Page State
   const { id } = useParams<{ id: string }>();
   const isEditMode = Boolean(id);
+
+  const formCurrency = isEditMode ? (tradeCurrency || 'INR') : (preferredCurrency || 'INR');
+  const currencySym = formCurrency === 'USD' ? '$' : '₹';
   const [loading, setLoading] = useState<boolean>(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -334,6 +338,7 @@ export const TradeEntryPage: React.FC = () => {
         }
 
         if (tradeData) {
+          setTradeCurrency(tradeData.currency || null);
           setInitialAccountLogin(tradeData.account_login || null);
           setDate(tradeData.date || '');
           setEntryTime(tradeData.entry_time || '');
@@ -1688,7 +1693,7 @@ export const TradeEntryPage: React.FC = () => {
                       Financial Data
                     </h2>
                     <span style={{ color: 'var(--text-muted)' }} className="text-[10px] font-mono tracking-widest uppercase">
-                      (₹ Indian Rupees)
+                      ({currencySym} {formCurrency === 'USD' ? 'US Dollars' : 'Indian Rupees'})
                     </span>
                   </div>
 
@@ -1697,7 +1702,7 @@ export const TradeEntryPage: React.FC = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div>
                         <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
-                          Investment (₹)
+                          Investment ({currencySym})
                         </label>
                         <input
                           type="number"
@@ -1713,7 +1718,7 @@ export const TradeEntryPage: React.FC = () => {
 
                       <div>
                         <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
-                          Risk (₹)
+                          Risk ({currencySym})
                         </label>
                         <input
                           type="number"
@@ -1729,7 +1734,7 @@ export const TradeEntryPage: React.FC = () => {
 
                       <div>
                         <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
-                          Net P&L (₹)
+                          Net P&L ({currencySym})
                         </label>
                         <input
                           type="number"
@@ -1755,7 +1760,7 @@ export const TradeEntryPage: React.FC = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div>
                         <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
-                          Max Drawdown (₹)
+                          Max Drawdown ({currencySym})
                         </label>
                         <input
                           type="number"
@@ -1804,7 +1809,7 @@ export const TradeEntryPage: React.FC = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div>
                         <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
-                          Entry Price (₹)
+                          Entry Price ({currencySym})
                         </label>
                         <input
                           type="number"
@@ -1820,7 +1825,7 @@ export const TradeEntryPage: React.FC = () => {
 
                       <div>
                         <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
-                          Profit Target (₹)
+                          Profit Target ({currencySym})
                         </label>
                         <input
                           type="number"
@@ -1836,7 +1841,7 @@ export const TradeEntryPage: React.FC = () => {
 
                       <div>
                         <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
-                          Stop Loss Price (₹)
+                          Stop Loss Price ({currencySym})
                         </label>
                         <input
                           type="number"
@@ -1855,7 +1860,7 @@ export const TradeEntryPage: React.FC = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div>
                         <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
-                          MAE (Worst Price Against You) (₹)
+                          MAE (Worst Price Against You) ({currencySym})
                         </label>
                         <input
                           type="number"
@@ -1871,7 +1876,7 @@ export const TradeEntryPage: React.FC = () => {
 
                       <div>
                         <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
-                          MFE (Best Price In Favor) (₹)
+                          MFE (Best Price In Favor) ({currencySym})
                         </label>
                         <input
                           type="number"
@@ -1887,7 +1892,7 @@ export const TradeEntryPage: React.FC = () => {
 
                       <div>
                         <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
-                          Brokerage / Fees (₹)
+                          Brokerage / Fees ({currencySym})
                         </label>
                         <input
                           type="number"
@@ -2390,7 +2395,7 @@ export const TradeEntryPage: React.FC = () => {
                     {/* Decided planned risk */}
                     <div>
                       <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="block mb-2">
-                        Planned Risk Before Entry (₹)
+                        Planned Risk Before Entry ({currencySym})
                       </label>
                       <input
                         type="number"
