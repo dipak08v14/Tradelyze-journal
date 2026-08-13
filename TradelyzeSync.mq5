@@ -243,6 +243,8 @@ void ImportHistory() {
 }
 
 void OnStart() {
+   Print("TradelyzeSync: BUILD MARKER — v409FIX-" + TimeToString(TimeLocal(), TIME_DATE|TIME_MINUTES));
+   
    if(API_Key == "") {
       Print("TradelyzeSync: No API Key. Right-click service in Navigator > Properties to add your key.");
       return;
