@@ -135,9 +135,25 @@ export default function SettingsPage() {
         .eq('user_id', userId)
         .order('broker_name', { ascending: true });
       if (error) throw error;
-      setConnections(data || []);
+      const connectionsData = data || [];
+      
+      for (const conn of connectionsData) {
+        if (conn.broker_type !== 'dhan' && conn.account_login) {
+          const { count } = await supabase
+            .from('trades')
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', userId)
+            .eq('sync_source', 'MT5')
+            .eq('account_login', conn.account_login);
+          conn.fresh_trade_count = count || 0;
+        } else {
+          conn.fresh_trade_count = 0;
+        }
+      }
+      
+      setConnections(connectionsData);
 
-      const dhanConn = (data || []).find(c => c.broker_type === 'dhan' && c.is_active);
+      const dhanConn = connectionsData.find(c => c.broker_type === 'dhan' && c.is_active);
       if (dhanConn) {
         const { data: sessionData } = await supabase.auth.getSession();
         const tok = sessionData?.session?.access_token;
@@ -1301,14 +1317,16 @@ export default function SettingsPage() {
                                     Copy Key
                                   </button>
 
-                                  <button
-                                    disabled={disconnectingMt5}
-                                    onClick={() => setShowMt5DisconnectConfirm(conn.id)}
-                                    style={{ border: '1px solid var(--border-md)', background: 'transparent', color: '#ef4444' }}
-                                    className="hover:bg-red-950/20 font-bold px-3 py-1.5 rounded-lg cursor-pointer text-xs h-8 flex items-center justify-center ml-2"
-                                  >
-                                    Remove
-                                  </button>
+                                  {conn.fresh_trade_count === 0 && (
+                                    <button
+                                      disabled={disconnectingMt5}
+                                      onClick={() => setShowMt5DisconnectConfirm(conn.id)}
+                                      style={{ border: '1px solid var(--border-md)', background: 'transparent', color: '#ef4444' }}
+                                      className="hover:bg-red-950/20 font-bold px-3 py-1.5 rounded-lg cursor-pointer text-xs h-8 flex items-center justify-center ml-2"
+                                    >
+                                      Remove
+                                    </button>
+                                  )}
                                 </div>
                               </div>
                               

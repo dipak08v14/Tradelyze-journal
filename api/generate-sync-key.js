@@ -27,7 +27,7 @@ export default async function handler(req, res) {
 
       const { data: connData, error: findError } = await supabase
         .from('broker_connections')
-        .select('broker_type, id')
+        .select('broker_type, id, account_login')
         .eq('id', connection_id)
         .eq('user_id', user.id)
         .single();
@@ -38,6 +38,19 @@ export default async function handler(req, res) {
       
       if (connData.broker_type === 'dhan') {
          return res.status(403).json({ error: 'Cannot delete Dhan connections via this endpoint' });
+      }
+
+      if (connData.account_login) {
+        const { count: tradesCount } = await supabase
+          .from('trades')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id)
+          .eq('sync_source', 'MT5')
+          .eq('account_login', connData.account_login);
+
+        if (tradesCount > 0) {
+          return res.status(403).json({ error: `Cannot remove connection: You still have ${tradesCount} synced trades. Turn off 'Live Sync' to pause, or delete the trades from your journal first.` });
+        }
       }
 
       // Clean up related child tables to prevent foreign key violations
