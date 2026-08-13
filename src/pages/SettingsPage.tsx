@@ -1277,6 +1277,19 @@ export default function SettingsPage() {
                                   </div>
                                   
                                   <button
+                                    onClick={() => {
+                                      if (conn.api_key) {
+                                        navigator.clipboard.writeText(conn.api_key);
+                                        showSuccess('API sync key copied to clipboard! ✓');
+                                      }
+                                    }}
+                                    style={{ border: '1px solid var(--border-md)', background: 'transparent', color: 'var(--text)' }}
+                                    className="hover:bg-[var(--hover)] font-bold px-3 py-1.5 rounded-lg cursor-pointer text-xs h-8 flex items-center justify-center ml-2"
+                                  >
+                                    Copy Key
+                                  </button>
+
+                                  <button
                                     disabled={disconnectingMt5}
                                     onClick={() => setShowMt5DisconnectConfirm(conn.id)}
                                     style={{ border: '1px solid var(--border-md)', background: 'transparent', color: '#ef4444' }}

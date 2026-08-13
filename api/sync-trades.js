@@ -91,12 +91,30 @@ export default async function handler(req, res) {
     } else {
       // If it is NOT registered, this should be the first-ever sync.
       // If the incoming payload is missing the account_login, we only allow it if it's genuinely a first sync.
-      if (!account_login && connection.total_synced > 0) {
-        return res.status(403).json({ 
-          error: `Action required: Please update your TradelyzeSync EA to the latest version. We need to securely link your account.` 
-        });
+      if (!account_login) {
+        if (connection.total_synced > 0) {
+          return res.status(403).json({ 
+            error: `Action required: Please update your TradelyzeSync EA to the latest version. We need to securely link your account.` 
+          });
+        }
+      } else {
+        // Prevent registering a duplicate account_login if another active connection already claimed it
+        const { data: duplicateConn } = await supabase
+          .from('broker_connections')
+          .select('id')
+          .eq('user_id', connection.user_id)
+          .eq('is_active', true)
+          .eq('account_login', String(account_login))
+          .neq('id', connection.id)
+          .limit(1);
+
+        if (duplicateConn && duplicateConn.length > 0) {
+          return res.status(409).json({
+            error: `This MT5 account is already connected via another active connection. Please remove the duplicate or reuse the existing connection's key.`
+          });
+        }
       }
-      // If it passes, we bypass the check and it will register the account_login at the end of the script (if provided).
+      // If it passes, we bypass the check and it will register the account_login at the end of the script.
     }
 
     const { user_id, id: connection_id, connection_type } = connection

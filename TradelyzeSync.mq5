@@ -215,7 +215,17 @@ void ImportHistory() {
       ulong batch_arr[];
       ArrayResize(batch_arr, batch);
       for(int j = 0; j < batch; j++) batch_arr[j] = filtered[i+j];
-      if(!SendTrades(batch_arr, "historical")) return;
+      
+      if(!SendTrades(batch_arr, "historical")) {
+         if(account_mismatch) {
+            Print("TradelyzeSync: Historical import failed — account mismatch.");
+         } else if(api_key_invalid) {
+            Print("TradelyzeSync: Historical import failed — invalid API key.");
+         } else {
+            Print("TradelyzeSync: Historical import failed.");
+         }
+         return;
+      }
       if(IsStopped()) return;
    }
    history_imported = true;
