@@ -83,6 +83,10 @@ export default function SettingsPage() {
   const [dhanOpenPositionsCount, setDhanOpenPositionsCount] = useState(0);
   const [repairingDhanOptions, setRepairingDhanOptions] = useState(false);
 
+  // MT5 disconnect state
+  const [disconnectingMt5, setDisconnectingMt5] = useState(false);
+  const [showMt5DisconnectConfirm, setShowMt5DisconnectConfirm] = useState<string | null>(null);
+
   // CSV Import states
   const [isCsvModalOpen, setIsCsvModalOpen] = useState(false);
   const [csvStep, setCsvStep] = useState<1 | 2>(1);
@@ -324,6 +328,42 @@ export default function SettingsPage() {
       showError('Repair failed: ' + err.message);
     } finally {
       setRepairingDhanOptions(false);
+    }
+  };
+
+  const handleDisconnectMt5 = async (connectionId: string) => {
+    try {
+      setDisconnectingMt5(true);
+      setShowMt5DisconnectConfirm(null);
+
+      const { data: sessionData } = await supabase.auth.getSession();
+      const tok = sessionData?.session?.access_token;
+      if (!tok) {
+        showError('Authentication token missing.');
+        return;
+      }
+
+      const res = await fetch('/api/generate-sync-key', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tok}`
+        },
+        body: JSON.stringify({ connection_id: connectionId })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        showError(data.error || 'Failed to remove connection.');
+        return;
+      }
+
+      showSuccess('Broker connection removed successfully');
+      await fetchConnections();
+    } catch (err: any) {
+      showError('Disconnection failed: ' + err.message);
+    } finally {
+      setDisconnectingMt5(false);
     }
   };
 
@@ -1190,54 +1230,83 @@ export default function SettingsPage() {
                       <div className="space-y-4 mb-6">
                         {connections.filter(conn => conn.broker_type !== 'dhan').map((conn) => {
                           return (
-                            <div 
-                              key={conn.id} 
-                              className="border border-[var(--border)] rounded-xl p-4 bg-[var(--bar)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
-                            >
-                              <div className="space-y-1">
-                                <div className="flex items-center gap-2">
-                                  <h4 className="font-bold text-sm text-[var(--text)]">{conn.broker_name || 'Generic Broker'}</h4>
-                                  <span className="bg-[var(--accent-muted)] text-[var(--accent)] border border-[var(--accent)]/30 text-[10px] font-extrabold uppercase rounded px-1.5 py-0.5">
-                                    {conn.connection_type || 'MT5'}
-                                  </span>
-                                  {conn.is_active ? (
-                                    <span style={{ color: '#22c55e' }} className="flex items-center gap-1 text-[10px] font-bold">
-                                      <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] inline-block font-sans animate-pulse"></span>
-                                      ACTIVE
+                            <div key={conn.id} className="flex flex-col gap-2">
+                              <div className="border border-[var(--border)] rounded-xl p-4 bg-[var(--bar)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                                <div className="space-y-1">
+                                  <div className="flex items-center gap-2">
+                                    <h4 className="font-bold text-sm text-[var(--text)]">{conn.broker_name || 'Generic Broker'}</h4>
+                                    <span className="bg-[var(--accent-muted)] text-[var(--accent)] border border-[var(--accent)]/30 text-[10px] font-extrabold uppercase rounded px-1.5 py-0.5">
+                                      {conn.connection_type || 'MT5'}
                                     </span>
-                                  ) : (
-                                    <span style={{ color: 'var(--text-muted)' }} className="flex items-center gap-1 text-[10px] font-bold">
-                                      <span className="w-1.5 h-1.5 rounded-full bg-zinc-650 inline-block font-sans"></span>
-                                      PAUSED
-                                    </span>
-                                  )}
+                                    {conn.is_active ? (
+                                      <span style={{ color: '#22c55e' }} className="flex items-center gap-1 text-[10px] font-bold">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] inline-block font-sans animate-pulse"></span>
+                                        ACTIVE
+                                      </span>
+                                    ) : (
+                                      <span style={{ color: 'var(--text-muted)' }} className="flex items-center gap-1 text-[10px] font-bold">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-zinc-650 inline-block font-sans"></span>
+                                        PAUSED
+                                      </span>
+                                    )}
+                                  </div>
+                                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[var(--text-sub)]">
+                                    <span>Account: <span className="font-mono font-bold text-[var(--text)]">{conn.account_login || '—'}</span></span>
+                                    <span className="text-[var(--text-muted)]">•</span>
+                                    <span>Synced Trades: <span className="font-mono font-bold text-[var(--text)]">{conn.total_synced ?? 0}</span></span>
+                                    <span className="text-[var(--text-muted)]">•</span>
+                                    <span className="font-medium text-amber-500">{formatLastSynced(conn.last_sync_at)}</span>
+                                  </div>
                                 </div>
-                                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[var(--text-sub)]">
-                                  <span>Account: <span className="font-mono font-bold text-[var(--text)]">{conn.account_login || '—'}</span></span>
-                                  <span className="text-[var(--text-muted)]">•</span>
-                                  <span>Synced Trades: <span className="font-mono font-bold text-[var(--text)]">{conn.total_synced ?? 0}</span></span>
-                                  <span className="text-[var(--text-muted)]">•</span>
-                                  <span className="font-medium text-amber-500">{formatLastSynced(conn.last_sync_at)}</span>
-                                </div>
-                              </div>
 
-                              <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-2">
-                                  <span className="text-xs text-[var(--text-muted)]">Live Sync</span>
-                                  <button
-                                    onClick={() => handleToggleActive(conn.id, conn.is_active)}
-                                    className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors ${
-                                      conn.is_active ? 'bg-[#22c55e]' : 'bg-[var(--card)]'
-                                    }`}
-                                  >
-                                    <span
-                                      className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
-                                        conn.is_active ? 'translate-x-5.5' : 'translate-x-1'
+                                <div className="flex items-center gap-4">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-xs text-[var(--text-muted)]">Live Sync</span>
+                                    <button
+                                      onClick={() => handleToggleActive(conn.id, conn.is_active)}
+                                      className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors ${
+                                        conn.is_active ? 'bg-[#22c55e]' : 'bg-[var(--card)]'
                                       }`}
-                                    />
+                                    >
+                                      <span
+                                        className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                                          conn.is_active ? 'translate-x-5.5' : 'translate-x-1'
+                                        }`}
+                                      />
+                                    </button>
+                                  </div>
+                                  
+                                  <button
+                                    disabled={disconnectingMt5}
+                                    onClick={() => setShowMt5DisconnectConfirm(conn.id)}
+                                    style={{ border: '1px solid var(--border-md)', background: 'transparent', color: '#ef4444' }}
+                                    className="hover:bg-red-950/20 font-bold px-3 py-1.5 rounded-lg cursor-pointer text-xs h-8 flex items-center justify-center ml-2"
+                                  >
+                                    Remove
                                   </button>
                                 </div>
                               </div>
+                              
+                              {showMt5DisconnectConfirm === conn.id && (
+                                <div className="bg-[var(--bg)] border border-[var(--border)] p-4 rounded-xl space-y-3 w-full">
+                                  <p className="text-xs text-[var(--text)]">Remove this MT5 connection? Your synced trades will remain in your journal.</p>
+                                  <div className="flex items-center gap-2">
+                                    <button
+                                      disabled={disconnectingMt5}
+                                      onClick={() => handleDisconnectMt5(conn.id)}
+                                      className="bg-[#ef4444] hover:bg-red-700 text-white font-bold px-3 py-1.5 rounded-xl text-xs cursor-pointer"
+                                    >
+                                      Yes, Disconnect
+                                    </button>
+                                    <button
+                                      onClick={() => setShowMt5DisconnectConfirm(null)}
+                                      className="bg-zinc-750 hover:bg-zinc-700 text-[var(--text-sub)] font-bold px-3 py-1.5 rounded-lg text-xs cursor-pointer"
+                                    >
+                                      Cancel
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           );
                         })}
