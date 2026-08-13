@@ -82,11 +82,21 @@ export default async function handler(req, res) {
 
     // SAFETY CHECK: Prevent mixing MT5 accounts
     // If connection.account_login is already registered, the incoming payload must strictly match.
-    // If it is NOT registered (first-ever sync), we bypass the check and register it at the end.
-    if (connection.account_login && account_login && String(connection.account_login) !== String(account_login)) {
-      return res.status(403).json({ 
-        error: `API Key mismatch — this key is registered to account ${connection.account_login}, but the terminal is logged into account ${account_login}. Please update the sync key in the MT5 Service properties to match.` 
-      });
+    if (connection.account_login) {
+      if (!account_login || String(connection.account_login) !== String(account_login)) {
+        return res.status(403).json({ 
+          error: `API Key mismatch — this key is registered to account ${connection.account_login}, but the terminal is logged into account ${account_login || 'Unknown (Missing)'}. Please update the sync key in the MT5 Service properties to match.` 
+        });
+      }
+    } else {
+      // If it is NOT registered, this should be the first-ever sync.
+      // If the incoming payload is missing the account_login, we only allow it if it's genuinely a first sync.
+      if (!account_login && connection.total_synced > 0) {
+        return res.status(403).json({ 
+          error: `Action required: Please update your TradelyzeSync EA to the latest version. We need to securely link your account.` 
+        });
+      }
+      // If it passes, we bypass the check and it will register the account_login at the end of the script (if provided).
     }
 
     const { user_id, id: connection_id, connection_type } = connection
