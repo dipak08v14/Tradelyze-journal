@@ -84,18 +84,18 @@ export default async function handler(req, res) {
     // If connection.account_login is already registered, the incoming payload must strictly match.
     if (connection.account_login) {
       if (!account_login || String(connection.account_login) !== String(account_login)) {
-        return res.status(403).json({ 
-          error: `API Key mismatch — this key is registered to account ${connection.account_login}, but the terminal is logged into account ${account_login || 'Unknown (Missing)'}. Please update the sync key in the MT5 Service properties to match.` 
-        });
+        const errMsg = `API Key mismatch — this key is registered to account ${connection.account_login}, but the terminal is logged into account ${account_login || 'Unknown (Missing)'}. Please update the sync key in the MT5 Service properties to match.`;
+        await supabase.from('sync_logs').insert({ user_id: connection.user_id, connection_id: connection.id, sync_type: sync_type || 'realtime', status: 'failed', error_message: errMsg, synced_at: new Date().toISOString() });
+        return res.status(403).json({ error: errMsg });
       }
     } else {
       // If it is NOT registered, this should be the first-ever sync.
       // If the incoming payload is missing the account_login, we only allow it if it's genuinely a first sync.
       if (!account_login) {
         if (connection.total_synced > 0) {
-          return res.status(403).json({ 
-            error: `Action required: Please update your TradelyzeSync EA to the latest version. We need to securely link your account.` 
-          });
+          const errMsg = `Action required: Please update your TradelyzeSync EA to the latest version. We need to securely link your account.`;
+          await supabase.from('sync_logs').insert({ user_id: connection.user_id, connection_id: connection.id, sync_type: sync_type || 'realtime', status: 'failed', error_message: errMsg, synced_at: new Date().toISOString() });
+          return res.status(403).json({ error: errMsg });
         }
       } else {
         // Prevent registering a duplicate account_login if another active connection already claimed it
@@ -109,9 +109,9 @@ export default async function handler(req, res) {
           .limit(1);
 
         if (duplicateConn && duplicateConn.length > 0) {
-          return res.status(409).json({
-            error: `This MT5 account is already connected via another active connection. Please remove the duplicate or reuse the existing connection's key.`
-          });
+          const errMsg = `This MT5 account is already connected via another active connection. Please remove the duplicate or reuse the existing connection's key.`;
+          await supabase.from('sync_logs').insert({ user_id: connection.user_id, connection_id: connection.id, sync_type: sync_type || 'realtime', status: 'failed', error_message: errMsg, synced_at: new Date().toISOString() });
+          return res.status(409).json({ error: errMsg });
         }
       }
       // If it passes, we bypass the check and it will register the account_login at the end of the script.

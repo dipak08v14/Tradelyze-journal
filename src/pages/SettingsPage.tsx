@@ -684,7 +684,19 @@ export default function SettingsPage() {
         setNewConnectionId('');
         setConnectStep(1);
       } else {
-        showError('No sync signal received yet. Ensure your MT5 service is running and starting up correctly.');
+        const { data: logData } = await supabase
+          .from('sync_logs')
+          .select('error_message')
+          .eq('connection_id', newConnectionId)
+          .not('error_message', 'is', null)
+          .order('synced_at', { ascending: false })
+          .limit(1);
+
+        if (logData && logData.length > 0 && logData[0].error_message) {
+          showError(logData[0].error_message);
+        } else {
+          showError('No sync signal received yet. Ensure your MT5 service is running and starting up correctly.');
+        }
       }
     } catch (err: any) {
       console.error('Error verifying broker connection:', err);

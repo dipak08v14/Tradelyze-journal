@@ -39,6 +39,7 @@ bool     history_imported    = false;
 bool     api_key_invalid     = false;
 bool     url_not_whitelisted = false;
 bool     account_mismatch    = false;
+bool     duplicate_connection = false;
 string   broker_name         = "";
 string   account_login_str   = "";
 
@@ -146,6 +147,13 @@ bool SendTrades(const ulong &tickets[], string sync_type) {
          }
          return false;
       }
+      if(code == 409) {
+         if(!duplicate_connection) {
+            Print("TradelyzeSync: This MT5 account is already connected elsewhere — sync stopped. Remove the duplicate connection or use its existing key instead.");
+            duplicate_connection = true;
+         }
+         return false;
+      }
       if(code == -1) {
          int err = GetLastError();
          if(err == 4014) {
@@ -219,6 +227,8 @@ void ImportHistory() {
       if(!SendTrades(batch_arr, "historical")) {
          if(account_mismatch) {
             Print("TradelyzeSync: Historical import failed — account mismatch.");
+         } else if(duplicate_connection) {
+            Print("TradelyzeSync: Historical import failed — duplicate connection.");
          } else if(api_key_invalid) {
             Print("TradelyzeSync: Historical import failed — invalid API key.");
          } else {
@@ -244,7 +254,7 @@ void OnStart() {
    ImportHistory();
 
    while(!IsStopped()) {
-      if(!api_key_invalid && !url_not_whitelisted && !account_mismatch) {
+      if(!api_key_invalid && !url_not_whitelisted && !account_mismatch && !duplicate_connection) {
          ulong new_tickets[];
          GetNewDeals(new_tickets);
          if(ArraySize(new_tickets) > 0)
